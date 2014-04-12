@@ -25,6 +25,10 @@ var server = function() {
     app.use("/static", express.static(__dirname + '/static'));
 
     app.get(/^(.*)$/, function(req, res, next){
+        if(req.url.indexOf('/static') === 0) {
+            next();
+        }
+
         res.send(fs.readFileSync(__dirname + '/static/index.html', { encoding: 'utf-8' }));
     });
 

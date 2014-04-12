@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Live Status</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+
+    <link href="/static/css/site.css" rel="stylesheet" />
+    <link href="/static/css/ladda.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="/static/css/jquery-ui/jquery-ui-smoothness.css" />
+    <link rel="stylesheet" href="/static/css/site.css" />
+
+</head>
+<body>
+<header id="top-bar">
+    <a id="top-bar-logo" href="/"></a>
+    <div class="top-bar-section">
+        <ul>
+            <li><a href="/Status">Live Status</a></li>
+            <li><a href="/Status/LiveEvent">Live Event</a></li>
+        </ul>
+    </div>
+    <div class="top-bar-section">
+        <ul>
+            <li><a href="http://qa.ad.laterooms.com:90/index.html#/dashboard/file/logstash.json" target="_blank">Kibana</a></li>
+            <li><a href="http://qa.ad.laterooms.com:90/index.html#/dashboard/elasticsearch/SSL%20Errors" target="_blank">SSL Errors</a></li>
+        </ul>
+    </div>
+</header>
+
+<div id="toggle-menu" title="Toggle menu bar"></div>
+
+<div class="main-body">
+
+
+    <nav id="dashboard-menu">
+        <ul class="status-menu">
+            <li class="top-level-item text">V2</li>
+        </ul>
+    </nav>
+
+    <div id="content">
+        <div>
+            <ul class="defcon-meter">
+                <li class="cocked-pistol">1</li>
+                <li class="fast-pace">2</li>
+                <li class="round-house">3</li>
+                <li class="double-take current">4</li>
+                <li class="fade-out">5</li>
+            </ul>
+
+            <div class="defcon-detail">
+                <h3>DEFCON 4</h3>
+                <p>
+                    Site is under normal load, errors are inline with base line and response times are good.
+                </p>
+                <p>
+                    No action required.
+                </p>
+            </div>
+        </div>
+
+        <div class="v2-graph-component">
+            <h3>Errors</h3>
+            <div class="v2-graph-counter">
+                Errors in last 10mins
+                <strong class="v2-graph-counter-value">60</strong>
+            </div>
+            <div class="v2-graph-container">
+
+            </div>
+        </div>
+
+        <div class="v2-graph-component">
+            <h3>Traffic</h3>
+            <div class="v2-graph-container">
+
+            </div>
+        </div>
+
+        <div class="v2-graph-component">
+            <h3>Response Time</h3>
+            <div class="v2-graph-counter">
+                Avg. Resp. Time (ms)
+                <strong class="v2-graph-counter-value" style="font-size: 2.9em">1,051</strong>
+            </div>
+            <div class="v2-graph-container">
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script src="/static/js/lib/jquery-2.0.0.js"></script>
+<script src="/static/js/ladda.js"></script>
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/lib/moment.js"></script>
+<script src="/static/js/lib/lodash.js"></script>
+<script src="/static/js/lib/TLRGRP.core.js"></script>
+<script src="/static/js/lib/nanomachine.js"></script>
+
+<script type="text/javascript">
+    function appendIframe() {
+        $('body').append('<iframe frameborder="0" src="http://lr-brand-releases.laterooms.com" style="width:100%; height: 300px;"></frame>');
+    }
+</script>
+
+<script type="text/javascript" src="/static/js/lib/lodash.js"></script>
+<script type="text/javascript" src="/static/js/lib/mustache.js"></script>
+<script type="text/javascript" src="/static/js/lib/moment.js"></script>
+<script type="text/javascript" src="/static/js/lib/d3.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/jquery-2.0.0.js"></script>
+<script type="text/javascript" src="/static/js/lib/TLRGRP.core.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/LOADING.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.Loader.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/pageManager/TLRGRP.BADGER.Dashboard.PageManager.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/menu/TLRGRP.BADGER.Dashboard.ViewSelector.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/menu/TLRGRP.BADGER.Dashboard.Menu.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.Error.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/DataStores/TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.ComponentModules.HealthCheckServerList.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.Components.HealthCheck.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.LineGraph.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.Counter.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.Components.LineGraphAndCounter.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorsByHour.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorList.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.ComponentModules.ErrorHourList.js"></script>
+<script type="text/javascript">
+(function() {
+    var healthCheckServer = {
+        host: '10.44.22.158',
+        //host: 'localhost',
+        port: 3000
+    };
+
+    var lateRoomsServerStatus = new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
+        serverSet: 'LateRooms',
+        title: 'LateRooms Front End Server Status',
+        host: healthCheckServer.host,
+        port: healthCheckServer.port
+    });
+
+    TLRGRP.BADGER.Dashboard.register({
+        id: 'Overview',
+        views: {
+            Summary: {
+                id: 'Summary',
+                name: 'Summary'
+            },
+            Traffic: {
+                id: 'Traffic',
+                name: 'Traffic'
+            }
+        }
+    });
+
+    TLRGRP.BADGER.Dashboard.register({
+        id: 'Status',
+        name: 'Status',
+        views: {
+            LateRooms: {
+                id: 'LateRooms',
+                name: 'LateRooms',
+                components: [
+                    lateRoomsServerStatus
+                ]
+            },
+            AsiaRooms: {
+                id: 'AsiaRooms',
+                name: 'AsiaRooms',
+                components: [
+                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
+                        serverSet: 'AsiaRooms',
+                        title: 'AsiaRooms Front End Server Status',
+                        host: healthCheckServer.host,
+                        port: healthCheckServer.port
+                    })
+                ]
+            },
+            Connectivity: {
+                id: 'Connectivity',
+                name: 'Connectivity',
+                components: [
+                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
+                        serverSet: 'Connectivity',
+                        title: 'Connectivity Front End Server Status',
+                        host: healthCheckServer.host,
+                        port: healthCheckServer.port
+                    })
+                ]
+            }
+        }
+    });
+
+    TLRGRP.BADGER.Dashboard.register({
+        id: 'BigScreen',
+        name: 'Big Screen',
+        views: {
+            Summary: {
+                id: 'LateRooms',
+                name: 'Late Rooms (Main)',
+                components: [
+                    lateRoomsServerStatus,
+                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
+                        title: 'Errors',
+                        summaryText: 'Errors per one minute on LateRooms.com (WEB)',
+                        expression: 'sum(lr_errors)&step=6e4&limit=60',
+                        counter: {
+                            title: 'Errors in last 10mins',
+                            upClass: 'bad',
+                            downClass: 'good'
+                        }
+                    }),
+                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
+                        title: 'Commission',
+                        summaryText: 'Total commission generated per minute on LateRooms.com (WEB)',
+                        expression: 'sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60',
+                        counterTitle: 'Commission in last 10mins',
+                        counter: {
+                            title: 'Commission made in last 10mins',
+                            className: 'commission-graph-counter',
+                            prefix: '£',
+                            precision: 0,
+                            thresholds: [{
+                                value: 700,
+                                sound: '/static/sounds/smb_mariodie.wav'
+                            }, {
+                                value: 1500,
+                                sound: '/static/sounds/smb_stage_clear.wav'
+                            }]
+                        },
+                        graph: {
+                            className: 'commission-graph',
+                            lineColor: '#411485',
+                            upClass: 'good',
+                            downClass: 'bad'
+                        }
+                    })
+                ]
+            }
+        }
+    });
+
+
+    TLRGRP.BADGER.Dashboard.register({
+        id: 'Bookings',
+        name: 'Bookings',
+        views: {
+            'LateRooms.com': {
+                id: 'LateRooms',
+                name: 'LateRooms.com Bookings',
+                components: [
+                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
+                        title: 'Bookings',
+                        summaryText: 'Bookings per minute on LateRooms.com (WEB)',
+                        expression: 'sum(domain_events.eq(isTestBooking, false))&step=6e4&limit=60',
+                        counterTitle: 'Bookings in last 10mins',
+                        counter: {
+                            title: 'Bookings made in last 10mins',
+                            precision: 0
+                        },
+                        graph: {
+                            className: 'bookings-graph',
+                            lineColor: 'green',
+                            upClass: 'good',
+                            downClass: 'bad'
+                        }
+                    }),
+                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
+                        title: 'Commission',
+                        summaryText: 'Total commission generated per minute on LateRooms.com (WEB)',
+                        expression: 'sum(domain_events(commission).eq(isTestBooking, false))&step=6e4&limit=60',
+                        counterTitle: 'Commission in last 10mins',
+                        counter: {
+                            title: 'Commission made in last 10mins',
+                            className: 'commission-graph-counter',
+                            prefix: '£',
+                            precision: 0
+                        },
+                        graph: {
+                            className: 'commission-graph',
+                            lineColor: '#411485',
+                            upClass: 'good',
+                            downClass: 'bad'
+                        }
+                    }),
+                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
+                        title: 'Total Transaction Value',
+                        summaryText: 'TTV generated per minute on LateRooms.com (WEB)',
+                        expression: 'sum(domain_events(totalAmountGbp).eq(isTestBooking, false))&step=6e4&limit=60',
+                        counterTitle: 'Commission in last 10mins',
+                        counter: {
+                            title: 'TTV in last 10mins',
+                            className: 'commission-graph-counter',
+                            prefix: '£',
+                            precision: 0
+                        },
+                        graph: {
+                            className: 'commission-graph',
+                            lineColor: 'blue',
+                            upClass: 'good',
+                            downClass: 'bad'
+                        }
+                    })
+                ]
+            }
+        }
+    });
+
+    TLRGRP.BADGER.Dashboard.register({
+        id: 'Errors',
+        name: 'Errors',
+        views: {
+            Summary: {
+                id: 'ErrorsByTime',
+                name: 'Errors by Time',
+                components: [
+                    new TLRGRP.BADGER.Dashboard.Components.ErrorsByHour({}),
+                    new TLRGRP.BADGER.Dashboard.Components.ErrorList({})
+                ]
+            }
+        }
+    });
+
+
+    new TLRGRP.BADGER.Dashboard.Menu($('#dashboard-menu'));
+    new TLRGRP.BADGER.Dashboard.Loader($('#content'));
+    new TLRGRP.BADGER.Dashboard.PageManager({ baseUrl: '' });
+})();
+</script>
+
+</body>
+</html>

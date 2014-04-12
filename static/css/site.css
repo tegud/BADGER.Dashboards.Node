@@ -1,6 +1,4 @@
-﻿body { font-family: Helvetica, arial, freesans, clean, sans-serif;padding: 0;margin: 0 }
-
-#top-bar { background-color: #eee; background-image: linear-gradient(#e6e6e6, #eee);border-bottom: solid 1px #ddd;overflow: hidden; }
+﻿#top-bar { background-color: #eee; background-image: linear-gradient(#e6e6e6, #eee);border-bottom: solid 1px #ddd;overflow: hidden; }
 
 #top-bar-logo { background-image: url('../images/status-logo.png');width: 24px;height:24px;display: inline-block;margin: 10px 8px 5px 10px; }
 
@@ -390,7 +388,7 @@ td.ticket-cycle-time { width: 90px;}
     .actual-duration { display: none; }
 }
 
-body {background-color: #eaeaea;margin: 0 0 5px 0; }
+body { font-family: Helvetica, arial, freesans, clean, sans-serif;padding: 0;background-color: #eaeaea;margin: 0 0 5px 0; }
 
 h3 {margin: 0;padding: 0 }
 

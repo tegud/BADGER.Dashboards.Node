@@ -43,6 +43,49 @@ module.exports = function (grunt) {
             }]
         }
     },
+      rev: {
+          options: {
+              encoding: 'utf8',
+              algorithm: 'md5',
+              length: 8
+          },
+          images: {
+              files: [
+                  {
+                      expand: true,
+                      dot: true,
+                      cwd: 'dist',
+                      src: [
+                          '**/*.{jpg,jpeg,gif,png,svg}'
+                      ]
+                  }
+              ]
+          },
+          js: {
+              files: [
+                  {
+                      expand: true,
+                      dot: true,
+                      cwd: 'dist',
+                      src: [
+                          '**/*.{js,json}'
+                      ]
+                  }
+              ]
+          },
+          css: {
+              files: [
+                  {
+                      expand: true,
+                      dot: true,
+                      cwd: 'dist',
+                      src: [
+                          '**/*.css'
+                      ]
+                  }
+              ]
+          }
+      },
     clean: {
         dist: {
             files: {
@@ -54,5 +97,5 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['jshint', 'mochacli']);
     grunt.registerTask('test', ['jshint', 'mochacli', 'karma']);
-    grunt.registerTask('build', ['clean', 'copy']);
+    grunt.registerTask('build', ['clean', 'copy', 'rev']);
 };

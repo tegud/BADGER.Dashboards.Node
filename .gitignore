@@ -218,3 +218,5 @@ node_modules/
 .idea/
 
 credentials.json
+
+dist/

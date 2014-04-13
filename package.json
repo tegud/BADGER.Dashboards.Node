@@ -25,7 +25,9 @@
     "socket.io": "^0.9.16",
     "node-uuid": "^1.4.1",
     "hbs": "^2.6.0",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-copy": "^0.5.0"
   },
   "devDependencies": {
     "grunt": "^0.4.4",

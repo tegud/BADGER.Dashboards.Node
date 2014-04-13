@@ -31,9 +31,28 @@ module.exports = function (grunt) {
       unit: {
           configFile: 'test/client/karma.conf.js'
       }
+    },
+    copy: {
+        dist: {
+            files: [{
+                expand: true,
+                dot: true,
+                cwd: 'static',
+                dest: 'dist',
+                src: ['**/*.*']
+            }]
+        }
+    },
+    clean: {
+        dist: {
+            files: {
+                src: ['dist']
+            }
+        }
     }
   });
 
     grunt.registerTask('default', ['jshint', 'mochacli']);
     grunt.registerTask('test', ['jshint', 'mochacli', 'karma']);
+    grunt.registerTask('build', ['clean', 'copy']);
 };

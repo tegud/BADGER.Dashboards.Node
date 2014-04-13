@@ -4,11 +4,17 @@ var http = require('http');
 var async = require('async');
 var socketIo = require('socket.io');
 var uuid = require('node-uuid');
+var _ = require('lodash');
 
 var SyncServer = function() {
     var connections = {};
 
     return {
+        getListOfConnections: function() {
+            return _.map(connections, function(connection, key) {
+
+            });
+        },
         start: function(socket, callback) {
             socket.sockets.on('connection', function(socket) {
                 var sessionId = uuid.v1();
@@ -29,7 +35,7 @@ var SyncServer = function() {
             callback();
         }
     };
-}
+};
 
 var AppServer = function(app, options) {
     var httpServer = http.createServer(app);

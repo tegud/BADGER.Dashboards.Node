@@ -122,9 +122,11 @@
 <script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorsByHour.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorList.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.ComponentModules.ErrorHourList.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/SyncClient/index.js"></script>
+
 <script type="text/javascript">
 (function() {
-    var socket = io.connect();
+    new TLRGRP.BADGER.SyncClient();
 
     var healthCheckServer = {
         host: '10.44.22.158',

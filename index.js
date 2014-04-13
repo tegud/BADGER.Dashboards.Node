@@ -1,8 +1,35 @@
 var express = require('express');
+var hbs = require('hbs');
 var http = require('http');
 var async = require('async');
-var fs = require('fs');
 var socketIo = require('socket.io');
+var uuid = require('node-uuid');
+
+var SyncServer = function() {
+    var connections = {};
+
+    return {
+        start: function(socket, callback) {
+            socket.sockets.on('connection', function(socket) {
+                var sessionId = uuid.v1();
+
+                connections[sessionId] = {
+                    name: sessionId
+                };
+
+                socket.emit('connectionHandshake', {
+                    sessionId: uuid.v1()
+                });
+
+                /*socket.emit('clientCommand', {
+                    command: 'reload'
+                });*/
+            });
+
+            callback();
+        }
+    };
+}
 
 var AppServer = function(app, options) {
     var httpServer = http.createServer(app);
@@ -25,16 +52,21 @@ var server = function() {
     var httpServer;
     var sync;
 
+    app.set('view engine', 'html');
+    app.engine('html', hbs.__express);
+
     app.use("/static", express.static(__dirname + '/static'));
+
+    app.get('/admin', function(req, res) {
+        res.render('admin.hbs');
+    });
 
     app.get(/^(.*)$/, function(req, res, next){
         if(req.url.indexOf('/static') === 0) {
             next();
         }
-
-        res.send(fs.readFileSync(__dirname + '/static/index.html', { encoding: 'utf-8' }));
+        res.render('index.hbs');
     });
-
 
     return {
         start: function(options, callback) {
@@ -42,12 +74,8 @@ var server = function() {
 
             async.waterfall([
                     httpServer.start,
-                    function(http, socket) {
-                        sync = socket;
-
-                        socket.sockets.on('connection', function(socket) {
-                            console.log('client connected...');
-                        });
+                    function(http, socket, callback) {
+                        new SyncServer().start(socket, callback);
                     }
                 ],
                 function(err, http, socket) {

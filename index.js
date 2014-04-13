@@ -31,6 +31,13 @@ var SyncServer = function() {
                 command: 'reload'
             });
         },
+        identify: function() {
+            _.each(sockets, function(socket) {
+                socket.emit('clientCommand', {
+                    command: 'identify'
+                });
+            });
+        },
         start: function(socket, callback) {
             socket.sockets.on('connection', function(socket) {
                 var sessionId = uuid.v4();
@@ -104,6 +111,11 @@ var server = function() {
 
     app.get('/admin/command/reload/:session', function(req, res) {
         sync.reloadScreen(req.params.session);
+        res.send();
+    });
+
+    app.get('/admin/command/identify', function(req, res) {
+        sync.identify();
         res.send();
     });
 

@@ -17,6 +17,8 @@
 <div class="main-body">
     <h1>Active Clients</h1>
 
+    <button id="identify-screens">Identify Clients</button>
+
     <ul id="connections">
 
     </ul>
@@ -40,6 +42,10 @@
 (function() {
     var listOfConnections = $('#connections');
     var refreshTimer;
+
+    $('#identify-screens').on('click', function() {
+        $.get('/admin/command/identify');
+    });
 
     listOfConnections
             .on('click', '.set-name', function() {

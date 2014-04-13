@@ -7,6 +7,13 @@
         var socket = io.connect();
         var sessionId;
         var sessionName = $.cookie('boardName');
+        var identifyTimeout;
+
+        function setIdentityDiv() {
+            $('#identify').text(sessionName);
+        }
+
+        setIdentityDiv();
 
         var commands = {
             reload: function() {
@@ -15,6 +22,14 @@
             setName: function(data) {
                 sessionName = data.name;
                 $.cookie('boardName', sessionName, { expires: 365 });
+                setIdentityDiv();
+            },
+            identify: function() {
+                clearTimeout(identifyTimeout);
+                $('#identify').removeClass('hidden');
+                identifyTimeout = setTimeout(function() {
+                    $('#identify').addClass('hidden');
+                }, 5000);
             }
         };
 

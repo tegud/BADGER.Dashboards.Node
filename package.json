@@ -21,7 +21,8 @@
   "homepage": "https://github.com/tegud/BADGER.Dashboards.Node",
   "dependencies": {
     "express": "^4.0.0",
-    "async": "^0.7.0"
+    "async": "^0.7.0",
+    "socket.io": "^0.9.16"
   },
   "devDependencies": {
     "grunt": "^0.4.4",

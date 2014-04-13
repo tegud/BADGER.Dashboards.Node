@@ -15,26 +15,13 @@
 
 </head>
 <body>
-<header id="top-bar">
-    <a id="top-bar-logo" href="/"></a>
-    <div class="top-bar-section">
-        <ul>
-            <li><a href="/Status">Live Status</a></li>
-            <li><a href="/Status/LiveEvent">Live Event</a></li>
-        </ul>
-    </div>
-    <div class="top-bar-section">
-        <ul>
-            <li><a href="http://qa.ad.laterooms.com:90/index.html#/dashboard/file/logstash.json" target="_blank">Kibana</a></li>
-            <li><a href="http://qa.ad.laterooms.com:90/index.html#/dashboard/elasticsearch/SSL%20Errors" target="_blank">SSL Errors</a></li>
-        </ul>
-    </div>
-</header>
-
-<div id="toggle-menu" title="Toggle menu bar"></div>
-
 <div class="main-body">
-
+    <nav id="settings">
+        <ul class="settings-menu">
+            <li class="top-level-item text clock">00:00</li>
+            <li class="top-level-item options"></li>
+        </ul>
+    </nav>
 
     <nav id="dashboard-menu">
         <ul class="status-menu">
@@ -109,6 +96,7 @@
     }
 </script>
 
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/static/js/lib/lodash.js"></script>
 <script type="text/javascript" src="/static/js/lib/mustache.js"></script>
 <script type="text/javascript" src="/static/js/lib/moment.js"></script>
@@ -136,6 +124,8 @@
 <script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.ComponentModules.ErrorHourList.js"></script>
 <script type="text/javascript">
 (function() {
+    var socket = io.connect();
+
     var healthCheckServer = {
         host: '10.44.22.158',
         //host: 'localhost',

@@ -16,6 +16,10 @@
 <body>
 <div class="main-body">
     <h1>Active Clients</h1>
+
+    <ul id="connections">
+
+    </ul>
 </div>
 
 <script src="/static/js/lib/jquery-2.0.0.js"></script>
@@ -34,6 +38,39 @@
 
 <script type="text/javascript">
 (function() {
+    var listOfConnections = $('#connections');
+    var refreshTimer;
+
+    listOfConnections
+            .on('click', '.set-name', function() {
+                var li = $(this).parent();
+                var input = $('input', li);
+
+                $.get('/admin/command/setName/' + li.data('sessionId') + '/' + input.val(), function() {
+                    setTimeout(getConnections, 1250);
+                });
+            })
+            .on('click', '.reload', function() {
+                $.get('/admin/command/reload/' + $(this).parent().data('sessionId'), function() {
+                    setTimeout(getConnections, 1250);
+                });
+            });
+
+    var getConnections = function() {
+        clearTimeout(refreshTimer);
+
+        $.get('/admin/connections', function(data) {
+            var html = _.map(data.connections, function(connection) {
+                return '<li data-session-id="' + connection.sessionId + '"><input type="text" value="' + connection.name + '" /> <button class="set-name">set name</button> <button class="reload">reload</button></li>';
+            });
+
+            listOfConnections.html(html.join(''));
+
+            refreshTimer = setTimeout(getConnections, 10000);
+        });
+    };
+
+    getConnections();
 })();
 </script>
 

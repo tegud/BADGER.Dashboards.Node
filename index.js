@@ -8,28 +8,52 @@ var _ = require('lodash');
 
 var SyncServer = function() {
     var connections = {};
+    var sockets = {};
 
     return {
         getListOfConnections: function() {
             return _.map(connections, function(connection, key) {
+                return _.clone(connection);
+            });
+        },
+        setSessionName: function(sessionId, name) {
+            connections[sessionId].name = name;
 
+            sockets[sessionId].emit('clientCommand', {
+                command: 'setName',
+                data: {
+                    name: name
+                }
+            });
+        },
+        reloadScreen: function(sessionId) {
+            sockets[sessionId].emit('clientCommand', {
+                command: 'reload'
             });
         },
         start: function(socket, callback) {
             socket.sockets.on('connection', function(socket) {
-                var sessionId = uuid.v1();
+                var sessionId = uuid.v4();
+
+                sockets[sessionId] = socket;
 
                 connections[sessionId] = {
-                    name: sessionId
+                    name: sessionId,
+                    sessionId: sessionId
                 };
 
                 socket.emit('connectionHandshake', {
-                    sessionId: uuid.v1()
+                    sessionId: sessionId
                 });
 
-                /*socket.emit('clientCommand', {
-                    command: 'reload'
-                });*/
+                socket.on('nameConnection', function(data) {
+                    connections[sessionId].name = data.name;
+                });
+
+                socket.on('disconnect', function() {
+                    delete connections[sessionId];
+                    delete sockets[sessionId];
+                });
             });
 
             callback();
@@ -67,6 +91,22 @@ var server = function() {
         res.render('admin.hbs');
     });
 
+    app.get('/admin/connections', function(req, res) {
+        res.send({
+            connections: sync.getListOfConnections()
+        });
+    });
+
+    app.get('/admin/command/setName/:session/:name', function(req, res) {
+        sync.setSessionName(req.params.session, req.params.name);
+        res.send();
+    });
+
+    app.get('/admin/command/reload/:session', function(req, res) {
+        sync.reloadScreen(req.params.session);
+        res.send();
+    });
+
     app.get(/^(.*)$/, function(req, res, next){
         if(req.url.indexOf('/static') === 0) {
             next();
@@ -81,7 +121,8 @@ var server = function() {
             async.waterfall([
                     httpServer.start,
                     function(http, socket, callback) {
-                        new SyncServer().start(socket, callback);
+                        sync = new SyncServer();
+                        sync.start(socket, callback);
                     }
                 ],
                 function(err, http, socket) {

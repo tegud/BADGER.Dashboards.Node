@@ -3,19 +3,20 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.SyncClient');
 
-    var commands = {
-        reload: function() {
-            window.location = window.location;
-        },
-        setName: function(name) {
-
-        }
-    };
-
     TLRGRP.BADGER.SyncClient =  function() {
         var socket = io.connect();
         var sessionId;
-        var sessionName;
+        var sessionName = $.cookie('boardName');
+
+        var commands = {
+            reload: function() {
+                window.location = window.location;
+            },
+            setName: function(data) {
+                sessionName = data.name;
+                $.cookie('boardName', sessionName, { expires: 365 });
+            }
+        };
 
         socket.on('connectionHandshake', function(connectionDetails) {
             sessionId = connectionDetails.sessionId;
@@ -26,7 +27,7 @@
         });
 
         socket.on('clientCommand', function(commandDetails) {
-            commands[commandDetails.command]();
+            commands[commandDetails.command](commandDetails.data);
         });
     };
 })();

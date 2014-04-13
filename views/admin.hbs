@@ -53,12 +53,12 @@
                 var input = $('input', li);
 
                 $.get('/admin/command/setName/' + li.data('sessionId') + '/' + input.val(), function() {
-                    setTimeout(getConnections, 1250);
+                    setTimeout(getConnections, 1500);
                 });
             })
             .on('click', '.reload', function() {
                 $.get('/admin/command/reload/' + $(this).parent().data('sessionId'), function() {
-                    setTimeout(getConnections, 1250);
+                    setTimeout(getConnections, 1500);
                 });
             });
 

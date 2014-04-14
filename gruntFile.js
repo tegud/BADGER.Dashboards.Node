@@ -32,34 +32,39 @@ module.exports = function (grunt) {
           configFile: 'test/client/karma.conf.js'
       }
     },
-    copy: {
+    useminPrepare: {
+        html: ['dist/views/*.hbs'],
+        options: {
+            root: './',
+            dest: 'dist'
+        }
+    },
+    usemin: {
+        html: ['dist/views/*.hbs']
+    },
+      copy: {
         dist: {
             files: [{
                 expand: true,
                 dot: true,
                 cwd: 'static',
-                dest: 'dist',
+                dest: 'dist/static',
+                src: ['**/*.*']
+            },
+            {
+                expand: true,
+                dot: true,
+                cwd: 'views',
+                dest: 'dist/views',
                 src: ['**/*.*']
             }]
         }
     },
-      rev: {
+      filerev: {
           options: {
               encoding: 'utf8',
               algorithm: 'md5',
               length: 8
-          },
-          images: {
-              files: [
-                  {
-                      expand: true,
-                      dot: true,
-                      cwd: 'dist',
-                      src: [
-                          '**/*.{jpg,jpeg,gif,png,svg}'
-                      ]
-                  }
-              ]
           },
           js: {
               files: [
@@ -68,7 +73,7 @@ module.exports = function (grunt) {
                       dot: true,
                       cwd: 'dist',
                       src: [
-                          '**/*.{js,json}'
+                          'dist/**/*.{js,json}'
                       ]
                   }
               ]
@@ -80,7 +85,7 @@ module.exports = function (grunt) {
                       dot: true,
                       cwd: 'dist',
                       src: [
-                          '**/*.css'
+                          'dist/**/*.css'
                       ]
                   }
               ]
@@ -91,11 +96,16 @@ module.exports = function (grunt) {
             files: {
                 src: ['dist']
             }
+        },
+        tmp: {
+            files: {
+                src: ['.tmp']
+            }
         }
     }
   });
 
     grunt.registerTask('default', ['jshint', 'mochacli']);
     grunt.registerTask('test', ['jshint', 'mochacli', 'karma']);
-    grunt.registerTask('build', ['clean', 'copy', 'rev']);
+    grunt.registerTask('build', ['clean', 'copy', 'useminPrepare', 'concat', 'uglify', 'filerev', 'usemin', 'clean:tmp']);
 };

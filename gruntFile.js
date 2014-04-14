@@ -66,14 +66,28 @@ module.exports = function (grunt) {
               algorithm: 'md5',
               length: 8
           },
+          images: {
+              files: [
+                  {
+                      expand: true,
+                      dot: true,
+                      cwd: 'dist',
+                      dest: 'dist',
+                      src: [
+                          '**/*.{jpg,jpeg,gif,png,svg}'
+                      ]
+                  }
+              ]
+          },
           js: {
               files: [
                   {
                       expand: true,
                       dot: true,
                       cwd: 'dist',
+                      dest: 'dist',
                       src: [
-                          'dist/**/*.{js,json}'
+                          '**/*.{js,json}'
                       ]
                   }
               ]
@@ -84,8 +98,9 @@ module.exports = function (grunt) {
                       expand: true,
                       dot: true,
                       cwd: 'dist',
+                      dest: 'dist',
                       src: [
-                          'dist/**/*.css'
+                          '**/*.css'
                       ]
                   }
               ]

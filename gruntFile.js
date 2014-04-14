@@ -40,7 +40,10 @@ module.exports = function (grunt) {
         }
     },
     usemin: {
-        html: ['dist/views/*.hbs']
+        html: ['dist/views/*.hbs'],
+        options: {
+            assetsDirs: ['dist']
+        }
     },
       copy: {
         dist: {

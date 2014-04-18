@@ -17,62 +17,6 @@ table th { text-align: left;background-color: #f7f7f7;height: 30px;padding: 5px;
 
 a { color: #000;transition-property: color;transition-duration: 300ms;text-decoration: none; }
 
-.dashboard-item {display: inline-block; background-color: #f7f7f7;width: 270px;min-height: 200px;height: 200px;border-radius: 5px;padding: 10px; margin: 0 10px 14px 0;vertical-align: top; }
-
-.dashboard-item.double-width { width: 574px; }
-
-.dashboard-item h3 { margin-top: 0;color: #999;font-size: 1.1em; }
-
-.dashboard-bigtext { font-size: 10em; }
-
-.dashboard-sub-item-text { font-size: 5em; }
-
-.dashboard-bigtext-units { font-size: 2em; }
-
-.dashboard-bigtext-container { text-align: center; }
-
-.summary-current-text { font-size: 1.4em; }
-.summary-current-text > div { margin-bottom: 10px; }
-
-.ticket-detail-assigned-users-container { height: auto; }
-
-.ticket-detail-assigned-users.pairing { margin: 30px auto 0 auto;width: 200px; }
-
-.ticket-detail-assigned-users.pairing .ticket-summary-assigned-to-gravatar { width: 90px;height: 90px; }
-
-.ticket-detail-assigned-users.multiple .ticket-summary-assigned-to-gravatar { width: 40px;height: 40px;top: 0;left: 0; position: absolute }
-
-.ticket-detail-assigned-users.multiple .ticket-detail-assigned-user { position: relative;height: 33px;margin-bottom: 3px; padding: 7px 0 0 50px; }
-.ticket-detail-assigned-users.multiple .ticket-summary-assigned-to-container { text-align: left; }
-.ticket-detail-assigned-users.pairing .ticket-detail-assigned-user { display: inline-block; }
-
-.ticket-detail-assigned-user-ampersand { display: inline-block }
-
-.ticket-summary-assigned-to-container { font-size: 1.4em;text-align: center;font-weight: bold; }
-.ticket-summary-assigned-to-gravatar { height: 120px;width: 120px;background-color: #ddd;margin: 0 auto 10px auto;border-radius: 60px;overflow: hidden; }
-
-.ticket-contributors-list { list-style: none;margin: 0; padding: 0 }
-
-.ticket-contributors-list-item { padding-left: 65px;height: 48px;position: relative;font-size: 1.4em;padding-top: 17px; }
-
-.ticket-contributors-list-item .gravatar { position: absolute;top: 0;left: 0;width: 60px;height: 60px;border-radius: 30px;overflow: hidden; }
-
-#ticket-contributors { height: auto; }
-
-.ticket-blockages { font-size: 1.4em;list-style: none;margin: 0; padding: 0 }
-
-.ticket-blockages li { margin-bottom:8px; }
-
-.po-dashboard-release-list { margin: 0;padding: 0;font-size: 1.4em; list-style: none;}
-
-.po-dashboard-release-list li { padding: 5px 0;  }
-
-.po-dashboard-chg-id { font-size: 0.8em;font-style: italic;color: #888; }
-
-.po-dashboard-release-rollback { font-size: 0.75em;background-image: url('../images/rolledback.png');background-repeat: no-repeat;min-height: 19px;padding: 2px 0 0 30px; }
-
-#product-owner-blockages { height: auto; }
-
 .view-options {margin: 0 0 14px 7px; padding: 0 }
 
 .view-options li.view-option {display: inline-block;cursor: pointer; background-color: #eee;border-radius: 3px;margin-right: 5px; background-repeat: no-repeat;background-position: 10px center; }
@@ -253,7 +197,7 @@ h3 {margin: 0;padding: 0 }
 .inline-loading {
      width: 30px;
      height: 30px;
-     background-image: url('../../images/refresh.png');
+     background-image: url('../images/refresh.png');
      background-repeat: no-repeat;
      background-position: center;
     -webkit-animation: endlessRotate 2s linear infinite;
@@ -419,7 +363,7 @@ h3 {margin: 0;padding: 0 }
     top: 62px;
     width: 24px;
     height: 9px;
-    background-image: url('../../images/updownindicators_24.png');
+    background-image: url('../images/updownindicators_24.png');
     background-repeat: no-repeat;
     transform: rotate(0);
     -webkit-transform: rotate(0);
@@ -445,7 +389,7 @@ h3 {margin: 0;padding: 0 }
 
 .health-check-error { position: absolute;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(255, 255, 255, 0.8); z-index: 2 }
 
-.health-check-error-text-container { position: absolute;font-size: 1.5em;padding-left: 140px;min-height: 140px;background-image: url('../../images/error.png');background-position: left center;background-repeat: no-repeat }
+.health-check-error-text-container { position: absolute;font-size: 1.5em;padding-left: 140px;min-height: 140px;background-image: url('../images/error.png');background-position: left center;background-repeat: no-repeat }
 
 .health-check-groups {margin: 0;padding: 0;list-style: none; }
 

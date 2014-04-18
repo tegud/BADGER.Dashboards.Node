@@ -90,9 +90,10 @@ var server = function() {
     var sync;
 
     app.set('view engine', 'html');
+    app.set('views', __dirname + '/dist/views');
     app.engine('html', hbs.__express);
 
-    app.use("/static", express.static(__dirname + '/static'));
+    app.use("/static", express.static(__dirname + '/dist/static'));
 
     app.get('/admin', function(req, res) {
         res.render('admin.hbs');

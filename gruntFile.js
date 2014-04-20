@@ -44,7 +44,7 @@ module.exports = function (grunt) {
             css: ['dist/static/**/*.css'],
             html: ['dist/views/*.hbs'],
             options: {
-                'assetsDirs': ['dist/static/css', 'dist/static/js', 'dist']
+                'assetsDirs': ['dist', 'dist/static', 'dist/static/images', 'static/images']
             }
         },
         copy: {

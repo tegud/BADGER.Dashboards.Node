@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                         dot: true,
                         cwd: 'static',
                         dest: 'dist/static',
-                        src: ['**/*.{js,css}']
+                        src: ['**/*.{js,css,wav}']
                     }
                 ]
             },

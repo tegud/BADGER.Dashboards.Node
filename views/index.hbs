@@ -81,12 +81,12 @@
 <script type="text/javascript">
     (function () {
         new TLRGRP.BADGER.SyncClient();
+        new TLRGRP.BADGER.Dashboard.Loader($('#content'));
 
         $.get('/static/dashboards/all.json').then(function(data) {
             _.each(data.dashboards, TLRGRP.BADGER.Dashboard.register);
 
             new TLRGRP.BADGER.Dashboard.Menu($('#dashboard-menu'));
-            new TLRGRP.BADGER.Dashboard.Loader($('#content'));
             new TLRGRP.BADGER.Dashboard.PageManager({ baseUrl: '' });
         });
     })();

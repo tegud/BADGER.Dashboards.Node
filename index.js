@@ -2,87 +2,9 @@ var express = require('express');
 var hbs = require('hbs');
 var http = require('http');
 var async = require('async');
-var socketIo = require('socket.io');
-var uuid = require('node-uuid');
 var _ = require('lodash');
-
-var SyncServer = function() {
-    var connections = {};
-    var sockets = {};
-
-    return {
-        getListOfConnections: function() {
-            return _.map(connections, function(connection, key) {
-                return _.clone(connection);
-            });
-        },
-        setSessionName: function(sessionId, name) {
-            connections[sessionId].name = name;
-
-            sockets[sessionId].emit('clientCommand', {
-                command: 'setName',
-                data: {
-                    name: name
-                }
-            });
-        },
-        reloadScreen: function(sessionId) {
-            sockets[sessionId].emit('clientCommand', {
-                command: 'reload'
-            });
-        },
-        identify: function() {
-            _.each(sockets, function(socket) {
-                socket.emit('clientCommand', {
-                    command: 'identify'
-                });
-            });
-        },
-        start: function(socket, callback) {
-            socket.sockets.on('connection', function(socket) {
-                var sessionId = uuid.v4();
-
-                sockets[sessionId] = socket;
-
-                connections[sessionId] = {
-                    name: sessionId,
-                    sessionId: sessionId
-                };
-
-                socket.emit('connectionHandshake', {
-                    sessionId: sessionId
-                });
-
-                socket.on('nameConnection', function(data) {
-                    connections[sessionId].name = data.name;
-                });
-
-                socket.on('disconnect', function() {
-                    delete connections[sessionId];
-                    delete sockets[sessionId];
-                });
-            });
-
-            callback();
-        }
-    };
-};
-
-var AppServer = function(app, options) {
-    var httpServer = http.createServer(app);
-    var sync = socketIo.listen(httpServer);
-
-    return {
-        start: function(callback) {
-            httpServer.listen(options.port, function(err) {
-                callback(err, httpServer, sync);
-            });
-        },
-        stop: function(callback) {
-            httpServer.close(callback);
-        }
-    };
-};
+var AppServer = require('./lib/AppServer');
+var SyncServer = require('./lib/SyncServer');
 
 var server = function() {
     var app = express();

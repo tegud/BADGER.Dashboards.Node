@@ -1,0 +1,52 @@
+{
+    "name": "Late Rooms (Main)",
+    "components": [
+        {
+            "type": "HealthCheck",
+            "serverSet": "LateRooms",
+            "title": "LateRooms Front End Server Status",
+            "host": "10.44.22.158",
+            "port": 3000
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Errors",
+            "summaryText": "Errors per one minute on LateRooms.com (WEB)",
+            "expression": "sum(lr_errors)&step=6e4&limit=60",
+            "counter": {
+                "title": "Errors in last 10mins",
+                "upClass": "bad",
+                "downClass": "good"
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Commission",
+            "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
+            "expression": "sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60",
+            "counterTitle": "Commission in last 10mins",
+            "counter": {
+                "title": "Commission made in last 10mins",
+                "className": "commission-graph-counter",
+                "prefix": "£",
+                "precision": 0,
+                "thresholds": [
+                    {
+                        "value": 700,
+                        "sound": "/static/sounds/smb_mariodie.wav"
+                    },
+                    {
+                        "value": 1500,
+                        "sound": "/static/sounds/smb_stage_clear.wav"
+                    }
+                ]
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lineColor": "#411485",
+                "upClass": "good",
+                "downClass": "bad"
+            }
+        }
+    ]
+}

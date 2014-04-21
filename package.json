@@ -53,6 +53,7 @@
     "grunt-contrib-concat": "^0.4.0",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-filerev": "^0.2.1",
-    "grunt-cssurlrev": "^0.1.2"
+    "grunt-cssurlrev": "^0.1.2",
+    "grunt-env": "^0.4.1"
   }
 }

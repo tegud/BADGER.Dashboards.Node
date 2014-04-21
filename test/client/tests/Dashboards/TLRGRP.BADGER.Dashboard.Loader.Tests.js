@@ -11,55 +11,86 @@
 
 		new TLRGRP.BADGER.Dashboard.PageManager();
 
+        $.get = function(url) {
+            var splitUrl = url.split('/');
+            var view = splitUrl[4].split('.')[0];
+
+            return {
+                then: function(callback) {
+                    callback(ajaxyDataForDashboard[view]);
+                }
+            };
+        };
+
+        TLRGRP.BADGER.Dashboard.Components.One = function() {
+            return {
+                unload: function () {
+                    var deferred = $.Deferred();
+
+                    (onComponentUnload || $.noop)();
+
+                    deferred.resolve();
+
+                    return deferred;
+                },
+                render: function (container) {
+                    firstComponentRenderDeferred = $.Deferred();
+
+                    $('<div id="component-one"></div>').appendTo(container);
+
+                    return firstComponentRenderDeferred;
+                }
+            };
+        };
+
+        TLRGRP.BADGER.Dashboard.Components.Two = function() {
+            return {
+                render: function (container) {
+                    $('<div id="component-two"></div>').appendTo(container);
+                }
+            };
+        };
+
+        TLRGRP.BADGER.Dashboard.Components.Three = function() {
+            return {
+                unload: function() {
+                    onTrafficUnloadDeferred = $.Deferred();
+
+                    (onComponentUnload || $.noop)();
+
+                    return onTrafficUnloadDeferred;
+                },
+                render: function() { }
+            };
+        };
+
+        var ajaxyDataForDashboard = {
+            'Summary': {
+                name: 'Summary',
+                components: [
+                    { type: 'One' },
+                    { type: 'Two' }
+                ]
+            },
+            'Traffic': {
+                name: 'Traffic',
+                components: [
+                    { type: 'Three' }
+                ]
+            }
+        };
+
 		beforeEach(function() {
 			TLRGRP.BADGER.Dashboard.clear();
 			TLRGRP.BADGER.Dashboard.register({
 				id: 'Overview',
 				views: [{
-					id: 'Summary',
-					name: 'Summary',
-					components: [
-						{
-							unload: function() {
-								var deferred = $.Deferred();
-
-								(onComponentUnload || $.noop)();
-
-								deferred.resolve();
-
-								return deferred;
-							},
-							render: function(container) {
-								firstComponentRenderDeferred = $.Deferred();
-
-								$('<div id="component-one"></div>').appendTo(container);
-
-								return firstComponentRenderDeferred;
-							} 
-						},
-						{
-							render: function(container) {
-								$('<div id="component-two"></div>').appendTo(container);
-							} 
-						}
-					]
+                    id: 'Summary',
+                    name: 'Summary'
 				}, {
-					id: 'Traffic',
-					name: 'Traffic',
-					components: [
-						{
-							unload: function() {
-								onTrafficUnloadDeferred = $.Deferred();
-
-								(onComponentUnload || $.noop)();
-
-								return onTrafficUnloadDeferred;
-							},
-							render: function() {
-							}
-						}
-					]
-				}]
+                    id: 'Traffic',
+                    name: 'Traffic'
+                }]
 			});
 
 			$('#dashboard-container').remove();

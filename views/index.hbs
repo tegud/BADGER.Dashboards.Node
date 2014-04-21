@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -30,59 +29,7 @@
             <li class="top-level-item text">V2</li>
         </ul>
     </nav>
-
-    <div id="content">
-        <div>
-            <ul class="defcon-meter">
-                <li class="cocked-pistol">1</li>
-                <li class="fast-pace">2</li>
-                <li class="round-house">3</li>
-                <li class="double-take current">4</li>
-                <li class="fade-out">5</li>
-            </ul>
-
-            <div class="defcon-detail">
-                <h3>DEFCON 4</h3>
-                <p>
-                    Site is under normal load, errors are inline with base line and response times are good.
-                </p>
-                <p>
-                    No action required.
-                </p>
-            </div>
-        </div>
-
-        <div class="v2-graph-component">
-            <h3>Errors</h3>
-            <div class="v2-graph-counter">
-                Errors in last 10mins
-                <strong class="v2-graph-counter-value">60</strong>
-            </div>
-            <div class="v2-graph-container">
-
-            </div>
-        </div>
-
-        <div class="v2-graph-component">
-            <h3>Traffic</h3>
-            <div class="v2-graph-container">
-
-            </div>
-        </div>
-
-        <div class="v2-graph-component">
-            <h3>Response Time</h3>
-            <div class="v2-graph-counter">
-                Avg. Resp. Time (ms)
-                <strong class="v2-graph-counter-value" style="font-size: 2.9em">1,051</strong>
-            </div>
-            <div class="v2-graph-container">
-
-            </div>
-        </div>
-    </div>
-
-
+    <div id="content"></div>
 
 </div>
 
@@ -123,19 +70,6 @@
 (function() {
     new TLRGRP.BADGER.SyncClient();
 
-    var healthCheckServer = {
-        host: '10.44.22.158',
-        //host: 'localhost',
-        port: 3000
-    };
-
-    var lateRoomsServerStatus = new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
-        serverSet: 'LateRooms',
-        title: 'LateRooms Front End Server Status',
-        host: healthCheckServer.host,
-        port: healthCheckServer.port
-    });
-
     TLRGRP.BADGER.Dashboard.register({
         id: 'Overview',
         views: {
@@ -158,7 +92,12 @@
                 id: 'LateRooms',
                 name: 'LateRooms',
                 components: [
-                    lateRoomsServerStatus
+                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
+                        serverSet: 'LateRooms',
+                        title: 'LateRooms Front End Server Status',
+                        host: '10.44.22.158',
+                        port: 3000
+                    })
                 ]
             },
             AsiaRooms: {
@@ -168,8 +107,8 @@
                     new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
                         serverSet: 'AsiaRooms',
                         title: 'AsiaRooms Front End Server Status',
-                        host: healthCheckServer.host,
-                        port: healthCheckServer.port
+                        host: '10.44.22.158',
+                        port: 3000
                     })
                 ]
             },
@@ -180,8 +119,8 @@
                     new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
                         serverSet: 'Connectivity',
                         title: 'Connectivity Front End Server Status',
-                        host: healthCheckServer.host,
-                        port: healthCheckServer.port
+                        host: '10.44.22.158',
+                        port: 3000
                     })
                 ]
             }
@@ -194,45 +133,7 @@
         views: {
             Summary: {
                 id: 'LateRooms',
-                name: 'Late Rooms (Main)',
-                components: [
-                    lateRoomsServerStatus,
-                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
-                        title: 'Errors',
-                        summaryText: 'Errors per one minute on LateRooms.com (WEB)',
-                        expression: 'sum(lr_errors)&step=6e4&limit=60',
-                        counter: {
-                            title: 'Errors in last 10mins',
-                            upClass: 'bad',
-                            downClass: 'good'
-                        }
-                    }),
-                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
-                        title: 'Commission',
-                        summaryText: 'Total commission generated per minute on LateRooms.com (WEB)',
-                        expression: 'sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60',
-                        counterTitle: 'Commission in last 10mins',
-                        counter: {
-                            title: 'Commission made in last 10mins',
-                            className: 'commission-graph-counter',
-                            prefix: '£',
-                            precision: 0,
-                            thresholds: [{
-                                value: 700,
-                                sound: '/static/sounds/smb_mariodie.wav'
-                            }, {
-                                value: 1500,
-                                sound: '/static/sounds/smb_stage_clear.wav'
-                            }]
-                        },
-                        graph: {
-                            className: 'commission-graph',
-                            lineColor: '#411485',
-                            upClass: 'good',
-                            downClass: 'bad'
-                        }
-                    })
-                ]
+                name: 'Late Rooms (Main)'
             }
         }
     });

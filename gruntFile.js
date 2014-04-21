@@ -4,6 +4,11 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
+        env: {
+            dev: {
+                NODE_ENV: 'dev'
+            }
+        },
         jshint: {
             all: [
                 'Gruntfile.js',
@@ -134,4 +139,13 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['jshint', 'mochacli']);
     grunt.registerTask('test', ['jshint', 'mochacli', 'karma']);
     grunt.registerTask('build', ['clean', 'copy', 'useminPrepare', 'concat', 'uglify', 'filerev:images', 'usemin:css', 'filerev:css', 'filerev:js', 'usemin:html', 'clean:tmp']);
+    grunt.registerTask('serve', ['env:dev', 'startServer']);
+
+    grunt.registerTask('startServer', 'Starts the application server', function () {
+        this.async();
+
+        new require('./index')().start({
+            port: 1234
+        });
+    });
 };

@@ -7,6 +7,7 @@
         LOADING.show();
 
         var currentView;
+        var currentComponents = [];
 
         TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', function(dashboardAndView) {
             var dashboard = TLRGRP.BADGER.Dashboard.getById(dashboardAndView.dashboard);
@@ -15,8 +16,8 @@
 
             LOADING.show();
 
-            if(currentView) {
-                _(currentView.components).forEach(function(component) {
+            if(currentComponents.length) {
+                _(currentComponents).forEach(function(component) {
                     if(component.unload && $.isFunction(component.unload)) {
                         unloadDeferreds.push(component.unload());
                     }
@@ -28,19 +29,26 @@
             }
 
             function showNextView() { 
-                var renderDeferreds = [];
 
                 currentView = view;
+                currentComponents = [];
 
                 dashboardContainer.empty();
 
                 dashboardContainer.addClass('initialised');
 
-                _(view.components).forEach(function(component) {
-                    renderDeferreds.push(component.render(dashboardContainer));
+                $.get('/static/dashboards/' + dashboardAndView.dashboard + '/' + view.id + '.json').then(function(data) {
+                    var renderDeferreds = [];
+
+                    _(data.components).forEach(function(component) {
+                        var dashboardComponent = new TLRGRP.BADGER.Dashboard.Components[component.type](component);
+
+                        currentComponents.push(dashboardComponent);
+                        renderDeferreds.push(dashboardComponent.render(dashboardContainer));
+                    });
+
+                    $.when.apply(undefined, renderDeferreds).always(loadingComplete);
                 });
-                
-                $.when.apply(undefined, renderDeferreds).always(loadingComplete);
             }
 
             $.when.apply(this, unloadDeferreds).always(showNextView);

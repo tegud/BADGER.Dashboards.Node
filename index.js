@@ -88,12 +88,12 @@ var server = function() {
     var app = express();
     var httpServer;
     var sync;
+    var applicationRoot = __dirname + (process.env.NODE_ENV === 'dev' ? '/' : '/dist/');
 
     app.set('view engine', 'html');
-    app.set('views', __dirname + '/dist/views');
+    app.set('views', applicationRoot + 'views');
     app.engine('html', hbs.__express);
-
-    app.use("/static", express.static(__dirname + '/dist/static'));
+    app.use("/static", express.static(applicationRoot + 'static'));
 
     app.get('/admin', function(req, res) {
         res.render('admin.hbs');

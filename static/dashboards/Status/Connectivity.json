@@ -1,0 +1,12 @@
+{
+    "name": "Connectivity",
+    "components": [
+        {
+            "type": "HealthCheck",
+            "serverSet": "Connectivity",
+            "title": "Connectivity Front End Server Status",
+            "host": "10.44.22.158",
+            "port": 3000
+        }
+    ]
+}

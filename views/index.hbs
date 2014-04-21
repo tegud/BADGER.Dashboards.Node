@@ -5,12 +5,12 @@
     <title>Live Status</title>
     <meta name="viewport" content="user-scalable=no, width=device-width"/>
 
-    <link href="/static/css/site.css" rel="stylesheet" />
-    <link href="/static/css/ladda.css" rel="stylesheet" />
+    <link href="/static/css/site.css" rel="stylesheet"/>
+    <link href="/static/css/ladda.css" rel="stylesheet"/>
 
 
-    <link rel="stylesheet" href="/static/css/jquery-ui/jquery-ui-smoothness.css" />
-    <link rel="stylesheet" href="/static/css/site.css" />
+    <link rel="stylesheet" href="/static/css/jquery-ui/jquery-ui-smoothness.css"/>
+    <link rel="stylesheet" href="/static/css/site.css"/>
 
 </head>
 <body>
@@ -50,180 +50,46 @@
 <script type="text/javascript" src="/static/js/BADGER/pageManager/TLRGRP.BADGER.Dashboard.PageManager.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/menu/TLRGRP.BADGER.Dashboard.ViewSelector.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/menu/TLRGRP.BADGER.Dashboard.Menu.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.Error.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/DataStores/TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.ComponentModules.HealthCheckServerList.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.Components.HealthCheck.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.LineGraph.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.Counter.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.Components.LineGraphAndCounter.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorsByHour.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/ComponentModules/TLRGRP.BADGER.Dashboard.ComponentModules.Error.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/DataStores/TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.ComponentModules.HealthCheckServerList.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/HealthCheck/TLRGRP.BADGER.Components.HealthCheck.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.LineGraph.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.ComponentModules.Counter.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/LineGraphAndCounter/TLRGRP.BADGER.Components.LineGraphAndCounter.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorsByHour.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.Components.ErrorList.js"></script>
-<script type="text/javascript" src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.ComponentModules.ErrorHourList.js"></script>
+<script type="text/javascript"
+        src="/static/js/BADGER/Components/Errors/TLRGRP.BADGER.ComponentModules.ErrorHourList.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/SyncClient/index.js"></script>
 <!-- endbuild  -->
 
 <script type="text/javascript">
-(function() {
-    new TLRGRP.BADGER.SyncClient();
+    (function () {
+        new TLRGRP.BADGER.SyncClient();
 
-    TLRGRP.BADGER.Dashboard.register({
-        id: 'Overview',
-        views: {
-            Summary: {
-                id: 'Summary',
-                name: 'Summary'
-            },
-            Traffic: {
-                id: 'Traffic',
-                name: 'Traffic'
-            }
-        }
-    });
+        $.get('/static/dashboards/all.json').then(function(data) {
+            _.each(data.dashboards, TLRGRP.BADGER.Dashboard.register);
 
-    TLRGRP.BADGER.Dashboard.register({
-        id: 'Status',
-        name: 'Status',
-        views: {
-            LateRooms: {
-                id: 'LateRooms',
-                name: 'LateRooms',
-                components: [
-                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
-                        serverSet: 'LateRooms',
-                        title: 'LateRooms Front End Server Status',
-                        host: '10.44.22.158',
-                        port: 3000
-                    })
-                ]
-            },
-            AsiaRooms: {
-                id: 'AsiaRooms',
-                name: 'AsiaRooms',
-                components: [
-                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
-                        serverSet: 'AsiaRooms',
-                        title: 'AsiaRooms Front End Server Status',
-                        host: '10.44.22.158',
-                        port: 3000
-                    })
-                ]
-            },
-            Connectivity: {
-                id: 'Connectivity',
-                name: 'Connectivity',
-                components: [
-                    new TLRGRP.BADGER.Dashboard.Components.HealthCheck({
-                        serverSet: 'Connectivity',
-                        title: 'Connectivity Front End Server Status',
-                        host: '10.44.22.158',
-                        port: 3000
-                    })
-                ]
-            }
-        }
-    });
-
-    TLRGRP.BADGER.Dashboard.register({
-        id: 'BigScreen',
-        name: 'Big Screen',
-        views: {
-            Summary: {
-                id: 'LateRooms',
-                name: 'Late Rooms (Main)'
-            }
-        }
-    });
-
-
-    TLRGRP.BADGER.Dashboard.register({
-        id: 'Bookings',
-        name: 'Bookings',
-        views: {
-            'LateRooms.com': {
-                id: 'LateRooms',
-                name: 'LateRooms.com Bookings',
-                components: [
-                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
-                        title: 'Bookings',
-                        summaryText: 'Bookings per minute on LateRooms.com (WEB)',
-                        expression: 'sum(domain_events.eq(isTestBooking, false))&step=6e4&limit=60',
-                        counterTitle: 'Bookings in last 10mins',
-                        counter: {
-                            title: 'Bookings made in last 10mins',
-                            precision: 0
-                        },
-                        graph: {
-                            className: 'bookings-graph',
-                            lineColor: 'green',
-                            upClass: 'good',
-                            downClass: 'bad'
-                        }
-                    }),
-                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
-                        title: 'Commission',
-                        summaryText: 'Total commission generated per minute on LateRooms.com (WEB)',
-                        expression: 'sum(domain_events(commission).eq(isTestBooking, false))&step=6e4&limit=60',
-                        counterTitle: 'Commission in last 10mins',
-                        counter: {
-                            title: 'Commission made in last 10mins',
-                            className: 'commission-graph-counter',
-                            prefix: '£',
-                            precision: 0
-                        },
-                        graph: {
-                            className: 'commission-graph',
-                            lineColor: '#411485',
-                            upClass: 'good',
-                            downClass: 'bad'
-                        }
-                    }),
-                    new TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter({
-                        title: 'Total Transaction Value',
-                        summaryText: 'TTV generated per minute on LateRooms.com (WEB)',
-                        expression: 'sum(domain_events(totalAmountGbp).eq(isTestBooking, false))&step=6e4&limit=60',
-                        counterTitle: 'Commission in last 10mins',
-                        counter: {
-                            title: 'TTV in last 10mins',
-                            className: 'commission-graph-counter',
-                            prefix: '£',
-                            precision: 0
-                        },
-                        graph: {
-                            className: 'commission-graph',
-                            lineColor: 'blue',
-                            upClass: 'good',
-                            downClass: 'bad'
-                        }
-                    })
-                ]
-            }
-        }
-    });
-
-    TLRGRP.BADGER.Dashboard.register({
-        id: 'Errors',
-        name: 'Errors',
-        views: {
-            Summary: {
-                id: 'ErrorsByTime',
-                name: 'Errors by Time',
-                components: [
-                    new TLRGRP.BADGER.Dashboard.Components.ErrorsByHour({}),
-                    new TLRGRP.BADGER.Dashboard.Components.ErrorList({})
-                ]
-            }
-        }
-    });
-
-
-    new TLRGRP.BADGER.Dashboard.Menu($('#dashboard-menu'));
-    new TLRGRP.BADGER.Dashboard.Loader($('#content'));
-    new TLRGRP.BADGER.Dashboard.PageManager({ baseUrl: '' });
-})();
+            new TLRGRP.BADGER.Dashboard.Menu($('#dashboard-menu'));
+            new TLRGRP.BADGER.Dashboard.Loader($('#content'));
+            new TLRGRP.BADGER.Dashboard.PageManager({ baseUrl: '' });
+        });
+    })();
 </script>
 
 </body>

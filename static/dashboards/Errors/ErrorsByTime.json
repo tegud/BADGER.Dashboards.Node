@@ -1,0 +1,7 @@
+{
+    "name": "Errors by Time",
+    "components": [
+        { "type": "ErrorsByHour" },
+        { "type": "ErrorList" }
+    ]
+}

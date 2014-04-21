@@ -1,0 +1,61 @@
+{
+    "id": "LateRooms",
+    "name": "LateRooms.com Bookings",
+    "components": [
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Bookings",
+            "summaryText": "Bookings per minute on LateRooms.com (WEB)",
+            "expression": "sum(domain_events.eq(isTestBooking, false))&step=6e4&limit=60",
+            "counterTitle": "Bookings in last 10mins",
+            "counter": {
+                "title": "Bookings made in last 10mins",
+                "precision": 0
+            },
+            "graph": {
+                "className": "bookings-graph",
+                "lineColor": "green",
+                "upClass": "good",
+                "downClass": "bad"
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Commission",
+            "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
+            "expression": "sum(domain_events(commission).eq(isTestBooking, false))&step=6e4&limit=60",
+            "counterTitle": "Commission in last 10mins",
+            "counter": {
+                "title": "Commission made in last 10mins",
+                "className": "commission-graph-counter",
+                "prefix": "£",
+                "precision": 0
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lineColor": "#411485",
+                "upClass": "good",
+                "downClass": "bad"
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Total Transaction Value",
+            "summaryText": "TTV generated per minute on LateRooms.com (WEB)",
+            "expression": "sum(domain_events(totalAmountGbp).eq(isTestBooking, false))&step=6e4&limit=60",
+            "counterTitle": "Commission in last 10mins",
+            "counter": {
+                "title": "TTV in last 10mins",
+                "className": "commission-graph-counter",
+                "prefix": "£",
+                "precision": 0
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lineColor": "blue",
+                "upClass": "good",
+                "downClass": "bad"
+            }
+        }
+    ]
+}

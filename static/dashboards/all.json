@@ -1,0 +1,65 @@
+{
+    "dashboards": [
+        {
+            "id": "Overview",
+            "views": {
+                "Summary": {
+                    "id": "Summary",
+                    "name": "Summary"
+                },
+                "Traffic": {
+                    "id": "Traffic",
+                    "name": "Traffic"
+                }
+            }
+        },
+        {
+            "id": "Status",
+            "name": "Status",
+            "views": {
+                "LateRooms": {
+                    "id": "LateRooms",
+                    "name": "LateRooms"
+                },
+                "AsiaRooms": {
+                    "id": "AsiaRooms",
+                    "name": "AsiaRooms"
+                },
+                "Connectivity": {
+                    "id": "Connectivity",
+                    "name": "Connectivity"
+                }
+            }
+        },
+        {
+            "id": "BigScreen",
+            "name": "Big Screen",
+            "views": {
+                "Summary": {
+                    "id": "LateRooms",
+                    "name": "Late Rooms (Main)"
+                }
+            }
+        },
+        {
+            "id": "Bookings",
+            "name": "Bookings",
+            "views": {
+                "LateRooms": {
+                    "id": "LateRooms",
+                    "name": "LateRooms.com Bookings"
+                }
+            }
+        },
+        {
+            "id": "Errors",
+            "name": "Errors",
+            "views": {
+                "Summary": {
+                    "id": "ErrorsByTime",
+                    "name": "Errors by Time"
+                }
+            }
+        }
+    ]
+}

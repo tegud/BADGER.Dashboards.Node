@@ -1,0 +1,8 @@
+{
+    "components": [
+        {
+            "type": "Kibana",
+            "path": "file/logstash.json"
+        }
+    ]
+}

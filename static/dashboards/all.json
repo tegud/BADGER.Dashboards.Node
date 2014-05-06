@@ -14,6 +14,16 @@
             }
         },
         {
+            "id": "BigScreen",
+            "name": "Big Screen",
+            "views": {
+                "Summary": {
+                    "id": "LateRooms",
+                    "name": "Late Rooms (Main)"
+                }
+            }
+        },
+        {
             "id": "Status",
             "name": "Status",
             "views": {
@@ -32,16 +42,6 @@
             }
         },
         {
-            "id": "BigScreen",
-            "name": "Big Screen",
-            "views": {
-                "Summary": {
-                    "id": "LateRooms",
-                    "name": "Late Rooms (Main)"
-                }
-            }
-        },
-        {
             "id": "Bookings",
             "name": "Bookings",
             "views": {
@@ -52,12 +52,20 @@
             }
         },
         {
-            "id": "Errors",
-            "name": "Errors",
+            "id": "LateRoomsErrors",
+            "name": "LateRooms.com Errors",
             "views": {
-                "Summary": {
-                    "id": "ErrorsByTime",
-                    "name": "Errors by Time"
+                "LRAllErrors": {
+                    "id": "LRAllErrors",
+                    "name": "All"
+                },
+                "LRSearchErrors": {
+                    "id": "LRSearchErrors",
+                    "name": "Search"
+                },
+                "LRBookingErrors": {
+                    "id": "LRBookingErrors",
+                    "name": "Booking"
                 }
             }
         }

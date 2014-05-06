@@ -429,6 +429,8 @@ h3 {margin: 0;padding: 0 }
 
 .commission-graph-counter .v2-graph-counter-value { font-size: 2.5em;margin-top: 3px; }
 
+.kibana-frame { width: 100%; height: 100%; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

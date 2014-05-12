@@ -21,9 +21,27 @@
         },
         {
             "type": "LineGraphAndCounter",
+            "title": "Room Nights",
+            "summaryText": "Total RoomNights per minute on LateRooms.com (WEB)",
+            "expression": "sum(domain_events(rooms).eq(isTestBooking,%20false))*sum(domain_events(nights).eq(isTestBooking,%20false))&step=6e4&limit=60",
+            "counterTitle": "Room Nights in last 10mins",
+            "counter": {
+                "title": "Room Nights made in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lineColor": "orange",
+                "upClass": "good",
+                "downClass": "bad"
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
             "title": "Commission",
             "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events(commission).eq(isTestBooking, false))&step=6e4&limit=60",
+            "expression": "sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60",
             "counterTitle": "Commission in last 10mins",
             "counter": {
                 "title": "Commission made in last 10mins",

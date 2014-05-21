@@ -2,7 +2,7 @@
     "components": [
         {
             "type": "Kibana",
-            "path": "file/laterooms-errors.json"
+            "path": "file/asiarooms-errors.json"
         }
     ]
 }

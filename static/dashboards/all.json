@@ -68,6 +68,16 @@
                     "name": "Booking"
                 }
             }
+        },
+        {
+            "id": "AsiaRoomsErrors",
+            "name": "AsiaRooms.com Errors",
+            "views": {
+                "ARAllErrors": {
+                    "id": "ARAllErrors",
+                    "name": "All"
+                }
+            }
         }
     ]
 }

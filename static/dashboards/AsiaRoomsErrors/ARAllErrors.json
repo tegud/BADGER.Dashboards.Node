@@ -2,7 +2,7 @@
     "components": [
         {
             "type": "Kibana",
-            "path": "file/asiarooms-errors.json"
+            "path": "script/errors.js?from=now-1h&query=ar_errors"
         }
     ]
 }

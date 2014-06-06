@@ -1,0 +1,61 @@
+{
+    "name": "Late Rooms (Main)",
+    "components": [
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests",
+            "summaryText": "Requests per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "requestsbytime",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-62m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_varnish_request"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "requestsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              }
+            },
+            "counter": {
+                "title": "Requests per min (Last whole)",
+                "className": "commission-graph-counter",
+                "window": {
+                  "skip": 1,
+                  "take": 1
+                }
+            }
+        }
+    ]
+}

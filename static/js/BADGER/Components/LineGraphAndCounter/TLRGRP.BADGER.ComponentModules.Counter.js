@@ -9,6 +9,11 @@
         var counterValueElement = $('<strong class="v2-graph-counter-value">-</strong>').appendTo(containerElement);
         var lastValue;
         var thresholds = configuration.thresholds || [];
+        var windowSettings = _.extend({}, {
+            take: 10,
+            skip: 0
+        }, configuration.window);
+
 
         function checkThreshold(lastValue, currentValue) {
             if (!thresholds || thresholds < 2) {
@@ -47,7 +52,8 @@
                 return 'content';
             },
             setValue: function (data) {
-                var value = _(data.slice(0).reverse()).first(configuration.numberOfPreviousEntriesToSum || 10).reduce(function (total, item) {
+                var relevantValues = data.slice(0).reverse().slice(windowSettings.skip, windowSettings.take + windowSettings.skip);
+                var value = _(relevantValues).reduce(function (total, item) {
                     return total + item.value;
                 }, 0);
 

@@ -31,6 +31,10 @@
             .y(function(d) {
                 return y(d.value);
             });
+        var counterWindow = _.extend({}, {
+            take: 10,
+            skip: 0
+        }, currentOptions.counterWindow);
 
         function calculateDimensionsFromElement() {
             var dimensions = currentOptions.dimensions;
@@ -96,6 +100,10 @@
                 return 'content';
             },
             setData: function (data) {
+                if(currentOptions.window) {
+                    data = data.reverse().slice(currentOptions.window.skip, currentOptions.window.take + currentOptions.window.skip).reverse();
+                }
+
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {
                         data[m].time = new Date(data[m].time);
@@ -113,8 +121,8 @@
                     var elementId = 'error-line',
                         lineElement = svg.select("#" + elementId),
                         highlightedRegion = svg.select('#highlight-region'),
-                        endOfHighlightedRegion = moment(data[data.length - 1].time).toDate().getTime(),
-                        startOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', 10).toDate().getTime();
+                        endOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime(),
+                        startOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
 
                     if (lineElement[0][0]) {
                         lineElement

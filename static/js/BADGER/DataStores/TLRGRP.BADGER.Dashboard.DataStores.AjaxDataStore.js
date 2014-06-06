@@ -29,6 +29,9 @@
                         this.transitionToState('waiting');
                     },
                     refreshComplete: function (data) {
+                        if(currentOptions.request && currentOptions.request.responseMapper) {
+                            data = currentOptions.request.responseMapper(data);
+                        }
                         executeSuccessCallbackIfSpecified(data);
                     },
                     refreshFailed: function (errorInfo) {
@@ -76,6 +79,10 @@
                                 stateMachine.handle('refreshFailed', errorInfo);
                             }
                         };
+
+                        if(currentOptions.request && currentOptions.request.requestBuilder) {
+                            ajaxOptions = $.extend(ajaxOptions, currentOptions.request.requestBuilder());
+                        }
 
                         if (currentOptions.type) {
                             ajaxOptions.type = currentOptions.type;

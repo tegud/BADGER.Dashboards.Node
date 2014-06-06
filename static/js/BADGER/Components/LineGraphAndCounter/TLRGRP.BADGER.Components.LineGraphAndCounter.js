@@ -6,6 +6,14 @@
     TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
         
+        if(!configuration.graph) {
+            configuration.graph = {};
+        }
+
+        if(configuration.counter) {
+            configuration.graph.counterWindow = configuration.counter.window;
+        }
+
         var counter = new TLRGRP.BADGER.Dashboard.ComponentModules.Counter(configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
 
@@ -25,12 +33,34 @@
                 }
             ]
         });
-        
+
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore({
-            url: 'http://10.44.35.20:1081/1.0/metric?expression=' + configuration.expression,
+            request:  new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource || 'cube')](configuration),
             refresh: 5000,
             callbacks: {
                 success: function (data) {
+                    if(data.aggregations) {
+                        data = _.map(data.aggregations[configuration.aggregateProperty].buckets, function(bucket) {
+                            var value = bucket;
+
+                            if(configuration.valueProperty) {
+                                var valuePropertySegments = configuration.valueProperty.split('.');
+
+                                _.each(valuePropertySegments, function(segment) {
+                                    value = value[segment];
+                                });
+                            }
+                            else {
+                                value = value.doc_count;
+                            }
+
+                            return {
+                                value: value,
+                                time: moment(bucket.to_as_string || bucket.key).toDate()
+                            };
+                        });
+                    }
+
                     counter.setValue(data);
                     lineGraph.setData(data);
                 }

@@ -20,6 +20,10 @@
                 "Summary": {
                     "id": "LateRooms",
                     "name": "Late Rooms (Main)"
+                },
+                "Requests": {
+                    "id": "LateRoomsRequests",
+                    "name": "Late Rooms (Requests)"
                 }
             }
         },

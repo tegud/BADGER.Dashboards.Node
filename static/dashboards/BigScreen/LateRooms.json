@@ -12,7 +12,43 @@
             "type": "LineGraphAndCounter",
             "title": "Errors",
             "summaryText": "Errors per one minute on LateRooms.com (WEB)",
-            "expression": "sum(lr_errors)&step=6e4&limit=60",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "errorsbytime",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_errors"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
             "counter": {
                 "title": "Errors in last 10mins",
                 "upClass": "bad",
@@ -23,7 +59,51 @@
             "type": "LineGraphAndCounter",
             "title": "Commission",
             "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "valueProperty": "totalCommission.value",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "domain_events"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "totalCommission": {
+                                "sum": {
+                                    "field": "commissionValue"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
             "counterTitle": "Commission in last 10mins",
             "counter": {
                 "title": "Commission made in last 10mins",

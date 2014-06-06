@@ -6,73 +6,250 @@
             "type": "LineGraphAndCounter",
             "title": "Bookings",
             "summaryText": "Bookings per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events.eq(isTestBooking, false))&step=6e4&limit=60",
-            "counterTitle": "Bookings in last 10mins",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "domain_events"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "counterTitle": "Commission in last 10mins",
             "counter": {
                 "title": "Bookings made in last 10mins",
-                "precision": 0
-            },
-            "graph": {
-                "className": "bookings-graph",
-                "lineColor": "green",
+                "precision": 0,
                 "upClass": "good",
                 "downClass": "bad"
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lineColor": "green"
             }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Room Nights",
-            "summaryText": "Total RoomNights per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events(rooms*nights).eq(isTestBooking,false))&step=6e4&limit=60",
-            "counterTitle": "Room Nights in last 10mins",
+            "summaryText": "Room nights per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "valueProperty": "totalRoomNights.value",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "domain_events"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "totalRoomNights": {
+                                "sum": {
+                                    "script" : "doc['rooms'].value * doc['nights'].value"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
             "counter": {
-                "title": "Room Nights made in last 10mins",
-                "className": "commission-graph-counter",
-                "precision": 0
+                "title": "Room nights in last 10mins",
+                "precision": 0,
+                "upClass": "good",
+                "downClass": "bad"
             },
             "graph": {
                 "className": "commission-graph",
-                "lineColor": "orange",
-                "upClass": "good",
-                "downClass": "bad"
+                "lineColor": "orange"
             }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Commission",
             "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events(commissionValue).eq(isTestBooking, false))&step=6e4&limit=60",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "valueProperty": "totalCommission.value",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "domain_events"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "totalCommission": {
+                                "sum": {
+                                    "field": "commissionValue"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
             "counterTitle": "Commission in last 10mins",
             "counter": {
                 "title": "Commission made in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
-                "precision": 0
+                "precision": 0,
+                "thresholds": [
+                    {
+                        "value": 700,
+                        "sound": "/static/sounds/smb_mariodie.wav"
+                    },
+                    {
+                        "value": 1500,
+                        "sound": "/static/sounds/smb_stage_clear.wav"
+                    }
+                ],
+                "upClass": "good",
+                "downClass": "bad"
             },
             "graph": {
                 "className": "commission-graph",
-                "lineColor": "#411485",
-                "upClass": "good",
-                "downClass": "bad"
+                "lineColor": "#411485"
             }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Total Transaction Value",
             "summaryText": "TTV generated per minute on LateRooms.com (WEB)",
-            "expression": "sum(domain_events(totalAmountGbp).eq(isTestBooking, false))&step=6e4&limit=60",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "valueProperty": "totalCommission.value",
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "domain_events"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "totalCommission": {
+                                "sum": {
+                                    "field": "totalAmountGbp"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
             "counterTitle": "Commission in last 10mins",
             "counter": {
                 "title": "TTV in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
-                "precision": 0
-            },
-            "graph": {
-                "className": "commission-graph",
-                "lineColor": "blue",
+                "precision": 0,
                 "upClass": "good",
                 "downClass": "bad"
+            },
+            "graph": {
+                "id": "elasticsearch commission",
+                "className": "commission-graph",
+                "lineColor": "blue"
             }
         }
     ]

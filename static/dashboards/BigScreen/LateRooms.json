@@ -80,6 +80,11 @@
                             "term": {
                                 "type": "domain_events"
                             }
+                        },
+                        { 
+                            "terms": {
+                                "channelId":  [9, 10] 
+                            }
                         }
                       ]
                     }

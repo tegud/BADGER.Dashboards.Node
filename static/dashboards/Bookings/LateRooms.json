@@ -26,6 +26,11 @@
                             "term": {
                                 "type": "domain_events"
                             }
+                        },
+                        { 
+                            "terms": {
+                                "channelId":  [9, 10] 
+                            }
                         }
                       ]
                     }
@@ -79,6 +84,11 @@
                         {
                             "term": {
                                 "type": "domain_events"
+                            }
+                        },
+                        { 
+                            "terms": {
+                                "channelId":  [9, 10] 
                             }
                         }
                       ]
@@ -217,6 +227,11 @@
                         {
                             "term": {
                                 "type": "domain_events"
+                            }
+                        },
+                        { 
+                            "terms": {
+                                "channelId":  [9, 10] 
                             }
                         }
                       ]

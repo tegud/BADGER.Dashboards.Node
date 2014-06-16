@@ -54,11 +54,19 @@
             setValue: function (data) {
                 var relevantValues = data.slice(0).reverse().slice(windowSettings.skip, windowSettings.take + windowSettings.skip);
                 var value = _(relevantValues).reduce(function (total, item) {
-                    return total + item.value;
-                }, 0);
+                        return total + item.value;
+                    }, 0);;
+
+
+                if(configuration.type === 'average') {
+                    value = value / relevantValues.length;
+                } 
 
                 if (configuration.precision === 0) {
                     value = Math.floor(value);
+                }
+                else if(configuration.precision) {
+                    value = value.toFixed(configuration.precision);
                 }
 
                 counterValueElement.text((configuration.prefix || '') + value);

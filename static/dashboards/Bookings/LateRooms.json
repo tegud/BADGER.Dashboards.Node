@@ -271,6 +271,83 @@
                 "className": "commission-graph",
                 "lineColor": "blue"
             }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Bookings per session",
+            "summaryText": "Bookings per session per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "bookingsbytime",
+            "propertyProcessor": {
+                "type": "sessionCommission"
+            },
+            "query": {
+               "query":{
+                  "filtered":{
+                     "filter":{
+                        "bool":{
+                           "must":[
+                              {
+                                 "range":{
+                                    "@timestamp":{
+                                       "from":"now-1h"
+                                    }
+                                 }
+                              }
+                           ]
+                        }
+                     }
+                  }
+               },
+               "size":0,
+                "aggs":{
+                    "bookingsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "requests" : {
+                                "filter": {
+                                    "term": {
+                                        "type": "lr_varnish_request"
+                                    }
+                                },
+                                "aggs": {
+                                  "sessions": {
+                                    "cardinality" : {
+                                      "field" : "sessionId.raw"
+                                    }
+                                  }
+                                }
+                            },
+                            "bookings" : {
+                                "filter": {
+                                    "term": {
+                                        "type": "domain_events"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "counterTitle": "Commission in last 10mins",
+            "counter": {
+                "title": "Coversion in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 3,
+                "type": "average",
+                "upClass": "good",
+                "downClass": "bad"
+            },
+            "graph": {
+                "id": "elasticsearch commission",
+                "className": "commission-graph",
+                "lineColor": "purple"
+            }
         }
     ]
 }

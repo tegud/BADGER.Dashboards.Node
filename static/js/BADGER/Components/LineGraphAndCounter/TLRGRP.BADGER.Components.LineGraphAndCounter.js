@@ -50,6 +50,12 @@
                                     value = value[segment];
                                 });
                             }
+                            else if (configuration.propertyProcessor) {
+                                //"expression": "(requests.sessions.value/bookings.doc_count)*100"
+                                if(configuration.propertyProcessor.type === 'sessionCommission') {
+                                    value = (value.bookings.doc_count / value.requests.sessions.value) * 100;
+                                }
+                            }
                             else {
                                 value = value.doc_count;
                             }

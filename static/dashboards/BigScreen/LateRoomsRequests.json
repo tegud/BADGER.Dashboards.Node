@@ -56,6 +56,71 @@
                   "take": 1
                 }
             }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Active Sessions",
+            "summaryText": "Active Sessions per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "sessionsbytime",
+            "valueProperty": "sessions.value",
+            "query": {
+               "query":{
+                  "filtered":{
+                     "filter":{
+                        "bool":{
+                           "must":[
+                              {
+                                "range":{
+                                  "@timestamp":{
+                                    "from":"now-62m"
+                                  }
+                                }
+                              },
+                              {
+                                  "term": {
+                                      "type": "lr_varnish_request"
+                                  }
+                              }
+                           ]
+                        }
+                     }
+                  }
+               },
+               "size":0,
+                "aggs":{
+                    "sessionsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                          "sessions": {
+                            "cardinality" : {
+                              "field" : "sessionId.raw"
+                            }
+                          }
+                        }
+                    }
+                }
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              },
+              "lineColor": "green"
+            },
+            "counter": {
+                "title": "Sessions per min (Last whole)",
+                "className": "commission-graph-counter",
+                "window": {
+                  "skip": 1,
+                  "take": 1
+                }
+            }
         }
     ]
 }

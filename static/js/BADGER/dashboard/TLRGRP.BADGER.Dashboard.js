@@ -3,6 +3,21 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard');
 
+    function setupTimeControlEvents() {
+        $('#time-control-button').on('click', function(e) {
+            $('#time-controls').toggleClass('hidden');
+            e.stopPropagation();
+        });
+
+        $('#time-controls').on('click', function(e){
+            e.stopPropagation();
+        });
+
+        $('body').on('click', function() {
+            $('#time-controls').addClass('hidden');
+        });
+    }
+ 
     (function() {
         TLRGRP.BADGER.Dashboard.Dashboard = function(options) {
             var name = options.name || options.id;
@@ -26,6 +41,8 @@
         };
 
         var dashboards = {};
+
+        setupTimeControlEvents();
 
         TLRGRP.BADGER.Dashboard.clear = function () {
             dashboards = {};

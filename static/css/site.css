@@ -448,6 +448,22 @@ h3 {margin: 0;padding: 0 }
 
 .multi-counter-item-value { font-size: 1.7em; }
 
+#time-controls { position: absolute; width: 290px; height: 150px; border: solid 3px #333; border-radius: 5px; z-index: 5; background-color:#fff; top: 70px; right: 5px; }
+
+.time-control-options { margin: 0;padding: 0;list-style: none; }
+
+.time-control-options li { display: inline-block; width: 40px; height: 40px; border: solid 4px #000; margin: 3px; text-align: center; font-size: 1.3em; cursor: pointer; background-color: #fff; }
+
+.time-control-options li.selected { background-color: #ccc; }
+
+.time-control-unit { font-size: 0.5em; }
+
+.time-control-label { padding: 6px 0 5px 4px; display: block; font-size: 1.4em;}
+
+.button-container { text-align: center; margin-top: 5px; }
+
+.button-container button { background-color: #fff; border: 4px solid #000; font-size: 1.7em; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

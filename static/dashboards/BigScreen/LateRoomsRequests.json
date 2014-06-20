@@ -3,68 +3,15 @@
     "components": [
         {
             "type": "LineGraphAndCounter",
-            "title": "Requests",
-            "summaryText": "Requests per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "requestsbytime",
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-62m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "lr_varnish_request"
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                "requestsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "field" : "@timestamp",
-                            "interval" : "1m"
-                        }
-                    }
-              },
-              "size": 0
-            },
-            "graph": {
-              "window": {
-                "skip": 0,
-                "take": 60
-              }
-            },
-            "counter": {
-                "title": "Requests per min (Last whole)",
-                "className": "commission-graph-counter",
-                "window": {
-                  "skip": 1,
-                  "take": 1
-                }
-            }
-        },
-        {
-            "type": "LineGraphAndCounter",
             "title": "Active Sessions",
             "summaryText": "Active Sessions per minute on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "sessionsbytime",
-            "valueProperty": "sessions.value",
+            "valueProperty": [ 
+              { "value": "sessions.value", "property": "sessions" }, 
+              { "value": "doc_count", "property": "requests" }
+            ],
             "query": {
                "query":{
                   "filtered":{
@@ -111,15 +58,105 @@
                 "skip": 0,
                 "take": 60
               },
+              "lines": [
+                { "id": "sessions", "color": "green", "value": "sessions" },
+                { "id": "requests", "color": "red", "value": "requests" }
+              ],
               "lineColor": "green"
             },
             "counter": {
                 "title": "Sessions per min (Last whole)",
                 "className": "commission-graph-counter",
+                "type": "average",
                 "window": {
                   "skip": 1,
-                  "take": 1
+                  "take": 10
+                },
+                "precision": 0,
+                "counters": [
+                  { "id": "requests", "color": "red", "value": "requests", "text": "Requests" },
+                  { "id": "sessions", "color": "green", "value": "sessions", "text": "Sessions" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Page Load Time (50th Percentile)",
+            "summaryText": "Page Load time for the 50th percentile per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "responsetime",
+            "propertyProcessor": {
+              "type": "percentiles"
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_varnish_request"
+                            }
+                        },
+                        {
+                            "term": {
+                                "tags": "beacon"
+                            }
+                        }
+                      ]
+                    }
+                  }
                 }
+              },
+              "aggs": {
+                    "responsetime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "field" : "@timestamp",
+                            "interval": "1m"
+                        },
+                        "aggs": {
+                            "page_complete": {
+                                "stats": {
+                                    "field": "timing_done"
+                                }
+                            },
+                            "percentiles": {
+                                "percentiles": {
+                                    "field": "timing_done"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              },
+              "lineColor": "purple"
+            },
+            "counter": {
+                "title": "Average Time to Page Load",
+                "className": "counter-smallest-text",
+                "type": "average",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                },
+                "suffix": "ms",
+                "precision": 0
             }
         }
     ]

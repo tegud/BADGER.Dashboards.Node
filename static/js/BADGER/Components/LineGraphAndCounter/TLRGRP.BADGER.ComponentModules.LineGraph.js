@@ -24,13 +24,6 @@
         var xAxis;
         var yAxis;
         var xAxisElement;
-        var line = d3.svg.line()
-            .x(function(d) {
-                return x(d.time);
-            })
-            .y(function(d) {
-                return y(d.value);
-            });
         var counterWindow = _.extend({}, {
             take: 10,
             skip: 0
@@ -104,13 +97,43 @@
                     data = data.reverse().slice(currentOptions.window.skip, currentOptions.window.take + currentOptions.window.skip).reverse();
                 }
 
+                var lines = currentOptions.lines || [
+                    { id: 'error-line', color: currentOptions.lineColor || 'red' }
+                ];
+
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {
                         data[m].time = new Date(data[m].time);
                     }
 
                     var dsXExtent = d3.extent(data, function (d) { return d.time; });
-                    var dsYExtent = d3.extent(data, function (d) { return d.value; });
+                    var dsYExtent;
+
+                    if(lines.length > 1 || lines[0].value) {
+                        var totalExtent;
+                        var allExtents = _.each(lines, function(currentLine) {
+                            var currentExtent = d3.extent(data, function (d) { return d.value[currentLine.value]; });
+
+                            if(!totalExtent) {
+                                totalExtent = currentExtent;
+                            }
+                            else {
+                                if(currentExtent[0] < totalExtent[0]) {
+                                    totalExtent[0] = currentExtent[0];
+                                }
+
+                                if(currentExtent[1] > totalExtent[1]) {
+                                    totalExtent[1] = currentExtent[1];
+                                }
+                            }
+                        });
+
+                        dsYExtent = totalExtent;
+                    }
+                    else {
+                        dsYExtent = d3.extent(data, function (d) { return d.value; });
+                    }
+
 
                     x.domain(dsXExtent);
                     y.domain(dsYExtent);
@@ -118,32 +141,50 @@
                     svg.select(".x.axis").call(xAxis);
                     svg.select(".y.axis").call(yAxis);
 
-                    var elementId = 'error-line',
-                        lineElement = svg.select("#" + elementId),
-                        highlightedRegion = svg.select('#highlight-region'),
-                        endOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime(),
-                        startOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
+                    _.each(lines, function(currentLine) {
+                        var elementId = currentLine.id;
+                        var lineElement = svg.select("#" + elementId);
+                        var lineData = data;
+                        var line = d3.svg.line()
+                            .x(function(d) {
+                                return x(d.time);
+                            })
+                            .y(function(d) {
+                                var value = d.value;
 
-                    if (lineElement[0][0]) {
-                        lineElement
-                           .datum(data)
-                           .attr("d", line);
-                        
-                        if (highlightedRegion[0][0]) {
-                            highlightedRegion
-                                .attr('x', x(startOfHighlightedRegion))
-                                .attr('y', -currentOptions.dimensions.margin.top)
-                                .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion));
+                                if(currentLine.value) {
+                                    value = value[currentLine.value];
+                                }
+
+                                return y(value);
+                            });
+
+                        if (lineElement[0][0]) {
+                            lineElement
+                               .datum(lineData)
+                               .attr("d", line);
                         }
+                        else {
+                            svg.append("path")
+                                .datum(lineData)
+                                .attr('id', elementId)
+                                .attr("class", "line")
+                                .attr("style", "stroke: " + currentLine.color + ";")
+                                .attr("d", line);
+                        }
+                    });
+
+                    var highlightedRegion = svg.select('#highlight-region');
+                    var endOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime();
+                    var startOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
+                        
+                    if (highlightedRegion[0][0]) {
+                        highlightedRegion
+                            .attr('x', x(startOfHighlightedRegion))
+                            .attr('y', -currentOptions.dimensions.margin.top)
+                            .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion));
                     }
                     else {
-                        svg.append("path")
-                            .datum(data)
-                            .attr('id', 'error-line')
-                            .attr("class", "line")
-                            .attr("style", "stroke: " + (currentOptions.lineColor || 'red') + ";")
-                            .attr("d", line);
-
                         var highlightRegion = svg
                             .append("rect")
                             .attr('id', 'highlight-region')

@@ -14,7 +14,7 @@
             configuration.graph.counterWindow = configuration.counter.window;
         }
 
-        var counter = new TLRGRP.BADGER.Dashboard.ComponentModules.Counter(configuration.counter);
+        var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
 
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
@@ -34,6 +34,16 @@
             ]
         });
 
+        function getValueFromSubProperty(value, property) {
+            var valuePropertySegments = property.split('.');
+
+            _.each(valuePropertySegments, function(segment) {
+                value = value[segment];
+            });
+
+            return value;
+        }
+
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore({
             request:  new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource || 'cube')](configuration),
             refresh: 5000,
@@ -44,16 +54,23 @@
                             var value = bucket;
 
                             if(configuration.valueProperty) {
-                                var valuePropertySegments = configuration.valueProperty.split('.');
+                                if(_.isArray(configuration.valueProperty)) {
+                                    value = {};
 
-                                _.each(valuePropertySegments, function(segment) {
-                                    value = value[segment];
-                                });
+                                    _.each(configuration.valueProperty, function(valueProperty) {
+                                        value[valueProperty.property] = getValueFromSubProperty(bucket, valueProperty.value);
+                                    });
+                                }
+                                else {
+                                    value = getValueFromSubProperty(bucket, configuration.valueProperty);
+                                }
                             }
                             else if (configuration.propertyProcessor) {
-                                //"expression": "(requests.sessions.value/bookings.doc_count)*100"
                                 if(configuration.propertyProcessor.type === 'sessionCommission') {
                                     value = (value.bookings.doc_count / value.requests.sessions.value) * 100;
+                                }
+                                else if(configuration.propertyProcessor.type === 'percentiles') {
+                                    value = value.percentiles.values['50.0'];
                                 }
                             }
                             else {

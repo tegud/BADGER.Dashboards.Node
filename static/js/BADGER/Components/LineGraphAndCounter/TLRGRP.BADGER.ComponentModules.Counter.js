@@ -55,8 +55,7 @@
                 var relevantValues = data.slice(0).reverse().slice(windowSettings.skip, windowSettings.take + windowSettings.skip);
                 var value = _(relevantValues).reduce(function (total, item) {
                         return total + item.value;
-                    }, 0);;
-
+                    }, 0);
 
                 if(configuration.type === 'average') {
                     value = value / relevantValues.length;
@@ -69,7 +68,7 @@
                     value = value.toFixed(configuration.precision);
                 }
 
-                counterValueElement.text((configuration.prefix || '') + value);
+                counterValueElement.text((configuration.prefix || '') + value + (configuration.suffix || ''));
 
                 if (lastValue && lastValue !== value) {
                     indicatorElement.removeClass('hidden');

@@ -38,7 +38,7 @@
     "karma-requirejs": "~0.2.0",
     "karma-coffee-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
-    "karma": "~0.10.2",
+    "karma": "~0.12.8",
     "grunt-karma": "~0.6.2",
     "mocha": "~1.12.1",
     "grunt-mocha-cli": "~1.7.0",

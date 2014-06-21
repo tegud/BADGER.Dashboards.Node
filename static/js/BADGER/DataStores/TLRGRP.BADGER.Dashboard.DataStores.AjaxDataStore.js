@@ -15,6 +15,10 @@
         var defaultAjaxOptions = {
             type: 'GET'
         };
+        var currentTimeFrame = {
+            timeFrame: 1,
+            units: 'hours'
+        };
         var stateMachine = nano.Machine({
             states: {
                 stopped: {
@@ -81,7 +85,9 @@
                         };
 
                         if(currentOptions.request && currentOptions.request.requestBuilder) {
-                            ajaxOptions = $.extend(ajaxOptions, currentOptions.request.requestBuilder());
+                            ajaxOptions = $.extend(ajaxOptions, currentOptions.request.requestBuilder({
+                                timeFrame: currentTimeFrame
+                            }));
                         }
 
                         if (currentOptions.type) {
@@ -159,6 +165,14 @@
                 stateMachine.handle('unpause');
             });
         }
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrameData) {
+            stateMachine.handle('stop');
+            
+            currentTimeFrame = timeFrameData;
+
+            stateMachine.handle('start', true);
+        });
 
         return {
             start: function (doItNow) {

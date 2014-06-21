@@ -21,7 +21,7 @@
                               {
                                 "range":{
                                   "@timestamp":{
-                                    "from":"now-62m"
+                                    "from":"now-60m"
                                   }
                                 }
                               },
@@ -89,6 +89,12 @@
             "propertyProcessor": {
               "type": "percentiles"
             },
+            "timeProperties": [
+              "query.filtered.filter.boo.must[0].range.@timestamp"
+            ],
+            "intervalProperties": [
+              "aggs.responsetime.date_histogram.interval"
+            ],
             "query": {
               "query": {
                 "filtered": {

@@ -9,9 +9,31 @@
             e.stopPropagation();
         });
 
-        $('#time-controls').on('click', function(e){
-            e.stopPropagation();
-        });
+        $('#time-controls')
+            .on('click', function(e){
+                e.stopPropagation();
+            })
+            .on('click', '.time-control-options li', function() {
+                var timeFrame = $(this).data('timeFrame');
+                var timeFrameUnits = $(this).data('timeFrameUnits');
+                var timeFrameText = timeFrame + ' ' + timeFrameUnits[0].toUpperCase() + timeFrameUnits.substring(1);
+
+                if(timeFrame === 1 && timeFrameText[timeFrameText.length -1] === 's') {
+                    timeFrameText = timeFrameText.substring(0, timeFrameText.length -1);
+                }
+
+                $('.time-period', '#time-control-button').text(timeFrameText);
+
+                $(this).addClass('selected').siblings().removeClass('selected');
+
+                $('#time-controls').addClass('hidden');
+
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+                    timeFrame: timeFrame,
+                    units: timeFrameUnits,
+                    text: timeFrameText
+                });
+            });
 
         $('body').on('click', function() {
             $('#time-controls').addClass('hidden');

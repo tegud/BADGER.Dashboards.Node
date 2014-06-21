@@ -6,7 +6,7 @@
     var defaultOptions = {
         dimensions: {
             margin: {
-                left: 40,
+                left: 60,
                 right: 20,
                 bottom: 22,
                 top: 10
@@ -175,8 +175,8 @@
                     });
 
                     var highlightedRegion = svg.select('#highlight-region');
-                    var endOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime();
-                    var startOfHighlightedRegion = moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
+                    var endOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.skip)].time).toDate().getTime();//moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime();
+                    var startOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.take + counterWindow.skip)].time).toDate().getTime();//moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
                         
                     if (highlightedRegion[0][0]) {
                         highlightedRegion

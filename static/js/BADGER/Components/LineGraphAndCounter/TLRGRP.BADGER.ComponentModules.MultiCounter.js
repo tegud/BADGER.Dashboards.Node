@@ -59,6 +59,13 @@
                         value = value.toFixed(configuration.precision);
                     }
 
+                    if(value > 999999) {
+                        value = (value / 1000000).toFixed(1) + 'm';
+                    }
+                    else if(value > 99999) {
+                        value = (value / 1000).toFixed(1) + 'k';
+                    }
+
                     $('#' + counterConfig.id + '-value').text((configuration.prefix || '') + value + (configuration.suffix || ''));
 
                 });

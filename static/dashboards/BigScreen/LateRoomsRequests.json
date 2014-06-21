@@ -12,6 +12,12 @@
               { "value": "sessions.value", "property": "sessions" }, 
               { "value": "doc_count", "property": "requests" }
             ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+            ],
+            "intervalProperties": [
+              "aggs.sessionsbytime.date_histogram.interval"
+            ],
             "query": {
                "query":{
                   "filtered":{
@@ -61,13 +67,11 @@
               "lines": [
                 { "id": "sessions", "color": "green", "value": "sessions" },
                 { "id": "requests", "color": "red", "value": "requests" }
-              ],
-              "lineColor": "green"
+              ]
             },
             "counter": {
                 "title": "Sessions per min (Last whole)",
                 "className": "commission-graph-counter",
-                "type": "average",
                 "window": {
                   "skip": 1,
                   "take": 10
@@ -90,7 +94,7 @@
               "type": "percentiles"
             },
             "timeProperties": [
-              "query.filtered.filter.boo.must[0].range.@timestamp"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from"
             ],
             "intervalProperties": [
               "aggs.responsetime.date_histogram.interval"

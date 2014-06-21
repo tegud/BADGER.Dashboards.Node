@@ -443,7 +443,7 @@ h3 {margin: 0;padding: 0 }
 
 .multi-counter-item { text-align: left; margin-left: 10px; }
 
-.multi-counter-item-label { display: inline-block;  }
+.multi-counter-item-label { display: inline-block; font-size: 0.9em; }
 .multi-counter-item-dot { display: inline-block;width: 15px; height: 15px; margin-right: 3px; background-color: #777; border-radius: 8px; }
 
 .multi-counter-item-value { font-size: 1.7em; }

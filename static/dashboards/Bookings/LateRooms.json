@@ -9,65 +9,16 @@
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "bookingsbytime",
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "domain_events"
-                            }
-                        },
-                        { 
-                            "terms": {
-                                "channelId":  [9, 10] 
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                "bookingsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "field" : "@timestamp",
-                            "interval" : "1m"
-                        }
-                    }
-              },
-              "size": 0
-            },
-            "counterTitle": "Commission in last 10mins",
-            "counter": {
-                "title": "Bookings made in last 10mins",
-                "precision": 0,
-                "upClass": "good",
-                "downClass": "bad"
-            },
-            "graph": {
-                "className": "commission-graph",
-                "lineColor": "green"
-            }
-        },
-        {
-            "type": "LineGraphAndCounter",
-            "title": "Room Nights",
-            "summaryText": "Room nights per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "bookingsbytime",
-            "valueProperty": "totalRoomNights.value",
+            "valueProperty": [ 
+              { "value": "totalRoomNights.value", "property": "roomNights" }, 
+              { "value": "doc_count", "property": "bookings" }
+            ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+            ],
+            "intervalProperties": [
+              "aggs.bookingsbytime.date_histogram.interval"
+            ],
             "query": {
               "query": {
                 "filtered": {
@@ -115,14 +66,18 @@
               "size": 0
             },
             "counter": {
-                "title": "Room nights in last 10mins",
                 "precision": 0,
-                "upClass": "good",
-                "downClass": "bad"
+                "counters": [
+                  { "id": "roomNights", "color": "orange", "value": "roomNights", "text": "Room Nights" },
+                  { "id": "bookings", "color": "green", "value": "bookings", "text": "Bookings" }
+                ]
             },
             "graph": {
                 "className": "commission-graph",
-                "lineColor": "orange"
+                "lines": [
+                  { "id": "bookings", "color": "green", "value": "bookings" },
+                  { "id": "roomNights", "color": "orange", "value": "roomNights" }
+                ]
             }
         },
         {
@@ -132,7 +87,16 @@
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "bookingsbytime",
-            "valueProperty": "totalCommission.value",
+            "valueProperty": [ 
+              { "value": "totalCommission.value", "property": "commission" }, 
+              { "value": "totalTTV.value", "property": "ttv" }
+            ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+            ],
+            "intervalProperties": [
+              "aggs.bookingsbytime.date_histogram.interval"
+            ],
             "query": {
               "query": {
                 "filtered": {
@@ -173,81 +137,8 @@
                                 "sum": {
                                     "field": "commissionValue"
                                 }
-                            }
-                        }
-                    }
-              },
-              "size": 0
-            },
-            "counterTitle": "Commission in last 10mins",
-            "counter": {
-                "title": "Commission made in last 10mins",
-                "className": "commission-graph-counter",
-                "prefix": "£",
-                "precision": 0,
-                "thresholds": [
-                    {
-                        "value": 700,
-                        "sound": "/static/sounds/smb_mariodie.wav"
-                    },
-                    {
-                        "value": 1500,
-                        "sound": "/static/sounds/smb_stage_clear.wav"
-                    }
-                ],
-                "upClass": "good",
-                "downClass": "bad"
-            },
-            "graph": {
-                "className": "commission-graph",
-                "lineColor": "#411485"
-            }
-        },
-        {
-            "type": "LineGraphAndCounter",
-            "title": "Total Transaction Value",
-            "summaryText": "TTV generated per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "bookingsbytime",
-            "valueProperty": "totalCommission.value",
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "domain_events"
-                            }
-                        },
-                        { 
-                            "terms": {
-                                "channelId":  [9, 10] 
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                "bookingsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "field" : "@timestamp",
-                            "interval" : "1m"
-                        },
-                        "aggs": {
-                            "totalCommission": {
+                            },
+                            "totalTTV": {
                                 "sum": {
                                     "field": "totalAmountGbp"
                                 }
@@ -257,19 +148,22 @@
               },
               "size": 0
             },
-            "counterTitle": "Commission in last 10mins",
             "counter": {
-                "title": "TTV in last 10mins",
+                "title": "Commission made in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
                 "precision": 0,
-                "upClass": "good",
-                "downClass": "bad"
+                "counters": [
+                  { "id": "ttv", "color": "blue", "value": "ttv", "text": "TTV" },
+                  { "id": "commission", "color": "#411485", "value": "commission", "text": "Commission" }
+                ]
             },
             "graph": {
-                "id": "elasticsearch commission",
                 "className": "commission-graph",
-                "lineColor": "blue"
+                "lines": [
+                  { "id": "commission", "color": "#411485", "value": "commission" },
+                  { "id": "ttv", "color": "blue", "value": "ttv" }
+                ]
             }
         },
         {
@@ -282,6 +176,12 @@
             "propertyProcessor": {
                 "type": "sessionCommission"
             },
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+            ],
+            "intervalProperties": [
+              "aggs.bookingsbytime.date_histogram.interval"
+            ],
             "query": {
                "query":{
                   "filtered":{

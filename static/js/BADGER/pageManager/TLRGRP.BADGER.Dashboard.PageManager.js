@@ -54,7 +54,7 @@
         options = $.extend({}, options);
 
         var dashboards = TLRGRP.BADGER.Dashboard.getAll();
-        var defaultDashboard = 'Overview';
+        var defaultDashboard = 'BigScreen';
         var currentDashboard = getDashboardFromUrl();
 
         function getCurrentUrlWithoutBase() {

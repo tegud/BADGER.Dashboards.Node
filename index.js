@@ -44,8 +44,10 @@ var server = function() {
 
     app.get(/^(.*)$/, function(req, res, next){
         if(req.originalUrl.indexOf('.') === -1) {
-            res.render('index.hbs');
+            return res.render('index.hbs');
         }
+
+        next();
     });
 
     return {

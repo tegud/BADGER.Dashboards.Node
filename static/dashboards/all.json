@@ -24,6 +24,10 @@
                 "Requests": {
                     "id": "LateRoomsRequests",
                     "name": "Late Rooms (Requests)"
+                },
+                "AsiaRoomsSummary": {
+                    "id": "AsiaRooms",
+                    "name": "Asia Rooms (Main)"
                 }
             }
         },

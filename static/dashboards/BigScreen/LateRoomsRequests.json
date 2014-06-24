@@ -13,7 +13,8 @@
               { "value": "doc_count", "property": "requests" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.sessionsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.sessionsbytime.date_histogram.interval"
@@ -46,6 +47,10 @@
                     "sessionsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         },
@@ -94,7 +99,8 @@
               "type": "percentiles"
             },
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.responsetime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.responsetime.date_histogram.interval"
@@ -131,6 +137,10 @@
                     "responsetime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval": "1m"
                         },

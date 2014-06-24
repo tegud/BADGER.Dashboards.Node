@@ -28,6 +28,10 @@
                 "AsiaRoomsSummary": {
                     "id": "AsiaRooms",
                     "name": "Asia Rooms (Main)"
+                },
+                "MoonstickSummary": {
+                    "id": "Moonstick",
+                    "name": "Moonstick (Main)"
                 }
             }
         },

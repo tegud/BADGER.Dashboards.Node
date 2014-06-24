@@ -6,11 +6,6 @@
     TLRGRP.BADGER.Dashboard.ComponentModules.MultiCounter = function (configuration) {
         var containerElement = $('<div class="v2-graph-counter multi-counter' + (configuration.className ? ' ' + configuration.className : '') + '"></div>');
 
-        // "counters": [
-        //           { "id": "sessions", "color": "green", "value": "sessions" },
-        //           { "id": "requests", "color": "red", "value": "requests" }
-        //         ]
-
         _.each(configuration.counters, function(counterConfig) {
             containerElement.append('<div class="multi-counter-item"><div class="multi-counter-item-dot" style="background-color: ' + counterConfig.color + '"></div><div class="multi-counter-item-label">' + counterConfig.text + '</div><div class="multi-counter-item-value" id="' + counterConfig.id + '-value">-</div></div>');
         });
@@ -64,6 +59,10 @@
                     }
                     else if(value > 99999) {
                         value = (value / 1000).toFixed(1) + 'k';
+                    }
+
+                    if(isNaN(value)){
+                        value = "?";
                     }
 
                     $('#' + counterConfig.id + '-value').text((configuration.prefix || '') + value + (configuration.suffix || ''));

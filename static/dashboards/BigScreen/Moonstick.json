@@ -1,0 +1,204 @@
+{
+    "name": "Late Rooms (Main)",
+    "components": [
+        {
+            "type": "HealthCheck",
+            "serverSet": "Moonstick",
+            "title": "Moonstick Front End Server Status",
+            "host": "10.44.22.158",
+            "port": 3000
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Errors",
+            "summaryText": "Errors per one minute on Moonstick",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "errorsbytime",
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.errorsbytime.date_histogram.extended_bounds.min"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "ms_errors"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "graph": {
+                "lineColor": "red"
+            },
+            "counter": {
+                "title": "Errors in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Page Load Time (50th Percentile)",
+            "summaryText": "Page Load time for the 50th percentile per minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "responsetime",
+            "propertyProcessor": {
+              "type": "percentiles"
+            },
+            "valueProperty": [ 
+              { "value": "moonstick.percentiles.values.50|0", "property": "moonstick" }, 
+              { "value": "legacy.percentiles.values.50|0", "property": "legacy" }
+            ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.responsetime.date_histogram.extended_bounds.min"
+            ],
+            "intervalProperties": [
+              "aggs.responsetime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_varnish_request"
+                            }
+                        },
+                        {
+                            "term": {
+                                "tags": "beacon"
+                            }
+                        },
+                        {
+                            "term": {
+                                "url_page_type": "home"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                    "responsetime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval": "1m"
+                        },
+                        "aggs": {
+                            "legacy": {
+                                "filter": {
+                                    "term": {
+                                        "is_moonstick": false
+                                    }
+                                },
+                                "aggs": {
+                                    "page_complete": {
+                                        "stats": {
+                                            "field": "timing_done"
+                                        }
+                                    },
+                                    "percentiles": {
+                                        "percentiles": {
+                                            "field": "timing_done"
+                                        }
+                                    }
+                                }
+                            },
+                            "moonstick": {
+                                "filter": {
+                                    "term": {
+                                        "is_moonstick": true
+                                    }
+                                },
+                                "aggs": {
+                                    "page_complete": {
+                                        "stats": {
+                                            "field": "timing_done"
+                                        }
+                                    },
+                                    "percentiles": {
+                                        "percentiles": {
+                                            "field": "timing_done"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "graph": {
+              "lines": [
+                { "id": "legacy", "color": "red", "value": "legacy" },
+                { "id": "moonstick", "color": "green", "value": "moonstick" }
+              ]
+            },
+            "counter": {
+                "title": "Average Time to Page Load",
+                "className": "counter-smallest-text",
+                "type": "average",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                },
+                "suffix": "ms",
+                "precision": 0,
+                "counters": [
+                  { "id": "legacy", "color": "red", "value": "legacy", "text": "Legacy" },
+                  { "id": "moonstick", "color": "green", "value": "moonstick", "text": "Moonstick" }
+                ]
+            }
+        }
+    ]
+}

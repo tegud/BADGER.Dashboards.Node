@@ -14,7 +14,8 @@
               { "value": "doc_count", "property": "bookings" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -51,6 +52,10 @@
                 "bookingsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         },
@@ -92,7 +97,8 @@
               { "value": "totalTTV.value", "property": "ttv" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -129,6 +135,10 @@
                 "bookingsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         },
@@ -177,7 +187,8 @@
                 "type": "sessionCommission"
             },
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -205,6 +216,10 @@
                     "bookingsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         },

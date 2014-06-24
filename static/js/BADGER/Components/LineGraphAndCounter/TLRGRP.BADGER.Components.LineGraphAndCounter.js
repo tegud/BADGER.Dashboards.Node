@@ -36,9 +36,10 @@
 
         function getValueFromSubProperty(value, property) {
             var valuePropertySegments = property.split('.');
+            var segmentEscaper = /\|/ig;
 
             _.each(valuePropertySegments, function(segment) {
-                value = value[segment];
+                value = value[segment.replace(segmentEscaper, ".")];
             });
 
             return value;

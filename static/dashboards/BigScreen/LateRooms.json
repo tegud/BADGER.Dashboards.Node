@@ -16,7 +16,8 @@
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.errorsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.errorsbytime.date_histogram.interval"
@@ -48,6 +49,10 @@
                 "errorsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         }
@@ -70,7 +75,8 @@
             "aggregateProperty": "bookingsbytime",
             "valueProperty": "totalCommission.value",
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from"
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -107,6 +113,10 @@
                 "bookingsbytime" : {
                         "date_histogram" : {
                             "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
                             "field" : "@timestamp",
                             "interval" : "1m"
                         },

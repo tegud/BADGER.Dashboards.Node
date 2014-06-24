@@ -54,15 +54,15 @@
                         value = value.toFixed(configuration.precision);
                     }
 
+                    if(isNaN(value)){
+                        value = "?";
+                    }
+                    
                     if(value > 999999) {
                         value = (value / 1000000).toFixed(1) + 'm';
                     }
                     else if(value > 99999) {
                         value = (value / 1000).toFixed(1) + 'k';
-                    }
-
-                    if(isNaN(value)){
-                        value = "?";
                     }
 
                     $('#' + counterConfig.id + '-value').text((configuration.prefix || '') + value + (configuration.suffix || ''));

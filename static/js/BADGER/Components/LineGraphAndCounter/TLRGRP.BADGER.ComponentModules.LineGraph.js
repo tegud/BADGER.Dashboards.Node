@@ -24,10 +24,80 @@
         var xAxis;
         var yAxis;
         var xAxisElement;
+        var hoverLine;
+        var toolTip;
+        var toolTipBottom;
+        var toolTipLeftOffset;
+        var lastDataSet;
+        var toolTipIsOnGraph;
+        var lines = currentOptions.lines || [
+            { id: 'error-line', color: currentOptions.lineColor || 'red' }
+        ];
         var counterWindow = _.extend({}, {
             take: 10,
             skip: 0
         }, currentOptions.counterWindow);
+
+        function showHoverLine(mousePos) {
+            toolTipIsOnGraph = true;
+            hoverLine.classed('hidden', false);
+
+            hoverLine
+                .attr('x1', mousePos[0])
+                .attr('x2', mousePos[0]);
+
+            toolTip
+                .appendTo(element.parent())
+                .css({
+                    left: toolTipLeftOffset + mousePos[0] + currentOptions.dimensions.margin.left - (toolTip.width() / 2),
+                    bottom: toolTipBottom
+                })
+                .removeClass('hidden');
+
+            var firstEntryMoment = moment(lastDataSet[0].time);
+            var lastEntryMoment = moment(lastDataSet[lastDataSet.length - 1].time);
+            var firstEntry = lastDataSet[0].time.getTime();
+            var lastEntry = lastDataSet[lastDataSet.length - 1].time.getTime();
+            var hoverDateTime = x.invert(mousePos[0]);
+            var hoverTime = hoverDateTime.getTime() - firstEntry;
+            var step = (lastEntry - firstEntry) / parseFloat(lastDataSet.length);
+            var stepDuration = moment.duration(step, 'ms');
+            var index = (hoverTime / parseFloat(step)).toFixed(0);
+            var toolTipValue = lastDataSet[index].value;
+            var hoverMoment = moment(hoverDateTime); 
+            var dateText = hoverMoment.format('DD/MM/YYYY');
+            var timeFormatString = stepDuration.seconds > 60  ? 'HH:mm' : 'HH:mm:ss';
+            var timeRangeText = hoverMoment.format(timeFormatString) + '-' + hoverMoment.add('ms', step).format(timeFormatString);
+            var hideDate = firstEntryMoment.format('DDMMYYYY') == lastEntryMoment.format('DDMMYYYY');
+
+            var toolTipText = '<div style="font-weight: bold;">(' + index + ')' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
+
+            _.each(lines, function(line) {
+                var valueText = toolTipValue;
+
+                if(line.value) {
+                    valueText = valueText[line.value];
+                }
+
+                if(isNaN(valueText)) {
+                    valueText = 0;
+                }
+                else {
+                    valueText = valueText.toFixed(2);
+                }
+
+                toolTipText += '<div class="tooltip-item"><div class="tooltip-item-key" style="background-color: ' + line.color + '"></div><div class="toolip-item-text">' + valueText + '</div></div>';
+            });
+
+            toolTip.html(toolTipText);
+        }
+
+        function hideHoverLine() {
+            toolTipIsOnGraph = false;
+
+            var hoverLine = svg.select('.hover-line').classed('hidden', true);
+            toolTip.addClass('hidden');
+        }
 
         function calculateDimensionsFromElement() {
             var dimensions = currentOptions.dimensions;
@@ -86,6 +156,47 @@
                     
                     appendCanvas();
                     appendAxis();
+
+                    var highlightRegion = svg
+                        .append("rect")
+                        .attr('style', 'fill: transparent; z-index:-1')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .attr('width', currentOptions.dimensions.width)
+                        .attr('height', currentOptions.dimensions.height);
+
+                    hoverLine = svg.append("line")
+                        .attr("class", "hover-line hidden")
+                        .attr("style", "stroke: black;")
+                        .attr('x1', 10)
+                        .attr('x2', 10)
+                        .attr('y1', -currentOptions.dimensions.margin.top)
+                        .attr('y2', currentOptions.dimensions.height);
+
+                    toolTip = $('#graph-tooltip');
+
+                    if(!toolTip.length) {
+                        toolTip = $('<div id="graph-tooltip" class="hidden"></div>').appendTo('body');
+                    }
+                    toolTipBottom = element.height();
+                    toolTipLeftOffset = element.position().left;
+
+                    svg.on('mousemove', function(event) {
+                        var hoverLine = svg.select('.hover-line');
+                        var mousePos = d3.mouse(this);
+
+                        if(mousePos[0] > 0 && mousePos[0] < currentOptions.dimensions.width && mousePos[1] < currentOptions.dimensions.height) {
+                            showHoverLine(mousePos);
+                        }
+                        else {
+                            hideHoverLine();
+                        }
+                    });
+
+                    svg.on('mouseout', function(event) {
+                        hideHoverLine();
+                    });
+
                     graphReady.resolve();
                 }, 0);
             },
@@ -97,9 +208,7 @@
                     data = data.reverse().slice(currentOptions.window.skip, currentOptions.window.take + currentOptions.window.skip).reverse();
                 }
 
-                var lines = currentOptions.lines || [
-                    { id: 'error-line', color: currentOptions.lineColor || 'red' }
-                ];
+                lastDataSet = data;
 
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {
@@ -141,7 +250,6 @@
                                 return value; 
                             });
                     }
-
 
                     x.domain(dsXExtent);
                     y.domain(dsYExtent);

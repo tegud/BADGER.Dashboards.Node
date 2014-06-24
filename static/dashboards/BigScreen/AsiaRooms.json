@@ -3,23 +3,27 @@
     "components": [
         {
             "type": "HealthCheck",
-            "serverSet": "LateRooms",
-            "title": "LateRooms Front End Server Status",
+            "serverSet": "AsiaRooms",
+            "title": "AsiaRooms Front End Server Status",
             "host": "10.44.22.158",
             "port": 3000
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Errors",
-            "summaryText": "Errors per one minute on LateRooms.com (WEB)",
+            "summaryText": "Errors per one minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
+            "valueProperty": [ 
+              { "value": "servererrors.doc_count", "property": "server" }, 
+              { "value": "javascripterrors.doc_count", "property": "javascript" }
+            ],
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp.from"
             ],
             "intervalProperties": [
-              "aggs.bookingsbytime.date_histogram.interval"
+              "aggs.errorsbytime.date_histogram.interval"
             ],
             "query": {
               "query": {
@@ -36,7 +40,7 @@
                         },
                         {
                             "term": {
-                                "type": "lr_errors"
+                                "type": "ar_errors"
                             }
                         }
                       ]
@@ -50,21 +54,44 @@
                             "min_doc_count": 0,
                             "field" : "@timestamp",
                             "interval" : "1m"
+                        },
+                        "aggs": {
+                            "servererrors": {
+                                "filter": {
+                                    "term": {
+                                        "errorType.raw": "Server"
+                                    }
+                                }
+                            },
+                            "javascripterrors": {
+                                "filter": {
+                                    "term": {
+                                        "errorType.raw": "JavaScript"
+                                    }
+                                }
+                            }
                         }
                     }
               },
               "size": 0
             },
+            "graph": {
+              "lines": [
+                { "id": "server", "color": "red", "value": "server" },
+                { "id": "javascript", "color": "orange", "value": "javascript" }
+              ]
+            },
             "counter": {
-                "title": "Errors in last 10mins",
-                "upClass": "bad",
-                "downClass": "good"
+                "counters": [
+                  { "id": "server", "color": "red", "value": "server", "text": "Server" },
+                  { "id": "javascript", "color": "orange", "value": "javascript", "text": "JavaScript" }
+                ]
             }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Commission",
-            "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
+            "summaryText": "Total commission generated per minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "bookingsbytime",
@@ -94,8 +121,8 @@
                             }
                         },
                         { 
-                            "terms": {
-                                "channelId":  [9, 10] 
+                            "term": {
+                                "domainEventType.raw":  "ar booking made" 
                             }
                         }
                       ]
@@ -126,17 +153,7 @@
                 "title": "Commission made in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
-                "precision": 0,
-                "thresholds": [
-                    {
-                        "value": 700,
-                        "sound": "/static/sounds/smb_mariodie.wav"
-                    },
-                    {
-                        "value": 1500,
-                        "sound": "/static/sounds/smb_stage_clear.wav"
-                    }
-                ]
+                "precision": 0
             },
             "graph": {
                 "className": "commission-graph",

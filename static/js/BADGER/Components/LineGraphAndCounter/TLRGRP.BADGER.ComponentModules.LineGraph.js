@@ -112,7 +112,7 @@
                     if(lines.length > 1 || lines[0].value) {
                         var totalExtent;
                         var allExtents = _.each(lines, function(currentLine) {
-                            var currentExtent = d3.extent(data, function (d) { return d.value[currentLine.value]; });
+                            var currentExtent = d3.extent(data, function (d) { return isNaN(d.value[currentLine.value]) ? 0 : d.value[currentLine.value]; });
 
                             if(!totalExtent) {
                                 totalExtent = currentExtent;
@@ -131,7 +131,15 @@
                         dsYExtent = totalExtent;
                     }
                     else {
-                        dsYExtent = d3.extent(data, function (d) { return d.value; });
+                        dsYExtent = d3.extent(data, function (d) {
+                                var value = d.value;
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return value; 
+                            });
                     }
 
 
@@ -154,6 +162,10 @@
 
                                 if(currentLine.value) {
                                     value = value[currentLine.value];
+                                }
+
+                                if(isNaN(value)) {
+                                    value = 0;
                                 }
 
                                 return y(value);

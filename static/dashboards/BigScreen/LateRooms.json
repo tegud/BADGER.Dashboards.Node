@@ -19,7 +19,7 @@
               "query.filtered.filter.bool.must.0.range.@timestamp.from"
             ],
             "intervalProperties": [
-              "aggs.bookingsbytime.date_histogram.interval"
+              "aggs.errorsbytime.date_histogram.interval"
             ],
             "query": {
               "query": {

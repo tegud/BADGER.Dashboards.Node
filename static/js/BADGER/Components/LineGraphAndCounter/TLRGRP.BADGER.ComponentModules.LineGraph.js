@@ -46,14 +46,11 @@
             var lastMousePos;
             var index;
 
-            function getContent(mousePos) {
-                if(mousePos) {
-                    lastMousePos = mousePos[0];
+            function getContent() {
+                if(!lastDataSet[index]) {
+                    return;
                 }
 
-                var hoverDateTime = x.invert(mousePos[0]);
-                var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
-                index = Math.round(hoverTime / parseFloat(step));
                 var toolTipValue = lastDataSet[index].value;
                 var entryTime = moment(lastDataSet[index].time);
                 var dateText = entryTime.format('DD/MM/YYYY');
@@ -94,9 +91,23 @@
                     stepDuration = moment.duration(step, 'ms');
                     hideDate = firstEntryMoment.format('DDMMYYYY') == lastEntryMoment.format('DDMMYYYY');
                 },
+                setCurrentIndex: function(mousePos) {
+                    var hoverDateTime = x.invert(mousePos[0]);
+                    var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
+
+                    index = Math.round(hoverTime / parseFloat(step));
+                },
                 getContent: getContent,
-                setLineCircles: function(mousePos) {
+                setLineCircles: function() {
+                    if(!lastDataSet[index]) {
+                        return;
+                    }
+
                     _.each(lines, function(line) {
+                        if(!line.circle) {
+                            return;
+                        }
+
                         var lineValue = lastDataSet[index].value;
 
                         if(line.value) {
@@ -104,7 +115,6 @@
                         }
 
                         line.circle
-                            .classed('hidden', false)
                             .attr('cx', x(lastDataSet[index].time))
                             .attr('cy', y(lineValue) );
                     });
@@ -120,6 +130,10 @@
                 .attr('x1', mousePos[0])
                 .attr('x2', mousePos[0]);
 
+            _.each(lines, function(line) {
+                line.circle.classed('hidden', false);
+            });
+
             toolTip
                 .appendTo(element.parent())
                 .css({
@@ -128,10 +142,10 @@
                 })
                 .removeClass('hidden');
 
-            var text = toolTipContentFactory.getContent(mousePos);
-            toolTipContentFactory.setLineCircles(mousePos);
+            toolTipContentFactory.setCurrentIndex(mousePos);
 
-            toolTip.html(text);
+            toolTipContentFactory.setLineCircles();
+            toolTip.html(toolTipContentFactory.getContent());
         }
 
         function hideHoverLine() {
@@ -372,6 +386,9 @@
                         
                         svg[0][0].insertBefore(highlightRegion[0][0], svg[0][0].firstChild);
                     }
+
+                    toolTipContentFactory.setLineCircles();
+                    toolTip.html(toolTipContentFactory.getContent());
                 });
             }
         };

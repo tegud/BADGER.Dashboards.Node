@@ -1,0 +1,193 @@
+{
+    "name": "Moonstick (Requests)",
+    "components": [
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests/Active Sessions",
+            "summaryText": "Requests/Active Sessions per minute on Moonstick",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "sessionsbytime",
+            "valueProperty": [ 
+              { "value": "sessions.value", "property": "sessions" }, 
+              { "value": "doc_count", "property": "requests" }
+            ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.sessionsbytime.date_histogram.extended_bounds.min"
+            ],
+            "intervalProperties": [
+              "aggs.sessionsbytime.date_histogram.interval"
+            ],
+            "query": {
+               "query":{
+                  "filtered":{
+                     "filter":{
+                        "bool":{
+                           "must":[
+                              {
+                                "range":{
+                                  "@timestamp":{
+                                    "from":"now-60m"
+                                  }
+                                }
+                              },
+                              {
+                                  "term": {
+                                      "type": "lr_varnish_request"
+                                  }
+                              },
+                              {
+                                  "term": {
+                                      "is_moonstick": true
+                                  }
+                              }
+                           ]
+                        }
+                     }
+                  }
+               },
+               "size":0,
+                "aggs":{
+                    "sessionsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                          "sessions": {
+                            "cardinality" : {
+                              "field" : "sessionId.raw"
+                            }
+                          }
+                        }
+                    }
+                }
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              },
+              "lines": [
+                { "id": "sessions", "color": "green", "value": "sessions" },
+                { "id": "requests", "color": "red", "value": "requests" }
+              ]
+            },
+            "counter": {
+                "title": "Sessions per min (Last whole)",
+                "className": "commission-graph-counter",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                },
+                "precision": 0,
+                "counters": [
+                  { "id": "requests", "color": "red", "value": "requests", "text": "Requests" },
+                  { "id": "sessions", "color": "green", "value": "sessions", "text": "Sessions" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Page Load Time (50th Percentile)",
+            "summaryText": "Page Load time for the 50th percentile per minute on Moonstick (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "responsetime",
+            "propertyProcessor": {
+              "type": "percentiles"
+            },
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp.from",
+              "aggs.responsetime.date_histogram.extended_bounds.min"
+            ],
+            "intervalProperties": [
+              "aggs.responsetime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_varnish_request"
+                            }
+                        },
+                        {
+                            "term": {
+                                "tags": "beacon"
+                            }
+                        },
+                        {
+                            "term": {
+                                "is_moonstick": true
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                    "responsetime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval": "1m"
+                        },
+                        "aggs": {
+                            "page_complete": {
+                                "stats": {
+                                    "field": "timing_done"
+                                }
+                            },
+                            "percentiles": {
+                                "percentiles": {
+                                    "field": "timing_done"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              },
+              "lineColor": "purple"
+            },
+            "counter": {
+                "title": "Average Time to Page Load",
+                "className": "counter-smallest-text",
+                "type": "average",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                },
+                "suffix": "ms",
+                "precision": 0
+            }
+        }
+    ]
+}

@@ -38,6 +38,80 @@
             skip: 0
         }, currentOptions.counterWindow);
 
+        var toolTipContentFactory = (function ToolTipContentFactory() {
+            var hideDate;
+            var step;
+            var stepDuration;
+            var firstEntry;
+            var lastMousePos;
+            var index;
+
+            function getContent(mousePos) {
+                if(mousePos) {
+                    lastMousePos = mousePos[0];
+                }
+
+                var hoverDateTime = x.invert(mousePos[0]);
+                var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
+                index = Math.round(hoverTime / parseFloat(step));
+                var toolTipValue = lastDataSet[index].value;
+                var entryTime = moment(lastDataSet[index].time);
+                var dateText = entryTime.format('DD/MM/YYYY');
+                var timeFormatString = stepDuration.asSeconds() > 60  ? 'HH:mm' : 'HH:mm:ss';
+                var timeRangeText = entryTime.format(timeFormatString) + '-' + entryTime.add('ms', step).format(timeFormatString);
+
+                var toolTipText = '<div style="font-weight: bold;">' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
+
+                _.each(lines, function(line) {
+                    var valueText = toolTipValue;
+
+                    if(line.value) {
+                        valueText = valueText[line.value];
+                    }
+
+                    if(isNaN(valueText)) {
+                        valueText = 0;
+                    }
+                    else {
+                        valueText = valueText.toFixed(2);
+                    }
+
+                    toolTipText += '<div class="tooltip-item"><div class="tooltip-item-key" style="background-color: ' + line.color + '"></div><div class="toolip-item-text">' + valueText + '</div></div>';
+                });
+
+                return toolTipText;
+            }
+
+            return {
+                setData: function(lastDataSet) {
+                    var firstEntryMoment = moment(lastDataSet[0].time);
+                    var lastEntryMoment = moment(lastDataSet[lastDataSet.length - 1].time);
+                    var offset = moment(lastDataSet[1].time).diff(firstEntryMoment, 'millseconds');
+                    lastEntryMoment = lastEntryMoment.add('ms', offset);
+                    firstEntry = firstEntryMoment.valueOf();
+                    var lastEntry = lastEntryMoment.valueOf();
+                    step = (lastEntry - firstEntry) / parseFloat(lastDataSet.length);
+                    stepDuration = moment.duration(step, 'ms');
+                    hideDate = firstEntryMoment.format('DDMMYYYY') == lastEntryMoment.format('DDMMYYYY');
+                },
+                getContent: getContent,
+                setLineCircles: function(mousePos) {
+                    _.each(lines, function(line) {
+                        var lineValue = lastDataSet[index].value;
+
+                        if(line.value) {
+                            lineValue = lineValue[line.value];
+                        }
+
+                        line.circle
+                            .classed('hidden', false)
+                            .attr('cx', x(lastDataSet[index].time))
+                            .attr('cy', y(lineValue) );
+                    });
+                }
+            };
+        })();
+
         function showHoverLine(mousePos) {
             toolTipIsOnGraph = true;
             hoverLine.classed('hidden', false);
@@ -54,47 +128,10 @@
                 })
                 .removeClass('hidden');
 
-            var firstEntryMoment = moment(lastDataSet[0].time);
-            var lastEntryMoment = moment(lastDataSet[lastDataSet.length - 1].time);
+            var text = toolTipContentFactory.getContent(mousePos);
+            toolTipContentFactory.setLineCircles(mousePos);
 
-            var offset = moment(lastDataSet[1].time).diff(firstEntryMoment, 'millseconds');
-
-            lastEntryMoment = lastEntryMoment.add('ms', offset);
-
-            var firstEntry = firstEntryMoment.valueOf();
-            var lastEntry = lastEntryMoment.valueOf();
-            var hoverDateTime = x.invert(mousePos[0]);
-            var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
-            var step = (lastEntry - firstEntry) / parseFloat(lastDataSet.length);
-            var stepDuration = moment.duration(step, 'ms');
-            var index = Math.round(hoverTime / parseFloat(step));
-            var toolTipValue = lastDataSet[index].value;
-            var hoverMoment = moment(hoverDateTime); 
-            var dateText = hoverMoment.format('DD/MM/YYYY');
-            var timeFormatString = stepDuration.asSeconds() > 60  ? 'HH:mm' : 'HH:mm:ss';
-            var timeRangeText = hoverMoment.format(timeFormatString) + '-' + hoverMoment.add('ms', step).format(timeFormatString);
-            var hideDate = firstEntryMoment.format('DDMMYYYY') == lastEntryMoment.format('DDMMYYYY');
-
-            var toolTipText = '<div style="font-weight: bold;">' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
-
-            _.each(lines, function(line) {
-                var valueText = toolTipValue;
-
-                if(line.value) {
-                    valueText = valueText[line.value];
-                }
-
-                if(isNaN(valueText)) {
-                    valueText = 0;
-                }
-                else {
-                    valueText = valueText.toFixed(2);
-                }
-
-                toolTipText += '<div class="tooltip-item"><div class="tooltip-item-key" style="background-color: ' + line.color + '"></div><div class="toolip-item-text">' + valueText + '</div></div>';
-            });
-
-            toolTip.html(toolTipText);
+            toolTip.html(text);
         }
 
         function hideHoverLine() {
@@ -102,6 +139,10 @@
 
             var hoverLine = svg.select('.hover-line').classed('hidden', true);
             toolTip.addClass('hidden');
+
+            _.each(lines, function(line) {
+                line.circle.classed('hidden', true);
+            });
         }
 
         function calculateDimensionsFromElement() {
@@ -178,6 +219,15 @@
                         .attr('y1', -currentOptions.dimensions.margin.top)
                         .attr('y2', currentOptions.dimensions.height);
 
+                    _.each(lines, function(line) {
+                        line.circle = svg.append("circle")
+                            .attr('class', 'hidden hover-circle-' + line.id)
+                            .attr("cx", 30)
+                            .attr("cy", 30)
+                            .attr("r", 3)
+                            .attr("style", "fill: " + line.color + ";stroke: " + line.color + ";stroke-width: 2px");
+                    });
+                        
                     toolTip = $('#graph-tooltip');
 
                     if(!toolTip.length) {
@@ -214,6 +264,7 @@
                 }
 
                 lastDataSet = data;
+                toolTipContentFactory.setData(data);
 
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {

@@ -14,25 +14,6 @@
             skip: 0
         }, configuration.window);
 
-
-        function checkThreshold(lastValue, currentValue) {
-            if (!thresholds || thresholds < 2) {
-                return;
-            }
-
-            if (currentValue < thresholds[0].value && (lastValue === undefined || lastValue > thresholds[0].value)) {
-                console.log('UNDER LOW');
-
-                thresholds[0].element.play();
-            }
-            
-            if (currentValue > thresholds[1].value && (lastValue === undefined || lastValue < thresholds[1].value)) {
-                console.log('UNDER HIGH');
-
-                thresholds[1].element.play();
-            }
-        }
-
         return {
             appendTo: function (container) {
                 containerElement.append(_.map(thresholds, function (threshold, i) {
@@ -85,8 +66,6 @@
                             .addClass('down');
                     }
                 }
-
-                checkThreshold(lastValue, value);
 
                 lastValue = value;
             }

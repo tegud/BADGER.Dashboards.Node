@@ -32,6 +32,10 @@
                 "MoonstickSummary": {
                     "id": "Moonstick",
                     "name": "Moonstick (Main)"
+                },
+                "MoonstickRequests": {
+                    "id": "MoonstickRequests",
+                    "name": "Moonstick (Requests)"
                 }
             }
         },

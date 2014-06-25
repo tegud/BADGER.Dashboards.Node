@@ -9,8 +9,8 @@
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "sessionsbytime",
             "valueProperty": [ 
-              { "value": "sessions.value", "property": "sessions" }, 
-              { "value": "doc_count", "property": "requests" }
+              { "value": "moonstick.doc_count", "property": "moonstick" }, 
+              { "value": "legacy.doc_count", "property": "legacy" }
             ],
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp.from",
@@ -39,7 +39,7 @@
                               },
                               {
                                   "term": {
-                                      "is_moonstick": true
+                                      "url_page_type": "home"
                                   }
                               }
                            ]
@@ -60,9 +60,18 @@
                             "interval" : "1m"
                         },
                         "aggs": {
-                          "sessions": {
-                            "cardinality" : {
-                              "field" : "sessionId.raw"
+                          "legacy": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": false
+                                }
+                            }
+                          },
+                          "moonstick": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": true
+                                }
                             }
                           }
                         }
@@ -75,8 +84,8 @@
                 "take": 60
               },
               "lines": [
-                { "id": "sessions", "color": "green", "value": "sessions" },
-                { "id": "requests", "color": "red", "value": "requests" }
+                { "id": "moonstick", "color": "green", "value": "moonstick" },
+                { "id": "legacy", "color": "red", "value": "legacy" }
               ]
             },
             "counter": {
@@ -88,8 +97,8 @@
                 },
                 "precision": 0,
                 "counters": [
-                  { "id": "requests", "color": "red", "value": "requests", "text": "Requests" },
-                  { "id": "sessions", "color": "green", "value": "sessions", "text": "Sessions" }
+                  { "id": "moonstick", "color": "green", "value": "moonstick", "text": "Moonstick" },
+                  { "id": "legacy", "color": "red", "value": "legacy", "text": "Legacy" }
                 ]
             }
         },

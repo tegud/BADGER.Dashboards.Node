@@ -56,21 +56,26 @@
 
             var firstEntryMoment = moment(lastDataSet[0].time);
             var lastEntryMoment = moment(lastDataSet[lastDataSet.length - 1].time);
-            var firstEntry = lastDataSet[0].time.getTime();
-            var lastEntry = lastDataSet[lastDataSet.length - 1].time.getTime();
+
+            var offset = moment(lastDataSet[1].time).diff(firstEntryMoment, 'millseconds');
+
+            lastEntryMoment = lastEntryMoment.add('ms', offset);
+
+            var firstEntry = firstEntryMoment.valueOf();
+            var lastEntry = lastEntryMoment.valueOf();
             var hoverDateTime = x.invert(mousePos[0]);
-            var hoverTime = hoverDateTime.getTime() - firstEntry;
+            var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
             var step = (lastEntry - firstEntry) / parseFloat(lastDataSet.length);
             var stepDuration = moment.duration(step, 'ms');
-            var index = (hoverTime / parseFloat(step)).toFixed(0);
+            var index = Math.round(hoverTime / parseFloat(step));
             var toolTipValue = lastDataSet[index].value;
             var hoverMoment = moment(hoverDateTime); 
             var dateText = hoverMoment.format('DD/MM/YYYY');
-            var timeFormatString = stepDuration.seconds > 60  ? 'HH:mm' : 'HH:mm:ss';
+            var timeFormatString = stepDuration.asSeconds() > 60  ? 'HH:mm' : 'HH:mm:ss';
             var timeRangeText = hoverMoment.format(timeFormatString) + '-' + hoverMoment.add('ms', step).format(timeFormatString);
             var hideDate = firstEntryMoment.format('DDMMYYYY') == lastEntryMoment.format('DDMMYYYY');
 
-            var toolTipText = '<div style="font-weight: bold;">(' + index + ')' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
+            var toolTipText = '<div style="font-weight: bold;">' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
 
             _.each(lines, function(line) {
                 var valueText = toolTipValue;

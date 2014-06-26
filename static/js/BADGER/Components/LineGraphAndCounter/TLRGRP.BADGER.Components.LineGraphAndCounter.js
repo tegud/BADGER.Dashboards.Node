@@ -106,6 +106,9 @@
                 initialised: {
                     _onEnter: function () {
                         dataStore.start(true);
+                    },
+                    stop: function() {
+                        dataStore.stop();
                     }
                 }
             },

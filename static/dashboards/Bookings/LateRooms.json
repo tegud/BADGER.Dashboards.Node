@@ -75,7 +75,11 @@
                 "counters": [
                   { "id": "roomNights", "color": "orange", "value": "roomNights", "text": "Room Nights" },
                   { "id": "bookings", "color": "green", "value": "bookings", "text": "Bookings" }
-                ]
+                ],
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                }
             },
             "graph": {
                 "className": "commission-graph",
@@ -166,7 +170,11 @@
                 "counters": [
                   { "id": "ttv", "color": "blue", "value": "ttv", "text": "TTV" },
                   { "id": "commission", "color": "#411485", "value": "commission", "text": "Commission" }
-                ]
+                ],
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                }
             },
             "graph": {
                 "className": "commission-graph",
@@ -256,7 +264,11 @@
                 "precision": 3,
                 "type": "average",
                 "upClass": "good",
-                "downClass": "bad"
+                "downClass": "bad",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                }
             },
             "graph": {
                 "id": "elasticsearch commission",

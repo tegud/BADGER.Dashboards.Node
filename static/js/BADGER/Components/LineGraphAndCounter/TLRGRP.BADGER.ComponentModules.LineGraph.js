@@ -94,8 +94,11 @@
                 setCurrentIndex: function(mousePos) {
                     var hoverDateTime = x.invert(mousePos[0]);
                     var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
+                    var oldIndex = index;
 
                     index = Math.round(hoverTime / parseFloat(step));
+
+                    return oldIndex !== index;
                 },
                 getContent: getContent,
                 setLineCircles: function() {
@@ -142,10 +145,12 @@
                 })
                 .removeClass('hidden');
 
-            toolTipContentFactory.setCurrentIndex(mousePos);
+            var updateRequired = toolTipContentFactory.setCurrentIndex(mousePos);
 
-            toolTipContentFactory.setLineCircles();
-            toolTip.html(toolTipContentFactory.getContent());
+            if(updateRequired) {
+                toolTipContentFactory.setLineCircles();
+                toolTip.html(toolTipContentFactory.getContent());
+            }
         }
 
         function hideHoverLine() {

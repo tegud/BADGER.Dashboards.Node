@@ -47,7 +47,7 @@
             var index;
 
             function getContent() {
-                if(!lastDataSet[index]) {
+                if(!lastDataSet[index] || !toolTipIsOnGraph) {
                     return;
                 }
 
@@ -102,7 +102,7 @@
                 },
                 getContent: getContent,
                 setLineCircles: function() {
-                    if(!lastDataSet[index]) {
+                    if(!lastDataSet[index] || !toolTipIsOnGraph) {
                         return;
                     }
 
@@ -370,8 +370,8 @@
                     });
 
                     var highlightedRegion = svg.select('#highlight-region');
-                    var endOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.skip)].time).toDate().getTime();//moment(data[data.length - 1].time).subtract('minutes', counterWindow.skip).toDate().getTime();
-                    var startOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.take + counterWindow.skip)].time).toDate().getTime();//moment(data[data.length - 1].time).subtract('minutes', counterWindow.take + counterWindow.skip).toDate().getTime();
+                    var endOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.skip)].time).toDate().getTime();
+                    var startOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.take + counterWindow.skip)].time).toDate().getTime();
                         
                     if (highlightedRegion[0][0]) {
                         highlightedRegion

@@ -80,8 +80,8 @@
               "type": "percentiles"
             },
             "valueProperty": [ 
-              { "value": "moonstick.percentiles.values.75|0", "property": "moonstick" }, 
-              { "value": "legacy.percentiles.values.75|0", "property": "legacy" }
+              { "value": "moonstick.percentiles.values.50|0", "property": "moonstick" }, 
+              { "value": "legacy.percentiles.values.50|0", "property": "legacy" }
             ],
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp.from",

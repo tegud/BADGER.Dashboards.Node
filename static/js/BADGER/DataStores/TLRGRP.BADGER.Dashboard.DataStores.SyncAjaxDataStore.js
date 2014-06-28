@@ -73,32 +73,39 @@
                             currentOptions.components.loading.loading();
                         }
 
-                        var ajaxOptions = {
-                            url: currentOptions.url,
-                            data: currentOptions.data,
-                            success: function(data) {
-                                stateMachine.handle('refreshComplete', data);
-                            },
-                            error: function(errorInfo) {
-                                stateMachine.handle('refreshFailed', errorInfo);
+                        var queries = currentOptions.request.requestBuilder({
+                            timeFrame: currentTimeFrame
+                        });
+
+                        var responses = {};
+                        var deferreds = _.map(queries, function(queryOptions) {
+                            var ajaxOptions = {
+                                url: currentOptions.url,
+                                data: currentOptions.data,
+                                success: function(data) {
+                                    responses[queryOptions.id] = data;
+                                }
+                            };
+
+                            if(currentOptions.request && currentOptions.request.requestBuilder) {
+                                ajaxOptions = $.extend(ajaxOptions, queryOptions);
                             }
-                        };
 
-                        if(currentOptions.request && currentOptions.request.requestBuilder) {
-                            ajaxOptions = $.extend(ajaxOptions, currentOptions.request.requestBuilder({
-                                timeFrame: currentTimeFrame
-                            }));
-                        }
+                            if (currentOptions.type) {
+                                ajaxOptions.type = currentOptions.type;
+                            }
 
-                        if (currentOptions.type) {
-                            ajaxOptions.type = currentOptions.type;
-                        }
+                            if (currentOptions.contentType) {
+                                ajaxOptions.contentType = currentOptions.contentType;
+                            }
 
-                        if (currentOptions.contentType) {
-                            ajaxOptions.contentType = currentOptions.contentType;
-                        }
+                            return $.ajax($.extend(true, {}, defaultAjaxOptions, ajaxOptions));
+                        });
 
-                        $.ajax($.extend(true, {}, defaultAjaxOptions, ajaxOptions));
+                        $.when.apply(undefined, deferreds).then(function() {
+                            stateMachine.handle('refreshComplete', responses);
+                            // stateMachine.handle('refreshFailed', errorInfo);
+                        });
                     },
                     refreshComplete: function (data) {
                         executeSuccessCallbackIfSpecified(data);

@@ -259,7 +259,7 @@
                         var hoverLine = svg.select('.hover-line');
                         var mousePos = d3.mouse(this);
 
-                        if(mousePos[0] > 0 && mousePos[0] < currentOptions.dimensions.width && mousePos[1] < currentOptions.dimensions.height) {
+                        if(mousePos[0] > 0 && mousePos[0] < currentOptions.dimensions.width && mousePos[1] < currentOptions.dimensions.height && lastDataSet) {
                             showHoverLine(mousePos);
                         }
                         else {

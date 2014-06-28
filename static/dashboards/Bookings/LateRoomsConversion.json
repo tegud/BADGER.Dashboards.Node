@@ -1,0 +1,260 @@
+{
+    "id": "LateRoomsConversion",
+    "name": "LateRooms.com Conversion",
+    "components": [
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "queries": {
+            "today": {
+              "index": "logstash-{today}",
+              "query": {
+                "query": {
+                  "filtered": {
+                    "filter": {
+                      "bool": {
+                        "must": [
+                          {
+                            "range" : {
+                              "@timestamp" : {
+                                  "from" : "now-60m"
+                              }
+                            }
+                          },
+                          {
+                              "term": {
+                                  "type": "domain_events"
+                              }
+                          },
+                          { 
+                              "terms": {
+                                  "channelId":  [9, 10] 
+                              }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "bookingsbytime" : {
+                          "date_histogram" : {
+                              "min_doc_count": 0,
+                              "extended_bounds" : {
+                                  "min" : "now-60m",
+                                  "max" : "now"
+                              },
+                              "field" : "@timestamp",
+                              "interval" : "1m"
+                          },
+                          "aggs": {
+                              "totalRoomNights": {
+                                  "sum": {
+                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                                  }
+                              }
+                          }
+                      }
+                },
+                "size": 0
+              }
+            },
+            "yesterday": {
+              "index": "logstash-{yesterday}",
+              "query": {
+                "query": {
+                  "filtered": {
+                    "filter": {
+                      "bool": {
+                        "must": [
+                          {
+                            "range" : {
+                              "@timestamp" : {
+                                  "from" : "now-60m"
+                              }
+                            }
+                          },
+                          {
+                              "term": {
+                                  "type": "domain_events"
+                              }
+                          },
+                          { 
+                              "terms": {
+                                  "channelId":  [9, 10] 
+                              }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "bookingsbytime" : {
+                          "date_histogram" : {
+                              "min_doc_count": 0,
+                              "extended_bounds" : {
+                                  "min" : "now-60m",
+                                  "max" : "now"
+                              },
+                              "field" : "@timestamp",
+                              "interval" : "1m"
+                          },
+                          "aggs": {
+                              "totalRoomNights": {
+                                  "sum": {
+                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                                  }
+                              }
+                          }
+                      }
+                },
+                "size": 0
+              }
+            },
+            "lastWeek": {
+              "index": "logstash-{lastWeek}",
+              "query": {
+                "query": {
+                  "filtered": {
+                    "filter": {
+                      "bool": {
+                        "must": [
+                          {
+                            "range" : {
+                              "@timestamp" : {
+                                  "from" : "now-60m"
+                              }
+                            }
+                          },
+                          {
+                              "term": {
+                                  "type": "domain_events"
+                              }
+                          },
+                          { 
+                              "terms": {
+                                  "channelId":  [9, 10] 
+                              }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "bookingsbytime" : {
+                          "date_histogram" : {
+                              "min_doc_count": 0,
+                              "extended_bounds" : {
+                                  "min" : "now-60m",
+                                  "max" : "now"
+                              },
+                              "field" : "@timestamp",
+                              "interval" : "1m"
+                          },
+                          "aggs": {
+                              "totalRoomNights": {
+                                  "sum": {
+                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                                  }
+                              }
+                          }
+                      }
+                },
+                "size": 0
+              }
+            },
+            "lastMonth": {
+              "index": "logstash-{lastMonth}",
+              "query": {
+                "query": {
+                  "filtered": {
+                    "filter": {
+                      "bool": {
+                        "must": [
+                          {
+                            "range" : {
+                              "@timestamp" : {
+                                  "from" : "now-60m"
+                              }
+                            }
+                          },
+                          {
+                              "term": {
+                                  "type": "domain_events"
+                              }
+                          },
+                          { 
+                              "terms": {
+                                  "channelId":  [9, 10] 
+                              }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "bookingsbytime" : {
+                          "date_histogram" : {
+                              "min_doc_count": 0,
+                              "extended_bounds" : {
+                                  "min" : "now-60m",
+                                  "max" : "now"
+                              },
+                              "field" : "@timestamp",
+                              "interval" : "1m"
+                          },
+                          "aggs": {
+                              "totalRoomNights": {
+                                  "sum": {
+                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                                  }
+                              }
+                          }
+                      }
+                },
+                "size": 0
+              }
+            }
+          },
+          "mappings": [
+            {
+              "type": "standardDeviation",
+              "values": ["yesterday", "lastWeek", "lastMonth"],
+              "series": [
+                { "stds": 1, "type": "area", "color": "green" },
+                { "stds": 2, "type": "area", "color": "orange" }
+              ]
+            },
+            {
+              "type": "linear",
+              "value": "today",
+              "series": { "type": "line", "color": "purple" }
+            }
+          ],
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "roomNights", "color": "orange", "value": "roomNights", "text": "Room Nights" },
+                { "id": "bookings", "color": "green", "value": "bookings", "text": "Bookings" }
+              ],
+              "window": {
+                "skip": 1,
+                "take": 10
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "bookings", "color": "green", "value": "bookings" },
+                { "id": "roomNights", "color": "orange", "value": "roomNights" }
+              ]
+          }
+        }
+    ]
+}

@@ -51,32 +51,35 @@
 
 	    return {
 	        requestBuilder: function(options) {
-	        	var query = configuration.query;
+	        	var queries = configuration.queries || [ { query: configuration.query } ];
 
-        		_.each(configuration.timeProperties, function(timePropertyLocation) {
-        			setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
-        		});
+	        	return _.map(queries, function(queryItem) {
+	        		var query = queryItem.query;
+	        		_.each(configuration.timeProperties, function(timePropertyLocation) {
+	        			setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
+	        		});
 
-        		_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
-        			setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
-        		});
+	        		_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
+	        			setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
+	        		});
 
 
-        		var oldestIndexRequired = moment().subtract(options.timeFrame.timeFrame, options.timeFrame.units);
-        		var currentDate = moment();
-        		var indicies = [];
+	        		var oldestIndexRequired = moment().subtract(options.timeFrame.timeFrame, options.timeFrame.units);
+	        		var currentDate = moment();
+	        		var indicies = [];
 
-        		while(currentDate.unix() > oldestIndexRequired.unix()) {
-        			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
-        			currentDate = currentDate.subtract(1, 'day');
-        		}
+	        		while(currentDate.unix() > oldestIndexRequired.unix()) {
+	        			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
+	        			currentDate = currentDate.subtract(1, 'day');
+	        		}
 
-	            return {
-	                url: configuration.host + '/' + indicies.join(',') + '/_search',
-	                method: 'POST',
-	                contentType: 'application/json',
-	                data: JSON.stringify(query)
-	            };
+		            return {
+		                url: configuration.host + '/' + indicies.join(',') + '/_search',
+		                method: 'POST',
+		                contentType: 'application/json',
+		                data: JSON.stringify(query)
+		            };
+	        	});
 	        },
 	        responseMapper: function(data) {
 	            return data;

@@ -9,7 +9,7 @@
         refresh: 10000
     };
 
-    TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore = function (options) {
+    TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore = function (options) {
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var currentTimeout;
         var defaultAjaxOptions = {
@@ -87,7 +87,7 @@
                         if(currentOptions.request && currentOptions.request.requestBuilder) {
                             ajaxOptions = $.extend(ajaxOptions, currentOptions.request.requestBuilder({
                                 timeFrame: currentTimeFrame
-                            })[0]);
+                            }));
                         }
 
                         if (currentOptions.type) {

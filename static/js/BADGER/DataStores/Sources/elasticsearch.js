@@ -53,8 +53,9 @@
 	        requestBuilder: function(options) {
 	        	var queries = configuration.queries || [ { query: configuration.query } ];
 
-	        	return _.map(queries, function(queryItem) {
+	        	return _.map(queries, function(queryItem, key) {
 	        		var query = queryItem.query;
+
 	        		_.each(configuration.timeProperties, function(timePropertyLocation) {
 	        			setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
 	        		});
@@ -74,6 +75,7 @@
 	        		}
 
 		            return {
+		            	id: key,
 		                url: configuration.host + '/' + indicies.join(',') + '/_search',
 		                method: 'POST',
 		                contentType: 'application/json',

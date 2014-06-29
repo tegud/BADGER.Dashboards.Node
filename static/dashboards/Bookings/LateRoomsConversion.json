@@ -12,54 +12,68 @@
             "today": {
               "index": "logstash-{today}",
               "query": {
-                "query": {
-                  "filtered": {
-                    "filter": {
-                      "bool": {
-                        "must": [
-                          {
-                            "range" : {
-                              "@timestamp" : {
-                                  "from" : "now-60m"
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
                               }
                             }
-                          },
-                          {
-                              "term": {
-                                  "type": "domain_events"
-                              }
-                          },
-                          { 
-                              "terms": {
-                                  "channelId":  [9, 10] 
-                              }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
-                  }
-                },
-                "aggs": {
-                  "bookingsbytime" : {
-                          "date_histogram" : {
-                              "min_doc_count": 0,
-                              "extended_bounds" : {
-                                  "min" : "now-60m",
-                                  "max" : "now"
-                              },
-                              "field" : "@timestamp",
-                              "interval" : "1m"
-                          },
-                          "aggs": {
-                              "totalRoomNights": {
-                                  "sum": {
-                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h"
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                  "term": {
+                                      "type": "lr_varnish_request"
                                   }
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
                               }
                           }
                       }
-                },
-                "size": 0
+                    }
+                  },
+                  "size": 0
               }
             },
             "yesterday": {
@@ -71,21 +85,9 @@
                       "bool": {
                         "must": [
                           {
-                            "range" : {
-                              "@timestamp" : {
-                                  "from" : "now-60m"
-                              }
+                            "terms" : {
+                              "type" : ["lr_varnish_request", "domain_events"]
                             }
-                          },
-                          {
-                              "term": {
-                                  "type": "domain_events"
-                              }
-                          },
-                          { 
-                              "terms": {
-                                  "channelId":  [9, 10] 
-                              }
                           }
                         ]
                       }
@@ -94,131 +96,185 @@
                 },
                 "aggs": {
                   "bookingsbytime" : {
-                          "date_histogram" : {
-                              "min_doc_count": 0,
-                              "extended_bounds" : {
-                                  "min" : "now-60m",
-                                  "max" : "now"
-                              },
-                              "field" : "@timestamp",
-                              "interval" : "1m"
-                          },
-                          "aggs": {
-                              "totalRoomNights": {
-                                  "sum": {
-                                      "script" : "doc['rooms'].value * doc['nights'].value"
-                                  }
+                    "date_histogram" : {
+                        "min_doc_count": 0,
+                        "field" : "@timestamp",
+                        "interval" : "1h"
+                    },
+                    "aggs": {
+                        "requests" : {
+                            "filter": {
+                                "term": {
+                                    "type": "lr_varnish_request"
+                                }
+                            },
+                            "aggs": {
+                              "sessions": {
+                                "cardinality" : {
+                                  "field" : "sessionId.raw"
+                                }
                               }
-                          }
-                      }
+                            }
+                        },
+                        "bookings" : {
+                            "filter": {
+                              "and": [
+                                  {
+                                    "term": {
+                                      "type": "domain_events"
+                                    }
+                                  },
+                                  {
+                                      "range": {
+                                        "channelId": { "from": 9, "to": 10 }
+                                      }
+                                  },
+                                  {
+                                    "term": {
+                                        "isTestBooking": false
+                                    }
+                                  }
+                              ]
+                            }
+                        }
+                    }
+                  }
                 },
                 "size": 0
-              }
+            }
             },
             "lastWeek": {
               "index": "logstash-{lastWeek}",
               "query": {
-                "query": {
-                  "filtered": {
-                    "filter": {
-                      "bool": {
-                        "must": [
-                          {
-                            "range" : {
-                              "@timestamp" : {
-                                  "from" : "now-60m"
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
                               }
                             }
-                          },
-                          {
-                              "term": {
-                                  "type": "domain_events"
-                              }
-                          },
-                          { 
-                              "terms": {
-                                  "channelId":  [9, 10] 
-                              }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
-                  }
-                },
-                "aggs": {
-                  "bookingsbytime" : {
-                          "date_histogram" : {
-                              "min_doc_count": 0,
-                              "extended_bounds" : {
-                                  "min" : "now-60m",
-                                  "max" : "now"
-                              },
-                              "field" : "@timestamp",
-                              "interval" : "1m"
-                          },
-                          "aggs": {
-                              "totalRoomNights": {
-                                  "sum": {
-                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h"
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                  "term": {
+                                      "type": "lr_varnish_request"
                                   }
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
                               }
                           }
                       }
-                },
-                "size": 0
+                    }
+                  },
+                  "size": 0
               }
             },
             "lastMonth": {
               "index": "logstash-{lastMonth}",
               "query": {
-                "query": {
-                  "filtered": {
-                    "filter": {
-                      "bool": {
-                        "must": [
-                          {
-                            "range" : {
-                              "@timestamp" : {
-                                  "from" : "now-60m"
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
                               }
                             }
-                          },
-                          {
-                              "term": {
-                                  "type": "domain_events"
-                              }
-                          },
-                          { 
-                              "terms": {
-                                  "channelId":  [9, 10] 
-                              }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
-                  }
-                },
-                "aggs": {
-                  "bookingsbytime" : {
-                          "date_histogram" : {
-                              "min_doc_count": 0,
-                              "extended_bounds" : {
-                                  "min" : "now-60m",
-                                  "max" : "now"
-                              },
-                              "field" : "@timestamp",
-                              "interval" : "1m"
-                          },
-                          "aggs": {
-                              "totalRoomNights": {
-                                  "sum": {
-                                      "script" : "doc['rooms'].value * doc['nights'].value"
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h"
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                  "term": {
+                                      "type": "lr_varnish_request"
                                   }
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
                               }
                           }
                       }
-                },
-                "size": 0
+                    }
+                  },
+                  "size": 0
               }
             }
           },
@@ -251,8 +307,10 @@
           "graph": {
               "className": "commission-graph",
               "lines": [
-                { "id": "bookings", "color": "green", "value": "bookings" },
-                { "id": "roomNights", "color": "orange", "value": "roomNights" }
+                { "id": "today", "color": "purple", "value": "today" },
+                { "id": "average", "color": "green", "value": "average" },
+                { "id": "plusOneStd", "color": "#AAA", "value": "plusOneStd" },
+                { "id": "minusOneStd", "color": "#AAA", "value": "minusOneStd" }
               ]
           }
         }

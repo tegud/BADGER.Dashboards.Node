@@ -69,9 +69,28 @@
 	        		var currentDate = moment();
 	        		var indicies = [];
 
-	        		while(currentDate.unix() > oldestIndexRequired.unix()) {
-	        			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
-	        			currentDate = currentDate.subtract(1, 'day');
+	        		if(queryItem.index) {
+	        			var logStashTimeFillpointRegex = /\{([a-zA-Z]+)\}/i;
+	        			var matches = logStashTimeFillpointRegex.exec(queryItem.index);
+	        			var indexDate = moment();
+
+	        			var offsets = {
+	        				'yesterday': -1,
+	        				'lastWeek': -7,
+	        				'lastMonth': -28
+	        			};
+
+	        			if(offsets[matches[1]]) {
+	        				indexDate.add('d', offsets[matches[1]]);
+	        			}
+
+	        			indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, indexDate.format('YYYY.MM.DD')));
+	        		}
+	        		else {
+		        		while(currentDate.unix() > oldestIndexRequired.unix()) {
+		        			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
+		        			currentDate = currentDate.subtract(1, 'day');
+		        		}
 	        		}
 
 		            return {

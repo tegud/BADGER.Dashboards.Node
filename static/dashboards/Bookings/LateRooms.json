@@ -234,9 +234,23 @@
                         "aggs": {
                             "requests" : {
                                 "filter": {
-                                    "term": {
+                                  "and": [
+                                    {
+                                      "term": {
                                         "type": "lr_varnish_request"
+                                      }
+                                    },
+                                    {
+                                      "term": {
+                                        "UA_is_bot": false
+                                      }
+                                    },
+                                    {
+                                      "term": {
+                                        "botBuster_score": 0
+                                      }
                                     }
+                                  ]
                                 },
                                 "aggs": {
                                   "sessions": {
@@ -247,11 +261,25 @@
                                 }
                             },
                             "bookings" : {
-                                "filter": {
-                                    "term": {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
                                         "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
                                     }
-                                }
+                                ]
+                              }
                             }
                         }
                     }

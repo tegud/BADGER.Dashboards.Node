@@ -110,7 +110,7 @@
                                 // THIS SHOULD NOT STAY HERE
                                 var combinedData = _.map(responses['today'].aggregations.bookingsbytime.buckets, function(bucket, index) {
                                     var value = {
-                                        today: bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value),
+                                        today: (bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value)) * 100,
                                         previousValues: []
                                     };
 
@@ -120,7 +120,7 @@
                                         }
 
                                         var bucket = response.aggregations.bookingsbytime.buckets[index];
-                                        var commission = bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value);
+                                        var commission = (bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value)) * 100;
 
                                         value[key] = commission;
                                         
@@ -149,6 +149,8 @@
                                     entry.value.average = calculations.mean;
                                     entry.value.plusOneStd = calculations.mean + calculations.deviation;
                                     entry.value.minusOneStd = calculations.mean - calculations.deviation;
+                                    entry.value.plusTwoStd = calculations.mean + (calculations.deviation * 2);
+                                    entry.value.minusTwoStd = calculations.mean - (calculations.deviation * 2);
                                 });                     
 
                                 stateMachine.handle('refreshComplete', combinedData);

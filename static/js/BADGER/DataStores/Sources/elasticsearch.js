@@ -86,7 +86,7 @@
 							}
 
 							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'));
-							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').add('d', 1).format('YYYY-MM-DDT00:00:00Z'));
+							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z'));
 						});
 
 			 			if(indexDate.zone() < 0) {

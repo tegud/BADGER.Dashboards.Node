@@ -33,6 +33,7 @@
         var lines = currentOptions.lines || [
             { id: 'error-line', color: currentOptions.lineColor || 'red' }
         ];
+        var areas = currentOptions.areas || [];
         var counterWindow = _.extend({}, {
             take: 10,
             skip: 0
@@ -119,7 +120,7 @@
 
                         line.circle
                             .attr('cx', x(lastDataSet[index].time))
-                            .attr('cy', y(lineValue) );
+                            .attr('cy', y(lineValue || 0) );
                     });
                 }
             };
@@ -230,6 +231,66 @@
                         .attr('width', currentOptions.dimensions.width)
                         .attr('height', currentOptions.dimensions.height);
 
+
+                    _.each(areas, function(currentLine) {
+                        var elementId = currentLine.id;
+                        var lineElement = svg.select("#" + elementId);
+                        var line = d3.svg.area()
+                            .x(function(d) {
+                                return x(d.time);
+                            })
+                            .y0(function(d) {
+                                var value = d.value[currentLine.start];
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return y(value);
+                            })
+                            .y1(function(d) {
+                                var value = d.value[currentLine.end];
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return y(value);
+                            });
+
+                        svg.append("path")
+                            .attr('id', elementId)
+                            .attr("class", "line")
+                            .attr("style", "fill: " + currentLine.color + ";opacity: 0.7;");
+                    });
+
+                    _.each(lines, function(currentLine) {
+                        var elementId = currentLine.id;
+                        var lineElement = svg.select("#" + elementId);
+                        var line = d3.svg.line()
+                            .x(function(d) {
+                                return x(d.time);
+                            })
+                            .y(function(d) {
+                                var value = d.value;
+
+                                if(currentLine.value) {
+                                    value = value[currentLine.value];
+                                }
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return y(value);
+                            });
+
+                        svg.append("path")
+                            .attr('id', elementId)
+                            .attr("class", "line")
+                            .attr("style", "stroke: " + currentLine.color + ";");
+                    });
+
                     hoverLine = svg.append("line")
                         .attr("class", "hover-line hidden")
                         .attr("style", "stroke: black;")
@@ -331,6 +392,48 @@
 
                     svg.select(".x.axis").call(xAxis);
                     svg.select(".y.axis").call(yAxis);
+
+                    _.each(areas, function(currentLine) {
+                        var elementId = currentLine.id;
+                        var lineElement = svg.select("#" + elementId);
+                        var lineData = data;
+                        var line = d3.svg.area()
+                            .x(function(d) {
+                                return x(d.time);
+                            })
+                            .y0(function(d) {
+                                var value = d.value[currentLine.start];
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return y(value);
+                            })
+                            .y1(function(d) {
+                                var value = d.value[currentLine.end];
+
+                                if(isNaN(value)) {
+                                    value = 0;
+                                }
+
+                                return y(value);
+                            });
+
+                        if (lineElement[0][0]) {
+                            lineElement
+                               .datum(lineData)
+                               .attr("d", line);
+                        }
+                        else {
+                            svg.append("path")
+                                .datum(lineData)
+                                .attr('id', elementId)
+                                .attr("class", "line")
+                                .attr("style", "fill: " + currentLine.color + ";opacity: 0.7;")
+                                .attr("d", line);
+                        }
+                    });
 
                     _.each(lines, function(currentLine) {
                         var elementId = currentLine.id;

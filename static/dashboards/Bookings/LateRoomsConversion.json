@@ -8,6 +8,10 @@
           "summaryText": "Conversion tracking for LateRooms.com (WEB)",
           "dataSource": "elasticsearch",
           "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
+          ],
           "queries": {
             "today": {
               "index": "logstash-{today}",
@@ -17,6 +21,11 @@
                       "filter": {
                         "bool": {
                           "must": [
+                            {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
                             {
                               "terms" : {
                                 "type" : ["lr_varnish_request", "domain_events"]
@@ -32,14 +41,29 @@
                       "date_histogram" : {
                           "min_doc_count": 0,
                           "field" : "@timestamp",
-                          "interval" : "1h"
+                          "interval" : "1h",
+                          "extended_bounds": {}
                       },
                       "aggs": {
                           "requests" : {
                               "filter": {
-                                  "term": {
+                                "and": [
+                                  {
+                                    "term": {
                                       "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
                                   }
+                                ]
                               },
                               "aggs": {
                                 "sessions": {
@@ -85,6 +109,11 @@
                       "bool": {
                         "must": [
                           {
+                            "range" : {
+                              "@timestamp" : { }
+                            }
+                          },
+                          {
                             "terms" : {
                               "type" : ["lr_varnish_request", "domain_events"]
                             }
@@ -99,14 +128,29 @@
                     "date_histogram" : {
                         "min_doc_count": 0,
                         "field" : "@timestamp",
-                        "interval" : "1h"
+                        "interval" : "1h",
+                        "extended_bounds": {}
                     },
                     "aggs": {
                         "requests" : {
                             "filter": {
-                                "term": {
+                              "and": [
+                                {
+                                  "term": {
                                     "type": "lr_varnish_request"
+                                  }
+                                },
+                                {
+                                  "term": {
+                                    "UA_is_bot": false
+                                  }
+                                },
+                                {
+                                  "term": {
+                                    "botBuster_score": 0
+                                  }
                                 }
+                              ]
                             },
                             "aggs": {
                               "sessions": {
@@ -152,6 +196,11 @@
                         "bool": {
                           "must": [
                             {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
+                            {
                               "terms" : {
                                 "type" : ["lr_varnish_request", "domain_events"]
                               }
@@ -166,14 +215,29 @@
                       "date_histogram" : {
                           "min_doc_count": 0,
                           "field" : "@timestamp",
-                          "interval" : "1h"
+                          "interval" : "1h",
+                          "extended_bounds": {}
                       },
                       "aggs": {
                           "requests" : {
                               "filter": {
-                                  "term": {
+                                "and": [
+                                  {
+                                    "term": {
                                       "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
                                   }
+                                ]
                               },
                               "aggs": {
                                 "sessions": {
@@ -210,14 +274,19 @@
                   "size": 0
               }
             },
-            "lastMonth": {
-              "index": "logstash-{lastMonth}",
+            "2weeksago": {
+              "index": "logstash-{2weeksago}",
               "query": {
                   "query": {
                     "filtered": {
                       "filter": {
                         "bool": {
                           "must": [
+                            {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
                             {
                               "terms" : {
                                 "type" : ["lr_varnish_request", "domain_events"]
@@ -233,14 +302,29 @@
                       "date_histogram" : {
                           "min_doc_count": 0,
                           "field" : "@timestamp",
-                          "interval" : "1h"
+                          "interval" : "1h",
+                          "extended_bounds": {}
                       },
                       "aggs": {
                           "requests" : {
                               "filter": {
-                                  "term": {
+                                "and": [
+                                  {
+                                    "term": {
                                       "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
                                   }
+                                ]
                               },
                               "aggs": {
                                 "sessions": {
@@ -281,7 +365,7 @@
           "mappings": [
             {
               "type": "standardDeviation",
-              "values": ["yesterday", "lastWeek", "lastMonth"],
+              "values": ["yesterday", "lastWeek", "2weeksago"],
               "series": [
                 { "stds": 1, "type": "area", "color": "green" },
                 { "stds": 2, "type": "area", "color": "orange" }
@@ -296,21 +380,22 @@
           "counter": {
               "precision": 0,
               "counters": [
-                { "id": "roomNights", "color": "orange", "value": "roomNights", "text": "Room Nights" },
-                { "id": "bookings", "color": "green", "value": "bookings", "text": "Bookings" }
+                { "id": "today", "color": "purple", "value": "today", "text": "Today" },
+                { "id": "average", "color": "green", "value": "average", "text": "Average" }
               ],
               "window": {
-                "skip": 1,
-                "take": 10
+                "skip": 0,
+                "take": 0
               }
           },
           "graph": {
               "className": "commission-graph",
               "lines": [
                 { "id": "today", "color": "purple", "value": "today" },
-                { "id": "average", "color": "green", "value": "average" },
-                { "id": "plusOneStd", "color": "#AAA", "value": "plusOneStd" },
-                { "id": "minusOneStd", "color": "#AAA", "value": "minusOneStd" }
+                { "id": "average", "color": "green", "value": "average" }
+              ],
+              "areas": [
+                { "id": "plusOneStd", "color": "#AAA", "start": "minusOneStd", "end": "plusOneStd" }
               ]
           }
         }

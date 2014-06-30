@@ -261,7 +261,7 @@
                         svg.append("path")
                             .attr('id', elementId)
                             .attr("class", "line")
-                            .attr("style", "fill: " + currentLine.color + ";opacity: 0.7;");
+                            .attr("style", "fill: " + currentLine.color + ";");
                     });
 
                     _.each(lines, function(currentLine) {

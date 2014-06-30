@@ -395,7 +395,8 @@
                 { "id": "average", "color": "green", "value": "average" }
               ],
               "areas": [
-                { "id": "plusOneStd", "color": "#AAA", "start": "minusOneStd", "end": "plusOneStd" }
+                { "id": "plusTwoStd", "color": "#AAA", "start": "minusTwoStd", "end": "plusTwoStd" },
+                { "id": "plusOneStd", "color": "#CCC", "start": "minusOneStd", "end": "plusOneStd" }
               ]
           }
         }

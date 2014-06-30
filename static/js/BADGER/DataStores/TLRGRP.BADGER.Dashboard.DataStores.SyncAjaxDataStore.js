@@ -146,8 +146,6 @@
                                     var previousValues = entry.value.previousValues;
                                     var calculations = average(previousValues);
 
-                                    console.log(previousValues);
-
                                     entry.value.average = calculations.mean;
                                     entry.value.plusOneStd = calculations.mean + calculations.deviation;
                                     entry.value.minusOneStd = calculations.mean - calculations.deviation;

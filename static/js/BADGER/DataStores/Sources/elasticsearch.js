@@ -1,28 +1,28 @@
 (function () {
-    'use strict';
+	'use strict';
 
-    TLRGRP.namespace('TLRGRP.BADGER.Dashboard.DataSource');
+	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.DataSource');
 
 	function setValueOnSubProperty(obj, prop, value) {
-	    if (typeof prop === "string")
-	        prop = prop.split(".");
+		if (typeof prop === "string")
+			 prop = prop.split(".");
 
-	    if (prop.length > 1) {
-	        var e = prop.shift();
+		if (prop.length > 1) {
+			 var e = prop.shift();
 
-	        if(!isNaN(e)) {
-	        	e = parseInt(e, 10);
-	        }
+			 if(!isNaN(e)) {
+			 	e = parseInt(e, 10);
+			 }
 
-	        setValueOnSubProperty(obj[e] =
-	                 Object.prototype.toString.call(obj[e]) === "[object Object]" || 
-	                 Object.prototype.toString.call(obj[e]) === "[object Array]" 
-	                 ? obj[e]
-	                 : {},
-	               prop,
-	               value);
-	    } else
-	        obj[prop[0]] = value;
+			 setValueOnSubProperty(obj[e] =
+					   Object.prototype.toString.call(obj[e]) === "[object Object]" || 
+					   Object.prototype.toString.call(obj[e]) === "[object Array]" 
+					   ? obj[e]
+					   : {},
+					 prop,
+					 value);
+		} else
+			 obj[prop[0]] = value;
 	}
 
 	function mapTimeFrameToInterval(interval, units) {
@@ -49,38 +49,85 @@
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
 		var logstashIndexDate = moment().format('YYYY.MM.DD');
 
-	    return {
-	        requestBuilder: function(options) {
-	        	var query = configuration.query;
+		return {
+			 requestBuilder: function(options) {
+			 	var queries = configuration.queries || [ { query: configuration.query } ];
 
-        		_.each(configuration.timeProperties, function(timePropertyLocation) {
-        			setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
-        		});
+			 	return _.map(queries, function(queryItem, key) {
+			 		var query = queryItem.query;
+			 		var oldestIndexRequired = moment().subtract(options.timeFrame.timeFrame, options.timeFrame.units);
+			 		var currentDate = moment();
+			 		var indicies = [];
 
-        		_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
-        			setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
-        		});
+			 		if(queryItem.index) {
+			 			var logStashTimeFillpointRegex = /\{([0-9a-zA-Z]+)\}/i;
+			 			var matches = logStashTimeFillpointRegex.exec(queryItem.index);
+			 			var indexDate = moment();
 
+			 			var offsets = {
+			 				'yesterday': -1,
+			 				'lastWeek': -7,
+			 				'2weeksago': -14,
+			 				'lastMonth': -28
+			 			};
 
-        		var oldestIndexRequired = moment().subtract(options.timeFrame.timeFrame, options.timeFrame.units);
-        		var currentDate = moment();
-        		var indicies = [];
+			 			if(offsets[matches[1]]) {
+			 				indexDate.add('d', offsets[matches[1]]);
+			 			}
 
-        		while(currentDate.unix() > oldestIndexRequired.unix()) {
-        			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
-        			currentDate = currentDate.subtract(1, 'day');
-        		}
+						_.each(configuration.timeProperties, function(timePropertyLocation) {
+							var startProperty = 'from';
+							var endProperty = 'to';
 
-	            return {
-	                url: configuration.host + '/' + indicies.join(',') + '/_search',
-	                method: 'POST',
-	                contentType: 'application/json',
-	                data: JSON.stringify(query)
-	            };
-	        },
-	        responseMapper: function(data) {
-	            return data;
-	        }
-	    };
+							if(typeof timePropertyLocation !== 'string') {
+								startProperty = timePropertyLocation.start;
+								endProperty = timePropertyLocation.end;
+								timePropertyLocation = timePropertyLocation.property;
+							}
+
+							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'));
+							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').add('d', 1).format('YYYY-MM-DDT00:00:00Z'));
+						});
+
+			 			if(indexDate.zone() < 0) {
+			 				var dayBefore = moment(indexDate).add('d', -1);
+			 				indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, dayBefore.format('YYYY.MM.DD')));
+			 			}
+			 			
+			 			indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, indexDate.format('YYYY.MM.DD')));
+			 			
+			 			if(indexDate.zone() > 0) {
+			 				var dayAfter = moment(indexDate).add('d', 1);
+			 				indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, dayAfter.format('YYYY.MM.DD')));
+			 			}
+			 		}
+			 		else {
+						_.each(configuration.timeProperties, function(timePropertyLocation) {
+							setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
+						});
+
+						_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
+							setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
+						});
+
+				 		while(currentDate.unix() > oldestIndexRequired.unix()) {
+				 			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
+				 			currentDate = currentDate.subtract(1, 'day');
+				 		}
+			 		}
+
+					 return {
+					 	id: key,
+						  url: configuration.host + '/' + indicies.join(',') + '/_search',
+						  method: 'POST',
+						  contentType: 'application/json',
+						  data: JSON.stringify(query)
+					 };
+			 	});
+			 },
+			 responseMapper: function(data) {
+				 return data;
+			 }
+		};
 	};
 })();

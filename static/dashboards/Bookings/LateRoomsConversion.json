@@ -1,0 +1,403 @@
+{
+    "id": "LateRoomsConversion",
+    "name": "LateRooms.com Conversion",
+    "components": [
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
+          ],
+          "queries": {
+            "today": {
+              "index": "logstash-{today}",
+              "query": {
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h",
+                          "extended_bounds": {}
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                "and": [
+                                  {
+                                    "term": {
+                                      "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
+                                  }
+                                ]
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
+                              }
+                          }
+                      }
+                    }
+                  },
+                  "size": 0
+              }
+            },
+            "yesterday": {
+              "index": "logstash-{yesterday}",
+              "query": {
+                "query": {
+                  "filtered": {
+                    "filter": {
+                      "bool": {
+                        "must": [
+                          {
+                            "range" : {
+                              "@timestamp" : { }
+                            }
+                          },
+                          {
+                            "terms" : {
+                              "type" : ["lr_varnish_request", "domain_events"]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "bookingsbytime" : {
+                    "date_histogram" : {
+                        "min_doc_count": 0,
+                        "field" : "@timestamp",
+                        "interval" : "1h",
+                        "extended_bounds": {}
+                    },
+                    "aggs": {
+                        "requests" : {
+                            "filter": {
+                              "and": [
+                                {
+                                  "term": {
+                                    "type": "lr_varnish_request"
+                                  }
+                                },
+                                {
+                                  "term": {
+                                    "UA_is_bot": false
+                                  }
+                                },
+                                {
+                                  "term": {
+                                    "botBuster_score": 0
+                                  }
+                                }
+                              ]
+                            },
+                            "aggs": {
+                              "sessions": {
+                                "cardinality" : {
+                                  "field" : "sessionId.raw"
+                                }
+                              }
+                            }
+                        },
+                        "bookings" : {
+                            "filter": {
+                              "and": [
+                                  {
+                                    "term": {
+                                      "type": "domain_events"
+                                    }
+                                  },
+                                  {
+                                      "range": {
+                                        "channelId": { "from": 9, "to": 10 }
+                                      }
+                                  },
+                                  {
+                                    "term": {
+                                        "isTestBooking": false
+                                    }
+                                  }
+                              ]
+                            }
+                        }
+                    }
+                  }
+                },
+                "size": 0
+            }
+            },
+            "lastWeek": {
+              "index": "logstash-{lastWeek}",
+              "query": {
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h",
+                          "extended_bounds": {}
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                "and": [
+                                  {
+                                    "term": {
+                                      "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
+                                  }
+                                ]
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
+                              }
+                          }
+                      }
+                    }
+                  },
+                  "size": 0
+              }
+            },
+            "2weeksago": {
+              "index": "logstash-{2weeksago}",
+              "query": {
+                  "query": {
+                    "filtered": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "range" : {
+                                "@timestamp" : { }
+                              }
+                            },
+                            {
+                              "terms" : {
+                                "type" : ["lr_varnish_request", "domain_events"]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "aggs": {
+                    "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "field" : "@timestamp",
+                          "interval" : "1h",
+                          "extended_bounds": {}
+                      },
+                      "aggs": {
+                          "requests" : {
+                              "filter": {
+                                "and": [
+                                  {
+                                    "term": {
+                                      "type": "lr_varnish_request"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "UA_is_bot": false
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "botBuster_score": 0
+                                    }
+                                  }
+                                ]
+                              },
+                              "aggs": {
+                                "sessions": {
+                                  "cardinality" : {
+                                    "field" : "sessionId.raw"
+                                  }
+                                }
+                              }
+                          },
+                          "bookings" : {
+                              "filter": {
+                                "and": [
+                                    {
+                                      "term": {
+                                        "type": "domain_events"
+                                      }
+                                    },
+                                    {
+                                        "range": {
+                                          "channelId": { "from": 9, "to": 10 }
+                                        }
+                                    },
+                                    {
+                                      "term": {
+                                          "isTestBooking": false
+                                      }
+                                    }
+                                ]
+                              }
+                          }
+                      }
+                    }
+                  },
+                  "size": 0
+              }
+            }
+          },
+          "mappings": [
+            {
+              "type": "standardDeviation",
+              "values": ["yesterday", "lastWeek", "2weeksago"],
+              "series": [
+                { "stds": 1, "type": "area", "color": "green" },
+                { "stds": 2, "type": "area", "color": "orange" }
+              ]
+            },
+            {
+              "type": "linear",
+              "value": "today",
+              "series": { "type": "line", "color": "purple" }
+            }
+          ],
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "value": "today", "text": "Today" },
+                { "id": "average", "color": "green", "value": "average", "text": "Average" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "today", "color": "purple", "value": "today" },
+                { "id": "average", "color": "green", "value": "average" }
+              ],
+              "areas": [
+                { "id": "plusOneStd", "color": "#AAA", "start": "minusOneStd", "end": "plusOneStd" }
+              ]
+          }
+        }
+    ]
+}

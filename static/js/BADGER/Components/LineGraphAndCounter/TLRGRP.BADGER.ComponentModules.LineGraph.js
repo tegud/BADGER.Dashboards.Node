@@ -71,7 +71,7 @@
                         valueText = 0;
                     }
                     else {
-                        valueText = valueText.toFixed(2);
+                        valueText = valueText.toFixed(3);
                     }
 
                     toolTipText += '<div class="tooltip-item"><div class="tooltip-item-key" style="background-color: ' + line.color + '"></div><div class="toolip-item-text">' + valueText + '</div></div>';

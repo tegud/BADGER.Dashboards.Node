@@ -102,12 +102,58 @@
 			 			}
 			 		}
 			 		else {
+			 			var interval;
+			 			var range;
+
+			 			if(options.timeFrame.units === 'daysAgo') {
+			 				var dayOffset = parseInt(options.timeFrame.timeFrame, 10);
+			 				var day = moment().add('d', -dayOffset);
+
+			 				interval = "15m";
+			 				range = {
+			 				 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
+			 			 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z')
+			 				};
+
+				 			if(day.zone() < 0) {
+				 				var dayBefore = moment(day).add('d', -1);
+				 				indicies.push('logstash-' + dayBefore.format('YYYY.MM.DD'));
+				 			}
+				 			
+				 			indicies.push('logstash-' + day.format('YYYY.MM.DD'));
+				 			
+				 			if(day.zone() > 0) {
+				 				var dayAfter = moment(day).add('d', 1);
+				 				indicies.push('logstash-' + dayAfter.format('YYYY.MM.DD'));
+				 			}
+			 			}
+			 			else {
+			 				interval = mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units);
+			 				range = {
+			 					from: mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units)
+			 				};
+			 			}
+
 						_.each(configuration.timeProperties, function(timePropertyLocation) {
-							setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
+			 				var startProperty = 'from';
+							var endProperty = 'to';
+
+							if(typeof timePropertyLocation !== 'string') {
+								startProperty = timePropertyLocation.start;
+								endProperty = timePropertyLocation.end;
+								timePropertyLocation = timePropertyLocation.property;
+							}
+
+							if(range.start) {
+								setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, range.start);
+							}
+							if(range.end) {
+								setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, range.end);
+							}
 						});
 
 						_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
-							setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
+							setValueOnSubProperty(query, intervalPropertyLocation, interval);
 						});
 
 				 		while(currentDate.unix() > oldestIndexRequired.unix()) {

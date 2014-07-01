@@ -31,7 +31,7 @@
     </nav>
 
     <div id="time-controls" class="hidden">
-        <label class="time-control-label">Select Timeframe: </label>
+        <label class="time-control-label">From Now: </label>
         <ul class="time-control-options">
             <li data-time-frame="15" data-time-frame-units="minutes">15<div class="time-control-unit">mins</div></li>
             <li data-time-frame="30" data-time-frame-units="minutes">30<div class="time-control-unit">mins</div></li>
@@ -43,7 +43,14 @@
             <li data-time-frame="3" data-time-frame-units="days">3<div class="time-control-unit">days</div></li>
             <li data-time-frame="1" data-time-frame-units="weeks">1<div class="time-control-unit">week</div></li>
             <li data-time-frame="4" data-time-frame-units="weeks">4<div class="time-control-unit">weeks</div></li>
-        </ul><!--
+        </ul>
+
+        <label class="time-control-label">Last Week: </label>
+        <ul class="time-control-options days">
+            <li data-time-frame="0" data-time-frame-units="daysAgo">Today</li>
+            <li data-time-frame="1" data-time-frame-units="daysAgo">Yesterday</li>
+        </ul>
+        <!--
         <div class="button-container">
             <button>GO!</button>
         </div>-->

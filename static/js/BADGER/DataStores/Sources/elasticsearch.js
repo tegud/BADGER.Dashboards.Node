@@ -130,7 +130,7 @@
 			 			else {
 			 				interval = mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units);
 			 				range = {
-			 					from: mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units)
+			 					start: mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units)
 			 				};
 			 			}
 
@@ -144,12 +144,8 @@
 								timePropertyLocation = timePropertyLocation.property;
 							}
 
-							if(range.start) {
-								setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, range.start);
-							}
-							if(range.end) {
-								setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, range.end);
-							}
+							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, range.start);
+							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, range.end);
 						});
 
 						_.each(configuration.intervalProperties, function(intervalPropertyLocation) {

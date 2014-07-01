@@ -120,7 +120,7 @@
                                         }
 
                                         var bucket = response.aggregations.bookingsbytime.buckets[index];
-                                        var commission = (bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value)) * 100;
+                                        var commission = (bucket.bookings.doc_count / parseFloat(bucket.requests.sessions.value < 1000 ? 0 : bucket.requests.sessions.value)) * 100;
 
                                         value[key] = commission;
                                         

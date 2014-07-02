@@ -10,7 +10,7 @@
           "host": "http://logs.laterooms.com:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
-            { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
           ],
           "queries": {
             "today": {

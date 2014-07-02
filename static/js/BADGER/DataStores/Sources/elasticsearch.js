@@ -42,6 +42,38 @@
 		return unitMappings[interval + units];
 	}
 
+	var defaultRangeProperties = {
+		"@timestamp": { "start": "from", "end": "to" },
+		"extended_bounds": { "start": "min", "end": "max" }
+	};
+
+
+	function getTimeProperties(timePropertyLocation) {
+		var startProperty = defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].start ? defaultRangeProperties[lastProperty].start : 'from';
+		var endProperty = defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].end ? defaultRangeProperties[lastProperty].end : 'to';
+
+		if(typeof timePropertyLocation !== 'string') {
+			startProperty = timePropertyLocation.start;
+			endProperty = timePropertyLocation.end;
+			timePropertyLocation = timePropertyLocation.property;
+		}
+
+		var lastDot = timePropertyLocation.lastIndexOf('.');
+		var lastProperty = lastDot > -1 ? timePropertyLocation.substring(lastDot + 1) : timePropertyLocation;
+
+		if(defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].start) {
+			startProperty = defaultRangeProperties[lastProperty].start;
+		}
+		if(defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].end) {
+			endProperty = defaultRangeProperties[lastProperty].end;
+		}
+
+		return {
+			start: timePropertyLocation + '.' + startProperty,
+			end: timePropertyLocation + '.' + endProperty
+		};
+	}
+
 	function mapTimeFrameToFilter(interval, units) {
 		return 'now-' + interval + units[0];	
 	}
@@ -76,17 +108,10 @@
 			 			}
 
 						_.each(configuration.timeProperties, function(timePropertyLocation) {
-							var startProperty = 'from';
-							var endProperty = 'to';
-
-							if(typeof timePropertyLocation !== 'string') {
-								startProperty = timePropertyLocation.start;
-								endProperty = timePropertyLocation.end;
-								timePropertyLocation = timePropertyLocation.property;
-							}
-
-							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'));
-							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z'));
+							var timeProperties = getTimeProperties(timePropertyLocation);
+							
+							setValueOnSubProperty(query, timeProperties.start, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'));
+							setValueOnSubProperty(query, timeProperties.end, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z'));
 						});
 
 			 			if(indexDate.zone() < 0) {
@@ -135,17 +160,10 @@
 			 			}
 
 						_.each(configuration.timeProperties, function(timePropertyLocation) {
-			 				var startProperty = 'from';
-							var endProperty = 'to';
+							var timeProperties = getTimeProperties(timePropertyLocation);
 
-							if(typeof timePropertyLocation !== 'string') {
-								startProperty = timePropertyLocation.start;
-								endProperty = timePropertyLocation.end;
-								timePropertyLocation = timePropertyLocation.property;
-							}
-
-							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, range.start);
-							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, range.end);
+							setValueOnSubProperty(query, timeProperties.start, range.start);
+							setValueOnSubProperty(query, timeProperties.end, range.end);
 						});
 
 						_.each(configuration.intervalProperties, function(intervalPropertyLocation) {

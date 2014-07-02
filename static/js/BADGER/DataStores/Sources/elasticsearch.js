@@ -78,6 +78,30 @@
 		return 'now-' + interval + units[0];	
 	}
 
+	var timeFrameMappers = {
+		'daysAgo': function(timeFrame, queryItem) {
+			var dayOffset = parseInt(timeFrame.timeFrame, 10);
+			var day = moment().add('d', -dayOffset);
+
+			if(queryItem.dayOffset) {
+				day.add('d', queryItem.dayOffset);
+			}
+
+			return {
+				interval: '15m',
+			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
+		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z')
+			};
+		}
+	};
+
+	var defaultTimeFrameMapper = function(timeFrame) {
+		return {
+			start: mapTimeFrameToFilter(timeFrame.timeFrame, timeFrame.units),
+			interval: mapTimeFrameToInterval(timeFrame.timeFrame, timeFrame.units)
+		};
+	}
+
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
 		var logstashIndexDate = moment().format('YYYY.MM.DD');
 
@@ -92,45 +116,35 @@
                 	TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', configuration.defaultTimeFrame);
 			 	}
 
+	 			var timeFrameMapper = timeFrameMappers[timeFrame.units] || defaultTimeFrameMapper; 
+
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
 			 		var oldestIndexRequired = moment().subtract(timeFrame.timeFrame, timeFrame.units);
 			 		var currentDate = moment();
 			 		var indicies = [];
 		 			var interval;
-		 			var range;
-
+		 			var range = timeFrameMapper(timeFrame, queryItem);
+		 			
 		 			if(timeFrame.units === 'daysAgo') {
-		 				var dayOffset = parseInt(timeFrame.timeFrame, 10);
-		 				var day = moment().add('d', -dayOffset);
+						var dayOffset = parseInt(timeFrame.timeFrame, 10);
+						var day = moment().add('d', -dayOffset);
+						
+						if(queryItem.dayOffset) {
+							day.add('d', queryItem.dayOffset);
+						}
 
-		 				if(queryItem.dayOffset) {
-		 					day.add('d', queryItem.dayOffset);
-		 				}
-
-		 				interval = "15m";
-		 				range = {
-		 				 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
-		 			 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z')
-		 				};
-
-			 			if(day.zone() < 0) {
-			 				var dayBefore = moment(day).add('d', -1);
-			 				indicies.push('logstash-' + dayBefore.format('YYYY.MM.DD'));
-			 			}
-			 			
-			 			indicies.push('logstash-' + day.format('YYYY.MM.DD'));
-			 			
-			 			if(day.zone() > 0) {
-			 				var dayAfter = moment(day).add('d', 1);
-			 				indicies.push('logstash-' + dayAfter.format('YYYY.MM.DD'));
-			 			}
-		 			}
-		 			else {
-		 				interval = mapTimeFrameToInterval(timeFrame.timeFrame, timeFrame.units);
-		 				range = {
-		 					start: mapTimeFrameToFilter(timeFrame.timeFrame, timeFrame.units)
-		 				};
+						if(day.zone() < 0) {
+							var dayBefore = moment(day).add('d', -1);
+							indicies.push('logstash-' + dayBefore.format('YYYY.MM.DD'));
+						}
+						
+						indicies.push('logstash-' + day.format('YYYY.MM.DD'));
+						
+						if(day.zone() > 0) {
+							var dayAfter = moment(day).add('d', 1);
+							indicies.push('logstash-' + dayAfter.format('YYYY.MM.DD'));
+						}
 		 			}
 
 					_.each(configuration.timeProperties, function(timePropertyLocation) {
@@ -145,7 +159,7 @@
 					});
 
 					_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
-						setValueOnSubProperty(query, intervalPropertyLocation, interval);
+						setValueOnSubProperty(query, intervalPropertyLocation, range.interval);
 					});
 
 			 		while(currentDate.unix() > oldestIndexRequired.unix()) {

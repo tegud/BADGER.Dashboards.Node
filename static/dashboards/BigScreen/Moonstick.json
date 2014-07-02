@@ -16,8 +16,8 @@
             "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.errorsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.errorsbytime.date_histogram.interval"
@@ -84,8 +84,8 @@
               { "value": "legacy.percentiles.values.50|0", "property": "legacy" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.responsetime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.responsetime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.responsetime.date_histogram.interval"

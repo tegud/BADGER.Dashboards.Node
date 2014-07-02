@@ -13,8 +13,8 @@
               { "value": "legacy.doc_count", "property": "legacy" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.sessionsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.sessionsbytime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.sessionsbytime.date_histogram.interval"
@@ -113,8 +113,8 @@
               "type": "percentiles"
             },
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.responsetime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.responsetime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.responsetime.date_histogram.interval"

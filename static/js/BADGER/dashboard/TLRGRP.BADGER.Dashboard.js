@@ -18,20 +18,6 @@
             .on('click', '.time-control-options li', function() {
                 var timeFrame = $(this).data('timeFrame');
                 var timeFrameUnits = $(this).data('timeFrameUnits');
-                var timeFrameText = timeFrame + ' ' + timeFrameUnits[0].toUpperCase() + timeFrameUnits.substring(1);
-                var timeFrameEndingText;
-
-                if(timeFrameUnits === 'daysAgo') {
-                    var day = moment().add('d', -timeFrame);
-                    timeFrameText = dayNiceText[timeFrame] || day.format('dddd');
-                    timeFrameEndingText = day.format('DD MMM YYYY');
-                } else if (timeFrame === 1 && timeFrameText[timeFrameText.length -1] === 's') {
-                    timeFrameText = timeFrameText.substring(0, timeFrameText.length -1);
-                    timeFrameEndingText = 'Ending now';
-                }
-
-                $('.time-period', '#time-control-button').text(timeFrameText);
-                $('.time-period-end-point', '#time-control-button').text(timeFrameEndingText);
 
                 $(this)
                     .addClass('selected')
@@ -42,18 +28,46 @@
 
                 $('#time-controls').addClass('hidden');
 
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Selected', {
+                    timeFrame: timeFrame,
+                    units: timeFrameUnits,
+                    userSet: true
+                });
+
                 TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
                     timeFrame: timeFrame,
                     units: timeFrameUnits,
-                    text: timeFrameText
+                    userSet: true
                 });
             });
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(data) {
+            var timeFrameText = data.timeFrame + ' ' + data.units[0].toUpperCase() + data.units.substring(1);
+            var timeFrameEndingText;
+
+            if(data.units === 'daysAgo') {
+                var day = moment().add('d', -data.timeFrame);
+                timeFrameText = dayNiceText[data.timeFrame] || day.format('dddd');
+                timeFrameEndingText = day.format('DD MMM YYYY');
+            } else {
+                timeFrameEndingText = 'Ending now';
+                if (data.timeFrame === 1 && timeFrameText[timeFrameText.length -1] === 's') {
+                    timeFrameText = timeFrameText.substring(0, timeFrameText.length -1);
+                }
+            }
+
+            $('.time-control-options li', container).removeClass('selected');
+            $('#time-control-' + data.timeFrame + '-' + data.units).addClass('selected');
+
+            $('.time-period', '#time-control-button').text(timeFrameText);
+            $('.time-period-end-point', '#time-control-button').text(timeFrameEndingText);
+        });
 
         var currentDate = moment().add('d', -2);
         var thisWeeksDays = '';
 
         for(var x = 2; x < 7; x++) {
-            thisWeeksDays += '<li data-time-frame="' + x + '" data-time-frame-units="daysAgo">' + currentDate.format('ddd') + '</li>';
+            thisWeeksDays += '<li id="time-control-' + x + '-daysAgo" data-time-frame="' + x + '" data-time-frame-units="daysAgo">' + currentDate.format('ddd') + '</li>';
             currentDate.add('d', -1);
         }
 

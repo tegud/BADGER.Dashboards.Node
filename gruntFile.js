@@ -136,7 +136,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jshint', 'mochacli']);
+    grunt.registerTask('default', ['jshint', 'mochacli', 'karma']);
     grunt.registerTask('test', ['jshint', 'mochacli', 'karma']);
     grunt.registerTask('build', ['clean', 'copy', 'useminPrepare', 'concat', 'uglify', 'filerev:images', 'usemin:css', 'filerev:css', 'filerev:js', 'usemin:html', 'clean:tmp']);
     grunt.registerTask('serve', ['env:dev', 'startServer']);

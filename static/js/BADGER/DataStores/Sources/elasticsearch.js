@@ -42,8 +42,64 @@
 		return unitMappings[interval + units];
 	}
 
+	var defaultRangeProperties = {
+		"@timestamp": { "start": "from", "end": "to" },
+		"extended_bounds": { "start": "min", "end": "max" }
+	};
+
+
+	function getTimeProperties(timePropertyLocation) {
+		var startProperty = defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].start ? defaultRangeProperties[lastProperty].start : 'from';
+		var endProperty = defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].end ? defaultRangeProperties[lastProperty].end : 'to';
+
+		if(typeof timePropertyLocation !== 'string') {
+			startProperty = timePropertyLocation.start;
+			endProperty = timePropertyLocation.end;
+			timePropertyLocation = timePropertyLocation.property;
+		}
+
+		var lastDot = timePropertyLocation.lastIndexOf('.');
+		var lastProperty = lastDot > -1 ? timePropertyLocation.substring(lastDot + 1) : timePropertyLocation;
+
+		if(defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].start) {
+			startProperty = defaultRangeProperties[lastProperty].start;
+		}
+		if(defaultRangeProperties[lastProperty] && defaultRangeProperties[lastProperty].end) {
+			endProperty = defaultRangeProperties[lastProperty].end;
+		}
+
+		return {
+			start: timePropertyLocation + '.' + startProperty,
+			end: timePropertyLocation + '.' + endProperty
+		};
+	}
+
 	function mapTimeFrameToFilter(interval, units) {
 		return 'now-' + interval + units[0];	
+	}
+
+	var timeFrameMappers = {
+		'daysAgo': function(timeFrame, queryItem) {
+			var dayOffset = parseInt(timeFrame.timeFrame, 10);
+			var day = moment().add('d', -dayOffset);
+
+			if(queryItem.dayOffset) {
+				day.add('d', queryItem.dayOffset);
+			}
+
+			return {
+				interval: '15m',
+			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
+		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z')
+			};
+		}
+	};
+
+	var defaultTimeFrameMapper = function(timeFrame) {
+		return {
+			start: mapTimeFrameToFilter(timeFrame.timeFrame, timeFrame.units),
+			interval: mapTimeFrameToInterval(timeFrame.timeFrame, timeFrame.units)
+		};
 	}
 
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
@@ -52,68 +108,63 @@
 		return {
 			 requestBuilder: function(options) {
 			 	var queries = configuration.queries || [ { query: configuration.query } ];
+			 	var timeFrame = options.timeFrame;
+
+			 	if(!timeFrame.userSet && configuration.defaultTimeFrame) {
+			 		timeFrame = configuration.defaultTimeFrame;
+
+                	TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', configuration.defaultTimeFrame);
+			 	}
+
+	 			var timeFrameMapper = timeFrameMappers[timeFrame.units] || defaultTimeFrameMapper; 
 
 			 	return _.map(queries, function(queryItem, key) {
-			 		var query = queryItem.query;
-			 		var oldestIndexRequired = moment().subtract(options.timeFrame.timeFrame, options.timeFrame.units);
+			 		var query = JSON.parse(JSON.stringify(queryItem.query));
+			 		var oldestIndexRequired = moment().subtract(timeFrame.timeFrame, timeFrame.units);
 			 		var currentDate = moment();
 			 		var indicies = [];
+		 			var interval;
+		 			var range = timeFrameMapper(timeFrame, queryItem);
+		 			
+		 			if(timeFrame.units === 'daysAgo') {
+						var dayOffset = parseInt(timeFrame.timeFrame, 10);
+						var day = moment().add('d', -dayOffset);
+						
+						if(queryItem.dayOffset) {
+							day.add('d', queryItem.dayOffset);
+						}
 
-			 		if(queryItem.index) {
-			 			var logStashTimeFillpointRegex = /\{([0-9a-zA-Z]+)\}/i;
-			 			var matches = logStashTimeFillpointRegex.exec(queryItem.index);
-			 			var indexDate = moment();
+						if(day.zone() < 0) {
+							var dayBefore = moment(day).add('d', -1);
+							indicies.push('logstash-' + dayBefore.format('YYYY.MM.DD'));
+						}
+						
+						indicies.push('logstash-' + day.format('YYYY.MM.DD'));
+						
+						if(day.zone() > 0) {
+							var dayAfter = moment(day).add('d', 1);
+							indicies.push('logstash-' + dayAfter.format('YYYY.MM.DD'));
+						}
+		 			}
 
-			 			var offsets = {
-			 				'yesterday': -1,
-			 				'lastWeek': -7,
-			 				'2weeksago': -14,
-			 				'lastMonth': -28
-			 			};
+					_.each(configuration.timeProperties, function(timePropertyLocation) {
+						var timeProperties = getTimeProperties(timePropertyLocation);
 
-			 			if(offsets[matches[1]]) {
-			 				indexDate.add('d', offsets[matches[1]]);
-			 			}
+						if(range.start) {
+							setValueOnSubProperty(query, timeProperties.start, range.start);
+						}
+						if(range.end) {
+							setValueOnSubProperty(query, timeProperties.end, range.end);
+						}
+					});
 
-						_.each(configuration.timeProperties, function(timePropertyLocation) {
-							var startProperty = 'from';
-							var endProperty = 'to';
+					_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
+						setValueOnSubProperty(query, intervalPropertyLocation, range.interval);
+					});
 
-							if(typeof timePropertyLocation !== 'string') {
-								startProperty = timePropertyLocation.start;
-								endProperty = timePropertyLocation.end;
-								timePropertyLocation = timePropertyLocation.property;
-							}
-
-							setValueOnSubProperty(query, timePropertyLocation + '.' + startProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'));
-							setValueOnSubProperty(query, timePropertyLocation + '.' + endProperty, moment(indexDate.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z'));
-						});
-
-			 			if(indexDate.zone() < 0) {
-			 				var dayBefore = moment(indexDate).add('d', -1);
-			 				indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, dayBefore.format('YYYY.MM.DD')));
-			 			}
-			 			
-			 			indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, indexDate.format('YYYY.MM.DD')));
-			 			
-			 			if(indexDate.zone() > 0) {
-			 				var dayAfter = moment(indexDate).add('d', 1);
-			 				indicies.push(queryItem.index.replace(logStashTimeFillpointRegex, dayAfter.format('YYYY.MM.DD')));
-			 			}
-			 		}
-			 		else {
-						_.each(configuration.timeProperties, function(timePropertyLocation) {
-							setValueOnSubProperty(query, timePropertyLocation, mapTimeFrameToFilter(options.timeFrame.timeFrame, options.timeFrame.units));
-						});
-
-						_.each(configuration.intervalProperties, function(intervalPropertyLocation) {
-							setValueOnSubProperty(query, intervalPropertyLocation, mapTimeFrameToInterval(options.timeFrame.timeFrame, options.timeFrame.units));
-						});
-
-				 		while(currentDate.unix() > oldestIndexRequired.unix()) {
-				 			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
-				 			currentDate = currentDate.subtract(1, 'day');
-				 		}
+			 		while(currentDate.unix() > oldestIndexRequired.unix()) {
+			 			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
+			 			currentDate = currentDate.subtract(1, 'day');
 			 		}
 
 					 return {

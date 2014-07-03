@@ -10,11 +10,14 @@
           "host": "http://logs.laterooms.com:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
-            { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
           ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
           "queries": {
             "today": {
-              "index": "logstash-{today}",
               "query": {
                   "query": {
                     "filtered": {
@@ -101,7 +104,7 @@
               }
             },
             "yesterday": {
-              "index": "logstash-{yesterday}",
+              "dayOffset": -1,
               "query": {
                 "query": {
                   "filtered": {
@@ -188,7 +191,7 @@
             }
             },
             "lastWeek": {
-              "index": "logstash-{lastWeek}",
+              "dayOffset": -7,
               "query": {
                   "query": {
                     "filtered": {
@@ -275,7 +278,7 @@
               }
             },
             "2weeksago": {
-              "index": "logstash-{2weeksago}",
+              "dayOffset": -14,
               "query": {
                   "query": {
                     "filtered": {

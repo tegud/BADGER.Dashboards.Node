@@ -14,8 +14,8 @@
               { "value": "doc_count", "property": "bookings" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -101,8 +101,8 @@
               { "value": "totalTTV.value", "property": "ttv" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"
@@ -195,8 +195,8 @@
                 "type": "sessionCommission"
             },
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              { "property": "aggs.bookingsbytime.date_histogram.extended_bounds", "start": "min", "end": "max" }
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"

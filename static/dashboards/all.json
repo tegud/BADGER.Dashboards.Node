@@ -49,17 +49,9 @@
             "id": "Status",
             "name": "Status",
             "views": {
-                "LateRooms": {
-                    "id": "LateRooms",
-                    "name": "LateRooms"
-                },
-                "AsiaRooms": {
-                    "id": "AsiaRooms",
-                    "name": "AsiaRooms"
-                },
-                "Connectivity": {
-                    "id": "Connectivity",
-                    "name": "Connectivity"
+                "All": {
+                    "id": "All",
+                    "name": "All"
                 }
             }
         },

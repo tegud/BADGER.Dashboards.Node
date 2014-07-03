@@ -222,7 +222,7 @@
             });
         }
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrameData) {
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Selected', function(timeFrameData) {
             stateMachine.handle('stop');
             
             currentTimeFrame = timeFrameData;

@@ -20,8 +20,8 @@
               { "value": "javascripterrors.doc_count", "property": "javascript" }
             ],
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.errorsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.errorsbytime.date_histogram.interval"
@@ -102,8 +102,8 @@
             "aggregateProperty": "bookingsbytime",
             "valueProperty": "totalCommission.value",
             "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp.from",
-              "aggs.bookingsbytime.date_histogram.extended_bounds.min"
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.bookingsbytime.date_histogram.extended_bounds"
             ],
             "intervalProperties": [
               "aggs.bookingsbytime.date_histogram.interval"

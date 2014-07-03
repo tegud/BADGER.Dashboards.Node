@@ -31,19 +31,26 @@
     </nav>
 
     <div id="time-controls" class="hidden">
-        <label class="time-control-label">Select Timeframe: </label>
+        <label class="time-control-label">From Now: </label>
         <ul class="time-control-options">
-            <li data-time-frame="15" data-time-frame-units="minutes">15<div class="time-control-unit">mins</div></li>
-            <li data-time-frame="30" data-time-frame-units="minutes">30<div class="time-control-unit">mins</div></li>
-            <li data-time-frame="1" data-time-frame-units="hours" class="selected">1<div class="time-control-unit">hour</div></li>
-            <li data-time-frame="6" data-time-frame-units="hours">6<div class="time-control-unit">hours</div></li>
-            <li data-time-frame="12" data-time-frame-units="hours">12<div class="time-control-unit">hours</div></li>
-            <li data-time-frame="1" data-time-frame-units="days">1<div class="time-control-unit">day</div></li>
-            <li data-time-frame="2" data-time-frame-units="days">2<div class="time-control-unit">days</div></li>
-            <li data-time-frame="3" data-time-frame-units="days">3<div class="time-control-unit">days</div></li>
-            <li data-time-frame="1" data-time-frame-units="weeks">1<div class="time-control-unit">week</div></li>
-            <li data-time-frame="4" data-time-frame-units="weeks">4<div class="time-control-unit">weeks</div></li>
-        </ul><!--
+            <li id="time-control-15-minutes" data-time-frame="15" data-time-frame-units="minutes">15<div class="time-control-unit">mins</div></li>
+            <li id="time-control-30-minutes" data-time-frame="30" data-time-frame-units="minutes">30<div class="time-control-unit">mins</div></li>
+            <li id="time-control-1-hours" data-time-frame="1" data-time-frame-units="hours" class="selected">1<div class="time-control-unit">hour</div></li>
+            <li id="time-control-6-hours" data-time-frame="6" data-time-frame-units="hours">6<div class="time-control-unit">hours</div></li>
+            <li id="time-control-12-hours" data-time-frame="12" data-time-frame-units="hours">12<div class="time-control-unit">hours</div></li>
+            <li id="time-control-1-days" data-time-frame="1" data-time-frame-units="days">1<div class="time-control-unit">day</div></li>
+            <li id="time-control-2-days" data-time-frame="2" data-time-frame-units="days">2<div class="time-control-unit">days</div></li>
+            <li id="time-control-3-days" data-time-frame="3" data-time-frame-units="days">3<div class="time-control-unit">days</div></li>
+            <li id="time-control-1-weeks" data-time-frame="1" data-time-frame-units="weeks">1<div class="time-control-unit">week</div></li>
+            <li id="time-control-4-weeks" data-time-frame="4" data-time-frame-units="weeks">4<div class="time-control-unit">weeks</div></li>
+        </ul>
+
+        <label class="time-control-label">Last Week: </label>
+        <ul class="time-control-options days">
+            <li id="time-control-0-daysAgo" data-time-frame="0" data-time-frame-units="daysAgo">Today</li>
+            <li id="time-control-1-daysAgo" data-time-frame="1" data-time-frame-units="daysAgo">Yesterday</li>
+        </ul>
+        <!--
         <div class="button-container">
             <button>GO!</button>
         </div>-->

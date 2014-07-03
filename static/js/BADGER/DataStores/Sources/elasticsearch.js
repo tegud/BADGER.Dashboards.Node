@@ -120,33 +120,10 @@
 
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
-			 		var oldestIndexRequired = moment().subtract(timeFrame.timeFrame, timeFrame.units);
-			 		var currentDate = moment();
 			 		var indicies = [];
 		 			var interval;
 		 			var range = timeFrameMapper(timeFrame, queryItem);
 		 			
-		 			if(timeFrame.units === 'daysAgo') {
-						var dayOffset = parseInt(timeFrame.timeFrame, 10);
-						var day = moment().add('d', -dayOffset);
-						
-						if(queryItem.dayOffset) {
-							day.add('d', queryItem.dayOffset);
-						}
-
-						if(day.zone() < 0) {
-							var dayBefore = moment(day).add('d', -1);
-							indicies.push('logstash-' + dayBefore.format('YYYY.MM.DD'));
-						}
-						
-						indicies.push('logstash-' + day.format('YYYY.MM.DD'));
-						
-						if(day.zone() > 0) {
-							var dayAfter = moment(day).add('d', 1);
-							indicies.push('logstash-' + dayAfter.format('YYYY.MM.DD'));
-						}
-		 			}
-
 					_.each(configuration.timeProperties, function(timePropertyLocation) {
 						var timeProperties = getTimeProperties(timePropertyLocation);
 
@@ -162,9 +139,42 @@
 						setValueOnSubProperty(query, intervalPropertyLocation, range.interval);
 					});
 
-			 		while(currentDate.unix() > oldestIndexRequired.unix()) {
-			 			indicies.push('logstash-' + currentDate.format('YYYY.MM.DD')); 
-			 			currentDate = currentDate.subtract(1, 'day');
+					var oldestIndexRequired;
+					var latestIndexRequired;
+			 		var day = moment();
+
+		 			if(timeFrame.units === 'daysAgo') {
+						var dayOffset = parseInt(timeFrame.timeFrame, 10);
+						day.add('d', -dayOffset);
+
+						if(queryItem.dayOffset) {
+							day.add('d', queryItem.dayOffset);
+						}
+		 			}
+		 			else {
+				 		oldestIndexRequired = day.subtract(timeFrame.timeFrame, timeFrame.units);
+		 			}
+
+					if(day.zone() < 0) {
+						oldestIndexRequired = moment(day);
+						oldestIndexRequired.add('d', -1);
+					}
+					
+					if(day.zone() > 0) {
+						latestIndexRequired = moment(day);
+						latestIndexRequired.add('d', -1);
+					}
+
+		 			if(oldestIndexRequired) {
+		 				day = oldestIndexRequired;
+		 			}
+		 			if(!latestIndexRequired) {
+		 				latestIndexRequired = moment();
+		 			}
+
+			 		while(parseInt(day.format('YYYYMMDD'), 10) <= parseInt(latestIndexRequired.format('YYYYMMDD'), 10)) {
+			 			indicies.push('logstash-' + day.format('YYYY.MM.DD')); 
+			 			day.add('d', 1);
 			 		}
 
 					 return {

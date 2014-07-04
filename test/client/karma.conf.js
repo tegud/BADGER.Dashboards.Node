@@ -8,6 +8,7 @@ module.exports = function(config) {
             'static/js/lib/lodash.js',
             'static/js/lib/mustache.js',
             'static/js/lib/jquery-2.0.0.js',
+            'static/js/lib/moment.js',
             'static/js/BADGER/**/*.js',
             'test/client/tests/**/*.js',
             'test/client/lib/expect.js',

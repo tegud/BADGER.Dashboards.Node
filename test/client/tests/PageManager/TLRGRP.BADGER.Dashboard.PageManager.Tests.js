@@ -13,7 +13,7 @@
 
 			TLRGRP.BADGER.Dashboard.clear();
 			TLRGRP.BADGER.Dashboard.register({ 
-				id: 'Overview',
+				id: 'BigScreen',
 				views: {
 					Summary: {
 						id: 'Summary',
@@ -54,8 +54,8 @@
 		});
 
 		describe('url does not specify a dashboard or view', function() {
-			it('the Overview dashboard is selected', function() {
-				var expectedDashboard = 'Overview';
+			it('the Bigscreen dashboard is selected', function() {
+				var expectedDashboard = 'BigScreen';
 				var actualDashboard;
 
 				TLRGRP.messageBus.subscribe('TLRGRP.BADGER.DashboardAndView.Selected', function(newDashboardInfo) {
@@ -148,7 +148,7 @@
 					};
 
 					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
-						dashboard: 'Overview'
+						dashboard: 'BigScreen'
 					});
 
 					expect(actualNewUrl).to.be(expectedNewUrl);
@@ -157,7 +157,7 @@
 
 			describe('a non default view is selected', function() {
 				it('sets the url to dashboard/view', function() {
-					var expectedNewUrl = '/Overview/Traffic';
+					var expectedNewUrl = '/BigScreen/Traffic';
 					var actualNewUrl;
 					var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
 
@@ -166,7 +166,7 @@
 					};
 
 					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
-						dashboard: 'Overview',
+						dashboard: 'BigScreen',
 						view: 'Traffic'
 					});
 
@@ -185,7 +185,7 @@
 					};
 
 					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
-						dashboard: 'Overview',
+						dashboard: 'BigScreen',
 						view: 'Summary'
 					});
 

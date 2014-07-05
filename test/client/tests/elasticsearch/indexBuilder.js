@@ -106,7 +106,7 @@
 				});
 
 				describe('and user is in a timezone which is behind UTC', function() {
-					it.only('returns index with next date.', function () {
+					it('returns index with next date.', function () {
 						currentDate = '2014-04-05 11:00:00-01:00';
 
 						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({

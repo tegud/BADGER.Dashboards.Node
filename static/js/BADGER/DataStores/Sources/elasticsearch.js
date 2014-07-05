@@ -120,7 +120,6 @@
 
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
-			 		var indicies = [];
 		 			var interval;
 		 			var range = timeFrameMapper(timeFrame, queryItem);
 		 			
@@ -139,43 +138,8 @@
 						setValueOnSubProperty(query, intervalPropertyLocation, range.interval);
 					});
 
-					var oldestIndexRequired;
-					var latestIndexRequired;
-			 		var day = moment();
-
-		 			if(timeFrame.units === 'daysAgo') {
-						var dayOffset = parseInt(timeFrame.timeFrame, 10);
-						day.add('d', -dayOffset);
-
-						if(queryItem.dayOffset) {
-							day.add('d', queryItem.dayOffset);
-						}
-		 			}
-		 			else {
-				 		oldestIndexRequired = day.subtract(timeFrame.timeFrame, timeFrame.units);
-		 			}
-
-					if(day.zone() < 0) {
-						oldestIndexRequired = moment(day);
-						oldestIndexRequired.add('d', -1);
-					}
-					
-					if(day.zone() > 0) {
-						latestIndexRequired = moment(day);
-						latestIndexRequired.add('d', -1);
-					}
-
-		 			if(oldestIndexRequired) {
-		 				day = oldestIndexRequired;
-		 			}
-		 			if(!latestIndexRequired) {
-		 				latestIndexRequired = moment();
-		 			}
-
-			 		while(parseInt(day.format('YYYYMMDD'), 10) <= parseInt(latestIndexRequired.format('YYYYMMDD'), 10)) {
-			 			indicies.push('logstash-' + day.format('YYYY.MM.DD')); 
-			 			day.add('d', 1);
-			 		}
+					var indexBuilder = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({ prefix: 'logstash-' });
+					var indicies = indexBuilder.buildFromTimeFrame(timeFrame, queryItem);
 
 					 return {
 					 	id: key,

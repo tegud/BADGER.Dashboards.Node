@@ -7,7 +7,9 @@
 		return { 
 			buildFromTimeFrame: function(timeFrame, queryItem) {
 				var indicies = [];
-				var day = moment().utc();
+				var today = moment();
+				var timeZone = today.zone();
+				var day = today.utc();
 				var oldestIndexRequired;
 				var latestIndexRequired = moment(day);
 
@@ -22,9 +24,18 @@
 	 				oldestIndexRequired = day.subtract(timeFrame.timeFrame, timeFrame.units);
 	 			}
 
+				if(timeZone < 0) {
+					oldestIndexRequired.add('d', -1);
+				}
+					
+				if(timeZone > 0) {
+					latestIndexRequired.add('d', 1);
+				}
+
 				day = oldestIndexRequired;
 
-				while(parseInt(day.format('YYYYMMDD'), 10) <= parseInt(latestIndexRequired.format('YYYYMMDD'), 10)) {
+				var indexLimit = parseInt(latestIndexRequired.format('YYYYMMDD'), 10);
+				while(parseInt(day.format('YYYYMMDD'), 10) <= indexLimit) {
 					indicies.push(options.prefix + day.format('YYYY.MM.DD')); 
 					day.add('d', 1);
 				}

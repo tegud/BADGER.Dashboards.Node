@@ -289,6 +289,29 @@
 				expect(actualNewUrl).to.be(expectedNewUrl);
 			});
 
+			it('pushes timeFrame to url state for relative timeFrame', function() {
+				var expectedNewUrl = '/ByPage/PerSec/15mins';
+				var actualNewUrl = '';
+				var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					actualNewUrl = pageInfo.url;
+				};
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ByPage',
+					view: 'PerSec'
+				});
+
+	            TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+	            	units: 'mins',
+	            	timeFrame: 15,
+	            	userSet: true
+	            });
+
+				expect(actualNewUrl).to.be(expectedNewUrl);
+			});
+
 			it('doesn\'t push timeFrame to url state when timeFrame was not user set', function() {
 				var expectedNewUrl = '/ByPage';
 				var actualNewUrl = '';

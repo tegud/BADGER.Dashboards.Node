@@ -29,6 +29,7 @@
         "TW": true,
         "$": true,
         "expect": true,
-        "window": true
+        "window": true,
+        "moment": true
     }
 }

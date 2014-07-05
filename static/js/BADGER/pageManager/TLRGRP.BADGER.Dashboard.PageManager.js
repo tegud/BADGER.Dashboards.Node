@@ -89,11 +89,54 @@
             return;
         }
 
-        function buildUrl(dashboardId, viewId) {
+        function getTimeFrameFromUrl() {
+            var currentUrl = getCurrentUrlWithoutBase();
+            var splitUrl = currentUrl.split('/');
+
+            if(splitUrl.length > 3) {
+                var timeFrameUrlSegment = splitUrl[3];
+                var timeFrame;
+
+                var days = {
+                    'Today': 0,
+                    'Yesterday': -1
+                };
+
+                if(typeof days[timeFrameUrlSegment] !== 'undefined') {
+                    return {
+                        timeFrame: days[timeFrameUrlSegment],
+                        units: 'daysAgo',
+                        userSet: true
+                    };
+                }
+
+                var daysAgoRegex = /([0-9]+)DaysAgo/;
+                var matches = daysAgoRegex.exec(timeFrameUrlSegment);
+
+                if(matches) {
+                    return {
+                        timeFrame: parseInt(matches, 10),
+                        units: 'daysAgo',
+                        userSet: true
+                    };
+                }
+            }
+        }
+
+        function buildUrl(dashboardId, viewId, timeFrame) {
             var url = (options.baseUrl || '');
             var dashboard = TLRGRP.BADGER.Dashboard.getById(dashboardId);
 
-            if(viewId && !dashboard.views[viewId].isDefault) {
+            var daysAgo = {
+                '0': 'Today',
+                '1': 'Yesterday'
+            }
+
+            if(timeFrame && timeFrame.userSet) {
+                return url + '/' + dashboardId + '/' + viewId + '/' + (daysAgo[timeFrame.timeFrame] || (timeFrame.timeFrame + 'DaysAgo'));
+            }
+
+            if(viewId && dashboard.views[viewId] && !dashboard.views[viewId].isDefault) {
                 return url + '/' + dashboardId + '/' + viewId;
             }
 
@@ -104,10 +147,24 @@
             return url + '/' + dashboardId;
         }
 
+        var currentTimeFrame;
+        var dashboard;
+        var view;
+
         function subscribeToMessageBusEvents() {
+            TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrame) {
+                currentTimeFrame = timeFrame;
+
+                TLRGRP.BADGER.URL.pushState({ 
+                    url: buildUrl(dashboard, view, currentTimeFrame),
+                    dashboard: dashboard,
+                    view: view
+                });
+            });
+
             TLRGRP.messageBus.subscribe('TLRGRP.BADGER.DashboardAndView.Selected', function(dashboardAndView) {
-                var dashboard = dashboardAndView.dashboard;
-                var view = dashboardAndView.view;
+                dashboard = dashboardAndView.dashboard;
+                view = dashboardAndView.view;
                 var selectedDashboard = TLRGRP.BADGER.Dashboard.getById(dashboard);
 
                 currentDashboard = dashboard;
@@ -130,7 +187,7 @@
                 });
 
                 TLRGRP.BADGER.URL.pushState({ 
-                    url: buildUrl(dashboard, view),
+                    url: buildUrl(dashboard, view, currentTimeFrame),
                     dashboard: dashboard,
                     view: view
                 });
@@ -145,6 +202,13 @@
         }
 
         subscribeToMessageBusEvents();
+
+        var urlTimeFrame = getTimeFrameFromUrl();
+
+        if(urlTimeFrame) {
+            currentTimeFrame = urlTimeFrame;
+            TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', urlTimeFrame);
+        }
 
         TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
             dashboard: currentDashboard,

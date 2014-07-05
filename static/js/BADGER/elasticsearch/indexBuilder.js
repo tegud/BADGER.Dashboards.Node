@@ -18,7 +18,8 @@
 					var queryItemDayOffset = queryItem && queryItem.dayOffset ? queryItem.dayOffset : 0;
 					day.add('d', -dayOffset + queryItemDayOffset);
 
-	 				oldestIndexRequired = day;
+	 				oldestIndexRequired = moment(day);
+	 				latestIndexRequired = moment(day);
 	 			}
 	 			else {
 	 				oldestIndexRequired = day.subtract(timeFrame.timeFrame, timeFrame.units);

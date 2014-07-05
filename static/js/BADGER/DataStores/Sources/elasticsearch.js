@@ -4,6 +4,8 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.DataSource');
 
 	function setValueOnSubProperty(obj, prop, value) {
+		if(typeof value === 'undefined') return;
+		
 		if (typeof prop === "string")
 			 prop = prop.split(".");
 
@@ -103,8 +105,6 @@
 	}
 
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
-		var logstashIndexDate = moment().format('YYYY.MM.DD');
-
 		return {
 			 requestBuilder: function(options) {
 			 	var queries = configuration.queries || [ { query: configuration.query } ];
@@ -120,18 +120,13 @@
 
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
-		 			var interval;
 		 			var range = timeFrameMapper(timeFrame, queryItem);
 		 			
 					_.each(configuration.timeProperties, function(timePropertyLocation) {
 						var timeProperties = getTimeProperties(timePropertyLocation);
 
-						if(range.start) {
-							setValueOnSubProperty(query, timeProperties.start, range.start);
-						}
-						if(range.end) {
-							setValueOnSubProperty(query, timeProperties.end, range.end);
-						}
+						setValueOnSubProperty(query, timeProperties.start, range.start);
+						setValueOnSubProperty(query, timeProperties.end, range.end);
 					});
 
 					_.each(configuration.intervalProperties, function(intervalPropertyLocation) {

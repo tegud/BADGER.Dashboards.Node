@@ -127,13 +127,22 @@
             var url = (options.baseUrl || '');
             var dashboard = TLRGRP.BADGER.Dashboard.getById(dashboardId);
 
-            var daysAgo = {
-                '0': 'Today',
-                '1': 'Yesterday'
-            }
-
             if(timeFrame && timeFrame.userSet) {
-                return url + '/' + dashboardId + '/' + viewId + '/' + (daysAgo[timeFrame.timeFrame] || (timeFrame.timeFrame + 'DaysAgo'));
+                var timeFrameUrl;
+
+                if(timeFrame.units === 'daysAgo') {
+                    var daysAgo = {
+                        '0': 'Today',
+                        '1': 'Yesterday'
+                    };
+
+                    timeFrameUrl = (daysAgo[timeFrame.timeFrame] || (timeFrame.timeFrame + 'DaysAgo'));
+                }
+                else {
+                    timeFrameUrl = timeFrame.timeFrame + timeFrame.units;
+                }
+
+                return url + '/' + dashboardId + '/' + viewId + '/' + timeFrameUrl;
             }
 
             if(viewId && dashboard.views[viewId] && !dashboard.views[viewId].isDefault) {

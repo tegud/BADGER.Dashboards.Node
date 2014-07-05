@@ -136,6 +136,38 @@
 			});
 		});
 
+		describe('url specifies a dashboard, view and timeframe', function() {
+			it('today timeFrame is set', function() {
+				var expectedTimeframe = { timeFrame: 0, units: 'daysAgo', userSet: true };
+				var actualTimeframe;
+
+				TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrame) {
+					actualTimeframe = timeFrame;
+				});
+
+				currentUrl = '/Requests/PerSec/Today';
+
+				new TLRGRP.BADGER.Dashboard.PageManager();
+
+				expect(actualTimeframe).to.eql(expectedTimeframe);
+			});
+
+			it('7 days ago timeFrame is set', function() {
+				var expectedTimeframe = { timeFrame: 7, units: 'daysAgo', userSet: true };
+				var actualTimeframe;
+
+				TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrame) {
+					actualTimeframe = timeFrame;
+				});
+
+				currentUrl = '/Requests/PerSec/7DaysAgo';
+
+				new TLRGRP.BADGER.Dashboard.PageManager();
+
+				expect(actualTimeframe).to.eql(expectedTimeframe);
+			});
+		});
+
 		describe('default dashboard', function() {
 			describe('is selected', function() {
 				it('sets the url to default', function() {
@@ -207,6 +239,75 @@
 				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
 					dashboard: 'ByPage'
 				});
+
+				expect(actualNewUrl).to.be(expectedNewUrl);
+			});
+
+			it('pushes timeFrame to url state for today', function() {
+				var expectedNewUrl = '/ByPage/PerSec/Today';
+				var actualNewUrl = '';
+				var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					actualNewUrl = pageInfo.url;
+				};
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ByPage',
+					view: 'PerSec'
+				});
+
+	            TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+	            	units: 'daysAgo',
+	            	timeFrame: 0,
+	            	userSet: true
+	            });
+
+				expect(actualNewUrl).to.be(expectedNewUrl);
+			});
+
+			it('pushes timeFrame to url state for number of days ago', function() {
+				var expectedNewUrl = '/ByPage/PerSec/7DaysAgo';
+				var actualNewUrl = '';
+				var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					actualNewUrl = pageInfo.url;
+				};
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ByPage',
+					view: 'PerSec'
+				});
+
+	            TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+	            	units: 'daysAgo',
+	            	timeFrame: 7,
+	            	userSet: true
+	            });
+
+				expect(actualNewUrl).to.be(expectedNewUrl);
+			});
+
+			it('doesn\'t push timeFrame to url state when timeFrame was not user set', function() {
+				var expectedNewUrl = '/ByPage';
+				var actualNewUrl = '';
+				var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					actualNewUrl = pageInfo.url;
+				};
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ByPage',
+					view: 'PerSec'
+				});
+
+	            TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+	            	units: 'daysAgo',
+	            	timeFrame: 7,
+	            	userSet: false
+	            });
 
 				expect(actualNewUrl).to.be(expectedNewUrl);
 			});

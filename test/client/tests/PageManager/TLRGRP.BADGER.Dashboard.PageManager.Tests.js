@@ -166,6 +166,21 @@
 
 				expect(actualTimeframe).to.eql(expectedTimeframe);
 			});
+
+			it('doesn\'t clear the dashboard and view', function() {
+				currentUrl = '/Requests/PerSec/7DaysAgo';
+				var expectedUrl = currentUrl;
+				var actualUrl;
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					currentUrl = pageInfo.url;
+					actualUrl = pageInfo.url;
+				};
+
+				new TLRGRP.BADGER.Dashboard.PageManager();
+
+				expect(actualUrl).to.eql(expectedUrl);
+			});
 		});
 
 		describe('default dashboard', function() {

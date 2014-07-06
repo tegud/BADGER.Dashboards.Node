@@ -9,15 +9,20 @@
         refresh: 10000
     };
 
+    var currentTimeFrame = {
+        timeFrame: 1,
+        units: 'hours'
+    };
+
+    TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrameData) {
+        currentTimeFrame = timeFrameData;
+    });
+
     TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore = function (options) {
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var currentTimeout;
         var defaultAjaxOptions = {
             type: 'GET'
-        };
-        var currentTimeFrame = {
-            timeFrame: 1,
-            units: 'hours'
         };
         var stateMachine = nano.Machine({
             states: {

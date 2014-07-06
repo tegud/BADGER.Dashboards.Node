@@ -99,7 +99,7 @@
 
                 var days = {
                     'Today': 0,
-                    'Yesterday': -1
+                    'Yesterday': 1
                 };
 
                 if(typeof days[timeFrameUrlSegment] !== 'undefined') {
@@ -213,6 +213,8 @@
         subscribeToMessageBusEvents();
 
         var urlTimeFrame = getTimeFrameFromUrl();
+        dashboard = currentDashboard;
+        view = getViewFromUrl();
 
         if(urlTimeFrame) {
             currentTimeFrame = urlTimeFrame;
@@ -221,7 +223,7 @@
 
         TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
             dashboard: currentDashboard,
-            view: getViewFromUrl()
+            view: view
         });
     };
 })();

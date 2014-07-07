@@ -115,8 +115,19 @@
 
                 if(matches) {
                     return {
-                        timeFrame: parseInt(matches, 10),
+                        timeFrame: parseInt(matches[1], 10),
                         units: 'daysAgo',
+                        userSet: true
+                    };
+                }
+
+                var relativeRegex = /([0-9]+)((hour|min|minute|day)(s)?)/;
+                matches = relativeRegex.exec(timeFrameUrlSegment);
+
+                if(matches) {
+                    return {
+                        timeFrame: parseInt(matches[1], 10),
+                        units: matches[2],
                         userSet: true
                     };
                 }

@@ -167,6 +167,21 @@
 				expect(actualTimeframe).to.eql(expectedTimeframe);
 			});
 
+			it('7 hours relative timeFrame is set', function() {
+				var expectedTimeframe = { timeFrame: 6, units: 'hours', userSet: true };
+				var actualTimeframe;
+
+				TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrame) {
+					actualTimeframe = timeFrame;
+				});
+
+				currentUrl = '/Requests/PerSec/6hours';
+
+				new TLRGRP.BADGER.Dashboard.PageManager();
+
+				expect(actualTimeframe).to.eql(expectedTimeframe);
+			});
+
 			it('doesn\'t clear the dashboard and view', function() {
 				currentUrl = '/Requests/PerSec/7DaysAgo';
 				var expectedUrl = currentUrl;

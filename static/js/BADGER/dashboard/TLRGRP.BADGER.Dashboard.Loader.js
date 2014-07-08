@@ -29,6 +29,7 @@
             }
 
             function showNextView() { 
+                var layoutManager = new TLRGRP.BADGER.Dashboard.Layout();
 
                 currentView = view;
                 currentComponents = [];
@@ -39,6 +40,10 @@
 
                 $.get('/static/dashboards/' + dashboardAndView.dashboard + '/' + view.id + '.json').then(function(data) {
                     var renderDeferreds = [];
+                    var windowOffset = $(window).height() < $(document).height() ? 25 : 5;
+                    windowOffset = 25;
+
+                    layoutManager.set(data.components, dashboardContainer.innerWidth() - windowOffset);
 
                     _(data.components).forEach(function(component) {
                         var dashboardComponent = new TLRGRP.BADGER.Dashboard.Components[component.type](component);

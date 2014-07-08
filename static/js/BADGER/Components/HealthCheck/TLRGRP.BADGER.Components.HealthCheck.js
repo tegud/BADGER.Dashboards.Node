@@ -24,6 +24,7 @@
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
             componentClass: 'health-check-component',
+            layout: configuration.layout,
             modules: [
                 inlineLoading,
                 lastUpdated,

@@ -4,13 +4,15 @@
         {
             "type": "HealthCheck",
             "serverSet": "Moonstick",
-            "title": "Moonstick Front End Server Status",
+            "title": "Status",
             "host": "10.44.22.158",
-            "port": 3000
+            "port": 3000,
+            "span": 2
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Errors",
+            "span": 6,
             "summaryText": "Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
@@ -197,6 +199,107 @@
                 "counters": [
                   { "id": "legacy", "color": "red", "value": "legacy", "text": "Legacy" },
                   { "id": "moonstick", "color": "green", "value": "moonstick", "text": "Moonstick" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests",
+            "summaryText": "Requests per minute on Moonstick",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "aggregateProperty": "sessionsbytime",
+            "valueProperty": [ 
+              { "value": "moonstick.doc_count", "property": "moonstick" }, 
+              { "value": "legacy.doc_count", "property": "legacy" }
+            ],
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.sessionsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.sessionsbytime.date_histogram.interval"
+            ],
+            "query": {
+               "query":{
+                  "filtered":{
+                     "filter":{
+                        "bool":{
+                           "must":[
+                              {
+                                "range":{
+                                  "@timestamp":{
+                                    "from":"now-60m"
+                                  }
+                                }
+                              },
+                              {
+                                  "term": {
+                                      "type": "lr_varnish_request"
+                                  }
+                              },
+                              {
+                                  "term": {
+                                      "url_page_type": "home"
+                                  }
+                              }
+                           ]
+                        }
+                     }
+                  }
+               },
+               "size":0,
+                "aggs":{
+                    "sessionsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                          "legacy": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": false
+                                }
+                            }
+                          },
+                          "moonstick": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": true
+                                }
+                            }
+                          }
+                        }
+                    }
+                }
+            },
+            "graph": {
+              "window": {
+                "skip": 0,
+                "take": 60
+              },
+              "lines": [
+                { "id": "moonstick-requests", "color": "green", "value": "moonstick" },
+                { "id": "legacy-requests", "color": "red", "value": "legacy" }
+              ]
+            },
+            "counter": {
+                "title": "Requests per min (Last whole)",
+                "className": "commission-graph-counter",
+                "window": {
+                  "skip": 1,
+                  "take": 10
+                },
+                "precision": 0,
+                "counters": [
+                  { "id": "moonstick-requests", "color": "green", "value": "moonstick", "text": "Moonstick" },
+                  { "id": "legacy-requests", "color": "red", "value": "legacy", "text": "Legacy" }
                 ]
             }
         }

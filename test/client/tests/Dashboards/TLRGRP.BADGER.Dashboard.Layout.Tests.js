@@ -44,8 +44,8 @@
 				expect(componentOne.layout.position).to.be(1);
 			});
 
-			it('component that goes over limit of 8 slots starts new row with a location of 1', function() {
-				var componentOne = { span: 7 };
+			it('component that goes over limit of 12 slots starts new row with a location of 1', function() {
+				var componentOne = { span: 9 };
 
 				var components = [
 					{ span: 2 },
@@ -129,8 +129,8 @@
 				expect(componentOne.layout.width).to.be(400);
 			});
 
-			it('component with span of 2 to a quarter of the container width', function() {
-				var componentOne = { span: 2 };
+			it('component with span of 3 to a quarter of the container width', function() {
+				var componentOne = { span: 3 };
 
 				var components = [
 					componentOne
@@ -141,9 +141,9 @@
 				expect(componentOne.layout.width).to.be(400 / 4);
 			});
 
-			it('two components with span of 2 to a quarter of the container width mius one margin', function() {
-				var componentOne = { span: 2 };
-				var componentTwo = { span: 2 };
+			it('two components with span of 3 to a quarter of the container width mius one margin', function() {
+				var componentOne = { span: 3 };
+				var componentTwo = { span: 3 };
 				var expectedWidth = (400 - 10) / 4;
 
 				var components = [

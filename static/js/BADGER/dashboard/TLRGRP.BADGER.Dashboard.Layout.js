@@ -3,7 +3,7 @@
 
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard');
 
-	var ROW_MAX = 8;
+	var ROW_MAX = 12;
 	var ROW_MARGIN = 10;
 
 	function setRowLayout(row, totalWidth) {

@@ -7,12 +7,12 @@
             "title": "Status",
             "host": "10.44.22.158",
             "port": 3000,
-            "span": 2
+            "span": 4
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Errors",
-            "span": 6,
+            "span": 8,
             "summaryText": "Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
@@ -298,8 +298,8 @@
                 },
                 "precision": 0,
                 "counters": [
-                  { "id": "moonstick-requests", "color": "green", "value": "moonstick", "text": "Moonstick" },
-                  { "id": "legacy-requests", "color": "red", "value": "legacy", "text": "Legacy" }
+                  { "id": "legacy-requests", "color": "red", "value": "legacy", "text": "Legacy" },
+                  { "id": "moonstick-requests", "color": "green", "value": "moonstick", "text": "Moonstick" }
                 ]
             }
         }

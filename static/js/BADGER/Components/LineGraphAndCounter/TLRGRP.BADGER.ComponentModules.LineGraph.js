@@ -83,8 +83,6 @@
                         else {
                             valueText = toolTipValue.value[line.value];
                         }
-
-                        valueText = valueText[line.value];
                     }
 
                     if(isNaN(valueText)) {
@@ -132,15 +130,22 @@
                             return;
                         }
 
-                        var lineValue = lastDataSet[index].value;
+                        var lineValue;
 
                         if(line.value) {
                             if(line.value.indexOf('.') > -1) {
                                 lineValue = getValueFromSubProperty(lastDataSet[index], line.value);
                             }
                             else {
-                                lineValue = lineValue[line.value];
+                                lineValue = lastDataSet[index].value[line.value];
                             }
+                        }
+                        else {
+                            lineValue = lastDataSet[index].value;
+                        }
+
+                        if(isNaN(lineValue)) { 
+                            lineValue = 0;
                         }
 
                         line.circle

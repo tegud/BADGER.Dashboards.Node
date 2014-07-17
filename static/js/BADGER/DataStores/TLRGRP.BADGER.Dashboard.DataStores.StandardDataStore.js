@@ -18,35 +18,7 @@
         currentTimeFrame = timeFrameData;
     });
 
-    function getValueFromSubProperty(value, property) {
-        var valuePropertySegments = property.split('.');
-        var segmentEscaper = /\|/ig;
-
-        _.each(valuePropertySegments, function(segment) {
-            value = value[segment.replace(segmentEscaper, ".")];
-        });
-
-        return value;
-    }
-
-    function extractFromDateHistogram(config, aggregate, name) {
-        var dates = aggregate.buckets;
-
-        return _.map(dates, function(dateBucket) {
-            var parsedObject = {
-                time: moment(dateBucket.to_as_string || dateBucket.key).toDate()
-            };
-
-            parsedObject[name] = _.reduce(config.fields, function(memo, field, key) {
-                memo[key] = getValueFromSubProperty(dateBucket, field)
-                return memo;
-            }, {});
-
-            return parsedObject;
-        });
-    }
-
-    TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore = function (options) {
+    TLRGRP.BADGER.Dashboard.DataStores.StandardDataStore = function (options) {
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var currentTimeout;
         var defaultAjaxOptions = {
@@ -135,99 +107,14 @@
                             return $.ajax($.extend(true, {}, defaultAjaxOptions, ajaxOptions));
                         });
 
-                        var calculations = {
-                            'percentage': function(by, property) {
-                                return (property[by.field] / parseFloat(property[by.over])) * 100;
-                            }
-                        };
-
-                        var mappers = {
-                            'extractFromDateHistogram': function(mapping, data) {
-                                if(data.aggregations) {
-                                    return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName]);
-                                }
-
-                                return _.reduce(data, function(memo, response, key) {
-                                    var processedBucket = extractFromDateHistogram(mapping, response.aggregations[mapping.aggregateName], key);
-
-                                    if(!memo.length) {
-                                        return processedBucket;
-                                    }
-
-                                    var memoLength = memo.length;
-                                    var x = 0;
-
-                                    for(; x < memoLength; x++) {
-                                        memo[x][key] = processedBucket[x][key];
-                                    }
-
-                                    return memo;
-                                }, []);
-                            },
-                            'calculation': function(mapping, data) {
-                                if(!calculations[mapping.calculation]) {
-                                    return; 
-                                }
-
-                                _.each(data, function(dateBucket) {
-                                    _.each(dateBucket, function(property, key) {
-                                        if(key === 'time') {
-                                            return;
-                                        }
-
-                                        property[mapping.toField] = calculations[mapping.calculation](mapping.by, property);
-                                    });
-                                });
-                                return data;
-                            },
-                            'stats': function(mapping, data) {
-                                function average(a) {
-                                    var r = {mean: 0, variance: 0, deviation: 0}, t = a.length;
-                                    for(var m, s = 0, l = t; l--; s += a[l]);
-                                    for(m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(a[l] - m, 2));
-                                    return r.deviation = Math.sqrt(r.variance = s / t), r;
-                                }
-
-                                _.each(data, function(dateBucket) {
-                                    var values = _.map(mapping.fields, function(field) {
-                                        if(isNaN(dateBucket[field][mapping.property]) || dateBucket[field][mapping.property] == Number.POSITIVE_INFINITY) return;
-
-                                        return dateBucket[field][mapping.property];
-                                    });
-                                    var stats = average(values);
-
-                                    dateBucket[mapping.toField || 'value'] = stats;
-                                });
-
-                                return data;
-                            }
-                        };
-
                         $.when.apply(undefined, deferreds)
                             .fail(function() {
                                 stateMachine.handle('refreshFailed');
                             })
                             .then(function() {
-                                var data = responses;
+                                var combinedData = [];
 
-                                _.each(options.mappings, function(mapping) {
-                                    if(!mappers[mapping.type]) {
-                                        return;
-                                    }
-                                    data = mappers[mapping.type](mapping, data);
-                                });
-
-                                _.each(data, function(entry) {
-                                    var calculations = entry.value;
-
-                                    entry.value.today = entry.today.commission;
-                                    entry.value.plusOneStd = calculations.mean + calculations.deviation;
-                                    entry.value.minusOneStd = calculations.mean - calculations.deviation;
-                                    entry.value.plusTwoStd = calculations.mean + (calculations.deviation * 2);
-                                    entry.value.minusTwoStd = calculations.mean - (calculations.deviation * 2);
-                                });                     
-
-                                stateMachine.handle('refreshComplete', data);
+                                stateMachine.handle('refreshComplete', combinedData);
                             });
                     },
                     refreshComplete: function (data) {

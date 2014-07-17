@@ -53,6 +53,7 @@
             dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
                 request:  new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource || 'cube')](configuration),
                 refresh: 5000,
+                mappings: configuration.mappings,
                 callbacks: {
                     success: function (data) {
                         if(data.aggregations) {

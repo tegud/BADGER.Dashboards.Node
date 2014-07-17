@@ -3,6 +3,19 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
+    function getValueFromSubProperty(value, property) {
+        var valuePropertySegments = property.split('.');
+        var segmentEscaper = /\|/ig;
+
+        console.log(value, property);
+
+        _.each(valuePropertySegments, function(segment) {
+            value = value[segment.replace(segmentEscaper, ".")];
+        });
+
+        return value;
+    }
+
     var defaultOptions = {
         dimensions: {
             margin: {
@@ -52,7 +65,7 @@
                     return;
                 }
 
-                var toolTipValue = lastDataSet[index].value;
+                var toolTipValue = lastDataSet[index];
                 var entryTime = moment(lastDataSet[index].time);
                 var dateText = entryTime.format('DD/MM/YYYY');
                 var timeFormatString = stepDuration.asSeconds() > 60  ? 'HH:mm' : 'HH:mm:ss';
@@ -61,9 +74,16 @@
                 var toolTipText = '<div style="font-weight: bold;">' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
 
                 _.each(lines, function(line) {
-                    var valueText = toolTipValue;
+                    var valueText = toolTipValue.value;
 
                     if(line.value) {
+                        if(line.value.indexOf('.') > -1) {
+                            valueText = getValueFromSubProperty(toolTipValue, line.value);
+                        }
+                        else {
+                            valueText = toolTipValue.value[line.value];
+                        }
+
                         valueText = valueText[line.value];
                     }
 
@@ -115,7 +135,12 @@
                         var lineValue = lastDataSet[index].value;
 
                         if(line.value) {
-                            lineValue = lineValue[line.value];
+                            if(line.value.indexOf('.') > -1) {
+                                lineValue = getValueFromSubProperty(lastDataSet[index], line.value);
+                            }
+                            else {
+                                lineValue = lineValue[line.value];
+                            }
                         }
 
                         line.circle
@@ -275,7 +300,12 @@
                                 var value = d.value;
 
                                 if(currentLine.value) {
-                                    value = value[currentLine.value];
+                                    if(currentLine.value.indexOf('.') > -1) {
+                                        value = getValueFromSubProperty(d, currentLine.value);
+                                    }
+                                    else {
+                                        value = value[currentLine.value];
+                                    }
                                 }
 
                                 if(isNaN(value)) {
@@ -357,7 +387,17 @@
                     if(lines.length > 1 || lines[0].value) {
                         var totalExtent;
                         var allExtents = _.each(lines, function(currentLine) {
-                            var currentExtent = d3.extent(data, function (d) { return isNaN(d.value[currentLine.value]) ? 0 : d.value[currentLine.value]; });
+                            var currentExtent = d3.extent(data, function (d) { 
+                                var value;
+                                if(currentLine.value.indexOf('.') > -1) {
+                                    value = getValueFromSubProperty(d, currentLine.value);
+                                }
+                                else {
+                                    value = d.value[currentLine.value];
+                                }
+
+                                return isNaN(value) ? 0 : value; 
+                            });
 
                             if(!totalExtent) {
                                 totalExtent = currentExtent;
@@ -447,7 +487,12 @@
                                 var value = d.value;
 
                                 if(currentLine.value) {
-                                    value = value[currentLine.value];
+                                    if(currentLine.value.indexOf('.') > -1) {
+                                        value = getValueFromSubProperty(d, currentLine.value);
+                                    }
+                                    else {
+                                        value = value[currentLine.value];
+                                    }
                                 }
 
                                 if(isNaN(value)) {

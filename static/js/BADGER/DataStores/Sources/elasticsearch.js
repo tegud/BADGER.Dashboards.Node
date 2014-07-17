@@ -110,6 +110,22 @@
 			 	var queries = configuration.queries || [ { query: configuration.query } ];
 			 	var timeFrame = options.timeFrame;
 
+			 	if(queries.executeForPeriods) {
+			 		var baseQuery = JSON.parse(JSON.stringify(queries.query));
+			 		var expandedQueries = {};
+			 		
+			 		_.each(queries.executeForPeriods, function(queryModifier, key) {
+			 			var query = JSON.parse(JSON.stringify(baseQuery));
+
+			 			expandedQueries[key] = {
+			 				dayOffset: queryModifier.dayOffset,
+			 				query: query
+			 			};
+			 		});
+
+			 		queries = expandedQueries;
+			 	}
+
 			 	if(!timeFrame.userSet && configuration.defaultTimeFrame) {
 			 		timeFrame = configuration.defaultTimeFrame;
 

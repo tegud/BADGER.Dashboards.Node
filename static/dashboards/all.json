@@ -46,6 +46,16 @@
             }
         },
         {
+            "id": "LateRooms",
+            "name": "LateRooms",
+            "views": {
+                "ExitPage": {
+                    "id": "ExitPage",
+                    "name": "Exit Page"
+                }
+            }
+        },
+        {
             "id": "Status",
             "name": "Status",
             "views": {

@@ -17,367 +17,117 @@
             "units": "daysAgo"
           },
           "queries": {
-            "today": {
-              "query": {
-                  "query": {
-                    "filtered": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                            {
-                              "range" : {
-                                "@timestamp" : { }
-                              }
-                            },
-                            {
-                              "terms" : {
-                                "type" : ["lr_varnish_request", "domain_events"]
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  },
-                  "aggs": {
-                    "bookingsbytime" : {
-                      "date_histogram" : {
-                          "min_doc_count": 0,
-                          "field" : "@timestamp",
-                          "interval" : "1h",
-                          "extended_bounds": {}
-                      },
-                      "aggs": {
-                          "requests" : {
-                              "filter": {
-                                "and": [
-                                  {
-                                    "term": {
-                                      "type": "lr_varnish_request"
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "UA_is_bot": false
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "botBuster_score": 0
-                                    }
-                                  }
-                                ]
-                              },
-                              "aggs": {
-                                "sessions": {
-                                  "cardinality" : {
-                                    "field" : "sessionId.raw"
-                                  }
-                                }
-                              }
-                          },
-                          "bookings" : {
-                              "filter": {
-                                "and": [
-                                    {
-                                      "term": {
-                                        "type": "domain_events"
-                                      }
-                                    },
-                                    {
-                                        "range": {
-                                          "channelId": { "from": 9, "to": 10 }
-                                        }
-                                    },
-                                    {
-                                      "term": {
-                                          "isTestBooking": false
-                                      }
-                                    }
-                                ]
-                              }
-                          }
-                      }
-                    }
-                  },
-                  "size": 0
-              }
+            "executeForPeriods": {
+              "today": { "dayOffset": 0 },
+              "yesterday": { "dayOffset": -1 },
+              "lastWeek": { "dayOffset": -7 },
+              "2weeksago": { "dayOffset": -14 }
             },
-            "yesterday": {
-              "dayOffset": -1,
+            "query": {
               "query": {
-                "query": {
-                  "filtered": {
-                    "filter": {
-                      "bool": {
-                        "must": [
-                          {
-                            "range" : {
-                              "@timestamp" : { }
-                            }
-                          },
-                          {
-                            "terms" : {
-                              "type" : ["lr_varnish_request", "domain_events"]
-                            }
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
                           }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "aggs": {
-                  "bookingsbytime" : {
-                    "date_histogram" : {
-                        "min_doc_count": 0,
-                        "field" : "@timestamp",
-                        "interval" : "1h",
-                        "extended_bounds": {}
-                    },
-                    "aggs": {
-                        "requests" : {
-                            "filter": {
-                              "and": [
-                                {
-                                  "term": {
-                                    "type": "lr_varnish_request"
-                                  }
-                                },
-                                {
-                                  "term": {
-                                    "UA_is_bot": false
-                                  }
-                                },
-                                {
-                                  "term": {
-                                    "botBuster_score": 0
-                                  }
-                                }
-                              ]
-                            },
-                            "aggs": {
-                              "sessions": {
-                                "cardinality" : {
-                                  "field" : "sessionId.raw"
-                                }
-                              }
-                            }
                         },
-                        "bookings" : {
-                            "filter": {
-                              "and": [
-                                  {
-                                    "term": {
-                                      "type": "domain_events"
-                                    }
-                                  },
-                                  {
-                                      "range": {
-                                        "channelId": { "from": 9, "to": 10 }
-                                      }
-                                  },
-                                  {
-                                    "term": {
-                                        "isTestBooking": false
-                                    }
-                                  }
-                              ]
-                            }
+                        {
+                          "terms" : {
+                            "type" : ["lr_varnish_request", "domain_events"]
+                          }
                         }
+                      ]
                     }
                   }
-                },
-                "size": 0
-            }
-            },
-            "lastWeek": {
-              "dayOffset": -7,
-              "query": {
-                  "query": {
-                    "filtered": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                            {
-                              "range" : {
-                                "@timestamp" : { }
-                              }
-                            },
-                            {
-                              "terms" : {
-                                "type" : ["lr_varnish_request", "domain_events"]
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
                   },
                   "aggs": {
-                    "bookingsbytime" : {
-                      "date_histogram" : {
-                          "min_doc_count": 0,
-                          "field" : "@timestamp",
-                          "interval" : "1h",
-                          "extended_bounds": {}
-                      },
-                      "aggs": {
-                          "requests" : {
-                              "filter": {
-                                "and": [
-                                  {
-                                    "term": {
-                                      "type": "lr_varnish_request"
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "UA_is_bot": false
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "botBuster_score": 0
-                                    }
-                                  }
-                                ]
+                      "requests" : {
+                          "filter": {
+                            "and": [
+                              {
+                                "term": {
+                                  "type": "lr_varnish_request"
+                                }
                               },
-                              "aggs": {
-                                "sessions": {
-                                  "cardinality" : {
-                                    "field" : "sessionId.raw"
-                                  }
+                              {
+                                "term": {
+                                  "UA_is_bot": false
+                                }
+                              },
+                              {
+                                "term": {
+                                  "botBuster_score": 0
                                 }
                               }
+                            ]
                           },
-                          "bookings" : {
-                              "filter": {
-                                "and": [
-                                    {
-                                      "term": {
-                                        "type": "domain_events"
-                                      }
-                                    },
-                                    {
-                                        "range": {
-                                          "channelId": { "from": 9, "to": 10 }
-                                        }
-                                    },
-                                    {
-                                      "term": {
-                                          "isTestBooking": false
-                                      }
-                                    }
-                                ]
-                              }
-                          }
-                      }
-                    }
-                  },
-                  "size": 0
-              }
-            },
-            "2weeksago": {
-              "dayOffset": -14,
-              "query": {
-                  "query": {
-                    "filtered": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                            {
-                              "range" : {
-                                "@timestamp" : { }
-                              }
-                            },
-                            {
-                              "terms" : {
-                                "type" : ["lr_varnish_request", "domain_events"]
+                          "aggs": {
+                            "sessions": {
+                              "cardinality" : {
+                                "field" : "sessionId.raw"
                               }
                             }
-                          ]
-                        }
-                      }
-                    }
-                  },
-                  "aggs": {
-                    "bookingsbytime" : {
-                      "date_histogram" : {
-                          "min_doc_count": 0,
-                          "field" : "@timestamp",
-                          "interval" : "1h",
-                          "extended_bounds": {}
+                          }
                       },
-                      "aggs": {
-                          "requests" : {
-                              "filter": {
-                                "and": [
-                                  {
-                                    "term": {
-                                      "type": "lr_varnish_request"
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "UA_is_bot": false
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "botBuster_score": 0
-                                    }
+                      "bookings" : {
+                          "filter": {
+                            "and": [
+                                {
+                                  "term": {
+                                    "type": "domain_events"
                                   }
-                                ]
-                              },
-                              "aggs": {
-                                "sessions": {
-                                  "cardinality" : {
-                                    "field" : "sessionId.raw"
+                                },
+                                {
+                                    "range": {
+                                      "channelId": { "from": 9, "to": 10 }
+                                    }
+                                },
+                                {
+                                  "term": {
+                                      "isTestBooking": false
                                   }
                                 }
-                              }
-                          },
-                          "bookings" : {
-                              "filter": {
-                                "and": [
-                                    {
-                                      "term": {
-                                        "type": "domain_events"
-                                      }
-                                    },
-                                    {
-                                        "range": {
-                                          "channelId": { "from": 9, "to": 10 }
-                                        }
-                                    },
-                                    {
-                                      "term": {
-                                          "isTestBooking": false
-                                      }
-                                    }
-                                ]
-                              }
+                            ]
                           }
                       }
-                    }
-                  },
-                  "size": 0
-              }
+                  }
+                }
+              },
+              "size": 0
             }
           },
           "mappings": [
-            {
-              "type": "standardDeviation",
-              "values": ["yesterday", "lastWeek", "2weeksago"],
-              "series": [
-                { "stds": 1, "type": "area", "color": "green" },
-                { "stds": 2, "type": "area", "color": "orange" }
-              ]
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "bookingsbytime",
+              "fields": {
+                "bookings": "bookings.doc_count",
+                "sessions": "requests.sessions.value"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission"
             },
             {
-              "type": "linear",
-              "value": "today",
-              "series": { "type": "line", "color": "purple" }
+              "type": "stats",
+              "fields": ["yesterday", "lastWeek", "2weeksago"],
+              "stds": [1, 2],
+              "property": "commission"
             }
           ],
           "counter": {
@@ -394,8 +144,8 @@
           "graph": {
               "className": "commission-graph",
               "lines": [
-                { "id": "today", "color": "purple", "value": "today" },
-                { "id": "average", "color": "green", "value": "average" }
+                { "id": "today", "color": "purple", "value": "today.commission" },
+                { "id": "mean", "color": "green", "value": "mean" }
               ],
               "areas": [
                 { "id": "plusTwoStd", "color": "#AAA", "start": "minusTwoStd", "end": "plusTwoStd" },

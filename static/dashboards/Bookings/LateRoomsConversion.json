@@ -145,11 +145,11 @@
               "className": "commission-graph",
               "lines": [
                 { "id": "today", "color": "purple", "value": "today.commission" },
-                { "id": "mean", "color": "green", "value": "mean" }
+                { "id": "mean", "color": "green", "value": "value.mean" }
               ],
               "areas": [
-                { "id": "plusTwoStd", "color": "#AAA", "start": "minusTwoStd", "end": "plusTwoStd" },
-                { "id": "plusOneStd", "color": "#CCC", "start": "minusOneStd", "end": "plusOneStd" }
+                { "id": "plusTwoStd", "color": "#AAA", "start": "value.standardDeviations.2.minus", "end": "value.standardDeviations.2.plus" },
+                { "id": "plusOneStd", "color": "#CCC", "start": "value.standardDeviations.1.minus", "end": "value.standardDeviations.1.plus" }
               ]
           }
         }

@@ -268,7 +268,14 @@
                                 return x(d.time);
                             })
                             .y0(function(d) {
-                                var value = d.value[currentLine.start];
+                                var value;
+
+                                if(currentLine.start.indexOf('.') > -1) {
+                                    value = getValueFromSubProperty(d, currentLine.start)
+                                }
+                                else {
+                                    value = d.value[currentLine.start];
+                                }
 
                                 if(isNaN(value)) {
                                     value = 0;
@@ -277,7 +284,14 @@
                                 return y(value);
                             })
                             .y1(function(d) {
-                                var value = d.value[currentLine.end];
+                                var value;
+
+                                if(currentLine.end.indexOf('.') > -1) {
+                                    value = getValueFromSubProperty(d, currentLine.end)
+                                }
+                                else {
+                                    value = d.value[currentLine.end];
+                                }
 
                                 if(isNaN(value)) {
                                     value = 0;
@@ -445,7 +459,14 @@
                                 return x(d.time);
                             })
                             .y0(function(d) {
-                                var value = d.value[currentLine.start];
+                                var value;
+
+                                if(currentLine.start.indexOf('.') > -1) {
+                                    value = getValueFromSubProperty(d, currentLine.start)
+                                }
+                                else {
+                                    value = d.value[currentLine.start];
+                                }
 
                                 if(isNaN(value)) {
                                     value = 0;
@@ -454,7 +475,14 @@
                                 return y(value);
                             })
                             .y1(function(d) {
-                                var value = d.value[currentLine.end];
+                                var value;
+
+                                if(currentLine.end.indexOf('.') > -1) {
+                                    value = getValueFromSubProperty(d, currentLine.end)
+                                }
+                                else {
+                                    value = d.value[currentLine.end];
+                                }
 
                                 if(isNaN(value)) {
                                     value = 0;

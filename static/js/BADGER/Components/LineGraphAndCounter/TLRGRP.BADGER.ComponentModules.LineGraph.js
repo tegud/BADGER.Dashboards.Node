@@ -7,8 +7,6 @@
         var valuePropertySegments = property.split('.');
         var segmentEscaper = /\|/ig;
 
-        console.log(value, property);
-
         _.each(valuePropertySegments, function(segment) {
             value = value[segment.replace(segmentEscaper, ".")];
         });

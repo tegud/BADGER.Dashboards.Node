@@ -7,7 +7,9 @@
         var containerElement = $('<div class="v2-graph-counter multi-counter' + (configuration.className ? ' ' + configuration.className : '') + '"></div>');
 
         _.each(configuration.counters, function(counterConfig) {
-            containerElement.append('<div class="multi-counter-item"><div class="multi-counter-item-dot" style="background-color: ' + counterConfig.color + '"></div><div class="multi-counter-item-label">' + counterConfig.text + '</div><div class="multi-counter-item-value" id="' + counterConfig.id + '-value">-</div></div>');
+            containerElement.append('<div class="multi-counter-item"><div class="multi-counter-item-dot" style="background-color: ' + counterConfig.color + '"></div><div class="multi-counter-item-label">' + counterConfig.text + '</div>' 
+                + (counterConfig.value ? '<div class="multi-counter-item-value" id="' + counterConfig.id + '-value">-</div>' : '')
+                + '</div>');
         });
 
         var lastValue;
@@ -39,6 +41,10 @@
                 var relevantValues = data.slice(0).reverse().slice(windowSettings.skip, windowSettings.take + windowSettings.skip);
                 
                 _.each(configuration.counters, function(counterConfig) {
+                    if(!counterConfig.value) {
+                        return;
+                    }
+
                     var value = _(relevantValues).reduce(function (total, item) {
                         return total + item.value[counterConfig.value];
                     }, 0);

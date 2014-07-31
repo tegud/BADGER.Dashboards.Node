@@ -276,23 +276,20 @@
             }
           ],
           "counter": {
-              "precision": 0,
               "counters": [
-                { "id": "b-today", "color": "purple", "value": "today.commission", "text": "Today" },
-                { "id": "b-yesterday", "color": "#00FF2D", "value": "yesterday.commission", "text": "Yesterday" }
-              ],
-              "window": {
-                "skip": 0,
-                "take": 0
-              }
+                { "id": "b-counter-today", "color": "purple", "text": "Today" },
+                { "id": "b-counter-yesterday", "color": "#907616", "text": "Yesterday" },
+                { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
+                { "id": "b-counter-lastMonth", "color": "#01CFB0", "text": "Last Month" }
+              ]
           },
           "graph": {
               "className": "commission-graph",
               "lines": [
                 { "id": "b-today", "color": "purple", "value": "today.commission" },
-                { "id": "b-yesterday", "color": "#00FF2D", "value": "yesterday.commission" },
-                { "id": "b-lastWeek", "color": "#0DFFC0", "value": "lastWeek.commission" },
-                { "id": "b-lastMonth", "color": "#81FF0D", "value": "lastMonth.commission" }
+                { "id": "b-yesterday", "color": "#907616", "value": "yesterday.commission" },
+                { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
+                { "id": "b-lastMonth", "color": "#01CFB0", "value": "lastMonth.commission" }
               ]
           }
         }

@@ -91,7 +91,7 @@
 							prefix: 'logstash-'
 						});
 
-						expect(menu.buildFromTimeFrame({ timeFrame: 1, units: 'daysAgo' }, { dayOffset: -1 })[0]).to.be('logstash-2014.04.03');
+						expect(menu.buildFromTimeFrame({ timeFrame: 1, units: 'daysAgo' }, { timeOffset: { "days": -1 } })[0]).to.be('logstash-2014.04.03');
 					});
 				});
 

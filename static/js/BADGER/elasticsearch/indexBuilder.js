@@ -15,8 +15,18 @@
 
 	 			if(timeFrame.units === 'daysAgo') {
 					var dayOffset = parseInt(timeFrame.timeFrame, 10);
-					var queryItemDayOffset = queryItem && queryItem.dayOffset ? queryItem.dayOffset : 0;
-					day.add('d', -dayOffset + queryItemDayOffset);
+
+					day.add('d', -dayOffset);
+
+					if(queryItem && queryItem.timeOffset) {
+						for(var unit in queryItem.timeOffset) {
+							if(!queryItem.timeOffset.hasOwnProperty(unit)) {
+								continue;
+							}
+
+							day.add(unit, queryItem.timeOffset[unit]);
+						}
+					}
 
 	 				oldestIndexRequired = moment(day);
 	 				latestIndexRequired = moment(day);

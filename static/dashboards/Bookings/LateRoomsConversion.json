@@ -17,11 +17,11 @@
             "units": "daysAgo"
           },
           "queries": {
-            "executeForPeriods": {
-              "today": { "dayOffset": 0 },
-              "yesterday": { "dayOffset": -1 },
-              "lastWeek": { "dayOffset": -7 },
-              "2weeksago": { "dayOffset": -14 }
+            "modifiers": {
+              "today": { },
+              "yesterday": { "timeOffset": { "days": -1 } },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "lastMonth": { "timeOffset": { "months": -1 } }
             },
             "query": {
               "query": {
@@ -125,7 +125,7 @@
             },
             {
               "type": "stats",
-              "fields": ["yesterday", "lastWeek", "2weeksago"],
+              "fields": ["yesterday", "lastWeek", "lastMonth"],
               "stds": [1, 2],
               "property": "commission"
             }

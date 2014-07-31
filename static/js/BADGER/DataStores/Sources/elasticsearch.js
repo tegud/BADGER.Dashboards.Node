@@ -85,8 +85,14 @@
 			var dayOffset = parseInt(timeFrame.timeFrame, 10);
 			var day = moment().add('d', -dayOffset);
 
-			if(queryItem.dayOffset) {
-				day.add('d', queryItem.dayOffset);
+			if(queryItem.timeOffset) {
+				for(var unit in queryItem.timeOffset) {
+					if(!queryItem.timeOffset.hasOwnProperty(unit)) {
+						continue;
+					}
+
+					day.add(unit, queryItem.timeOffset[unit]);
+				}
 			}
 
 			return {
@@ -110,15 +116,16 @@
 			 	var queries = configuration.queries || [ { query: configuration.query } ];
 			 	var timeFrame = options.timeFrame;
 
-			 	if(queries.executeForPeriods) {
+			 	if(queries.modifiers) {
 			 		var baseQuery = JSON.parse(JSON.stringify(queries.query));
 			 		var expandedQueries = {};
 			 		
-			 		_.each(queries.executeForPeriods, function(queryModifier, key) {
+			 		_.each(queries.modifiers, function(queryModifier, key) {
 			 			var query = JSON.parse(JSON.stringify(baseQuery));
 
 			 			expandedQueries[key] = {
 			 				dayOffset: queryModifier.dayOffset,
+			 				timeOffset: queryModifier.timeOffset,
 			 				query: query
 			 			};
 			 		});
@@ -137,6 +144,8 @@
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
 		 			var range = timeFrameMapper(timeFrame, queryItem);
+
+		 			console.log(range);
 		 			
 					_.each(configuration.timeProperties, function(timePropertyLocation) {
 						var timeProperties = getTimeProperties(timePropertyLocation);

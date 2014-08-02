@@ -21,7 +21,7 @@
               "today": { },
               "yesterday": { "timeOffset": { "days": -1 } },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
-              "lastMonth": { "timeOffset": { "months": -1 } }
+              "lastMonth": { "timeOffset": { "relativeInMonth": -1 } }
             },
             "query": {
               "query": {
@@ -172,7 +172,7 @@
               "today": { },
               "yesterday": { "timeOffset": { "days": -1 } },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
-              "lastMonth": { "timeOffset": { "months": -1 } }
+              "lastMonth": { "timeOffset": { "relativeInMonth": -1 } }
             },
             "query": {
               "query": {

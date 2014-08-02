@@ -3,7 +3,7 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
-    TLRGRP.BADGER.Dashboard.Components.sharedDataStore = function (configuration) {
+    TLRGRP.BADGER.Dashboard.Components.SharedDataStore = function (configuration) {
         var dataStore = TLRGRP.BADGER.Dashboard.DataStores.StandardDataStore(configuration);
 
         return {

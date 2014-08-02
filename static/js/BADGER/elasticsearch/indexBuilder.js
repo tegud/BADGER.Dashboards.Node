@@ -24,7 +24,15 @@
 								continue;
 							}
 
-							day.add(unit, queryItem.timeOffset[unit]);
+
+							if(unit === 'relativeInMonth') {
+								day = TLRGRP.BADGER.Utilities.relativeMonth(day, queryItem.timeOffset[unit]);
+							}
+							else {
+								day.add(unit, queryItem.timeOffset[unit]);
+							}
+
+							console.log(day.format());
 						}
 					}
 

@@ -91,7 +91,12 @@
 						continue;
 					}
 
-					day.add(unit, queryItem.timeOffset[unit]);
+					if(unit === 'relativeInMonth') {
+						day = TLRGRP.BADGER.Utilities.relativeMonth(day, queryItem.timeOffset[unit]);
+					}
+					else {
+						day.add(unit, queryItem.timeOffset[unit]);
+					}
 				}
 			}
 
@@ -124,7 +129,6 @@
 			 			var query = JSON.parse(JSON.stringify(baseQuery));
 
 			 			expandedQueries[key] = {
-			 				dayOffset: queryModifier.dayOffset,
 			 				timeOffset: queryModifier.timeOffset,
 			 				query: query
 			 			};
@@ -145,8 +149,6 @@
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));
 		 			var range = timeFrameMapper(timeFrame, queryItem);
 
-		 			console.log(range);
-		 			
 					_.each(configuration.timeProperties, function(timePropertyLocation) {
 						var timeProperties = getTimeProperties(timePropertyLocation);
 

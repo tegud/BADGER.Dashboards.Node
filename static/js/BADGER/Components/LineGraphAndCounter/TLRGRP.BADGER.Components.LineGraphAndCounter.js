@@ -59,7 +59,8 @@
                         refreshComplete: function(data) {
                             counter.setValue(data);
                             lineGraph.setData(data);
-                        }
+                        },
+                        loading: inlineLoading
                     });
                 },
                 stop: function () {

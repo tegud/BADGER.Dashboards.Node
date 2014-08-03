@@ -3,6 +3,8 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
+    var idIncrementor = 0;
+
     TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
         
@@ -47,9 +49,25 @@
         }
 
         var dataStore;
+        var dataStoreId = 'LineGraph-' + idIncrementor++;
 
-
-        if(configuration.queries) {
+        if(configuration.storeId) {
+            dataStore = {
+                start: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe', {
+                        id: dataStoreId,
+                        refreshComplete: function(data) {
+                            counter.setValue(data);
+                            lineGraph.setData(data);
+                        }
+                    });
+                },
+                stop: function () {
+                    TLRGRP.messageBus.publish(dataStoreId);
+                }
+            };
+        } 
+        else if(configuration.queries) {
             dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
                 request:  new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource || 'cube')](configuration),
                 refresh: 5000,

@@ -50,7 +50,29 @@
                         if(subscribedComponent.refreshComplete) {
                             subscribedComponent.refreshComplete(data);
                         }
+
+                        if(subscribedComponent.loading) {
+                            subscribedComponent.loading.finished();
+                        }
                     });
+                }
+            },
+            components: {
+                loading: {
+                    loading: function() {
+                        _.each(subscribedComponents, function(subscribedComponent) {
+                            if(subscribedComponent.loading) {
+                                subscribedComponent.loading.loading();
+                            }
+                        });
+                    },
+                    finished: function() {
+                        _.each(subscribedComponents, function(subscribedComponent) {
+                            if(subscribedComponent.loading) {
+                                subscribedComponent.loading.finished();
+                            }
+                        });
+                    }
                 }
             }
         });

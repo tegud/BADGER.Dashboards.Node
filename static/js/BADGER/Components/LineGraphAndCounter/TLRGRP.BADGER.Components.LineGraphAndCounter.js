@@ -57,8 +57,10 @@
                     TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe', {
                         id: dataStoreId,
                         refreshComplete: function(data) {
-                            counter.setValue(data);
-                            lineGraph.setData(data);
+                            var clonedData = JSON.parse(JSON.stringify(data))
+
+                            counter.setValue(clonedData);
+                            lineGraph.setData(clonedData);
                         },
                         loading: inlineLoading
                     });

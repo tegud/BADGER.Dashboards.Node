@@ -30,6 +30,7 @@
         "$": true,
         "expect": true,
         "window": true,
-        "moment": true
+        "moment": true,
+        "_": true
     }
 }

@@ -10,6 +10,141 @@
             "span": 4
         },
         {
+          "type": "SharedDataStore",
+          "storeId": "RequestsData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.requests.date_histogram.extended_bounds"
+          ],
+          "intervalProperties": [
+            "aggs.requests.date_histogram.interval"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "value": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_varnish_request"
+                            }
+                        },
+                        {
+                            "term": {
+                                "url_page_type": "home"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "requests" : {
+                    "date_histogram" : {
+                        "min_doc_count": 0,
+                        "extended_bounds" : {
+                            "min" : "now-60m",
+                            "max" : "now"
+                        },
+                        "field" : "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "legacy": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": false
+                                }
+                            },
+                            "aggs": {
+                                "beacon": {
+                                    "filter": {
+                                        "term": {
+                                            "tags": "beacon"
+                                        }
+                                    },
+                                    "aggs": {
+                                        "page_complete": {
+                                            "stats": {
+                                                "field": "timing_done"
+                                            }
+                                        },
+                                        "percentiles": {
+                                            "percentiles": {
+                                                "field": "timing_done"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "moonstick": {
+                            "filter": {
+                                "term": {
+                                    "is_moonstick": true
+                                }
+                            },
+                            "aggs": {
+                                "beacon": {
+                                    "filter": {
+                                        "term": {
+                                            "tags": "beacon"
+                                        }
+                                    },
+                                    "aggs": {
+                                        "page_complete": {
+                                            "stats": {
+                                                "field": "timing_done"
+                                            }
+                                        },
+                                        "percentiles": {
+                                            "percentiles": {
+                                                "field": "timing_done"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "requests",
+              "fields": {
+                "moonstickRequests": "moonstick.doc_count",
+                "legacyRequests": "legacy.doc_count",
+                "legacyPageComplete": "legacy.beacon.percentiles.values.50|0",
+                "moonstickPageComplete": "moonstick.beacon.percentiles.values.50|0"
+              }
+            }
+          ]
+        },
+        {
             "type": "LineGraphAndCounter",
             "title": "Errors",
             "span": 8,
@@ -75,115 +210,11 @@
             "type": "LineGraphAndCounter",
             "title": "Page Load Time (50th Percentile)",
             "summaryText": "Page Load time for the 50th percentile per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "responsetime",
-            "propertyProcessor": {
-              "type": "percentiles"
-            },
-            "valueProperty": [ 
-              { "value": "moonstick.percentiles.values.50|0", "property": "moonstick" }, 
-              { "value": "legacy.percentiles.values.50|0", "property": "legacy" }
-            ],
-            "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp",
-              "aggs.responsetime.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-              "aggs.responsetime.date_histogram.interval"
-            ],
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "lr_varnish_request"
-                            }
-                        },
-                        {
-                            "term": {
-                                "tags": "beacon"
-                            }
-                        },
-                        {
-                            "term": {
-                                "url_page_type": "home"
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                    "responsetime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
-                            },
-                            "field" : "@timestamp",
-                            "interval": "1m"
-                        },
-                        "aggs": {
-                            "legacy": {
-                                "filter": {
-                                    "term": {
-                                        "is_moonstick": false
-                                    }
-                                },
-                                "aggs": {
-                                    "page_complete": {
-                                        "stats": {
-                                            "field": "timing_done"
-                                        }
-                                    },
-                                    "percentiles": {
-                                        "percentiles": {
-                                            "field": "timing_done"
-                                        }
-                                    }
-                                }
-                            },
-                            "moonstick": {
-                                "filter": {
-                                    "term": {
-                                        "is_moonstick": true
-                                    }
-                                },
-                                "aggs": {
-                                    "page_complete": {
-                                        "stats": {
-                                            "field": "timing_done"
-                                        }
-                                    },
-                                    "percentiles": {
-                                        "percentiles": {
-                                            "field": "timing_done"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-              },
-              "size": 0
-            },
+            "storeId": "RequestsData",
             "graph": {
               "lines": [
-                { "id": "legacy", "color": "red", "value": "legacy" },
-                { "id": "moonstick", "color": "green", "value": "moonstick" }
+                { "id": "legacy", "color": "red", "value": "legacyPageComplete" },
+                { "id": "moonstick", "color": "green", "value": "moonstickPageComplete" }
               ]
             },
             "counter": {
@@ -197,96 +228,24 @@
                 "suffix": "ms",
                 "precision": 0,
                 "counters": [
-                  { "id": "legacy", "color": "red", "value": "legacy", "text": "Legacy" },
-                  { "id": "moonstick", "color": "green", "value": "moonstick", "text": "Moonstick" }
+                  { "id": "legacy", "color": "red", "value": "legacyPageComplete", "text": "Legacy" },
+                  { "id": "moonstick", "color": "green", "value": "moonstickPageComplete", "text": "Moonstick" }
                 ]
             }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Requests",
+            "storeId": "RequestsData",
             "summaryText": "Requests per minute on Moonstick",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "sessionsbytime",
-            "valueProperty": [ 
-              { "value": "moonstick.doc_count", "property": "moonstick" }, 
-              { "value": "legacy.doc_count", "property": "legacy" }
-            ],
-            "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp",
-              "aggs.sessionsbytime.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-              "aggs.sessionsbytime.date_histogram.interval"
-            ],
-            "query": {
-               "query":{
-                  "filtered":{
-                     "filter":{
-                        "bool":{
-                           "must":[
-                              {
-                                "range":{
-                                  "@timestamp":{
-                                    "from":"now-60m"
-                                  }
-                                }
-                              },
-                              {
-                                  "term": {
-                                      "type": "lr_varnish_request"
-                                  }
-                              },
-                              {
-                                  "term": {
-                                      "url_page_type": "home"
-                                  }
-                              }
-                           ]
-                        }
-                     }
-                  }
-               },
-               "size":0,
-                "aggs":{
-                    "sessionsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
-                            },
-                            "field" : "@timestamp",
-                            "interval" : "1m"
-                        },
-                        "aggs": {
-                          "legacy": {
-                            "filter": {
-                                "term": {
-                                    "is_moonstick": false
-                                }
-                            }
-                          },
-                          "moonstick": {
-                            "filter": {
-                                "term": {
-                                    "is_moonstick": true
-                                }
-                            }
-                          }
-                        }
-                    }
-                }
-            },
             "graph": {
               "window": {
                 "skip": 0,
                 "take": 60
               },
               "lines": [
-                { "id": "moonstick-requests", "color": "green", "value": "moonstick" },
-                { "id": "legacy-requests", "color": "red", "value": "legacy" }
+                { "id": "moonstick-requests", "color": "green", "value": "moonstickRequests" },
+                { "id": "legacy-requests", "color": "red", "value": "legacyRequests" }
               ]
             },
             "counter": {
@@ -298,8 +257,8 @@
                 },
                 "precision": 0,
                 "counters": [
-                  { "id": "legacy-requests", "color": "red", "value": "legacy", "text": "Legacy" },
-                  { "id": "moonstick-requests", "color": "green", "value": "moonstick", "text": "Moonstick" }
+                  { "id": "legacy-requests", "color": "red", "value": "legacyRequests", "text": "Legacy" },
+                  { "id": "moonstick-requests", "color": "green", "value": "moonstickRequests", "text": "Moonstick" }
                 ]
             }
         }

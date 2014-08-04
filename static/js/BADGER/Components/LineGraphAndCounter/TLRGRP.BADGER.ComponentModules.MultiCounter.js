@@ -1,6 +1,17 @@
 ﻿(function () {
     'use strict';
 
+    function getValueFromSubProperty(value, property) {
+        var valuePropertySegments = property.split('.');
+        var segmentEscaper = /\|/ig;
+
+        _.each(valuePropertySegments, function(segment) {
+            value = value[segment.replace(segmentEscaper, ".")];
+        });
+
+        return value;
+    }
+
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
     TLRGRP.BADGER.Dashboard.ComponentModules.MultiCounter = function (configuration) {
@@ -46,7 +57,13 @@
                     }
 
                     var value = _(relevantValues).reduce(function (total, item) {
-                        return total + item.value[counterConfig.value];
+                        var value = item;
+
+                        if(counterConfig.value.indexOf('.') < 0) {
+                            value = value.value;
+                        }
+
+                        return total + getValueFromSubProperty(value, counterConfig.value);
                     }, 0);
 
                     if(configuration.type === 'average') {

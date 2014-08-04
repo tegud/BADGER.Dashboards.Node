@@ -77,41 +77,6 @@
                 mappings: configuration.mappings,
                 callbacks: {
                     success: function (data) {
-                        if(data.aggregations) {
-                            data = _.map(data.aggregations[configuration.aggregateProperty].buckets, function(bucket) {
-                                var value = bucket;
-
-                                if(configuration.valueProperty) {
-                                    if(_.isArray(configuration.valueProperty)) {
-                                        value = {};
-
-                                        _.each(configuration.valueProperty, function(valueProperty) {
-                                            value[valueProperty.property] = getValueFromSubProperty(bucket, valueProperty.value);
-                                        });
-                                    }
-                                    else {
-                                        value = getValueFromSubProperty(bucket, configuration.valueProperty);
-                                    }
-                                }
-                                else if (configuration.propertyProcessor) {
-                                    if(configuration.propertyProcessor.type === 'sessionCommission') {
-                                        value = (value.bookings.doc_count / value.requests.sessions.value) * 100;
-                                    }
-                                    else if(configuration.propertyProcessor.type === 'percentiles') {
-                                        value = value.percentiles.values['50.0'];
-                                    }
-                                }
-                                else {
-                                    value = value.doc_count;
-                                }
-
-                                return {
-                                    value: value,
-                                    time: moment(bucket.to_as_string || bucket.key).toDate()
-                                };
-                            });
-                        }
-
                         counter.setValue(data);
                         lineGraph.setData(data);
                     }

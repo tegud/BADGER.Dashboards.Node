@@ -21,10 +21,6 @@
           "intervalProperties": [
             "aggs.requests.date_histogram.interval"
           ],
-          "defaultTimeFrame": {
-            "timeFrame": 0,
-            "units": "daysAgo"
-          },
           "queries": {
             "modifiers": {
               "value": { }

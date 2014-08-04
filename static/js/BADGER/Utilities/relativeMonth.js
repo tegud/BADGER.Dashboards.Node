@@ -29,6 +29,20 @@
 			weeksToAdd = Math.floor((start.date() - 1) / 7);
 		}
 
+		if(!weeksToAdd && start.day() < start.date() && start.date() < 7) {
+			weeksToAdd++;
+		}
+
+		if(false) {
+			console.log('----------------------------');
+			console.log('Start: ' + start.format());
+			console.log('Target Month Start: ' + targetDate.format());
+			console.log('Days to add: ' + start.day());
+			console.log('Weeks to add: ' + weeksToAdd);
+			console.log('Day Index: ' + dayIndex);
+			console.log('Start Day/Date: ' + start.day() + '/' + start.date())
+		}
+
 		targetDate.day(start.day() + (weeksToAdd * 7));
 
 		return targetDate;

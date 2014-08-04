@@ -43,5 +43,12 @@
 
 			expect(calculatedDate).to.eql('04 July 2014');
 		});
+
+		it('returns 4/8/2014 to 4/7/2014', function() {
+			var startDate = '4 august 2014';
+			var calculatedDate = TLRGRP.BADGER.Utilities.relativeMonth(moment(startDate), -1).format('DD MMMM YYYY');
+
+			expect(calculatedDate).to.eql('07 July 2014');
+		});
 	});
 })();

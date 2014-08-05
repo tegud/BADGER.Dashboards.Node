@@ -78,9 +78,9 @@
                             currentOptions.components.loading.loading();
                         }
 
-                        var queries = currentOptions.request.requestBuilder({
+                        var queries = currentOptions.request && currentOptions.request.requestBuilder ? currentOptions.request.requestBuilder({
                             timeFrame: currentTimeFrame
-                        });
+                        }) : { query: currentOptions.query };
 
                         var responses = {};
                         var deferreds = _.map(queries, function(queryOptions) {
@@ -92,7 +92,7 @@
                                 }
                             };
 
-                            if(currentOptions.request && currentOptions.request.requestBuilder) {
+                            if(queryOptions) {
                                 ajaxOptions = $.extend(ajaxOptions, queryOptions);
                             }
 

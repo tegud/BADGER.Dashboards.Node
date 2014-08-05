@@ -38,6 +38,9 @@
     };
 
     TLRGRP.BADGER.Dashboard.DataStores.Mappers = {
+        'pickValue': function(mapping, data) {
+            return data[mapping.field];
+        },
         'extractFromDateHistogram': function(mapping, data) {
             if(data.aggregations) {
                 return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName]);

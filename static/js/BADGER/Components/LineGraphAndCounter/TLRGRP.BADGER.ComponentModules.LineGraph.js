@@ -83,7 +83,7 @@
                         }
                     }
 
-                    if(isNaN(valueText)) {
+                    if(valueText == null || isNaN(valueText)) {
                         valueText = 0;
                     }
                     else {

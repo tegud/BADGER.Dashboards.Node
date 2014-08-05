@@ -32,8 +32,10 @@
                 serverList
             ]
         });
-        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.AjaxDataStore({
-            url: refreshServerBaseUrl + configuration.serverSet,
+        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            query: {
+                url: refreshServerBaseUrl + configuration.serverSet,
+            },
             refresh: 2500,
             callbacks: {
                 success: function (data) {
@@ -52,6 +54,9 @@
                     dataStore.setNewRefresh(10000);
                 }
             },
+            mappings: [
+                { "type": "pickValue", "value": "query" }
+            ],
             components: {
                 loading: inlineLoading,
                 lastUpdated: lastUpdated

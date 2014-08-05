@@ -2,57 +2,60 @@
     "name": "Late Rooms (Main)",
     "components": [
         {
-            "type": "LineGraphAndCounter",
-            "title": "Active Sessions",
-            "summaryText": "Active Sessions per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "sessionsbytime",
-            "valueProperty": [ 
-              { "value": "sessions.value", "property": "sessions" }, 
-              { "value": "doc_count", "property": "requests" }
-            ],
-            "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp",
-              "aggs.sessionsbytime.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-              "aggs.sessionsbytime.date_histogram.interval"
-            ],
-            "query": {
-               "query":{
-                  "filtered":{
-                     "filter":{
-                        "bool":{
-                           "must":[
-                              {
-                                "range":{
-                                  "@timestamp":{
-                                    "from":"now-60m"
-                                  }
+          "type": "SharedDataStore",
+          "storeId": "RequestData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.sessionsbytime.date_histogram.extended_bounds"
+          ],
+          "intervalProperties": [
+            "aggs.sessionsbytime.date_histogram.interval"
+          ],
+          "query": {
+             "query":{
+                "filtered":{
+                   "filter":{
+                      "bool":{
+                         "must":[
+                            {
+                              "range":{
+                                "@timestamp":{
+                                  "from":"now-60m"
                                 }
-                              },
-                              {
-                                  "term": {
-                                      "type": "lr_varnish_request"
-                                  }
                               }
-                           ]
-                        }
-                     }
-                  }
-               },
-               "size":0,
-                "aggs":{
-                    "sessionsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
                             },
-                            "field" : "@timestamp",
-                            "interval" : "1m"
+                            {
+                                "term": {
+                                    "type": "lr_varnish_request"
+                                }
+                            }
+                         ]
+                      }
+                   }
+                }
+             },
+             "size":0,
+              "aggs": {
+                "sessionsbytime" : {
+                    "date_histogram" : {
+                        "min_doc_count": 0,
+                        "extended_bounds" : {
+                            "min" : "now-60m",
+                            "max" : "now"
+                        },
+                        "field" : "@timestamp",
+                        "interval" : "1m"
+                    },
+                    "aggs": {
+                      "content": {
+                        "filter": {
+                          "not": {
+                            "term": {
+                              "tags": "beacon"
+                            }
+                          }
                         },
                         "aggs": {
                           "sessions": {
@@ -61,17 +64,55 @@
                             }
                           }
                         }
+                      },
+                      "beacons": {
+                        "filter": {
+                          "term": {
+                            "tags": "beacon"
+                          }
+                        },
+                        "aggs": {
+                          "page_complete": {
+                            "stats": {
+                                "field": "timing_done"
+                            }
+                          },
+                          "percentiles": {
+                            "percentiles": {
+                                "field": "timing_done"
+                            }
+                          }
+                        }
+                      }
                     }
-                }
-            },
+                  }
+              }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "sessionsbytime",
+              "fields": {
+                "requests": "content.doc_count",
+                "sessions": "content.sessions.value",
+                "clientSideRequestTime": "beacons.percentiles.values.50|0"
+              }
+            }
+          ]
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Active Sessions",
+            "summaryText": "Active Sessions per minute on LateRooms.com (WEB)",
+            "storeId": "RequestData",
             "graph": {
               "window": {
                 "skip": 0,
                 "take": 60
               },
               "lines": [
-                { "id": "sessions", "color": "green", "value": "sessions" },
-                { "id": "requests", "color": "red", "value": "requests" }
+                { "id": "sessions", "color": "green", "value": "query.sessions" },
+                { "id": "requests", "color": "red", "value": "query.requests" }
               ]
             },
             "counter": {
@@ -83,8 +124,8 @@
                 },
                 "precision": 0,
                 "counters": [
-                  { "id": "requests", "color": "red", "value": "requests", "text": "Requests" },
-                  { "id": "sessions", "color": "green", "value": "sessions", "text": "Sessions" }
+                  { "id": "requests", "color": "red", "value": "query.requests", "text": "Requests" },
+                  { "id": "sessions", "color": "green", "value": "query.sessions", "text": "Sessions" }
                 ]
             }
         },
@@ -92,80 +133,15 @@
             "type": "LineGraphAndCounter",
             "title": "Page Load Time (50th Percentile)",
             "summaryText": "Page Load time for the 50th percentile per minute on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "responsetime",
-            "propertyProcessor": {
-              "type": "percentiles"
-            },
-            "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp",
-              "aggs.responsetime.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-              "aggs.responsetime.date_histogram.interval"
-            ],
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "lr_varnish_request"
-                            }
-                        },
-                        {
-                            "term": {
-                                "tags": "beacon"
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                    "responsetime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
-                            },
-                            "field" : "@timestamp",
-                            "interval": "1m"
-                        },
-                        "aggs": {
-                            "page_complete": {
-                                "stats": {
-                                    "field": "timing_done"
-                                }
-                            },
-                            "percentiles": {
-                                "percentiles": {
-                                    "field": "timing_done"
-                                }
-                            }
-                        }
-                    }
-              },
-              "size": 0
-            },
+            "storeId": "RequestData",
             "graph": {
               "window": {
                 "skip": 0,
                 "take": 60
               },
-              "lineColor": "purple"
+              "lines": [
+                { "id": "sessions", "color": "purple", "value": "query.clientSideRequestTime" }
+              ]
             },
             "counter": {
                 "title": "Average Time to Page Load",
@@ -176,7 +152,8 @@
                   "take": 10
                 },
                 "suffix": "ms",
-                "precision": 0
+                "precision": 0,
+                "value": "query.clientSideRequestTime"
             }
         }
     ]

@@ -14,7 +14,6 @@
             "summaryText": "Errors per one minute on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "errorsbytime",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -60,10 +59,25 @@
               },
               "size": 0
             },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "errors": "doc_count"
+                }
+              }
+            ],
             "counter": {
                 "title": "Errors in last 10mins",
                 "upClass": "bad",
-                "downClass": "good"
+                "downClass": "good",
+                "value": "query.errors"
+            },
+            "graph": {
+                "lines": [
+                  { "id": "errors", "color": "red", "value": "query.errors" }
+                ]
             }
         },
         {
@@ -72,8 +86,6 @@
             "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "bookingsbytime",
-            "valueProperty": "totalCommission.value",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.bookingsbytime.date_histogram.extended_bounds"
@@ -131,28 +143,29 @@
               },
               "size": 0
             },
-            "counterTitle": "Commission in last 10mins",
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "bookingsbytime",
+                "fields": {
+                  "commission": "totalCommission.value"
+                }
+              }
+            ],
             "counter": {
                 "title": "Commission made in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
                 "precision": 0,
-                "thresholds": [
-                    {
-                        "value": 700,
-                        "sound": "/static/sounds/smb_mariodie.wav"
-                    },
-                    {
-                        "value": 1500,
-                        "sound": "/static/sounds/smb_stage_clear.wav"
-                    }
-                ]
+                "value": "query.commission",
+                "upClass": "good",
+                "downClass": "bad"
             },
             "graph": {
                 "className": "commission-graph",
-                "lineColor": "#411485",
-                "upClass": "good",
-                "downClass": "bad"
+                "lines": [
+                    { "color": "#411485", "value": "query.commission", "id": "commission" }
+                ]
             }
         }
     ]

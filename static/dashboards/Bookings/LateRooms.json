@@ -11,70 +11,65 @@
             "query.filtered.filter.bool.must.0.range.@timestamp",
             "aggs.bookingsbytime.date_histogram.extended_bounds"
           ],
-          "queries": {
-            "modifiers": {
-              "bookings": { }
-            },
+          "query": {
             "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
+              "filtered": {
+                "filter": {
+                  "bool": {
+                    "must": [
+                      {
+                        "range" : {
+                          "@timestamp" : {
+                              "from" : "now-60m"
                           }
-                        },
-                        {
-                            "term": {
-                                "type": "domain_events"
-                            }
-                        },
-                        { 
-                            "terms": {
-                                "channelId":  [9, 10] 
-                            }
                         }
-                      ]
-                    }
+                      },
+                      {
+                          "term": {
+                              "type": "domain_events"
+                          }
+                      },
+                      { 
+                          "terms": {
+                              "channelId":  [9, 10] 
+                          }
+                      }
+                    ]
                   }
                 }
-              },
-              "aggs": {
-                "bookingsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
-                            },
-                            "field" : "@timestamp",
-                            "interval" : "1m"
-                        },
-                        "aggs": {
-                            "totalRoomNights": {
-                                "sum": {
-                                    "script" : "doc['rooms'].value * doc['nights'].value"
-                                }
-                            },
-                            "totalCommission": {
-                                "sum": {
-                                    "field": "commissionValue"
-                                }
-                            },
-                            "totalTTV": {
-                                "sum": {
-                                    "field": "totalAmountGbp"
-                                }
-                            }
-                        }
-                    }
-              },
-              "size": 0
-            }
+              }
+            },
+            "aggs": {
+              "bookingsbytime" : {
+                      "date_histogram" : {
+                          "min_doc_count": 0,
+                          "extended_bounds" : {
+                              "min" : "now-60m",
+                              "max" : "now"
+                          },
+                          "field" : "@timestamp",
+                          "interval" : "1m"
+                      },
+                      "aggs": {
+                          "totalRoomNights": {
+                              "sum": {
+                                  "script" : "doc['rooms'].value * doc['nights'].value"
+                              }
+                          },
+                          "totalCommission": {
+                              "sum": {
+                                  "field": "commissionValue"
+                              }
+                          },
+                          "totalTTV": {
+                              "sum": {
+                                  "field": "totalAmountGbp"
+                              }
+                          }
+                      }
+                  }
+            },
+            "size": 0
           },
           "mappings": [
             { 
@@ -97,8 +92,8 @@
             "counter": {
                 "precision": 0,
                 "counters": [
-                  { "id": "roomNights", "color": "orange", "value": "bookings.totalRoomNights", "text": "Room Nights" },
-                  { "id": "bookings", "color": "green", "value": "bookings.bookings", "text": "Bookings" }
+                  { "id": "roomNights", "color": "orange", "value": "query.totalRoomNights", "text": "Room Nights" },
+                  { "id": "bookings", "color": "green", "value": "query.bookings", "text": "Bookings" }
                 ],
                 "window": {
                   "skip": 1,
@@ -108,8 +103,8 @@
             "graph": {
                 "className": "commission-graph",
                 "lines": [
-                  { "id": "bookings", "color": "green", "value": "bookings.bookings" },
-                  { "id": "roomNights", "color": "orange", "value": "bookings.totalRoomNights" }
+                  { "id": "bookings", "color": "green", "value": "query.bookings" },
+                  { "id": "roomNights", "color": "orange", "value": "query.totalRoomNights" }
                 ]
             }
         },
@@ -124,8 +119,8 @@
                 "prefix": "£",
                 "precision": 0,
                 "counters": [
-                  { "id": "ttv", "color": "blue", "value": "bookings.totalTTV", "text": "TTV" },
-                  { "id": "commission", "color": "#411485", "value": "bookings.totalCommission", "text": "Commission" }
+                  { "id": "ttv", "color": "blue", "value": "query.totalTTV", "text": "TTV" },
+                  { "id": "commission", "color": "#411485", "value": "query.totalCommission", "text": "Commission" }
                 ],
                 "window": {
                   "skip": 1,
@@ -135,8 +130,8 @@
             "graph": {
                 "className": "commission-graph",
                 "lines": [
-                  { "id": "commission", "color": "#411485", "value": "bookings.totalCommission" },
-                  { "id": "ttv", "color": "blue", "value": "bookings.totalTTV" }
+                  { "id": "commission", "color": "#411485", "value": "query.totalCommission" },
+                  { "id": "ttv", "color": "blue", "value": "query.totalTTV" }
                 ]
             }
         },
@@ -241,7 +236,22 @@
                     }
                 }
             },
-            "counterTitle": "Commission in last 10mins",
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "bookingsbytime",
+                "fields": {
+                  "sessions": "requests.sessions.value",
+                  "bookings": "bookings.doc_count"
+                }
+              },
+              { 
+                "type": "calculation",
+                "calculation": "percentage",
+                "by": { "field": "bookings", "over": "sessions" },
+                "toField": "commission"
+              }
+            ],
             "counter": {
                 "title": "Coversion in last 10mins",
                 "className": "commission-graph-counter",
@@ -249,6 +259,7 @@
                 "type": "average",
                 "upClass": "good",
                 "downClass": "bad",
+                "value": "query.commission",
                 "window": {
                   "skip": 1,
                   "take": 10
@@ -257,7 +268,9 @@
             "graph": {
                 "id": "elasticsearch commission",
                 "className": "commission-graph",
-                "lineColor": "purple"
+                "lines": [
+                  { "id": "conversion", "color": "purple", "value": "query.commission" }
+                ]
             }
         }
     ]

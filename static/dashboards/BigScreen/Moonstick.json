@@ -193,13 +193,25 @@
               },
               "size": 0
             },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "errors": "doc_count"
+                }
+              }
+            ],
             "graph": {
-                "lineColor": "red"
+                "lines": [
+                  { "color": "red", "id": "errors", "value": "query.errors" }
+                ]
             },
             "counter": {
                 "title": "Errors in last 10mins",
                 "className": "commission-graph-counter",
-                "precision": 0
+                "precision": 0,
+                "value": "query.errors"
             }
         },
         {

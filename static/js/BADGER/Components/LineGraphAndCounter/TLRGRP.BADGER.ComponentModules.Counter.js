@@ -1,6 +1,17 @@
 ﻿(function () {
     'use strict';
 
+    function getValueFromSubProperty(value, property) {
+        var valuePropertySegments = property.split('.');
+        var segmentEscaper = /\|/ig;
+
+        _.each(valuePropertySegments, function(segment) {
+            value = value[segment.replace(segmentEscaper, ".")];
+        });
+
+        return value;
+    }
+    
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
     TLRGRP.BADGER.Dashboard.ComponentModules.Counter = function (configuration) {
@@ -35,7 +46,16 @@
             setValue: function (data) {
                 var relevantValues = data.slice(0).reverse().slice(windowSettings.skip, windowSettings.take + windowSettings.skip);
                 var value = _(relevantValues).reduce(function (total, item) {
-                        return total + item.value;
+                        var value = item;
+
+                        if(configuration.value && configuration.value.indexOf('.') < 0) {
+                            value = value.value;
+                        }
+                        else if(configuration.value) {
+                            value = getValueFromSubProperty(value, configuration.value);
+                        }
+
+                        return total + value;
                     }, 0);
 
                 if(configuration.type === 'average') {

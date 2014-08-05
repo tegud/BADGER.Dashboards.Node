@@ -14,11 +14,6 @@
             "summaryText": "Errors per one minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "errorsbytime",
-            "valueProperty": [ 
-              { "value": "servererrors.doc_count", "property": "server" }, 
-              { "value": "javascripterrors.doc_count", "property": "javascript" }
-            ],
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -80,16 +75,26 @@
               },
               "size": 0
             },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "server": "servererrors.doc_count",
+                  "javascript": "javascripterrors.doc_count"
+                }
+              }
+            ],
             "graph": {
               "lines": [
-                { "id": "server", "color": "red", "value": "server" },
-                { "id": "javascript", "color": "orange", "value": "javascript" }
+                { "id": "server", "color": "red", "value": "query.server" },
+                { "id": "javascript", "color": "orange", "value": "query.javascript" }
               ]
             },
             "counter": {
                 "counters": [
-                  { "id": "server", "color": "red", "value": "server", "text": "Server" },
-                  { "id": "javascript", "color": "orange", "value": "javascript", "text": "JavaScript" }
+                  { "id": "server", "color": "red", "value": "query.server", "text": "Server" },
+                  { "id": "javascript", "color": "orange", "value": "query.javascript", "text": "JavaScript" }
                 ]
             }
         },
@@ -99,8 +104,6 @@
             "summaryText": "Total commission generated per minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
-            "aggregateProperty": "bookingsbytime",
-            "valueProperty": "totalCommission.value",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.bookingsbytime.date_histogram.extended_bounds"
@@ -158,18 +161,30 @@
               },
               "size": 0
             },
-            "counterTitle": "Commission in last 10mins",
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "bookingsbytime",
+                "fields": {
+                  "commission": "totalCommission.value"
+                }
+              }
+            ],
             "counter": {
                 "title": "Commission made in last 10mins",
                 "className": "commission-graph-counter",
                 "prefix": "£",
-                "precision": 0
+                "precision": 0,
+                "upClass": "good",
+                "downClass": "bad",
+                "value": "query.commission"
             },
             "graph": {
                 "className": "commission-graph",
                 "lineColor": "#411485",
-                "upClass": "good",
-                "downClass": "bad"
+                "lines": [
+                  { "id": "server", "color": "#411485", "value": "query.commission" }
+                ]
             }
         }
     ]

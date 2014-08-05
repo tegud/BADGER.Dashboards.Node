@@ -118,7 +118,8 @@
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
 		return {
 			 requestBuilder: function(options) {
-			 	var queries = configuration.queries || [ { query: configuration.query } ];
+			 	var queries = configuration.queries || { query: { query: configuration.query } };
+
 			 	var timeFrame = options.timeFrame;
 
 			 	if(queries.modifiers) {

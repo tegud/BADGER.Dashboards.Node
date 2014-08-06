@@ -42,6 +42,10 @@
                 "ExitPage": {
                     "id": "ExitPage",
                     "name": "Exit Page"
+                },
+                "CoversionStatus": {
+                    "id": "ConversionStatus",
+                    "name": "Conversion (In Progress)"
                 }
             }
         },

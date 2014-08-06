@@ -488,7 +488,7 @@ h3 {margin: 0;padding: 0 }
 
 .status-row { border-top: 5px solid #fff; }
 
-.status-header-row th { font-size: 1.5em; }
+.status-header-row th { font-size: 1.2em; width: 60px; }
 
 .total-cell { font-size: 2em; padding-right: 30px; position: relative; }
 

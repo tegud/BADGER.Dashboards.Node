@@ -472,6 +472,42 @@ h3 {margin: 0;padding: 0 }
 
 .tooltip-item-key { height: 10px; width: 10px; background-color: #000; border-radius: 8px;margin-right: 5px; }
 
+.status-table { border-collapse: collapse; }
+
+.status-table th { background-color: transparent; text-align: left; padding: 5px 15px 5px 0; }
+
+.status-table th.total-cell { padding-right: 50px }
+
+.status-table td { padding: 3px 20px 3px 3px; }
+
+.status-table td.good  { background-color: green; }
+.status-table td.warn  { background-color: orange; }
+.status-table td.alert { background-color: red }
+
+.status-row th { font-size: 2em; font-weight: bold; }
+
+.status-row { border-top: 5px solid #fff; }
+
+.status-header-row th { font-size: 1.5em; }
+
+.total-cell { font-size: 2em; padding-right: 30px; position: relative; }
+
+.total-cell .status-cell-indicator { width: 20px; height: 20px;position: absolute; top: 13px; right: 5px;background-image: url('../images/conversion_indicators.png'); }
+
+.status-cell-container { display: inline-block; position: relative; padding-right: 15px; }
+
+.status-cell-value { font-size: 1.5em; }
+
+.status-cell-indicator { width: 10px; height: 10px; background-image: url('../images/conversion_indicators_small.png'); position: absolute; top: 0; right: 0; }
+
+.warn .status-cell-indicator { background-position: 0 -10px }
+.alert .status-cell-indicator { background-position: 0 -20px }
+
+.warn.total-cell .status-cell-indicator { background-position: 0 -20px }
+.alert.total-cell .status-cell-indicator { background-position: 0 -40px }
+
+.status-cell-percentage { font-size: 0.8em; position: absolute; bottom: 0; right: 0; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

@@ -1,0 +1,10 @@
+{
+    "id": "LateRoomsConversion",
+    "name": "LateRooms.com Conversion",
+    "components": [
+        {
+          "type": "ConversionStatus",
+          "title": "LateRooms Conversion by Device"
+        }
+    ]
+}

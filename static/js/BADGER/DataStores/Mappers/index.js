@@ -41,6 +41,30 @@
         'pickValue': function(mapping, data) {
             return data[mapping.field];
         },
+        'pickValues': function(mapping, data) {
+            var matchedValues = {};
+
+            if(mapping.multiQuery) {
+                _.each(data, function(currentData, key) {
+                    var itemValues = {};
+
+                    _.each(mapping.values, function(value) {
+                        itemValues[value.to] = getValueFromSubProperty(currentData, value.from);
+                    });
+                    
+                    matchedValues[key] = itemValues;
+                });
+
+            }
+            else {
+                _.each(mapping.values, function(value) {
+                    matchedValues[value.to] = getValueFromSubProperty(data, value.from);
+                });
+            }
+
+
+            return matchedValues;
+        },
         'extractFromDateHistogram': function(mapping, data) {
             if(data.aggregations) {
                 return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName]);
@@ -69,13 +93,18 @@
             }
 
             _.each(data, function(dateBucket) {
-                _.each(dateBucket, function(property, key) {
-                    if(key === 'time') {
-                        return;
-                    }
+                if(mapping.notFromHistogram) {
+                    dateBucket[mapping.toField] = calculations[mapping.calculation](mapping.by, dateBucket);
+                }
+                else {
+                    _.each(dateBucket, function(property, key) {
+                        if(key === 'time') {
+                            return;
+                        }
 
-                    property[mapping.toField] = calculations[mapping.calculation](mapping.by, property);
-                });
+                        property[mapping.toField] = calculations[mapping.calculation](mapping.by, property);
+                    });
+                }
             });
             return data;
         },
@@ -87,11 +116,11 @@
                 return r.deviation = Math.sqrt(r.variance = s / t), r;
             }
 
-            _.each(data, function(dateBucket) {
+            function calculateAverage(rootObject) {
                 var values = _.map(mapping.fields, function(field) {
-                    if(isNaN(dateBucket[field][mapping.property]) || dateBucket[field][mapping.property] == Number.POSITIVE_INFINITY) return;
+                    if(isNaN(rootObject[field][mapping.property]) || rootObject[field][mapping.property] == Number.POSITIVE_INFINITY) return;
 
-                    return dateBucket[field][mapping.property];
+                    return rootObject[field][mapping.property];
                 });
                 var stats = average(values);
 
@@ -105,8 +134,17 @@
                     };
                 });
 
-                dateBucket[mapping.toField || 'value'] = stats;
-            });
+                rootObject[mapping.toField || 'value'] = stats;
+            }
+
+            if(mapping.notFromHistogram) {
+                calculateAverage(data);
+            }
+            else {
+                _.each(data, function(dateBucket) {
+                    calculateAverage(dateBucket);
+                });
+            }
 
             return data;
         }

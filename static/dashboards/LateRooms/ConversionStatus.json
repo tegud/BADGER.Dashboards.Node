@@ -1,10 +1,44 @@
 {
     "id": "LateRoomsConversion",
     "name": "LateRooms.com Conversion",
+    "idPrefix": "status-device-",
     "components": [
         {
           "type": "ConversionStatus",
-          "title": "LateRooms Conversion by Device"
+          "title": "LateRooms Conversion by Device",
+          "sites": [
+            {
+              "name": "LateRooms.com",
+              "id": "LR"
+            },
+            {
+              "name": "AsiaRooms.com",
+              "id": "AR"
+            }
+          ],
+          "dimensions": [
+            {
+              "name": "IE"
+            },
+            {
+              "name": "Chrome"
+            },
+            {
+              "name": "Firefox"
+            },
+            {
+              "name": "Safari (iPad)"
+            },
+            {
+              "name": "Safari (iPhone)"
+            },
+            {
+              "name": "Safari (Mac)"
+            },
+            {
+              "name": "Android"
+            }
+          ]
         }
     ]
 }

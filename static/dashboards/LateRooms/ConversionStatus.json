@@ -1,30 +1,49 @@
 {
     "id": "LateRoomsConversion",
     "name": "LateRooms.com Conversion",
-    "idPrefix": "status-device-",
     "components": [
         {
           "type": "ConversionStatus",
           "title": "LateRooms Conversion by Device",
+          "idPrefix": "status-device-",
           "sites": [
             {
               "name": "LateRooms.com",
               "id": "LR"
-            },
-            {
-              "name": "AsiaRooms.com",
-              "id": "AR"
             }
           ],
           "dimensions": [
             {
-              "name": "IE"
+              "name": "IE",
+              "id": "ie",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
+              }
             },
             {
-              "name": "Chrome"
+              "name": "Chrome",
+              "id": "chrome",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Chrome).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Chrome).doc_count"
+              }
             },
             {
-              "name": "Firefox"
+              "name": "Firefox",
+              "id": "firefox",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Firefox).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Firefox).doc_count"
+              }
+            },
+            {
+              "name": "Safari (Desktop)",
+              "id": "safari",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Safari).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Safari).doc_count"
+              }
             },
             {
               "name": "Safari (iPad)"
@@ -33,10 +52,12 @@
               "name": "Safari (iPhone)"
             },
             {
-              "name": "Safari (Mac)"
-            },
-            {
-              "name": "Android"
+              "name": "Android",
+              "id": "android",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Android).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Android).doc_count"
+              }
             }
           ]
         }

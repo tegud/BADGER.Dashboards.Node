@@ -3,15 +3,28 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.DataStores');
 
-    function getValueFromSubProperty(value, property) {
-        var valuePropertySegments = property.split('.');
-        var segmentEscaper = /\|/ig;
+    function setValueOnSubProperty(obj, prop, value) {
+        if(typeof value === 'undefined') return;
+        
+        if (typeof prop === "string")
+             prop = prop.split(".");
 
-        _.each(valuePropertySegments, function(segment) {
-            value = value[segment.replace(segmentEscaper, ".")];
-        });
+        if (prop.length > 1) {
+             var e = prop.shift();
 
-        return value;
+             if(!isNaN(e)) {
+                e = parseInt(e, 10);
+             }
+
+             setValueOnSubProperty(obj[e] =
+                       Object.prototype.toString.call(obj[e]) === "[object Object]" || 
+                       Object.prototype.toString.call(obj[e]) === "[object Array]" 
+                       ? obj[e]
+                       : {},
+                     prop,
+                     value);
+        } else
+             obj[prop[0]] = value;
     }
 
     function extractFromDateHistogram(config, aggregate, name) {
@@ -23,7 +36,7 @@
             };
 
             parsedObject[name] = _.reduce(config.fields, function(memo, field, key) {
-                memo[key] = getValueFromSubProperty(dateBucket, field)
+                memo[key] = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(dateBucket, field)
                 return memo;
             }, {});
 
@@ -33,7 +46,7 @@
 
     var calculations = {
         'percentage': function(by, property) {
-            return (property[by.field] / parseFloat(property[by.over])) * 100;
+            return (TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(property, by.field) / parseFloat(TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(property, by.over))) * 100;
         }
     };
 
@@ -49,16 +62,16 @@
                     var itemValues = {};
 
                     _.each(mapping.values, function(value) {
-                        itemValues[value.to] = getValueFromSubProperty(currentData, value.from);
+                        setValueOnSubProperty(itemValues, value.to, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(currentData, value.from))
                     });
-                    
+
                     matchedValues[key] = itemValues;
                 });
 
             }
             else {
                 _.each(mapping.values, function(value) {
-                    matchedValues[value.to] = getValueFromSubProperty(data, value.from);
+                    setValueOnSubProperty(matchedValues, value.to, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, value.from))
                 });
             }
 
@@ -94,7 +107,7 @@
 
             _.each(data, function(dateBucket) {
                 if(mapping.notFromHistogram) {
-                    dateBucket[mapping.toField] = calculations[mapping.calculation](mapping.by, dateBucket);
+                    setValueOnSubProperty(dateBucket, mapping.toField, calculations[mapping.calculation](mapping.by, dateBucket));
                 }
                 else {
                     _.each(dateBucket, function(property, key) {
@@ -102,7 +115,7 @@
                             return;
                         }
 
-                        property[mapping.toField] = calculations[mapping.calculation](mapping.by, property);
+                        setValueOnSubProperty(property, mapping.toField, calculations[mapping.calculation](mapping.by, property));
                     });
                 }
             });
@@ -118,9 +131,10 @@
 
             function calculateAverage(rootObject) {
                 var values = _.map(mapping.fields, function(field) {
-                    if(isNaN(rootObject[field][mapping.property]) || rootObject[field][mapping.property] == Number.POSITIVE_INFINITY) return;
+                    var currentValue = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(rootObject[field], mapping.property);
+                    if(isNaN(currentValue) || currentValue == Number.POSITIVE_INFINITY) return;
 
-                    return rootObject[field][mapping.property];
+                    return currentValue;
                 });
                 var stats = average(values);
 
@@ -134,7 +148,7 @@
                     };
                 });
 
-                rootObject[mapping.toField || 'value'] = stats;
+                setValueOnSubProperty(rootObject, (mapping.toField || 'value'), stats);
             }
 
             if(mapping.notFromHistogram) {

@@ -476,7 +476,7 @@ h3 {margin: 0;padding: 0 }
 
 .status-table th { background-color: transparent; text-align: left; padding: 5px 15px 5px 0; }
 
-.status-table th.total-cell { padding-right: 60px }
+.status-table th.total-cell { padding-right: 60px; width: 70px; }
 
 .status-table td { padding: 3px 20px 3px 3px; }
 
@@ -486,9 +486,7 @@ h3 {margin: 0;padding: 0 }
 
 .status-row th { font-size: 2em; font-weight: bold; }
 
-.status-row { border-top: 5px solid #fff; }
-
-.status-header-row th { font-size: 1.2em; width: 60px; }
+.status-header-row th { font-size: 1.2em; width: 70px; }
 
 .total-cell { font-size: 2em; padding-right: 40px; position: relative; }
 

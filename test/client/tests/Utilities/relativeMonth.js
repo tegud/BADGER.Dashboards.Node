@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	describe.only('relativeMonth', function () {
+	describe('relativeMonth', function () {
 		it('returns first monday of previous month', function() {
 			var startDate = '7 july 2014';
 			var calculatedDate = TLRGRP.BADGER.Utilities.relativeMonth(moment(startDate), -1).format('DD MMMM YYYY');

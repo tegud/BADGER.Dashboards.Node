@@ -23,62 +23,76 @@
               "2weeksago": { "timeOffset": { "weeks": -2 } }
             },
             "query": {
-               "query":{
-                  "filtered":{
-                     "filter":{
-                        "bool":{
-                           "must":[
-                              {
-                                 "range":{
-                                    "@timestamp":{
-                                       "from":"now-12h"
-                                    }
-                                 }
-                              },
-                              {
-                                 "term":{
-                                    "type":"session"
-                                 }
-                              },
-                              {
-                                  "term": {
-                                    "user.type": "human"
-                                  }
-                              }
-                           ]
+              "query":{
+                "filtered":{
+                  "filter":{
+                    "bool":{
+                      "must":[
+                      {
+                        "range":{
+                          "@timestamp":{
+                            "from":"now-12h"
+                          }
                         }
-                     }
-                  }
-               },
-               "aggs":{
-                    "useragents": {
-                        "terms": {
-                            "field": "user.userAgent.name.raw"
+                      },
+                      {
+                        "term":{
+                          "type":"session"
                         }
-                    },
-                    "bookings": {
-                        "filter": {
-                            "term": {
-                                "booked": true
-                            }
-                        },
-                        "aggs": {
-                            "useragents": {
-                                "terms": {
-                                    "field": "user.userAgent.name.raw"
-                                }
-                            }
+                      },
+                      {
+                        "term": {
+                          "user.type": "human"
                         }
+                      }
+                      ]
                     }
-               },
-               "size":0
+                  }
+                }
+              },
+              "aggs":{
+                "useragents": {
+                  "terms": {
+                    "field": "user.userAgent.name.raw"
+                  },
+                  "aggs": {
+                    "mobilesafari": {
+                      "terms": {
+                        "field": "user.userAgent.device.raw"
+                      }
+                    }
+                  }
+                },
+                "bookings": {
+                  "filter": {
+                    "term": {
+                      "booked": true
+                    }
+                  },
+                  "aggs": {
+                    "useragents": {
+                      "terms": {
+                        "field": "user.userAgent.name.raw"
+                      },
+                      "aggs": {
+                        "mobilesafari": {
+                          "terms": {
+                            "field": "user.userAgent.device.raw"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size":0
             }
           }
         };
 
         var pickValues = [
             { from: 'hits.total', to: 'total.sessions' },
-            { from: 'aggregations.bookings.doc_count', to: 'total.bookings' }            
+            { from: 'aggregations.bookings.doc_count', to: 'total.bookings' }
         ];
 
         _.each(configuration.dimensions, function(dimension) {
@@ -96,7 +110,7 @@
                 multiQuery: true,
                 values: pickValues
             },
-            { 
+            {
               "type": "calculation",
               "calculation": "percentage",
               "by": { "field": "total.bookings", "over": "total.sessions" },
@@ -111,9 +125,9 @@
               "property": "total.commission"
             }
         ];
-        
+
         _.each(configuration.dimensions, function(dimension) {
-            mappings.push({ 
+            mappings.push({
                 "type": "calculation",
                 "calculation": "percentage",
                 "by": { "field": dimension.id + ".bookings", "over": dimension.id + ".sessions" },
@@ -207,7 +221,7 @@
         });
 
         var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
-            return { 
+            return {
                 name: dimension.name,
                 id: dimension.id
             };
@@ -221,7 +235,7 @@
                 return column;
             });
 
-            return { 
+            return {
                 name: site.name,
                 idPrefix: idPrefix,
                 columns: Mustache.render('{{#columns}}<td><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
@@ -290,4 +304,3 @@
         };
     };
 })();
-

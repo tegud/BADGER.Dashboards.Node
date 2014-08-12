@@ -46,10 +46,20 @@
               }
             },
             {
-              "name": "Safari (iPad)"
+              "name": "Safari (iPad)",
+              "id": "ipad",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPad).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPad).doc_count"
+              }
             },
             {
-              "name": "Safari (iPhone)"
+              "name": "Safari (iPhone)",
+              "id": "iphone",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPhone).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPhone).doc_count"
+              }
             },
             {
               "name": "Android",

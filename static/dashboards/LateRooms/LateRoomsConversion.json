@@ -1,0 +1,185 @@
+{
+    "id": "LateRoomsConversion",
+    "name": "LateRooms.com Conversion",
+    "components": [
+        {
+          "type": "SharedDataStore",
+          "storeId": "BookingData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { },
+              "yesterday": { "timeOffset": { "days": -1 } },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "lastMonth": { "timeOffset": { "relativeInMonth": -1 } }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "terms" : {
+                            "type" : ["lr_varnish_request", "domain_events"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                      "requests" : {
+                          "filter": {
+                            "and": [
+                              {
+                                "term": {
+                                  "type": "lr_varnish_request"
+                                }
+                              },
+                              {
+                                "term": {
+                                  "UA_is_bot": false
+                                }
+                              },
+                              {
+                                "term": {
+                                  "botBuster_score": 0
+                                }
+                              }
+                            ]
+                          },
+                          "aggs": {
+                            "sessions": {
+                              "cardinality" : {
+                                "field" : "sessionId.raw"
+                              }
+                            }
+                          }
+                      },
+                      "bookings" : {
+                          "filter": {
+                            "and": [
+                                {
+                                  "term": {
+                                    "type": "domain_events"
+                                  }
+                                },
+                                {
+                                    "range": {
+                                      "channelId": { "from": 9, "to": 10 }
+                                    }
+                                },
+                                {
+                                  "term": {
+                                      "isTestBooking": false
+                                  }
+                                }
+                            ]
+                          }
+                      }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "bookingsbytime",
+              "fields": {
+                "bookings": "bookings.doc_count",
+                "sessions": "requests.sessions.value"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission"
+            },
+            {
+              "type": "stats",
+              "fields": ["yesterday", "lastWeek", "lastMonth"],
+              "stds": [1, 2],
+              "property": "commission"
+            }
+          ]
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "BookingData",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "value": "today", "text": "Today" },
+                { "id": "average", "color": "green", "value": "average", "text": "Average" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "today", "color": "purple", "value": "today.commission" },
+                { "id": "mean", "color": "green", "value": "value.mean" }
+              ],
+              "areas": [
+                { "id": "plusTwoStd", "color": "#AAA", "start": "value.standardDeviations.2.minus", "end": "value.standardDeviations.2.plus" },
+                { "id": "plusOneStd", "color": "#CCC", "start": "value.standardDeviations.1.minus", "end": "value.standardDeviations.1.plus" }
+              ]
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "BookingData",
+          "counter": {
+              "counters": [
+                { "id": "b-counter-today", "color": "purple", "text": "Today" },
+                { "id": "b-counter-yesterday", "color": "#907616", "text": "Yesterday" },
+                { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
+                { "id": "b-counter-lastMonth", "color": "#01CFB0", "text": "Last Month" }
+              ]
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "b-today", "color": "purple", "value": "today.commission" },
+                { "id": "b-yesterday", "color": "#907616", "value": "yesterday.commission" },
+                { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
+                { "id": "b-lastMonth", "color": "#01CFB0", "value": "lastMonth.commission" }
+              ]
+          }
+        }
+    ]
+}

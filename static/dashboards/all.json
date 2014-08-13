@@ -46,6 +46,10 @@
                 "CoversionStatus": {
                     "id": "ConversionStatus",
                     "name": "Conversion (In Progress)"
+                },
+                "LateRoomsConversion": {
+                    "id": "LateRoomsConversion",
+                    "name": "Conversion Graph"
                 }
             }
         },

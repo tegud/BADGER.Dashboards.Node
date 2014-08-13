@@ -5,7 +5,7 @@
 
 	function setValueOnSubProperty(obj, prop, value) {
 		if(typeof value === 'undefined') return;
-		
+
 		if (typeof prop === "string")
 			 prop = prop.split(".");
 
@@ -17,8 +17,8 @@
 			 }
 
 			 setValueOnSubProperty(obj[e] =
-					   Object.prototype.toString.call(obj[e]) === "[object Object]" || 
-					   Object.prototype.toString.call(obj[e]) === "[object Array]" 
+					   Object.prototype.toString.call(obj[e]) === "[object Object]" ||
+					   Object.prototype.toString.call(obj[e]) === "[object Array]"
 					   ? obj[e]
 					   : {},
 					 prop,
@@ -77,13 +77,14 @@
 	}
 
 	function mapTimeFrameToFilter(interval, units) {
-		return 'now-' + interval + units[0];	
+		return 'now-' + interval + units[0];
 	}
 
 	var timeFrameMappers = {
 		'daysAgo': function(timeFrame, queryItem) {
 			var dayOffset = parseInt(timeFrame.timeFrame, 10);
 			var day = moment().add('d', -dayOffset);
+			var endTimeLimit = '23:59:59';
 
 			if(queryItem.timeOffset) {
 				for(var unit in queryItem.timeOffset) {
@@ -100,10 +101,14 @@
 				}
 			}
 
+			if(!dayOffset && queryItem.limitToCurrentTime) {
+				endTimeLimit = moment().utc().format('HH:mm:ss');
+			}
+
 			return {
 				interval: '15m',
 			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
-		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT23:59:59Z')
+		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit + 'Z')
 			};
 		}
 	};
@@ -125,12 +130,13 @@
 			 	if(queries.modifiers) {
 			 		var baseQuery = JSON.parse(JSON.stringify(queries.query));
 			 		var expandedQueries = {};
-			 		
+
 			 		_.each(queries.modifiers, function(queryModifier, key) {
 			 			var query = JSON.parse(JSON.stringify(baseQuery));
 
 			 			expandedQueries[key] = {
 			 				timeOffset: queryModifier.timeOffset,
+							limitToCurrentTime: queryModifier.limitToCurrentTime,
 			 				query: query
 			 			};
 			 		});
@@ -144,7 +150,7 @@
                 	TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', configuration.defaultTimeFrame);
 			 	}
 
-	 			var timeFrameMapper = timeFrameMappers[timeFrame.units] || defaultTimeFrameMapper; 
+	 			var timeFrameMapper = timeFrameMappers[timeFrame.units] || defaultTimeFrameMapper;
 
 			 	return _.map(queries, function(queryItem, key) {
 			 		var query = JSON.parse(JSON.stringify(queryItem.query));

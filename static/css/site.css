@@ -184,7 +184,7 @@ h3 {margin: 0;padding: 0 }
 #content.initialised { display: block; }
 
 .hidden { display: none !important; }
-        
+
 /* LOADING */
 .loading-canvas {
     position: absolute;
@@ -464,7 +464,7 @@ h3 {margin: 0;padding: 0 }
 
 .button-container { text-align: center; margin-top: 5px; }
 
-.button-container button { background-color: #fff; border: 4px solid #000; font-size: 1.7em; } 
+.button-container button { background-color: #fff; border: 4px solid #000; font-size: 1.7em; }
 
 #graph-tooltip { font-size: 0.8em;z-index: 10; padding: 3px; width: 140px; position: absolute; background-color: #fff; border: solid 3px #000; border-radius: 5px }
 
@@ -478,7 +478,7 @@ h3 {margin: 0;padding: 0 }
 
 .status-table th.total-cell { padding-right: 60px; width: 70px; }
 
-.status-table td { padding: 3px 20px 3px 3px; }
+.status-table td { padding: 3px 20px 3px 3px; cursor: pointer; }
 
 .status-table td.good  { background-color: green; }
 .status-table td.warn  { background-color: orange; }

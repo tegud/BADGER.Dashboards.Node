@@ -237,7 +237,6 @@ var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
 var rowsViewModel = _.map(configuration.sites, function(site) {
 	var idPrefix = (configuration.idPrefix || '') + site.id;
 	var columns = _.map(columnsViewModel, function(column) {
-		console.log(column.linkToDashboard);
 		if(typeof column.linkToDashboard === 'undefined' || column.linkToDashboard) {
 			column.dashboardLink = column.linkToDashboard || site.linkToDashboard 
 			+ (column.linkParameters ? '?' : '')
@@ -298,6 +297,18 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 					var link = $(this).data('dashboardLink');
 
 					if(link && link != "false") {
+						var urlSegments = window.location.pathname.split('/');
+
+						if(urlSegments.length > 3) {
+							var splitLink = link.split('?');
+
+							link = splitLink[0] + '/' + urlSegments[3];
+
+							if(splitLink.length > 1) {
+								link += '?' + splitLink[1];
+							}
+						}
+
 						window.location.href = link;
 					}
 				})

@@ -185,6 +185,11 @@
 
                     return currentValue;
                 });
+
+                values = _.filter(values, function(value) {
+                    return typeof value !== 'undefined';
+                });
+
                 var stats = average(values);
 
                 _.each(mapping.stds, function(numberOfStds) {

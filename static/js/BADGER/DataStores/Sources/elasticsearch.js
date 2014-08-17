@@ -3,29 +3,43 @@
 
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.DataSource');
 
-	function setValueOnSubProperty(obj, prop, value) {
-		if(typeof value === 'undefined') return;
+    function setValueOnSubProperty(obj, prop, value) {
+        if(typeof value === 'undefined') return;
+        
+        if (typeof prop === "string")
+             prop = prop.split(".");
 
-		if (typeof prop === "string")
-			 prop = prop.split(".");
+        if (prop.length > 1) {
+             var e = prop.shift();
 
-		if (prop.length > 1) {
-			 var e = prop.shift();
+            if(e === '#') {
+                e = obj.length;
+            }
+            else if(!isNaN(e)) {
+                e = parseInt(e, 10);
+            }
 
-			 if(!isNaN(e)) {
-			 	e = parseInt(e, 10);
-			 }
+            if(typeof e === 'string' &&  e.indexOf('|') > -1) {
+            	e = e.replace(/|/g, '.');
+            }
 
-			 setValueOnSubProperty(obj[e] =
-					   Object.prototype.toString.call(obj[e]) === "[object Object]" ||
-					   Object.prototype.toString.call(obj[e]) === "[object Array]"
-					   ? obj[e]
-					   : {},
-					 prop,
-					 value);
-		} else
-			 obj[prop[0]] = value;
-	}
+            setValueOnSubProperty(obj[e] =
+                Object.prototype.toString.call(obj[e]) === "[object Object]" || 
+                Object.prototype.toString.call(obj[e]) === "[object Array]" 
+                    ? obj[e]
+                    : {},
+                prop,
+                value);
+        } else {
+        	var parsedProperty = prop[0];
+
+            if(typeof parsedProperty === 'string' &&  parsedProperty.indexOf('|') > -1) {
+            	parsedProperty = parsedProperty.replace(/\|/g, '.');
+            }
+
+            obj[parsedProperty] = value;
+         }
+    }
 
 	function mapTimeFrameToInterval(interval, units) {
 		var unitMappings = {
@@ -120,9 +134,27 @@
 		};
 	}
 
+    function applyFilterToQuery(query, filter) {
+        _.each(filter.setOnProperties, function(property) {
+            setValueOnSubProperty(query, property, filter.value);
+        });
+    }
+
+    function applyFilters(queries, filters) {
+        _.each(filters, function(filter) {
+            if(!filter.value) {
+                return;
+            }
+
+            _.each(queries, function(query) {
+                applyFilterToQuery(query, filter);
+            });
+        });
+    }
+
 	TLRGRP.BADGER.Dashboard.DataSource.elasticsearch = function(configuration) {
 		return {
-			 requestBuilder: function(options) {
+			 requestBuilder: function(options, filters) {
 			 	var queries = configuration.queries || { query: { query: configuration.query } };
 
 			 	var timeFrame = options.timeFrame;
@@ -143,6 +175,8 @@
 
 			 		queries = expandedQueries;
 			 	}
+
+			 	applyFilters(queries, filters);
 
 			 	if(!timeFrame.userSet && configuration.defaultTimeFrame) {
 			 		timeFrame = configuration.defaultTimeFrame;

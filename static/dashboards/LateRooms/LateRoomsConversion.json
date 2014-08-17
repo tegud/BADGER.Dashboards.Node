@@ -4,12 +4,33 @@
     "components": [
         {
           "type": "SharedDataStore",
+          "title": "LateRooms Conversion",
           "storeId": "BookingData",
           "dataSource": "elasticsearch",
           "host": "http://logs.laterooms.com:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
             "aggs.bookingsbytime.date_histogram.extended_bounds"
+          ],
+          "filters": [
+            { 
+              "id": "device",
+              "title": "Device",
+              "options": {
+                "All": "",
+                "Internet Explorer": "ie",
+                "Chrome": "chrome",
+                "Firefox": "",
+                "Safari (Desktop)": "",
+                "Safari (iPad)": "",
+                "Safari (iPhone)": "",
+                "Android": ""
+              },
+              "allowMultiple": false,
+              "setOnProperties": [
+                "query.query.filtered.filter.bool.must.#.term.user|userAgent|name" 
+              ]
+            }
           ],
           "defaultTimeFrame": {
             "timeFrame": 0,
@@ -20,7 +41,7 @@
               "today": { },
               "yesterday": { "timeOffset": { "days": -1 } },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
-              "lastMonth": { "timeOffset": { "relativeInMonth": -1 } }
+              "2weeksago": { "timeOffset": { "weeks": -2 } }
             },
             "query": {
               "query": {
@@ -34,8 +55,13 @@
                           }
                         },
                         {
-                          "terms" : {
-                            "type" : ["lr_varnish_request", "domain_events"]
+                          "term" : {
+                            "type" : "session"
+                          }
+                        },
+                        {
+                          "term": {
+                            "user.type": "human"
                           }
                         }
                       ]
@@ -52,55 +78,13 @@
                       "extended_bounds": {}
                   },
                   "aggs": {
-                      "requests" : {
-                          "filter": {
-                            "and": [
-                              {
-                                "term": {
-                                  "type": "lr_varnish_request"
-                                }
-                              },
-                              {
-                                "term": {
-                                  "UA_is_bot": false
-                                }
-                              },
-                              {
-                                "term": {
-                                  "botBuster_score": 0
-                                }
-                              }
-                            ]
-                          },
-                          "aggs": {
-                            "sessions": {
-                              "cardinality" : {
-                                "field" : "sessionId.raw"
-                              }
-                            }
-                          }
-                      },
-                      "bookings" : {
-                          "filter": {
-                            "and": [
-                                {
-                                  "term": {
-                                    "type": "domain_events"
-                                  }
-                                },
-                                {
-                                    "range": {
-                                      "channelId": { "from": 9, "to": 10 }
-                                    }
-                                },
-                                {
-                                  "term": {
-                                      "isTestBooking": false
-                                  }
-                                }
-                            ]
-                          }
+                    "bookings": {
+                      "filter": {
+                        "term": {
+                          "booked": "true"
+                        }
                       }
+                    }
                   }
                 }
               },
@@ -113,7 +97,7 @@
               "aggregateName": "bookingsbytime",
               "fields": {
                 "bookings": "bookings.doc_count",
-                "sessions": "requests.sessions.value"
+                "sessions": "doc_count"
               }
             },
             { 
@@ -124,9 +108,13 @@
             },
             {
               "type": "stats",
-              "fields": ["yesterday", "lastWeek", "lastMonth"],
+              "fields": ["yesterday", "lastWeek", "2weeksago"],
               "stds": [1, 2],
               "property": "commission"
+            },
+            {
+              "type": "confidenceInterval",
+              "confidenceLevel": "90%"
             }
           ]
         },
@@ -168,7 +156,7 @@
                 { "id": "b-counter-today", "color": "purple", "text": "Today" },
                 { "id": "b-counter-yesterday", "color": "#907616", "text": "Yesterday" },
                 { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
-                { "id": "b-counter-lastMonth", "color": "#01CFB0", "text": "Last Month" }
+                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" }
               ]
           },
           "graph": {
@@ -177,7 +165,7 @@
                 { "id": "b-today", "color": "purple", "value": "today.commission" },
                 { "id": "b-yesterday", "color": "#907616", "value": "yesterday.commission" },
                 { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
-                { "id": "b-lastMonth", "color": "#01CFB0", "value": "lastMonth.commission" }
+                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" }
               ]
           }
         }

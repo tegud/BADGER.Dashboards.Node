@@ -21,6 +21,7 @@
     TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore = function (options) {
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var currentTimeout;
+        var currentFilters = options.filters || [];
         var defaultAjaxOptions = {
             type: 'GET'
         };
@@ -80,7 +81,7 @@
 
                         var queries = currentOptions.request && currentOptions.request.requestBuilder ? currentOptions.request.requestBuilder({
                             timeFrame: currentTimeFrame
-                        }) : { query: currentOptions.query };
+                        }, currentFilters) : { query: currentOptions.query };
 
                         var responses = {};
                         var deferreds = _.map(queries, function(queryOptions) {
@@ -207,6 +208,19 @@
             },
             setNewRefresh: function (newRefresh) {
                 setNewRefresh(newRefresh);
+            },
+            setFilter: function(id, value) {
+                var filter =_.chain(currentFilters).filter(function(filter) {
+                    return filter.id === id;
+                }).first().value();
+
+                console.log(filter);
+
+                if(!filter) {
+                    return;
+                }
+
+                filter.value = value;
             }
         };
     };

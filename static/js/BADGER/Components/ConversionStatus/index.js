@@ -206,8 +206,8 @@
 								}
 
 								cell.parent()
-								.removeClass('warn alert good')
-								.addClass(newCellClass);
+									.removeClass('warn alert good')
+									.addClass(newCellClass);
 
 								if(newCellClass) {
 									indicatorCell.removeClass('hidden');
@@ -228,13 +228,27 @@ components: {
 var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
 	return {
 		name: dimension.name,
-		id: dimension.id
+		id: dimension.id,
+		linkToDashboard: dimension.linkToDashboard,
+		linkParameters: dimension.linkParameters
 	};
 });
 
 var rowsViewModel = _.map(configuration.sites, function(site) {
 	var idPrefix = (configuration.idPrefix || '') + site.id;
 	var columns = _.map(columnsViewModel, function(column) {
+		console.log(column.linkToDashboard);
+		if(typeof column.linkToDashboard === 'undefined' || column.linkToDashboard) {
+			column.dashboardLink = column.linkToDashboard || site.linkToDashboard 
+			+ (column.linkParameters ? '?' : '')
+			+ _.map(column.linkParameters, function(value, name) {
+				return name + '=' + value;
+			}).join('&');
+		}
+		else {
+			column.dashboardLink = false;
+		}
+
 		column.cellId = idPrefix + '-' + column.id;
 
 		return column;
@@ -243,7 +257,8 @@ var rowsViewModel = _.map(configuration.sites, function(site) {
 	return {
 		name: site.name,
 		idPrefix: idPrefix,
-		columns: Mustache.render('{{#columns}}<td class="data-cell" data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
+		link: site.linkToDashboard,
+		columns: Mustache.render('{{#columns}}<td class="data-cell" data-dashboard-link="{{dashboardLink}}" data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
 	};
 });
 
@@ -267,7 +282,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				+ Mustache.render('{{#columns}}<th>{{name}}</th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row">'
-					+ '<th>{{name}}</th><td class="total-cell data-cell" id="{{idPrefix}}-total" data-cell-identifier="total"><span>-</span>%<div class="status-cell-indicator hidden"></div></td>'
+					+ '<th>{{name}}</th><td class="total-cell data-cell" data-dashboard-link="{{link}}" id="{{idPrefix}}-total" data-cell-identifier="total"><span>-</span>%<div class="status-cell-indicator hidden"></div></td>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');
@@ -279,50 +294,89 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 			}
 
 			container
-			.on('mouseover', '.data-cell', function() {
-				var cell = $(this);
+				.on('click', '.data-cell', function() {
+					var link = $(this).data('dashboardLink');
 
-				toolTip.removeClass('hidden');
+					if(link && link != "false") {
+						window.location.href = link;
+					}
+				})
+				.on('mouseover', '.data-cell', function() {
+					var cell = $(this);
 
-				var toolTipWidth = toolTip.width();
-				var cellWidth = cell.width();
-				var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
+					toolTip.removeClass('hidden');
 
-				toolTip.css({
-					top: cell.offset().top + cell.height() + 10,
-					left: left
+					var toolTipWidth = toolTip.width();
+					var cellWidth = cell.width();
+					var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
+
+					toolTip.css({
+						top: cell.offset().top + cell.height() + 10,
+						left: left
+					});
+
+					var cellKey = cell.data('cellIdentifier');
+
+					if(cellKey && lastData) {
+						var rootStatsObject = lastData.value;
+
+						if(cellKey !== 'total') {
+							rootStatsObject = rootStatsObject[cellKey];
+						}
+
+						var dayOrder = {
+							'yesterday': 1,
+							'lastWeek': 2,
+							'2weeksago': 3,
+							'lastmonth': 4
+						};
+
+						var niceDayNames = {
+							'yesterday': 'Yesterday',
+							'lastWeek': 'Last Week',
+							'2weeksago': '2 Weeks Ago',
+							'lastmonth': 'Last Month'
+						};
+
+						var toolTipModel = {
+							days: _.chain(lastData).map(function(data, day) {
+								if(day === 'today' || day === 'value') {
+									return;
+								}
+								var conversion = 0;
+
+								if(data[cellKey] && data[cellKey].commission) {
+									conversion = data[cellKey].commission.toFixed(2) + '%';
+								}
+
+								return { 
+									day: niceDayNames[day] || day,
+									conversion: conversion,
+									index: dayOrder[day] || 999
+								};
+							}).filter(function(item) {
+								return item;
+							}).sortBy(function(item) {
+								return item.index;
+							}).value(),
+							average: rootStatsObject.mean.toFixed(2),
+							std: rootStatsObject.deviation.toFixed(2),
+							thresholds: [
+								{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
+								{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
+								{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
+							]
+						};
+
+						toolTip.html(Mustache.render(
+							'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
+							+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
+							+ '', toolTipModel));
+					}
+				})
+				.on('mouseout', '.data-cell', function() {
+					toolTip.addClass('hidden');
 				});
-
-				var cellKey = cell.data('cellIdentifier');
-
-				if(cellKey && lastData) {
-					var toolTipModel = {
-						days: _.map(lastData, function(data, day) {
-							var conversion = 0;
-
-							if(data[cellKey] && data[cellKey].commission) {
-								conversion = data[cellKey].commission.toFixed(2) + '%';
-							}
-
-							return { 
-								day: day,
-								conversion: conversion
-							};
-						}),
-						average: lastData.value.mean.toFixed(2),
-						std: lastData.value.deviation.toFixed(2)
-					};
-
-					console.log(lastData);
-
-					toolTip.html(Mustache.render('{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
-						+ '<div>Average: {{average}}%</div>'
-						+ '<div>Std Dev.: {{std}}</div>', toolTipModel));
-				}
-			})
-			.on('mouseout', '.data-cell', function() {
-				toolTip.addClass('hidden');
-			});
 		}
 	}
 	]

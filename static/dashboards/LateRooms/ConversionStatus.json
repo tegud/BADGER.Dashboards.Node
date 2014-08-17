@@ -9,13 +9,17 @@
           "sites": [
             {
               "name": "LateRooms.com",
-              "id": "LR"
+              "id": "LR",
+              "linkToDashboard": "/LateRooms/LateRoomsConversion"
             }
           ],
           "dimensions": [
             {
               "name": "IE",
               "id": "ie",
+              "linkParameters": {
+                "device": "ie"
+              },
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
@@ -24,6 +28,9 @@
             {
               "name": "Chrome",
               "id": "chrome",
+              "linkParameters": {
+                "device": "chrome"
+              },
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Chrome).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Chrome).doc_count"
@@ -32,6 +39,9 @@
             {
               "name": "Firefox",
               "id": "firefox",
+              "linkParameters": {
+                "device": "firefox"
+              },
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Firefox).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Firefox).doc_count"
@@ -40,6 +50,7 @@
             {
               "name": "Safari (Desktop)",
               "id": "safari",
+              "linkToDashboard": false,
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Safari).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Safari).doc_count"
@@ -48,6 +59,7 @@
             {
               "name": "Safari (iPad)",
               "id": "ipad",
+              "linkToDashboard": false,
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPad).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPad).doc_count"
@@ -56,6 +68,7 @@
             {
               "name": "Safari (iPhone)",
               "id": "iphone",
+              "linkToDashboard": false,
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPhone).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Mobile Safari).mobilesafari.buckets.:find(key=iPhone).doc_count"
@@ -64,6 +77,9 @@
             {
               "name": "Android",
               "id": "android",
+              "linkParameters": {
+                "device": "android"
+              },
               "values": {
                 "sessions": "aggregations.useragents.buckets.:find(key=Android).doc_count",
                 "bookings": "aggregations.bookings.useragents.buckets.:find(key=Android).doc_count"

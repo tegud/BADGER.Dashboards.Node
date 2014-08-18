@@ -145,7 +145,7 @@ module.exports = function (grunt) {
         this.async();
 
         new require('./index')().start({
-            port: 1234
+            port: 1235
         });
     });
 };

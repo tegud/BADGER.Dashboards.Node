@@ -134,9 +134,16 @@
             }
         }
 
-        function buildUrl(dashboardId, viewId, timeFrame) {
+        function buildUrl(dashboardId, viewId, timeFrame, queryParameters) {
             var url = (options.baseUrl || '');
             var dashboard = TLRGRP.BADGER.Dashboard.getById(dashboardId);
+            var queryString = '';
+
+            if(queryParameters) {
+                queryString = '?' + _.map(queryParameters, function(value, parameter) {
+                    return parameter + '=' + value;
+                }).join('&');
+            }
 
             if(timeFrame && timeFrame.userSet) {
                 var timeFrameUrl;
@@ -153,18 +160,18 @@
                     timeFrameUrl = timeFrame.timeFrame + timeFrame.units;
                 }
 
-                return url + '/' + dashboardId + '/' + viewId + '/' + timeFrameUrl;
+                return url + '/' + dashboardId + '/' + viewId + '/' + timeFrameUrl + queryString;
             }
 
             if(viewId && dashboard.views[viewId] && !dashboard.views[viewId].isDefault) {
-                return url + '/' + dashboardId + '/' + viewId;
+                return url + '/' + dashboardId + '/' + viewId + queryString;
             }
 
             if(dashboardId === defaultDashboard) {
-                return url + '/';
+                return url + '/' + queryString;
             }
 
-            return url + '/' + dashboardId;
+            return url + '/' + dashboardId + queryString;
         }
 
         var currentTimeFrame;
@@ -207,9 +214,10 @@
                 });
 
                 TLRGRP.BADGER.URL.pushState({ 
-                    url: buildUrl(dashboard, view, currentTimeFrame),
+                    url: buildUrl(dashboard, view, currentTimeFrame, dashboardAndView.queryParameters),
                     dashboard: dashboard,
-                    view: view
+                    view: view,
+                    queryParameters: dashboardAndView.queryParameters
                 });
             });
 

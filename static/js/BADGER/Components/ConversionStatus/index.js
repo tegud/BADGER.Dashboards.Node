@@ -17,10 +17,10 @@
 			},
 			"queries": {
 				"modifiers": {
-					"today": { },
-					"yesterday": { "timeOffset": { "days": -1 }, "limitToCurrentTime": true },
-					"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true },
-					"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true }
+					"today": {  },
+					"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+					"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+					"3weeksago": { "timeOffset": { "weeks": -3 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
 				},
 				"query": {
 					"query":{
@@ -108,25 +108,25 @@
 		});
 
 		var mappings = [
-		{
-			type: 'pickValues',
-			multiQuery: true,
-			values: pickValues
-		},
-		{
-			"type": "calculation",
-			"calculation": "percentage",
-			"by": { "field": "total.bookings", "over": "total.sessions" },
-			"notFromHistogram": true,
-			"toField": "total.commission"
-		},
-		{
-			"type": "stats",
-			"fields": ["yesterday", "lastWeek", "2weeksago"],
-			"stds": [1, 2],
-			"notFromHistogram": true,
-			"property": "total.commission"
-		}
+			{
+				type: 'pickValues',
+				multiQuery: true,
+				values: pickValues
+			},
+			{
+				"type": "calculation",
+				"calculation": "percentage",
+				"by": { "field": "total.bookings", "over": "total.sessions" },
+				"notFromHistogram": true,
+				"toField": "total.commission"
+			},
+			{
+				"type": "stats",
+				"fields": ["lastWeek", "2weeksago", "3weeksago"],
+				"stds": [1, 2],
+				"notFromHistogram": true,
+				"property": "total.commission"
+			}
 		];
 
 		_.each(configuration.dimensions, function(dimension) {
@@ -139,7 +139,7 @@
 			});
 			mappings.push({
 				"type": "stats",
-				"fields": ["yesterday", "lastWeek", "2weeksago"],
+				"fields": ["lastWeek", "2weeksago", "3weeksago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"toField": 'value.' + dimension.id,
@@ -174,8 +174,8 @@
 						}
 
 						totalCell
-						.removeClass('warn alert good')
-						.addClass(newCellClass);
+							.removeClass('warn alert good')
+							.addClass(newCellClass);
 
 						if(newCellClass) {
 							$('.status-cell-indicator', totalCell).removeClass('hidden');
@@ -217,54 +217,50 @@
 								}
 							}
 						});
-});
-}
-},
-components: {
-	loading: inlineLoading
-}
-});
+					});
+				}
+			},
+			components: {
+				loading: inlineLoading
+			}
+		});
 
-var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
-	return {
-		name: dimension.name,
-		id: dimension.id,
-		linkToDashboard: dimension.linkToDashboard,
-		linkParameters: dimension.linkParameters
-	};
-});
+		var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
+			return {
+				name: dimension.name,
+				id: dimension.id
+			};
+		});
 
-var rowsViewModel = _.map(configuration.sites, function(site) {
-	var idPrefix = (configuration.idPrefix || '') + site.id;
-	var columns = _.map(columnsViewModel, function(column) {
-		if(typeof column.linkToDashboard === 'undefined' || column.linkToDashboard) {
-			column.dashboardLink = column.linkToDashboard || site.linkToDashboard 
-			+ (column.linkParameters ? '?' : '')
-			+ _.map(column.linkParameters, function(value, name) {
-				return name + '=' + value;
-			}).join('&');
-		}
-		else {
-			column.dashboardLink = false;
-		}
+		var rowsViewModel = _.map(configuration.sites, function(site) {
+			var idPrefix = (configuration.idPrefix || '') + site.id;
+			var columns = _.map(columnsViewModel, function(column) {
+				if(!column.dashboard) {
+					column.dashboard = site.dashboard;
+				}
 
-		column.cellId = idPrefix + '-' + column.id;
+				if(!column.view) {
+					column.view = site.view;
+				}
 
-		return column;
-	});
+				column.cellId = idPrefix + '-' + column.id;
 
-	return {
-		name: site.name,
-		idPrefix: idPrefix,
-		link: site.linkToDashboard,
-		columns: Mustache.render('{{#columns}}<td class="data-cell" data-dashboard-link="{{dashboardLink}}" data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
-	};
-});
+				return column;
+			});
 
-var tableViewModel = {
-	columns: columnsViewModel,
-	rows: rowsViewModel
-};
+			return {
+				name: site.name,
+				idPrefix: idPrefix,
+				dashboard: site.dashboard,
+				view: site.view,
+				columns: Mustache.render('{{#columns}}<td class="data-cell" data-dashboard="{{dashboard}}" data-view="{{view}}" data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
+			};
+		});
+
+		var tableViewModel = {
+			columns: columnsViewModel,
+			rows: rowsViewModel
+		};
 
 var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 	title: configuration.title,
@@ -281,7 +277,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				+ Mustache.render('{{#columns}}<th>{{name}}</th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row">'
-					+ '<th>{{name}}</th><td class="total-cell data-cell" data-dashboard-link="{{link}}" id="{{idPrefix}}-total" data-cell-identifier="total"><span>-</span>%<div class="status-cell-indicator hidden"></div></td>'
+					+ '<th>{{name}}</th><td class="total-cell data-cell" data-dashboard="{{dashboard}}" data-view="{{view}}" id="{{idPrefix}}-total" data-cell-identifier="total"><span>-</span>%<div class="status-cell-indicator hidden"></div></td>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');
@@ -294,23 +290,26 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 
 			container
 				.on('click', '.data-cell', function() {
-					var link = $(this).data('dashboardLink');
+					var cell = $(this);
+					var dashboard = cell.data('dashboard');
+					var view = cell.data('view');
+					var cellKey = cell.data('cellIdentifier');
+					var dimension = _.chain(configuration.dimensions)
+						.filter(function(dimension) {
+							return dimension.id === cellKey;
+						})
+						.first()
+						.value();
 
-					if(link && link != "false") {
-						var urlSegments = window.location.pathname.split('/');
-
-						if(urlSegments.length > 3) {
-							var splitLink = link.split('?');
-
-							link = splitLink[0] + '/' + urlSegments[3];
-
-							if(splitLink.length > 1) {
-								link += '?' + splitLink[1];
-							}
-						}
-
-						window.location.href = link;
+					if(!dashboard) {
+						return;
 					}
+
+					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+						dashboard: dashboard,
+						view: view,
+						queryParameters: dimension.filter
+					});
 				})
 				.on('mouseover', '.data-cell', function() {
 					var cell = $(this);
@@ -339,13 +338,15 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'yesterday': 1,
 							'lastWeek': 2,
 							'2weeksago': 3,
-							'lastmonth': 4
+							'3weeksago': 4,
+							'lastmonth': 5
 						};
 
 						var niceDayNames = {
 							'yesterday': 'Yesterday',
 							'lastWeek': 'Last Week',
 							'2weeksago': '2 Weeks Ago',
+							'3weeksago': '3 Weeks Ago',
 							'lastmonth': 'Last Month'
 						};
 
@@ -373,9 +374,9 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							average: rootStatsObject.mean.toFixed(2),
 							std: rootStatsObject.deviation.toFixed(2),
 							thresholds: [
-								{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
-								{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
-								{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
+							{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
+							{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
+							{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
 							]
 						};
 
@@ -385,12 +386,12 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							+ '', toolTipModel));
 					}
 				})
-				.on('mouseout', '.data-cell', function() {
-					toolTip.addClass('hidden');
-				});
-		}
-	}
-	]
+	.on('mouseout', '.data-cell', function() {
+		toolTip.addClass('hidden');
+	});
+}
+}
+]
 });
 
 var stateMachine = nano.Machine({

@@ -85,10 +85,26 @@
                                         id: filter.id,
                                         title: filter.title,
                                         options: _.map(filter.options, function(value, label) {
+                                            var isChecked;
+
+                                            if(!location.search && label === 'All'){
+                                                isChecked = true;
+                                            }
+                                            else {
+                                                if(typeof value ==='object') {
+                                                    isChecked = _.every(value, function(value, subProperty) {
+                                                        return getParameterByName(subProperty) === value;
+                                                    });
+                                                }
+                                                else {
+                                                    isChecked = getParameterByName(filter.id) === value;
+                                                }
+                                            }
+
                                             return {
                                                 label: label,
                                                 value: value,
-                                                optionCheckedClass: (!filter.value && label === 'All') || filter.value === value ? 'selected' : ''
+                                                optionCheckedClass: isChecked ? 'selected' : ''
                                             };
                                         })
                                     };
@@ -139,6 +155,35 @@
                 if(configuration.filters) {
                     componentLayout.appendTo(container);
                 }
+
+                _.each(configuration.filters, function(filter) {
+                    var selectedOptions = _.filter(filter.options, function(value, label) {
+                        var isChecked;
+
+                        if(!location.search && label === 'All'){
+                            isChecked = true;
+                        }
+                        else {
+                            if(typeof value ==='object') {
+                                isChecked = _.every(value, function(value, subProperty) {
+                                    return getParameterByName(subProperty) === value;
+                                });
+                            }
+                            else {
+                                isChecked = getParameterByName(filter.id) === value;
+                            }
+                        }
+
+                        return isChecked;
+                    });
+
+                    if(selectedOptions.length) {
+                        dataStore.setFilter(filter.id, _.map(selectedOptions, function(option) {
+                            return option;
+                        }));
+                    }
+                });
+
                 dataStore.start();
             },
             unload: function () {

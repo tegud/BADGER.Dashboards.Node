@@ -18,18 +18,19 @@
               "title": "Device",
               "options": {
                 "All": "",
-                "Internet Explorer": "ie",
-                "Chrome": "chrome",
-                "Firefox": "",
-                "Safari (Desktop)": "",
-                "Safari (iPad)": "",
-                "Safari (iPhone)": "",
-                "Android": ""
+                "Internet Explorer": { "browser": "ie" },
+                "Chrome": { "browser": "chrome" },
+                "Firefox": { "browser": "firefox" },
+                "Safari (Desktop)": { "browser": "safari", "device": "other" },
+                "Safari (iPad)": { "browser": "safari", "device": "ipad" },
+                "Safari (iPhone)": { "browser": "safari", "device": "iphone" },
+                "Android": { "browser": "android" }
               },
               "allowMultiple": false,
-              "setOnProperties": [
-                "query.query.filtered.filter.bool.must.#.term.user|userAgent|name" 
-              ]
+              "setOnProperties": {
+                "browser": "query.query.filtered.filter.bool.must.#.term.user|userAgent|name",
+                "device": "query.query.filtered.filter.bool.must.#.term.user|userAgent|device" 
+              }
             }
           ],
           "defaultTimeFrame": {
@@ -39,9 +40,9 @@
           "queries": {
             "modifiers": {
               "today": { },
-              "yesterday": { "timeOffset": { "days": -1 } },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
-              "2weeksago": { "timeOffset": { "weeks": -2 } }
+              "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } }
             },
             "query": {
               "query": {
@@ -108,7 +109,7 @@
             },
             {
               "type": "stats",
-              "fields": ["yesterday", "lastWeek", "2weeksago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago"],
               "stds": [1, 2],
               "property": "commission"
             },
@@ -154,18 +155,18 @@
           "counter": {
               "counters": [
                 { "id": "b-counter-today", "color": "purple", "text": "Today" },
-                { "id": "b-counter-yesterday", "color": "#907616", "text": "Yesterday" },
                 { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
-                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" }
+                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" },
+                { "id": "b-counter-3weeksago", "color": "#907616", "text": "3 Weeks Ago" }
               ]
           },
           "graph": {
               "className": "commission-graph",
               "lines": [
                 { "id": "b-today", "color": "purple", "value": "today.commission" },
-                { "id": "b-yesterday", "color": "#907616", "value": "yesterday.commission" },
                 { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
-                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" }
+                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" },
+                { "id": "b-3weeksago", "color": "#907616", "value": "3weeksago.commission" }
               ]
           }
         }

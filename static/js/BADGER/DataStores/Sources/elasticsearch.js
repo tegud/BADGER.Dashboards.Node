@@ -98,7 +98,7 @@
 		'daysAgo': function(timeFrame, queryItem) {
 			var dayOffset = parseInt(timeFrame.timeFrame, 10);
 			var day = moment().add('d', -dayOffset);
-			var endTimeLimit = '23:59:59';
+			var endTimeLimit = moment('1 jan 2014 23:59:59', 'DD MMM YYYY HH:mm:ss');
 
 			if(queryItem.timeOffset) {
 				for(var unit in queryItem.timeOffset) {
@@ -116,13 +116,19 @@
 			}
 
 			if(!dayOffset && queryItem.limitToCurrentTime) {
-				endTimeLimit = moment().utc().format('HH:mm:ss');
+				endTimeLimit = moment().utc();
+			}
+
+			if(queryItem.currentTimeOffset) {
+				_.each(queryItem.currentTimeOffset, function(amount, unit) {
+					endTimeLimit = endTimeLimit.add(unit, amount);
+				});
 			}
 
 			return {
 				interval: '15m',
 			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
-		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit + 'Z')
+		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit.format('HH:mm:ss') + 'Z')
 			};
 		}
 	};
@@ -135,9 +141,21 @@
 	}
 
     function applyFilterToQuery(query, filter) {
-        _.each(filter.setOnProperties, function(property) {
-            setValueOnSubProperty(query, property, filter.value);
-        });
+    	if(_.isArray(filter.value)) {
+    		if(filter.value.length === 1) {
+        		_.each(filter.value[0], function(value, key) {
+            		setValueOnSubProperty(query, filter.setOnProperties[key], value);
+        		});
+    		}
+    		else {
+    			console.log('Multiple filter terms no implemented');
+    		}
+    	}
+    	else {
+    		_.each(filter.setOnProperties, function(property) {
+        		setValueOnSubProperty(query, property, filter.value);
+    		});
+    	}
     }
 
     function applyFilters(queries, filters) {
@@ -169,6 +187,7 @@
 			 			expandedQueries[key] = {
 			 				timeOffset: queryModifier.timeOffset,
 							limitToCurrentTime: queryModifier.limitToCurrentTime,
+							currentTimeOffset: queryModifier.currentTimeOffset,
 			 				query: query
 			 			};
 			 		});

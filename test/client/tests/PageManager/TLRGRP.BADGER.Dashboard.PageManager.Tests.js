@@ -382,6 +382,28 @@
 					expect(actualNewUrl).to.be(expectedNewUrl);
 				});
 			});
+
+
+			it('pushes querystring parameters to url', function() {
+				var expectedNewUrl = '/ByPage?a=1&b=2';
+				var actualNewUrl = '';
+				var pageManager = new TLRGRP.BADGER.Dashboard.PageManager();
+
+				TLRGRP.BADGER.URL.pushState = function(pageInfo) {
+					actualNewUrl = pageInfo.url;
+				};
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ByPage',
+					view: 'PerSec',
+					queryParameters: {
+						a: 1,
+						b: 2
+					}
+				});
+
+				expect(actualNewUrl).to.be(expectedNewUrl);
+			});
 		});
 
 		describe('user navigates back or forwards to a previously viewed dashboard', function() {

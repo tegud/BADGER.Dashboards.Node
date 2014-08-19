@@ -2,13 +2,13 @@
     'use strict';
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
-
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
+
 
     function setFiltersFromQueryString(filters) {
         _.each(filters, function(filter) {
@@ -19,6 +19,81 @@
             }
         });
     }
+
+    TLRGRP.BADGER.Dashboard.Components.Filters = function (configuration) {
+        function getParameterByName(querystring, name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+            var results = regex.exec(querystring);
+
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        var filters = _.map(configuration, function(filter) {
+            return {
+                id: filter.id,
+                defaultOption: filter.defaultOption,
+                allOptions: _.map(filter.options, function(option, key) {
+                    return {
+                        value: option,
+                        id: key
+                    };
+                }),
+                selectedOptions: []
+            };
+        });
+
+        return {
+            loadFromQuerystring: function(querystring) {
+                _.each(filters, function(filter) {
+                    filter.selectedOptions = _.filter(filter.allOptions, function(option) {
+                        option = option.value;
+
+                        if(typeof option === 'object') {
+                            return _.every(option, function(value, property) {
+                                return value === getParameterByName(querystring, property);
+                            });
+                        }
+                        else {
+                            var queryStringValue = getParameterByName(querystring, filter.id);
+
+                            return option === queryStringValue;
+                        }
+                    });
+                });
+            },
+            setAgainstDataStore: function(dataStore) {
+                _.each(filters, function(filter) {
+                    dataStore.setFilter(filter.id, filter.selectedOptions.length ? _.map(filter.selectedOptions, function(option) {
+                        return option.value;
+                    }) : undefined)
+                });
+            },
+            getValueForFilter: function(filterId) {
+                var filter = _.chain(filters).filter(function(filter) {
+                    return filter.id = filterId;
+                }).first().value();
+
+                if(!filter.selectedOptions.length) {
+                    return;
+                }
+
+                return filter.selectedOptions[0].value;
+            },
+            getSelectedOptionForFilter: function(filterId) {
+                var filter = _.chain(filters).filter(function(filter) {
+                    return filter.id = filterId;
+                }).first().value();
+
+                if(!filter.selectedOptions.length) {
+                    return filter.defaultOption;
+                }
+
+                return filter.selectedOptions[0].id;
+            }
+        };
+    };
 
     TLRGRP.BADGER.Dashboard.Components.SharedDataStore = function (configuration) {
         var subscribedComponents = {};
@@ -69,6 +144,7 @@
             }
         });
 
+        var filters = new TLRGRP.BADGER.Dashboard.Components.Filters(configuration.filters);
         var componentLayout;
 
         if(configuration.filters) {
@@ -79,27 +155,15 @@
                 modules: [
                     {
                         appendTo: function (container) {
+                            filters.loadFromQuerystring(location.search);
+
                             var filtersViewModel = {
                                 filters: _.map(configuration.filters, function(filter) {
                                     return {
                                         id: filter.id,
                                         title: filter.title,
                                         options: _.map(filter.options, function(value, label) {
-                                            var isChecked;
-
-                                            if(!location.search && label === 'All'){
-                                                isChecked = true;
-                                            }
-                                            else {
-                                                if(typeof value ==='object') {
-                                                    isChecked = _.every(value, function(value, subProperty) {
-                                                        return getParameterByName(subProperty) === value;
-                                                    });
-                                                }
-                                                else {
-                                                    isChecked = getParameterByName(filter.id) === value;
-                                                }
-                                            }
+                                            var isChecked = filters.getSelectedOptionForFilter(filter.id) === label;
 
                                             return {
                                                 label: label,
@@ -153,36 +217,10 @@
         return {
             render: function (container) {
                 if(configuration.filters) {
+                    filters.setAgainstDataStore(dataStore);
+
                     componentLayout.appendTo(container);
                 }
-
-                _.each(configuration.filters, function(filter) {
-                    var selectedOptions = _.filter(filter.options, function(value, label) {
-                        var isChecked;
-
-                        if(!location.search && label === 'All'){
-                            isChecked = true;
-                        }
-                        else {
-                            if(typeof value ==='object') {
-                                isChecked = _.every(value, function(value, subProperty) {
-                                    return getParameterByName(subProperty) === value;
-                                });
-                            }
-                            else {
-                                isChecked = getParameterByName(filter.id) === value;
-                            }
-                        }
-
-                        return isChecked;
-                    });
-
-                    if(selectedOptions.length) {
-                        dataStore.setFilter(filter.id, _.map(selectedOptions, function(option) {
-                            return option;
-                        }));
-                    }
-                });
 
                 dataStore.start();
             },

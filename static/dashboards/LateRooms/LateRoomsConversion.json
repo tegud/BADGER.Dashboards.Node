@@ -16,8 +16,9 @@
             { 
               "id": "device",
               "title": "Device",
+              "defaultOption": "All",
               "options": {
-                "All": "",
+                "All": false,
                 "Internet Explorer": { "browser": "ie" },
                 "Chrome": { "browser": "chrome" },
                 "Firefox": { "browser": "firefox" },

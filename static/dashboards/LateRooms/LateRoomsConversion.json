@@ -358,13 +358,13 @@
             "counter": {
               "title": "Errors",
               "counters": [
-                { "id": "booking-errors-counter-today", "color": "red", "text": "Today" },
+                { "id": "booking-errors-counter-today", "color": "purple", "text": "Today" },
                 { "id": "booking-errors-counter-mean", "color": "green", "text": "Average" }
               ]
             },
             "graph": {
               "lines": [
-                { "id": "booking-errors-line-today", "color": "red", "value": "today.bookings" },
+                { "id": "booking-errors-line-today", "color": "purple", "value": "today.bookings" },
                 { "id": "booking-errors-counter-mean", "color": "green", "value": "value.bookings.mean" }
               ],
               "areas": [

@@ -213,7 +213,7 @@
             });
         }
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.SharedDataStore.Subscribe', function(storeSubscription) {
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, function(storeSubscription) {
             if(subscribedComponents[storeSubscription.id]) {
                 return;
             }
@@ -221,7 +221,7 @@
             subscribedComponents[storeSubscription.id] = storeSubscription;
         });
 
-        TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe', function(id) {
+        TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId, function(id) {
             delete subscribedComponents[id];
         });
 

@@ -113,10 +113,187 @@
               "fields": ["lastWeek", "2weeksago", "3weeksago"],
               "stds": [1, 2],
               "property": "commission"
+            }
+          ]
+        },
+        {
+          "type": "SharedDataStore",
+          "storeId": "ErrorData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.errorsbytime.date_histogram.extended_bounds"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "type" : "lr_errors"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                    "bookingerrors": {
+                      "filter": {
+                        "term": {
+                          "url_page_type": "booking"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "errorsbytime",
+              "fields": {
+                "bookings": "bookingerrors.doc_count",
+                "all": "doc_count"
+              }
             },
             {
-              "type": "confidenceInterval",
-              "confidenceLevel": "90%"
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago"],
+              "stds": [1, 2],
+              "property": "bookings",
+              "toField": "value.bookings"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago"],
+              "stds": [1, 2],
+              "property": "all",
+              "toField": "value.all"
+            }
+          ]
+        },
+        {
+          "type": "SharedDataStore",
+          "storeId": "RequestData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.requestsbytime.date_histogram.extended_bounds"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "type" : "lr_varnish_request"
+                          }
+                        },
+                        {
+                          "not": {
+                            "term": {
+                              "tags": "beacon"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "requestsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                    "sessions": {
+                      "cardinality": {
+                        "field": "sessionId.raw"
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "requestsbytime",
+              "fields": {
+                "sessions": "sessions.value",
+                "requests": "doc_count"
+              }
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago"],
+              "stds": [1, 2],
+              "property": "sessions",
+              "toField": "value.sessions"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago"],
+              "stds": [1, 2],
+              "property": "requests",
+              "toField": "value.requests"
             }
           ]
         },
@@ -175,76 +352,96 @@
         },
         {
             "type": "LineGraphAndCounter",
-            "title": "Errors",
-            "summaryText": "Errors on LateRooms.com (WEB)",
-            "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
-            "defaultTimeFrame": {
-              "timeFrame": 0,
-              "units": "daysAgo"
-            },
-            "timeProperties": [
-              "query.filtered.filter.bool.must.0.range.@timestamp",
-              "aggs.errorsbytime.date_histogram.extended_bounds"
-            ],
-            "query": {
-              "query": {
-                "filtered": {
-                  "filter": {
-                    "bool": {
-                      "must": [
-                        {
-                          "range" : {
-                            "@timestamp" : {
-                                "from" : "now-60m"
-                            }
-                          }
-                        },
-                        {
-                            "term": {
-                                "type": "lr_errors"
-                            }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                "errorsbytime" : {
-                        "date_histogram" : {
-                            "min_doc_count": 0,
-                            "extended_bounds" : {
-                                "min" : "now-60m",
-                                "max" : "now"
-                            },
-                            "field" : "@timestamp",
-                            "interval" : "1h"
-                        }
-                    }
-              },
-              "size": 0
-            },
-            "mappings": [
-              { 
-                "type": "extractFromDateHistogram",
-                "aggregateName": "errorsbytime",
-                "fields": {
-                  "errors": "doc_count"
-                }
-              }
-            ],
+            "title": "Booking Errors",
+            "summaryText": "Booking Errors on LateRooms.com (WEB)",
+            "storeId": "ErrorData",
             "counter": {
-                "title": "Errors in last 10mins",
-                "counters": [
-                  { "id": "b-counter-today", "color": "red", "text": "Today" }
-                ]
+              "title": "Errors",
+              "counters": [
+                { "id": "booking-errors-counter-today", "color": "red", "text": "Today" },
+                { "id": "booking-errors-counter-mean", "color": "green", "text": "Average" }
+              ]
             },
             "graph": {
-                "lines": [
-                  { "id": "errors", "color": "red", "value": "query.errors" }
-                ],
-                "window": false
+              "lines": [
+                { "id": "booking-errors-line-today", "color": "red", "value": "today.bookings" },
+                { "id": "booking-errors-counter-mean", "color": "green", "value": "value.bookings.mean" }
+              ],
+              "areas": [
+                { "id": "booking-errors-counter-plusTwoStd", "color": "#AAA", "start": "value.bookings.standardDeviations.2.minus", "end": "value.bookings.standardDeviations.2.plus" },
+                { "id": "booking-errors-counter-plusOneStd", "color": "#CCC", "start": "value.bookings.standardDeviations.1.minus", "end": "value.bookings.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Errors",
+            "summaryText": "Errors on LateRooms.com (WEB)",
+            "storeId": "ErrorData",
+            "counter": {
+              "title": "Errors",
+              "counters": [
+                { "id": "errors-counter-today", "color": "orange", "text": "Today" },
+                { "id": "booking-errors-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "errors-line-today", "color": "orange", "value": "today.all" },
+                { "id": "errors-counter-mean", "color": "green", "value": "value.all.mean" }
+              ],
+              "areas": [
+                { "id": "errors-counter-plusTwoStd", "color": "#AAA", "start": "value.all.standardDeviations.2.minus", "end": "value.all.standardDeviations.2.plus" },
+                { "id": "errors-counter-plusOneStd", "color": "#CCC", "start": "value.all.standardDeviations.1.minus", "end": "value.all.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests",
+            "summaryText": "Requests on LateRooms.com (WEB)",
+            "storeId": "RequestData",
+            "counter": {
+              "counters": [
+                { "id": "requests-counter-today", "color": "purple", "text": "Today" },
+                { "id": "requests-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "requests-line-today", "color": "purple", "value": "today.requests" },
+                { "id": "requests-counter-mean", "color": "green", "value": "value.requests.mean" }
+              ],
+              "areas": [
+                { "id": "requests-counter-plusTwoStd", "color": "#AAA", "start": "value.requests.standardDeviations.2.minus", "end": "value.requests.standardDeviations.2.plus" },
+                { "id": "requests-counter-plusOneStd", "color": "#CCC", "start": "value.requests.standardDeviations.1.minus", "end": "value.requests.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Sessions",
+            "summaryText": "Sessions on LateRooms.com (WEB)",
+            "storeId": "RequestData",
+            "counter": {
+              "counters": [
+                { "id": "sessions-counter-today", "color": "purple", "text": "Today" },
+                { "id": "sessions-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "sessions-line-today", "color": "purple", "value": "today.sessions" },
+                { "id": "sessions-counter-mean", "color": "green", "value": "value.sessions.mean" }
+              ],
+              "areas": [
+                { "id": "sessions-counter-plusTwoStd", "color": "#AAA", "start": "value.sessions.standardDeviations.2.minus", "end": "value.sessions.standardDeviations.2.plus" },
+                { "id": "sessions-counter-plusOneStd", "color": "#CCC", "start": "value.sessions.standardDeviations.1.minus", "end": "value.sessions.standardDeviations.1.plus" }
+              ],
+              "window": false
             }
         }
     ]

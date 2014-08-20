@@ -54,7 +54,7 @@
         if(configuration.storeId) {
             dataStore = {
                 start: function () {
-                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe', {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
                         id: dataStoreId,
                         refreshComplete: function(data) {
                             var clonedData = JSON.parse(JSON.stringify(data))

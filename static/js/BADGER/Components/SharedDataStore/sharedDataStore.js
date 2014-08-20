@@ -63,6 +63,15 @@
                     });
                 });
             },
+            setFilterOption: function(filterId, option) {
+                var filter = _.chain(filters).filter(function(filter) {
+                    return filter.id = filterId;
+                }).first().value();
+
+                filter.selectedOptions = filter.allOptions.filter(function(filter) {
+                    return filter.id === option;
+                });
+            },
             setAgainstDataStore: function(dataStore) {
                 _.each(filters, function(filter) {
                     dataStore.setFilter(filter.id, filter.selectedOptions.length ? _.map(filter.selectedOptions, function(option) {
@@ -167,7 +176,7 @@
 
                                             return {
                                                 label: label,
-                                                value: value,
+                                                value: label,
                                                 optionCheckedClass: isChecked ? 'selected' : ''
                                             };
                                         })
@@ -194,7 +203,9 @@
                                     .siblings()
                                         .removeClass('selected');
 
-                                dataStore.setFilter(filterId, value);
+                                filters.setFilterOption(filterId, value);
+
+                                filters.setAgainstDataStore(dataStore);
                             });
                         }
                     }

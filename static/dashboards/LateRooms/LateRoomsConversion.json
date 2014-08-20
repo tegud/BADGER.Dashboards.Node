@@ -128,8 +128,8 @@
           "counter": {
               "precision": 0,
               "counters": [
-                { "id": "today", "color": "purple", "value": "today", "text": "Today" },
-                { "id": "average", "color": "green", "value": "average", "text": "Average" }
+                { "id": "today", "color": "purple", "text": "Today" },
+                { "id": "average", "color": "green", "text": "Average" }
               ],
               "window": {
                 "skip": 0,
@@ -145,7 +145,8 @@
               "areas": [
                 { "id": "plusTwoStd", "color": "#AAA", "start": "value.standardDeviations.2.minus", "end": "value.standardDeviations.2.plus" },
                 { "id": "plusOneStd", "color": "#CCC", "start": "value.standardDeviations.1.minus", "end": "value.standardDeviations.1.plus" }
-              ]
+              ],
+              "window": false
           }
         },
         {
@@ -168,13 +169,14 @@
                 { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
                 { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" },
                 { "id": "b-3weeksago", "color": "#907616", "value": "3weeksago.commission" }
-              ]
+              ],
+              "window": false
           }
         },
         {
             "type": "LineGraphAndCounter",
             "title": "Errors",
-            "summaryText": "Errors per one minute on LateRooms.com (WEB)",
+            "summaryText": "Errors on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
             "defaultTimeFrame": {
@@ -184,9 +186,6 @@
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-              "aggs.errorsbytime.date_histogram.interval"
             ],
             "query": {
               "query": {
@@ -220,7 +219,7 @@
                                 "max" : "now"
                             },
                             "field" : "@timestamp",
-                            "interval" : "1m"
+                            "interval" : "1h"
                         }
                     }
               },
@@ -238,13 +237,14 @@
             "counter": {
                 "title": "Errors in last 10mins",
                 "counters": [
-                  { "id": "b-counter-today", "color": "purple", "text": "Today" }
+                  { "id": "b-counter-today", "color": "red", "text": "Today" }
                 ]
             },
             "graph": {
                 "lines": [
                   { "id": "errors", "color": "red", "value": "query.errors" }
-                ]
+                ],
+                "window": false
             }
         }
     ]

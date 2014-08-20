@@ -170,6 +170,82 @@
                 { "id": "b-3weeksago", "color": "#907616", "value": "3weeksago.commission" }
               ]
           }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Errors",
+            "summaryText": "Errors per one minute on LateRooms.com (WEB)",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "defaultTimeFrame": {
+              "timeFrame": 0,
+              "units": "daysAgo"
+            },
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_errors"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "errors": "doc_count"
+                }
+              }
+            ],
+            "counter": {
+                "title": "Errors in last 10mins",
+                "counters": [
+                  { "id": "b-counter-today", "color": "purple", "text": "Today" }
+                ]
+            },
+            "graph": {
+                "lines": [
+                  { "id": "errors", "color": "red", "value": "query.errors" }
+                ]
+            }
         }
     ]
 }

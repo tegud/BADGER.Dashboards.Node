@@ -548,27 +548,29 @@
                         }
                     });
 
-                    var highlightedRegion = svg.select('#highlight-region');
-                    var endOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.skip)].time).toDate().getTime();
-                    var startOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.take + counterWindow.skip)].time).toDate().getTime();
-                        
-                    if (highlightedRegion[0][0]) {
-                        highlightedRegion
-                            .attr('x', x(startOfHighlightedRegion))
-                            .attr('y', -currentOptions.dimensions.margin.top)
-                            .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion));
-                    }
-                    else {
-                        var highlightRegion = svg
-                            .append("rect")
-                            .attr('id', 'highlight-region')
-                            .attr('x', x(startOfHighlightedRegion))
-                            .attr('y', -currentOptions.dimensions.margin.top)
-                            .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion))
-                            .attr('height', currentOptions.dimensions.height + currentOptions.dimensions.margin.bottom + currentOptions.dimensions.margin.top)
-                            .attr('class', 'highlighted-region');
-                        
-                        svg[0][0].insertBefore(highlightRegion[0][0], svg[0][0].firstChild);
+                    if(currentOptions.window !== false) {
+                        var highlightedRegion = svg.select('#highlight-region');
+                        var endOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.skip)].time).toDate().getTime();
+                        var startOfHighlightedRegion = moment(data[data.length - (1 + counterWindow.take + counterWindow.skip)].time).toDate().getTime();
+                            
+                        if (highlightedRegion[0][0]) {
+                            highlightedRegion
+                                .attr('x', x(startOfHighlightedRegion))
+                                .attr('y', -currentOptions.dimensions.margin.top)
+                                .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion));
+                        }
+                        else {
+                            var highlightRegion = svg
+                                .append("rect")
+                                .attr('id', 'highlight-region')
+                                .attr('x', x(startOfHighlightedRegion))
+                                .attr('y', -currentOptions.dimensions.margin.top)
+                                .attr('width', x(endOfHighlightedRegion) - x(startOfHighlightedRegion))
+                                .attr('height', currentOptions.dimensions.height + currentOptions.dimensions.margin.bottom + currentOptions.dimensions.margin.top)
+                                .attr('class', 'highlighted-region');
+                            
+                            svg[0][0].insertBefore(highlightRegion[0][0], svg[0][0].firstChild);
+                        }
                     }
 
                     toolTipContentFactory.setLineCircles();

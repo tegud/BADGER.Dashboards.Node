@@ -56,6 +56,22 @@
 			});
 		});
 
+		describe('setFilterOption', function() {
+			it('sets the specified option as selected for specified filter', function() {
+				var filters = new TLRGRP.BADGER.Dashboard.Components.Filters([{
+					"id": "device",
+					"options": {
+						"All": false,
+						"iPad": { browser: "safari", type: "ipad" }
+					}
+				}]);
+
+				filters.setFilterOption('device', 'iPad');
+
+				expect(filters.getSelectedOptionForFilter('device')).to.eql('iPad');
+			});
+		});
+
 		describe('get selected options', function () {
 			it('returns selected option for specified filter', function() {
 				var filters = new TLRGRP.BADGER.Dashboard.Components.Filters([{

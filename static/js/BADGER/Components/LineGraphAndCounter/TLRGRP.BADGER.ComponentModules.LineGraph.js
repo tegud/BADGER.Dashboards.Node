@@ -468,7 +468,7 @@
                                     value = d.value[currentLine.start];
                                 }
 
-                                if(isNaN(value)) {
+                                if(isNaN(value) || value < 0) {
                                     value = 0;
                                 }
 
@@ -484,7 +484,7 @@
                                     value = d.value[currentLine.end];
                                 }
 
-                                if(isNaN(value)) {
+                                if(isNaN(value) || value < 0) {
                                     value = 0;
                                 }
 

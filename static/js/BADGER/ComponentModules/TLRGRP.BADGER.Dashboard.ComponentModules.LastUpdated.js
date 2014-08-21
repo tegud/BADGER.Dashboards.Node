@@ -3,8 +3,12 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
-    TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated = function () {
-        var element = $('<div class="health-check-last-updated">Last Updated: <span class="health-check-last-updated-time">No Update Received</span></div>');
+    TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated = function (configuration) {
+        var cssClass = 'health-check-last-updated';
+        if(configuration && configuration.cssClass) {
+            cssClass += ' ' + configuration.cssClass;
+        }
+        var element = $('<div class="' + cssClass + '">Last Updated: <span class="health-check-last-updated-time">No Update Received</span></div>');
         var lastUpdatedElement = $('.health-check-last-updated-time', element);
         var lastUpdated;
 

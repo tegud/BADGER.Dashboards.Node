@@ -416,6 +416,8 @@ h3 {margin: 0;padding: 0 }
 
 .health-check-last-updated { margin: 0 0 10px 0;font-style: italic;font-size: 0.8em;color: #888; }
 
+.last-updated-bottom { margin: 5px 0 0 0; }
+
 /* Error Graph Component */
 .error-graph-summary-text { position: absolute;top: 16px;right: 14px;font-style: italic }
 

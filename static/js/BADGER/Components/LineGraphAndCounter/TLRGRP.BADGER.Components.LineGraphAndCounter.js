@@ -18,6 +18,7 @@
 
         var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
+        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom' });
 
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
@@ -33,7 +34,8 @@
                             container.append($('<div class="error-graph-summary-text">' + configuration.summaryText + '</div>'));
                         }
                     }
-                }
+                },
+                lastUpdated
             ]
         });
 
@@ -51,17 +53,22 @@
         var dataStore;
         var dataStoreId = 'LineGraph-' + idIncrementor++;
 
+        function refreshComplete(data) {
+            if(configuration.storeId) {
+                data = JSON.parse(JSON.stringify(data))
+            }
+
+            lastUpdated.setLastUpdated();
+            counter.setValue(data);
+            lineGraph.setData(data);
+        }
+
         if(configuration.storeId) {
             dataStore = {
                 start: function () {
                     TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
                         id: dataStoreId,
-                        refreshComplete: function(data) {
-                            var clonedData = JSON.parse(JSON.stringify(data))
-
-                            counter.setValue(clonedData);
-                            lineGraph.setData(clonedData);
-                        },
+                        refreshComplete: refreshComplete,
                         loading: inlineLoading
                     });
                 },
@@ -76,16 +83,20 @@
                 refresh: 5000,
                 mappings: configuration.mappings,
                 callbacks: {
-                    success: function (data) {
-                        counter.setValue(data);
-                        lineGraph.setData(data);
-                    }
+                    success: refreshComplete
                 },
                 components: {
                     loading: inlineLoading
                 }
             });
         } 
+
+        (function setLastRefereshText() {
+            setTimeout(function() {
+                lastUpdated.refreshText();
+                setLastRefereshText();
+            }, 1000);
+        })();
 
         var stateMachine = nano.Machine({
             states: {

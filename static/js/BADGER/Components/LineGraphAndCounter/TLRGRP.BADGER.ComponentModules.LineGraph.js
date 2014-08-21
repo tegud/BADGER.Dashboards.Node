@@ -14,6 +14,45 @@
         }
     };
 
+    var GraphAxis = function(svg, x, y) {
+        var xAxis;
+        var yAxis;
+
+        return {
+            append: function appendAxis(currentOptions) {
+                var dimensions = currentOptions.dimensions;
+
+                xAxis = d3.svg.axis().scale(x).orient("bottom");
+                yAxis = d3.svg.axis().scale(y).orient("left");
+
+                var xAxisElement = svg.append("g")
+                   .attr("class", "x axis")
+                   .attr("transform", "translate(0," + dimensions.height + ")")
+                   .call(xAxis);
+
+                svg.append("g")
+                   .attr("class", "y axis")
+                   .call(yAxis)
+                   .append("text")
+                   .attr("transform", "rotate(-90)")
+                   .attr("y", 6)
+                   .attr("dy", ".71em")
+                   .style("text-anchor", "end")
+                   .text('');
+
+                return {
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    xAxisElement: xAxisElement
+                };
+            },
+            call: function() {
+                svg.select(".x.axis").call(xAxis);
+                svg.select(".y.axis").call(yAxis);
+            }
+        };
+    };
+
     TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph = function (options) {
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var element = $('<div class="v2-graph-container' + (currentOptions.className ? ' ' + currentOptions.className : '') + '"></div>');
@@ -23,6 +62,7 @@
         var y;
         var xAxis;
         var yAxis;
+        var axis;
         var xAxisElement;
         var hoverLine;
         var toolTip;
@@ -204,29 +244,6 @@
                         .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
         }
 
-        function appendAxis() {
-            var dimensions = currentOptions.dimensions;
-            
-            x = d3.time.scale().range([0, dimensions.width]);
-            y = d3.scale.linear().range([dimensions.height, 0]);
-            xAxis = d3.svg.axis().scale(x).orient("bottom");
-            yAxis = d3.svg.axis().scale(y).orient("left");
-
-            xAxisElement = svg.append("g")
-               .attr("class", "x axis")
-               .attr("transform", "translate(0," + dimensions.height + ")")
-               .call(xAxis);
-
-            svg.append("g")
-               .attr("class", "y axis")
-               .call(yAxis)
-               .append("text")
-               .attr("transform", "rotate(-90)")
-               .attr("y", 6)
-               .attr("dy", ".71em")
-               .style("text-anchor", "end")
-               .text('');
-        }
 
         return {
             appendTo: function (container) {
@@ -238,7 +255,17 @@
                     }
                     
                     appendCanvas();
-                    appendAxis();
+                    
+                    var dimensions = currentOptions.dimensions;
+
+                    x = d3.time.scale().range([0, dimensions.width]);
+                    y = d3.scale.linear().range([dimensions.height, 0]);
+                
+                    axis = new GraphAxis(svg, x, y);
+
+                    var axisInfo = axis.append(currentOptions);
+
+                    xAxisElement = axisInfo.xAxisElement;
 
                     var highlightRegion = svg
                         .append("rect")
@@ -436,8 +463,7 @@
                     x.domain(dsXExtent);
                     y.domain(dsYExtent);
 
-                    svg.select(".x.axis").call(xAxis);
-                    svg.select(".y.axis").call(yAxis);
+                    axis.call();
 
                     _.each(areas, function(currentLine) {
                         var elementId = currentLine.id;

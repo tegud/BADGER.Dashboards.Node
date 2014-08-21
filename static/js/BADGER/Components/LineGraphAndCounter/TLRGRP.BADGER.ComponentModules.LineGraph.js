@@ -3,17 +3,6 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
-    function getValueFromSubProperty(value, property) {
-        var valuePropertySegments = property.split('.');
-        var segmentEscaper = /\|/ig;
-
-        _.each(valuePropertySegments, function(segment) {
-            value = value[segment.replace(segmentEscaper, ".")];
-        });
-
-        return value;
-    }
-
     var defaultOptions = {
         dimensions: {
             margin: {
@@ -76,7 +65,7 @@
 
                     if(line.value) {
                         if(line.value.indexOf('.') > -1) {
-                            valueText = getValueFromSubProperty(toolTipValue, line.value);
+                            valueText = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(toolTipValue, line.value);
                         }
                         else {
                             valueText = toolTipValue.value[line.value];
@@ -132,7 +121,7 @@
 
                         if(line.value) {
                             if(line.value.indexOf('.') > -1) {
-                                lineValue = getValueFromSubProperty(lastDataSet[index], line.value);
+                                lineValue = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(lastDataSet[index], line.value);
                             }
                             else {
                                 lineValue = lastDataSet[index].value[line.value];
@@ -271,7 +260,7 @@
                                 var value;
 
                                 if(currentLine.start.indexOf('.') > -1) {
-                                    value = getValueFromSubProperty(d, currentLine.start)
+                                    value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.start)
                                 }
                                 else {
                                     value = d.value[currentLine.start];
@@ -287,7 +276,7 @@
                                 var value;
 
                                 if(currentLine.end.indexOf('.') > -1) {
-                                    value = getValueFromSubProperty(d, currentLine.end)
+                                    value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.end)
                                 }
                                 else {
                                     value = d.value[currentLine.end];
@@ -318,7 +307,7 @@
 
                                 if(currentLine.value) {
                                     if(currentLine.value.indexOf('.') > -1) {
-                                        value = getValueFromSubProperty(d, currentLine.value);
+                                        value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.value);
                                     }
                                     else {
                                         value = value[currentLine.value];
@@ -407,7 +396,7 @@
                             var currentExtent = d3.extent(data, function (d) { 
                                 var value;
                                 if(currentLine.value.indexOf('.') > -1) {
-                                    value = getValueFromSubProperty(d, currentLine.value);
+                                    value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.value);
                                 }
                                 else {
                                     value = d.value[currentLine.value];
@@ -462,7 +451,7 @@
                                 var value;
 
                                 if(currentLine.start.indexOf('.') > -1) {
-                                    value = getValueFromSubProperty(d, currentLine.start)
+                                    value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.start)
                                 }
                                 else {
                                     value = d.value[currentLine.start];
@@ -478,7 +467,7 @@
                                 var value;
 
                                 if(currentLine.end.indexOf('.') > -1) {
-                                    value = getValueFromSubProperty(d, currentLine.end)
+                                    value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.end)
                                 }
                                 else {
                                     value = d.value[currentLine.end];
@@ -519,7 +508,7 @@
 
                                 if(currentLine.value) {
                                     if(currentLine.value.indexOf('.') > -1) {
-                                        value = getValueFromSubProperty(d, currentLine.value);
+                                        value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(d, currentLine.value);
                                     }
                                     else {
                                         value = value[currentLine.value];

@@ -308,7 +308,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
 						dashboard: dashboard,
 						view: view,
-						queryParameters: dimension.filter
+						queryParameters: cellKey === 'total' ? false : dimension.filter
 					});
 				})
 				.on('mouseover', '.data-cell', function() {

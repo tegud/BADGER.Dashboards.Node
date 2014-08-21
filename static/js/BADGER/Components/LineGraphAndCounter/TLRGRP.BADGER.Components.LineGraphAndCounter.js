@@ -91,8 +91,10 @@
             });
         } 
 
+        var refreshUpdatedTextTimeout;
+
         (function setLastRefereshText() {
-            setTimeout(function() {
+            refreshUpdatedTextTimeout = setTimeout(function() {
                 lastUpdated.refreshText();
                 setLastRefereshText();
             }, 1000);
@@ -113,6 +115,9 @@
                     },
                     stop: function() {
                         dataStore.stop();
+                    },
+                    remove: function() {
+                        clearTimeout(refreshUpdatedTextTimeout);
                     }
                 }
             },

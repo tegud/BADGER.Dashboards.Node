@@ -353,6 +353,7 @@
         {
             "type": "LineGraphAndCounter",
             "title": "Booking Errors",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Booking%20Errors",
             "summaryText": "Booking Errors on LateRooms.com (WEB)",
             "storeId": "ErrorData",
             "counter": {
@@ -377,6 +378,7 @@
         {
             "type": "LineGraphAndCounter",
             "title": "Errors",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Errors",
             "summaryText": "Errors on LateRooms.com (WEB)",
             "storeId": "ErrorData",
             "counter": {

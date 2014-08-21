@@ -536,6 +536,8 @@ h3 {margin: 0;padding: 0 }
 
 .radio .filter-option-checkbox-inner { border-radius: 6px; }
 
+.open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px } 
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

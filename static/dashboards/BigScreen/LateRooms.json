@@ -14,6 +14,7 @@
             "summaryText": "Errors per one minute on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Errors",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -86,6 +87,7 @@
             "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
             "dataSource": "elasticsearch",
             "host": "http://logs.laterooms.com:9200",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.bookingsbytime.date_histogram.extended_bounds"

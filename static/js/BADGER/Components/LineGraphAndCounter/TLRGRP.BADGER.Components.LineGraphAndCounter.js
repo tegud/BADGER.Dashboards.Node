@@ -19,24 +19,32 @@
         var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom' });
+        var componentModules = [];
+
+        if(configuration.kibanaDashboard){
+            componentModules.push({
+                appendTo: function(container) {
+                    container.append($('<a class="open-in-kibana" href="http://kibana.laterooms.com/index.html#/dashboard/' + configuration.kibanaDashboard + '" target="_blank">Open in kibana</a>'));
+                }
+            });
+        } 
+        componentModules.push(inlineLoading);
+        componentModules.push(counter);
+        componentModules.push(lineGraph);
+        componentModules.push({
+            appendTo: function (container) {
+                if (configuration.summaryText) {
+                    container.append($('<div class="error-graph-summary-text">' + configuration.summaryText + '</div>'));
+                }
+            }
+        });
+        componentModules.push(lastUpdated);
 
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
             layout: configuration.layout,
             componentClass: 'graph-and-counter-component',
-            modules: [
-                inlineLoading,
-                counter,
-                lineGraph,
-                {
-                    appendTo: function (container) {
-                        if (configuration.summaryText) {
-                            container.append($('<div class="error-graph-summary-text">' + configuration.summaryText + '</div>'));
-                        }
-                    }
-                },
-                lastUpdated
-            ]
+            modules: componentModules
         });
 
         function getValueFromSubProperty(value, property) {

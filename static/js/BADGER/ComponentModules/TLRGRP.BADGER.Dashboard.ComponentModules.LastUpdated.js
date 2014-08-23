@@ -14,7 +14,26 @@
 
         function updateLastUpdated() {
             if (lastUpdated) {
-                lastUpdatedElement.text(lastUpdated.fromNow());
+                var text = lastUpdated.fromNow();
+
+                if(configuration && configuration.showExact) {
+                    var exectTimeText = '';
+                    var differenceInSeconds = Math.abs(lastUpdated.diff(moment(), 'seconds'));
+
+                    if(differenceInSeconds) {
+                        if(differenceInSeconds > 60) {
+                            differenceInMinutes = Math.abs(lastUpdated.diff(moment(), 'minutes'));
+                            exectTimeText = differenceInMinutes + ' minute' + (differenceInMinutes !== 1 ? 's' : '')
+                        }
+                        else {
+                            exectTimeText = differenceInSeconds + ' second' + (differenceInSeconds !== 1 ? 's' : '')
+                        }
+
+                        text += ' (' + exectTimeText + ')';
+                    }
+                }
+
+                lastUpdatedElement.text(text);
             }
         }
 

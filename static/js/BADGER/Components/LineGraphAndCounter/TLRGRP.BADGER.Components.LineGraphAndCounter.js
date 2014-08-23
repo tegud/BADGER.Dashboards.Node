@@ -18,7 +18,7 @@
 
         var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
-        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom' });
+        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom', showExact: true });
         var componentModules = [];
 
         if(configuration.kibanaDashboard){

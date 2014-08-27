@@ -22,7 +22,7 @@
 
                     if(differenceInSeconds) {
                         if(differenceInSeconds > 60) {
-                            differenceInMinutes = Math.abs(lastUpdated.diff(moment(), 'minutes'));
+                            var differenceInMinutes = Math.abs(lastUpdated.diff(moment(), 'minutes'));
                             exectTimeText = differenceInMinutes + ' minute' + (differenceInMinutes !== 1 ? 's' : '')
                         }
                         else {

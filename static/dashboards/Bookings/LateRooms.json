@@ -29,11 +29,11 @@
                               "type": "domain_events"
                           }
                       },
-                      { 
-                          "terms": {
-                              "channelId":  [9, 10] 
-                          }
-                      }
+                        {
+                           "term":{
+                              "domainEventType.raw":"booking made"
+                           }
+                        }
                     ]
                   }
                 }
@@ -220,9 +220,9 @@
                                       }
                                     },
                                     {
-                                        "range": {
-                                          "channelId": { "from": 9, "to": 10 }
-                                        }
+                                       "term":{
+                                          "domainEventType.raw":"booking made"
+                                       }
                                     },
                                     {
                                       "term": {

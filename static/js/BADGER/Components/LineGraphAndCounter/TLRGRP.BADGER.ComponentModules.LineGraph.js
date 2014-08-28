@@ -144,11 +144,6 @@
 
         function showHoverLine(mousePos) {
             toolTipIsOnGraph = true;
-            hoverLine.classed('hidden', false);
-
-            hoverLine
-                .attr('x1', mousePos[0])
-                .attr('x2', mousePos[0]);
 
             _.each(lines, function(line) {
                 line.circle.classed('hidden', false);
@@ -173,7 +168,6 @@
         function hideHoverLine() {
             toolTipIsOnGraph = false;
 
-            var hoverLine = graph.select('.hover-line').classed('hidden', true);
             toolTip.addClass('hidden');
 
             _.each(lines, function(line) {
@@ -276,14 +270,6 @@
                             .attr("class", "line")
                             .attr("style", "stroke: " + currentLine.color + ";");
                     });
-
-                    hoverLine = graph.append("line")
-                        .attr("class", "hover-line hidden")
-                        .attr("style", "stroke: black;")
-                        .attr('x1', 10)
-                        .attr('x2', 10)
-                        .attr('y1', -currentOptions.dimensions.margin.top)
-                        .attr('y2', currentOptions.dimensions.height);
 
                     _.each(lines, function(line) {
                         line.circle = graph.append("circle")

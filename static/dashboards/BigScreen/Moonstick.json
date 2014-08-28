@@ -414,19 +414,19 @@
             "type": "LineGraphAndCounter",
             "title": "LR Page Load Time (50th Percentile)",
             "span": 6,
-            "summaryText": "Page Load time for the 50th percentile per minute on LateRooms.com (WEB)",
+            "summaryText": "",
             "storeId": "RequestsData",
             "graph": {
                 "lines": [
                     {
                         "id": "legacy",
                         "color": "#411085",
-                        "value": "legacyPageComplete"
+                        "value": "value.legacyPageComplete"
                     },
                     {
                         "id": "moonstick",
                         "color": "green",
-                        "value": "moonstickPageComplete"
+                        "value": "value.moonstickPageComplete"
                     }
                 ]
             },
@@ -444,13 +444,13 @@
                     {
                         "id": "legacy",
                         "color": "#411085",
-                        "value": "legacyPageComplete",
+                        "value": "value.legacyPageComplete",
                         "text": "LR Legacy"
                     },
                     {
                         "id": "moonstick",
                         "color": "green",
-                        "value": "moonstickPageComplete",
+                        "value": "value.moonstickPageComplete",
                         "text": "LR Moon"
                     }
                 ]
@@ -460,19 +460,19 @@
             "type": "LineGraphAndCounter",
             "title": "AR Page Load Time (50th Percentile)",
             "span": 6,
-            "summaryText": "Page Load time for the 50th percentile per minute on AsiaRooms.com (WEB)",
+            "summaryText": "",
             "storeId": "ARRequestsData",
             "graph": {
                 "lines": [
                     {
                         "id": "ar-legacy",
                         "color": "#b00763",
-                        "value": "legacyPageComplete"
+                        "value": "value.legacyPageComplete"
                     },
                     {
                         "id": "ar-moonstick",
                         "color": "green",
-                        "value": "moonstickPageComplete"
+                        "value": "value.moonstickPageComplete"
                     }
                 ]
             },
@@ -490,13 +490,13 @@
                     {
                         "id": "ar-legacy",
                         "color": "#b00763",
-                        "value": "legacyPageComplete",
+                        "value": "value.legacyPageComplete",
                         "text": "AR Legacy"
                     },
                     {
                         "id": "ar-moonstick",
                         "color": "green",
-                        "value": "moonstickPageComplete",
+                        "value": "value.moonstickPageComplete",
                         "text": "AR Moon"
                     }
                 ]
@@ -517,12 +517,12 @@
                     {
                         "id": "moonstick-requests",
                         "color": "green",
-                        "value": "moonstickRequests"
+                        "value": "value.moonstickRequests"
                     },
                     {
                         "id": "legacy-requests",
                         "color": "#411085",
-                        "value": "legacyRequests"
+                        "value": "value.legacyRequests"
                     }
                 ]
             },
@@ -538,13 +538,13 @@
                     {
                         "id": "legacy-requests",
                         "color": "#411085",
-                        "value": "legacyRequests",
+                        "value": "value.legacyRequests",
                         "text": "LR Legacy"
                     },
                     {
                         "id": "moonstick-requests",
                         "color": "green",
-                        "value": "moonstickRequests",
+                        "value": "value.moonstickRequests",
                         "text": "LR Moon"
                     }
                 ]
@@ -565,12 +565,12 @@
                     {
                         "id": "ar-moonstick-requests",
                         "color": "green",
-                        "value": "moonstickRequests"
+                        "value": "value.moonstickRequests"
                     },
                     {
                         "id": "ar-legacy-requests",
                         "color": "#b00763",
-                        "value": "legacyRequests"
+                        "value": "value.legacyRequests"
                     }
                 ]
             },
@@ -586,13 +586,13 @@
                     {
                         "id": "ar-legacy-requests",
                         "color": "#b00763",
-                        "value": "legacyRequests",
+                        "value": "value.legacyRequests",
                         "text": "AR Legacy"
                     },
                     {
                         "id": "ar-moonstick-requests",
                         "color": "green",
-                        "value": "moonstickRequests",
+                        "value": "value.moonstickRequests",
                         "text": "AR Moon"
                     }
                 ]

@@ -20,7 +20,7 @@
 					"today": {  },
 					"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
 					"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
-					"3weeksago": { "timeOffset": { "weeks": -3 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
+					"1monthago": { "timeOffset": { "relativeInMonth": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
 				},
 				"query": {
 					"query":{
@@ -122,7 +122,7 @@
 			},
 			{
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "3weeksago"],
+				"fields": ["lastWeek", "2weeksago", "1monthago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"property": "total.commission"
@@ -139,7 +139,7 @@
 			});
 			mappings.push({
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "3weeksago"],
+				"fields": ["lastWeek", "2weeksago", "1monthago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"toField": 'value.' + dimension.id,
@@ -338,7 +338,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'yesterday': 1,
 							'lastWeek': 2,
 							'2weeksago': 3,
-							'3weeksago': 4,
+							'1monthago': 4,
 							'lastmonth': 5
 						};
 
@@ -346,7 +346,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'yesterday': 'Yesterday',
 							'lastWeek': 'Last Week',
 							'2weeksago': '2 Weeks Ago',
-							'3weeksago': '3 Weeks Ago',
+							'1monthago': '3 Weeks Ago',
 							'lastmonth': 'Last Month'
 						};
 

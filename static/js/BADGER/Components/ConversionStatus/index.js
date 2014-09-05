@@ -20,6 +20,7 @@
 					"today": {  },
 					"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
 					"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+					"3weeksago": { "timeOffset": { "weeks": -3 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
 					"1monthago": { "timeOffset": { "relativeInMonth": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
 				},
 				"query": {
@@ -122,7 +123,7 @@
 			},
 			{
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "1monthago"],
+				"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"property": "total.commission"
@@ -139,7 +140,7 @@
 			});
 			mappings.push({
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "1monthago"],
+				"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"toField": 'value.' + dimension.id,

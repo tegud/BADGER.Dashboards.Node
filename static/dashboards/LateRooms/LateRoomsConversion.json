@@ -43,6 +43,7 @@
               "today": { },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
               "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } },
               "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
             },
             "query": {
@@ -110,7 +111,7 @@
             },
             {
               "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "1monthago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
               "stds": [1, 2],
               "property": "commission"
             }
@@ -134,6 +135,7 @@
               "today": { },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
               "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } },
               "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
             },
             "query": {
@@ -190,14 +192,14 @@
             },
             {
               "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "1monthago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
               "stds": [1, 2],
               "property": "bookings",
               "toField": "value.bookings"
             },
             {
               "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "1monthago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
               "stds": [1, 2],
               "property": "all",
               "toField": "value.all"
@@ -222,6 +224,7 @@
               "today": { },
               "lastWeek": { "timeOffset": { "weeks": -1 } },
               "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } },
               "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
             },
             "query": {
@@ -283,14 +286,14 @@
             },
             {
               "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "1monthago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
               "stds": [1, 2],
               "property": "sessions",
               "toField": "value.sessions"
             },
             {
               "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "1monthago"],
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
               "stds": [1, 2],
               "property": "requests",
               "toField": "value.requests"
@@ -336,6 +339,7 @@
                 { "id": "b-counter-today", "color": "purple", "text": "Today" },
                 { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
                 { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" },
+                { "id": "b-counter-3weeksago", "color": "#0ADC45", "text": "3 Weeks Ago" },
                 { "id": "b-counter-1monthago", "color": "#907616", "text": "1 Month Ago" }
               ]
           },
@@ -345,6 +349,7 @@
                 { "id": "b-today", "color": "purple", "value": "today.commission" },
                 { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
                 { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" },
+                { "id": "b-3weeksago", "color": "#0ADC45", "value": "3weeksago.commission" },
                 { "id": "b-1monthago", "color": "#907616", "value": "1monthago.commission" }
               ],
               "window": false

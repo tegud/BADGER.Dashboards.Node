@@ -149,13 +149,13 @@
                 line.circle.classed('hidden', false);
             });
 
-            toolTip
-                .appendTo(element.parent())
-                .css({
-                    left: toolTipLeftOffset + mousePos[0] + currentOptions.dimensions.margin.left - (toolTip.width() / 2),
-                    bottom: toolTipBottom
-                })
-                .removeClass('hidden');
+            // toolTip
+            //     .appendTo(element.parent())
+            //     .css({
+            //         left: toolTipLeftOffset + mousePos[0] + currentOptions.dimensions.margin.left - (toolTip.width() / 2),
+            //         bottom: toolTipBottom
+            //     })
+            //     .removeClass('hidden');
 
             var updateRequired = toolTipContentFactory.setCurrentIndex(mousePos);
 
@@ -182,8 +182,7 @@
                 setTimeout(function () {
                     if(!currentOptions.extentProperties) {
                         currentOptions.extentProperties = {
-                            "y": currentOptions.lines.length === 1 ? currentOptions.lines[0].value 
-                                : _.map(currentOptions.lines, function(line) {
+                            "y": currentOptions.lines.length === 1 ? currentOptions.lines[0].value : _.map(currentOptions.lines, function(line) {
                                 return line.value;
                             })
                         }

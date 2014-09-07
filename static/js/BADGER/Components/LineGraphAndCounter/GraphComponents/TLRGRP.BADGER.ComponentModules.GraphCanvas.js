@@ -48,36 +48,6 @@
         }
     }
 
-    var HoverLine = function(graphCanvas, dimensions) {
-        var hoverLine = graphCanvas.append("line")
-            .attr("class", "hover-line hidden")
-            .attr("style", "stroke: black;")
-            .attr('x1', 10)
-            .attr('x2', 10)
-            .attr('y1', -dimensions.margin.top)
-            .attr('y2', dimensions.height);
-
-        graphCanvas
-            .on('mousemove', function() {
-                var mousePos = d3.mouse(this);
-
-                if(mousePos[0] > 0 && mousePos[0] < dimensions.width && mousePos[1] < dimensions.height) {
-                    hoverLine.classed('hidden', false);
-                    
-                    hoverLine
-                        .attr('x1', mousePos[0])
-                        .attr('x2', mousePos[0]);
-                }
-                else {
-                    hoverLine.classed('hidden', true);
-                }
-            })
-            .on('mouseout', function() {
-                hoverLine.classed('hidden', true);
-            });
-    };
-
-
     TLRGRP.BADGER.Dashboard.ComponentModules.GraphCanvas =  function(element, options) {
         var dimensions = options.dimensions;
 
@@ -89,6 +59,7 @@
             dimensions.height = element.innerHeight() - (dimensions.margin.top + dimensions.margin.bottom);
         }
 
+        var lastData;
         var graphCanvas = {
             append: function(element) {
                 return svg.append(element);
@@ -105,10 +76,16 @@
                     mouseOutEvents.push(handler);
                     return graphCanvas;
                 }
+                else if(event === 'data') {
+                    dataEvents.push(handler);
+                    return graphCanvas;
+                }
 
                 return svg.on(event, handler);
             },
             setData: function(data) {
+                lastData = data;
+
                 _.each(axis, function(eachAxis, label) {
                     if(label === 'x') {
                         setXExtent(data, options.extentProperties[label] || 'time', eachAxis);
@@ -121,6 +98,10 @@
                 graphAxis.call();
 
                 highlightedRegion.setData(data);
+
+                _.each(dataEvents, function(handler) {
+                    handler(data);
+                });
             },
             axisFunctions: function() {
                 return axis;
@@ -159,22 +140,74 @@
 
         var mouseOverEvents = [];
         var mouseOutEvents = [];
+        var dataEvents = [];
 
-        new HoverLine(graphCanvas, dimensions);
+        new TLRGRP.BADGER.Dashboard.Graph.SubModules.HoverLine({
+            graphCanvas: graphCanvas,
+            element: element, 
+            dimensions: dimensions,
+            series: options.lines
+        });
+        new TLRGRP.BADGER.Dashboard.Graph.SubModules.Tooltip({
+            graphCanvas: graphCanvas,
+            element: element, 
+            dimensions: dimensions,
+            series: options.lines
+        });
 
         svg
             .on('mouseout', function() {
                 var thisContext = this;
                 _.each(mouseOutEvents, function(handler) {
-                    handler.apply(thisContext);
+                    handler.call(thisContext);
                 });
             })
             .on('mousemove', function() {
+                var mousePos = d3.mouse(this);
                 var thisContext = this;
 
-                _.each(mouseOverEvents, function(handler) {
-                    handler.apply(thisContext);
-                });
+                if(mousePos[0] > 0 && mousePos[0] < dimensions.width && mousePos[1] < dimensions.height) {
+                    var index;
+                    var indexData;
+                    var eventContext;
+                    var stepDuration;
+                    var lastEntryMoment;
+                    var firstEntryMoment;
+
+                    if(lastData) {
+                        firstEntryMoment = moment(lastData[0].time);
+                        lastEntryMoment = moment(lastData[lastData.length - 1].time);
+                        var offset = moment(lastData[1].time).diff(firstEntryMoment, 'millseconds');
+                        lastEntryMoment = lastEntryMoment.add('ms', offset);
+                        var firstEntry = firstEntryMoment.valueOf();
+                        var lastEntry = lastEntryMoment.valueOf();
+                        var step = (lastEntry - firstEntry) / parseFloat(lastData.length);
+                        stepDuration = moment.duration(step, 'ms');
+
+                        var hoverDateTime = axis.x.invert(mousePos[0]);
+                        var hoverTime = moment(hoverDateTime).valueOf() - firstEntry;
+
+                        index = Math.round(hoverTime / parseFloat(step));
+                        indexData = lastData[index];
+                    }
+
+                    eventContext = {
+                        mousePos: mousePos,
+                        index: index,
+                        data: indexData,
+                        stepDuration: stepDuration
+                    };
+
+                    _.each(mouseOverEvents, function(handler) {
+                        handler.call(thisContext, eventContext);
+                    });
+                }
+                else {
+                    _.each(mouseOutEvents, function(handler) {
+                        handler.call(thisContext, mousePos);
+                    });
+                }
+
             }); 
 
         return graphCanvas;

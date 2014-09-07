@@ -357,7 +357,7 @@ h3 {margin: 0;padding: 0 }
 /* Graph and Counter Component */
 .graph-and-counter {  }
 
-.v2-graph-container {height: 140px;margin-right: 145px;border: solid 1px #ddd;background-color: #fff; }
+.v2-graph-container {height: 140px;margin-right: 145px;border: solid 1px #ddd;background-color: #fff; position: relative }
 
 .v2-graph-component h3 {margin-top: 5px;margin-bottom: 5px; }
 
@@ -468,7 +468,7 @@ h3 {margin: 0;padding: 0 }
 
 .button-container button { background-color: #fff; border: 4px solid #000; font-size: 1.7em; }
 
-#graph-tooltip { font-size: 0.8em;z-index: 10; padding: 3px; width: 140px; position: absolute; background-color: #fff; border: solid 3px #000; border-radius: 5px }
+#graph-tooltip, .graph-tooltip { font-size: 0.8em;z-index: 10; padding: 3px; width: 140px; position: absolute; background-color: #fff; border: solid 3px #000; border-radius: 5px }
 
 .toolip-item-text, .tooltip-item-key { display: inline-block; }
 

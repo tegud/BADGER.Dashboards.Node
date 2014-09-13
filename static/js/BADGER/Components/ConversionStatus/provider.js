@@ -25,8 +25,8 @@
 					values: {
 						sessions: "aggregations.sessions.providers.buckets.:find(key=" + id + ").doc_count",
 						bookings: "aggregations.sessions.bookings.providers.buckets.:find(key=" + id + ").doc_count",
-						bookingErrors: "aggregations.bookingerrors.buckets.:find(key=" + id + ").doc_count",
-						connectivityErrors: "aggregations.connectivityerrors.buckets.:find(key=" + id + ").doc_count"
+						bookingErrors: "aggregations.bookingerrors.providers.buckets.:find(key=" + id + ").doc_count",
+						connectivityErrors: "aggregations.connectivityerrors.providers.buckets.:find(key=" + id + ").doc_count"
 					}
 				});
 			});
@@ -40,6 +40,24 @@
 	TLRGRP.BADGER.Dashboard.Components.ProviderConversion = function (configuration) {
 		configuration = appendConfiguration(configuration);
 
+		var queryModifiers = {
+			"today": {  },
+			"yesterday": { "timeOffset": { "days": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+			"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+			"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+			"3weeksago": { "timeOffset": { "weeks": -3 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
+			"1monthago": { "timeOffset": { "relativeInMonth": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
+		};
+
+		var daysToCompareAgainst = ['yesterday','lastWeek','2weeksago','3weeksago','1monthago'];
+
+		var selectedQueryModifiers = _.reduce(daysToCompareAgainst, function(memo, day) {
+			memo[day] = queryModifiers[day];
+			return memo;
+		}, {
+			today: {}
+		});
+
 		var dataStoreConfiguration = {
 			"host": "http://logs.laterooms.com:9200",
 			"timeProperties": [
@@ -50,13 +68,7 @@
 				"units": "daysAgo"
 			},
 			"queries": {
-				"modifiers": {
-					"today": {  },
-					"lastWeek": { "timeOffset": { "weeks": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
-					"2weeksago": { "timeOffset": { "weeks": -2 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
-					"3weeksago": { "timeOffset": { "weeks": -3 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
-					"1monthago": { "timeOffset": { "relativeInMonth": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } }
-				},
+				"modifiers": selectedQueryModifiers,
 				"query": {
 					"query":{
 						"filtered":{
@@ -88,6 +100,12 @@
 											"user.type": "human"
 										}
 									}
+									],
+									"must_not": {
+										"term": {
+											"requests.providersEncountered.raw": "LateRooms"
+										}
+									}
 								}
 							},
 							"aggs": {
@@ -106,13 +124,18 @@
 														"booked": true
 													}
 												}
-											]
+											],
+											"must_not": {
+												"term": {
+													"provider": "laterooms"
+												}
+											}
 										}
 									},
 									"aggs": {
 										"providers": {
 											"terms": {
-												"field": "requests.providersEncountered",
+												"field": "provider",
 												"size": 100
 											}
 										}
@@ -215,7 +238,7 @@
 			},
 			{
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"property": "total.commission"
@@ -232,7 +255,7 @@
 			});
 			mappings.push({
 				"type": "stats",
-				"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"toField": 'value.' + site.id,
@@ -344,6 +367,8 @@
 				name: site.name,
 				idPrefix: idPrefix,
 				dashboard: site.dashboard,
+				type: site.type,
+				typeCode: site.type ? site.type[0].toUpperCase() : '',
 				view: site.view,
 				columns: Mustache.render('{{#columns}}' 
 					+ '{{#isTotalCell}}'
@@ -376,7 +401,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				+ Mustache.render('{{#columns}}<th>{{name}}</th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row">'
-					+ '<th>{{name}}</th>'
+					+ '<th>{{#type}}<div class="tier-indicator {{type}}" title="Tier: {{type}}">{{typeCode}}</div>{{/type}}<div class="provider-name">{{name}}</div></th>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');
@@ -445,8 +470,8 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'yesterday': 'Yesterday',
 							'lastWeek': 'Last Week',
 							'2weeksago': '2 Weeks Ago',
-							'1monthago': '3 Weeks Ago',
-							'lastmonth': 'Last Month'
+							'3weeksago': '3 Weeks Ago',
+							'1monthago': 'Last Month'
 						};
 
 						var toolTipModel = {

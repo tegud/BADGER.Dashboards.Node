@@ -1,0 +1,123 @@
+{
+    "id": "LateRoomsConversion",
+    "name": "LateRooms.com Conversion",
+    "components": [
+        {
+          "type": "ProviderConversion",
+          "title": "LateRooms Conversion by Provider",
+          "idPrefix": "status-provider-",
+          "tiers": {
+            "platinum": [
+              "SiteMinder",
+              "Liberate",
+              "IHG",
+              "Eviivo",
+              "SmartHotel",
+              { "id": "bestwesterninternational", "name": "Best Western" },
+              "FreeToBook",
+              "Hilton",
+              "HiltonOta"
+            ],
+            "gold": [
+              "XN",
+              "AvailPro",
+              "Seekom",
+              "SiteMinderAu",
+              "WelcomeConnect",
+              "Synxis"
+            ],
+            "silver": [
+              "GuestLineOTA",
+              { "id": "hotelbookingsolutions", "name": "Hotel Booking Solutions" },
+              "HotelSpider",
+              "ParityRate",
+              "Staah",
+              "StarDekk",
+              "VerticalBooking"
+            ],
+            "bronze": [
+              "ApartmentsApart",
+              "ChinaOnline",
+              "DerbySoft",
+              "Finite",
+              "FiniteDe",
+              "IgmWeb",
+              "Levart",
+              "YieldPlanet"
+            ]
+          },
+          "sites": [
+            {
+              "name": "All",
+              "id": "all"
+            }
+          ],
+          "dimensions": [
+            {
+              "name": "Conversion Today",
+              "id": "conv-today",
+              "value": "commission",
+              "cellType": "total"
+            },
+            {
+              "name": "Bookings Today",
+              "id": "bkg-today",
+              "value": "bookings",
+              "precision": 0,
+              "showPercentage": false
+            },
+            {
+              "name": "Bookings Errors Today",
+              "id": "bkg-err-today",
+              "showPercentage": false,
+              "precision": 0,
+              "value": "bookingErrors"
+            },
+            {
+              "name": "Connectivity Errors Today",
+              "id": "conn-errors-today",
+              "showPercentage": false,
+              "precision": 0,
+              "value": "connectivityErrors"
+            },
+
+            {
+              "name": "Conversion 1hr",
+              "id": "conv-1hr",
+              "cellType": "total",
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
+              }
+            },
+            {
+              "name": "Bookings 1hr",
+              "id": "bkg-1hr",
+              "showPercentage": false,
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
+              }
+            },
+            {
+              "name": "Bookings Errors 1hr",
+              "id": "bkg-err-1hr",
+              "showPercentage": false,
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
+              }
+            },
+            {
+              "name": "Connectivity Errors 1hr",
+              "id": "conn-errors-1hr",
+              "showPercentage": false,
+              "values": {
+                "sessions": "aggregations.useragents.buckets.:find(key=IE).doc_count",
+                "bookings": "aggregations.bookings.useragents.buckets.:find(key=IE).doc_count"
+              }
+            }
+          ]
+        }
+    ]
+}

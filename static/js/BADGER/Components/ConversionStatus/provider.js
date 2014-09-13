@@ -98,9 +98,15 @@
 									}
 								},
 								"bookings": {
-									"filter": {
-										"term": {
-											"booked": true
+									"filter": { 
+										"bool": {
+											"must": [
+												{
+													"term": {
+														"booked": true
+													}
+												}
+											]
 										}
 									},
 									"aggs": {

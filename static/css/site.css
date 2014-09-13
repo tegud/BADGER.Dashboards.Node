@@ -538,6 +538,15 @@ h3 {margin: 0;padding: 0 }
 
 .open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px } 
 
+.tier-indicator { width: 50px; height: 42px; background-color: #000; float: right; border-radius: 30px; padding-top: 8px; text-align: center; }
+
+.tier-indicator.platinum    { background-color: #ddd; }
+.tier-indicator.gold        { background-color: gold; }
+.tier-indicator.silver      { background-color: #777; }
+.tier-indicator.bronze      { background-color: #CD7F32; }
+
+.provider-name { min-width: 430px; padding-top: 6px; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

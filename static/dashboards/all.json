@@ -50,6 +50,10 @@
                 "LateRoomsConversion": {
                     "id": "LateRoomsConversion",
                     "name": "Conversion Graph"
+                },
+                "ProviderConversion": {
+                    "id": "ProviderConversion",
+                    "name": "Provider Conversion"
                 }
             }
         },

@@ -18,15 +18,8 @@
         var currentOptions = $.extend(true, {}, defaultOptions, options);
         var element = $('<div class="v2-graph-container' + (currentOptions.className ? ' ' + currentOptions.className : '') + '"></div>');
         var graphReady = jQuery.Deferred();
-        var svg;
-        var x;
-        var y;
         var axis;
         var graph;
-        var hoverLine;
-        var toolTip;
-        var toolTipBottom;
-        var toolTipLeftOffset;
         var lastDataSet;
         var toolTipIsOnGraph;
         var lines = currentOptions.lines || [
@@ -45,44 +38,6 @@
             var firstEntry;
             var lastMousePos;
             var index;
-
-            function getContent() {
-                if(!lastDataSet[index] || !toolTipIsOnGraph) {
-                    return;
-                }
-
-                var toolTipValue = lastDataSet[index];
-                var entryTime = moment(lastDataSet[index].time);
-                var dateText = entryTime.format('DD/MM/YYYY');
-                var timeFormatString = stepDuration.asSeconds() > 60  ? 'HH:mm' : 'HH:mm:ss';
-                var timeRangeText = entryTime.format(timeFormatString) + '-' + entryTime.add('ms', step).format(timeFormatString);
-
-                var toolTipText = '<div style="font-weight: bold;">' + (hideDate ? '': dateText+ '<br/>') + timeRangeText + '<br />(' + stepDuration.humanize() + ')' + '</div>';
-
-                _.each(lines, function(line) {
-                    var valueText = toolTipValue.value;
-
-                    if(line.value) {
-                        if(line.value.indexOf('.') > -1) {
-                            valueText = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(toolTipValue, line.value);
-                        }
-                        else {
-                            valueText = toolTipValue.value[line.value];
-                        }
-                    }
-
-                    if(valueText == null || isNaN(valueText)) {
-                        valueText = 0;
-                    }
-                    else {
-                        valueText = valueText.toFixed(3);
-                    }
-
-                    toolTipText += '<div class="tooltip-item"><div class="tooltip-item-key" style="background-color: ' + line.color + '"></div><div class="toolip-item-text">' + valueText + '</div></div>';
-                });
-
-                return toolTipText;
-            }
 
             return {
                 setData: function(lastDataSet) {
@@ -105,7 +60,6 @@
 
                     return oldIndex !== index;
                 },
-                getContent: getContent,
                 setLineCircles: function() {
                     if(!lastDataSet[index] || !toolTipIsOnGraph) {
                         return;
@@ -149,26 +103,15 @@
                 line.circle.classed('hidden', false);
             });
 
-            // toolTip
-            //     .appendTo(element.parent())
-            //     .css({
-            //         left: toolTipLeftOffset + mousePos[0] + currentOptions.dimensions.margin.left - (toolTip.width() / 2),
-            //         bottom: toolTipBottom
-            //     })
-            //     .removeClass('hidden');
-
             var updateRequired = toolTipContentFactory.setCurrentIndex(mousePos);
 
             if(updateRequired) {
                 toolTipContentFactory.setLineCircles();
-                toolTip.html(toolTipContentFactory.getContent());
             }
         }
 
         function hideHoverLine() {
             toolTipIsOnGraph = false;
-
-            toolTip.addClass('hidden');
 
             _.each(lines, function(line) {
                 line.circle.classed('hidden', true);
@@ -279,16 +222,7 @@
                             .attr("style", "fill: " + line.color + ";stroke: " + line.color + ";stroke-width: 2px");
                     });
                         
-                    toolTip = $('#graph-tooltip');
-
-                    if(!toolTip.length) {
-                        toolTip = $('<div id="graph-tooltip" class="hidden"></div>').appendTo('body');
-                    }
-                    toolTipBottom = element.height();
-                    toolTipLeftOffset = element.position().left;
-
                     graph.on('mousemove', function(event) {
-                        var hoverLine = graph.select('.hover-line');
                         var mousePos = d3.mouse(this);
 
                         if(mousePos[0] > 0 && mousePos[0] < currentOptions.dimensions.width && mousePos[1] < currentOptions.dimensions.height && lastDataSet) {
@@ -424,7 +358,6 @@
 
 
                     toolTipContentFactory.setLineCircles();
-                    toolTip.html(toolTipContentFactory.getContent());
                 });
             }
         };

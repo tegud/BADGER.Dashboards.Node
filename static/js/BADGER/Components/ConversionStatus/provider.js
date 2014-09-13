@@ -5,7 +5,41 @@
 
 	var idIncrementor = 0;
 
-	TLRGRP.BADGER.Dashboard.Components.ConversionStatus = function (configuration) {
+	function appendConfiguration(configuration) {
+		var providers = [];
+
+		_.each(configuration.tiers, function(tierProviders, tier) {
+			_.each(tierProviders, function(provider) {
+				if (typeof provider === 'string') {
+					provider = {
+						name: provider
+					};
+				}
+
+				var id = provider.id || provider.name.toLowerCase();
+
+				providers.push({
+					name: provider.name,
+					id: id,
+					type: tier,
+					values: {
+						sessions: "aggregations.sessions.providers.buckets.:find(key=" + id + ").doc_count",
+						bookings: "aggregations.sessions.bookings.providers.buckets.:find(key=" + id + ").doc_count",
+						bookingErrors: "aggregations.bookingerrors.buckets.:find(key=" + id + ").doc_count",
+						connectivityErrors: "aggregations.connectivityerrors.buckets.:find(key=" + id + ").doc_count"
+					}
+				});
+			});
+		});
+
+		configuration.sites = configuration.sites.concat(providers);
+
+		return configuration;
+	}
+
+	TLRGRP.BADGER.Dashboard.Components.ProviderConversion = function (configuration) {
+		configuration = appendConfiguration(configuration);
+
 		var dataStoreConfiguration = {
 			"host": "http://logs.laterooms.com:9200",
 			"timeProperties": [
@@ -31,11 +65,19 @@
 									"must":[
 									{
 										"range":{
-											"@timestamp":{
-												"from":"now-12h"
-											}
+											"@timestamp":{ }
 										}
-									},
+									}
+									]
+								}
+							}
+						}
+					},
+					"aggs":{
+						"sessions": {
+							"filter": {
+								"bool": {
+									"must": [
 									{
 										"term":{
 											"type":"session"
@@ -46,41 +88,80 @@
 											"user.type": "human"
 										}
 									}
-									]
 								}
-							}
-						}
-					},
-					"aggs":{
-						"useragents": {
-							"terms": {
-								"field": "user.userAgent.name.raw"
 							},
 							"aggs": {
-								"mobilesafari": {
+								"providers": {
 									"terms": {
-										"field": "user.userAgent.device.raw"
+										"field": "requests.providersEncountered",
+										"size": 100
+									}
+								},
+								"bookings": {
+									"filter": {
+										"term": {
+											"booked": true
+										}
+									},
+									"aggs": {
+										"providers": {
+											"terms": {
+												"field": "requests.providersEncountered",
+												"size": 100
+											}
+										}
 									}
 								}
 							}
 						},
-						"bookings": {
+						"bookingerrors": {
 							"filter": {
-								"term": {
-									"booked": true
+								"bool": {
+									"must": [
+									{
+										"term":{
+											"type":"lr_errors"
+										}
+									},
+									{
+										"term": {
+											"url_page_type": "booking"
+										}
+									},
+									{
+										"exists": {
+											"field": "AdditionalLoggingInformation.ProviderName"
+										}
+									}
+									]
 								}
 							},
 							"aggs": {
-								"useragents": {
+								"providers": {
 									"terms": {
-										"field": "user.userAgent.name.raw"
-									},
-									"aggs": {
-										"mobilesafari": {
-											"terms": {
-												"field": "user.userAgent.device.raw"
-											}
+										"field": "AdditionalLoggingInformation.ProviderName",
+										"size": 100
+									}
+								}
+							}
+						},
+						"connectivityerrors": {
+							"filter": {
+								"bool": {
+									"must": [
+									{
+										"term":{
+											"type":"hotel_acquisitions_errors"
 										}
+									}
+									]
+								}
+							},
+							"aggs": {
+								"providers": {
+									"terms": {
+										"field": "Provider",
+										"size": 100
 									}
 								}
 							}
@@ -95,24 +176,29 @@
 		var lastData;
 
 		var pickValues = [
-			{ from: 'hits.total', to: 'total.sessions' },
-			{ from: 'aggregations.bookings.doc_count', to: 'total.bookings' }
+			{ from: 'aggregations.sessions.doc_count', to: 'total.sessions' },
+			{ from: 'aggregations.sessions.bookings.doc_count', to: 'total.bookings' },
+			{ from: 'aggregations.bookingerrors.doc_count', to: 'total.bookingErrors' },
+			{ from: 'aggregations.connectivityerrors.doc_count', to: 'total.connectivityErrors' }
 		];
 
-		_.each(configuration.dimensions, function(dimension) {
-			_.each(dimension.values, function(value, key) {
+		_.each(configuration.sites, function(site) {
+			_.each(site.values, function(value, key) {
 				pickValues.push({
 					from: value,
-					to: dimension.id + '.' + key
+					to: site.id + '.' + key
 				});
 			});
 		});
+
+		console.log(pickValues);
 
 		var mappings = [
 			{
 				type: 'pickValues',
 				multiQuery: true,
-				values: pickValues
+				values: pickValues,
+				defaultTo: 0
 			},
 			{
 				"type": "calculation",
@@ -130,23 +216,41 @@
 			}
 		];
 
-		_.each(configuration.dimensions, function(dimension) {
+		_.each(configuration.sites, function(site) {
 			mappings.push({
 				"type": "calculation",
 				"calculation": "percentage",
-				"by": { "field": dimension.id + ".bookings", "over": dimension.id + ".sessions" },
+				"by": { "field": site.id + ".bookings", "over": site.id + ".sessions" },
 				"notFromHistogram": true,
-				"toField": dimension.id + ".commission"
+				"toField": site.id + ".commission"
 			});
 			mappings.push({
 				"type": "stats",
 				"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
 				"stds": [1, 2],
 				"notFromHistogram": true,
-				"toField": 'value.' + dimension.id,
-				"property": dimension.id + ".commission"
+				"toField": 'value.' + site.id,
+				"property": site.id + ".commission"
 			});
 		});
+
+		// _.each(configuration.dimensions, function(dimension) {
+		// 	mappings.push({
+		// 		"type": "calculation",
+		// 		"calculation": "percentage",
+		// 		"by": { "field": dimension.id + ".bookings", "over": dimension.id + ".sessions" },
+		// 		"notFromHistogram": true,
+		// 		"toField": dimension.id + ".commission"
+		// 	});
+		// 	mappings.push({
+		// 		"type": "stats",
+		// 		"fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+		// 		"stds": [1, 2],
+		// 		"notFromHistogram": true,
+		// 		"toField": 'value.' + dimension.id,
+		// 		"property": dimension.id + ".commission"
+		// 	});
+		// });
 
 		var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
 		var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
@@ -158,64 +262,43 @@
 					lastData = data;
 
 					_.each(configuration.sites, function(site) {
-						var totalCell = $('#' + (configuration.idPrefix || '') + site.id + '-total');
-						var totalCellValue = $('span', totalCell);
-						var newCellClass;
-
-						totalCellValue.html(data.today.total.commission.toFixed(2));
-
-						if(data.today.total.commission >= data.value.mean) {
-							newCellClass = 'good';
-						}
-						else if(data.today.total.commission >= data.value.standardDeviations[1].minus) {
-							newCellClass = 'warn';
-						}
-						else if(data.today.total.commission < data.value.standardDeviations[1].minus) {
-							newCellClass = 'alert';
-						}
-
-						totalCell
-							.removeClass('warn alert good')
-							.addClass(newCellClass);
-
-						if(newCellClass) {
-							$('.status-cell-indicator', totalCell).removeClass('hidden');
-						}
-						else {
-							$('.status-cell-indicator', totalCell).addClass('hidden');
-						}
-
 						_.each(configuration.dimensions, function(dimension) {
-							if(dimension.id) {
-								var cell = $('#' + (configuration.idPrefix || '') + site.id + '-' + dimension.id);
-								var valueCell = $('.status-cell-value', cell);
-								var indicatorCell = $('.status-cell-indicator', cell);
-								var newCellClass = '';
+							if(!dimension.id)  {
+								return;
+							}
 
-								valueCell.text(data.today[dimension.id].commission.toFixed(2));
+							var cell = $('#' + (configuration.idPrefix || '') + site.id + '-' + dimension.id);
+							var valueCell = dimension.cellType === 'total' ?  $('span', cell) : $('.status-cell-value', cell);
+							var indicatorCell = $('.status-cell-indicator', cell);
+							var newCellClass = '';
+							var value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, 'today.' + (site.id === 'all' ? 'total.' : (site.id + '.')) + dimension.value);
 
-								if(data.today[dimension.id]) {
-									if(data.today[dimension.id].commission >= data.value[dimension.id].mean) {
-										newCellClass = 'good';
-									}
-									else if(data.today[dimension.id].commission >= data.value[dimension.id].standardDeviations[1].minus) {
-										newCellClass = 'warn';
-									}
-									else if(data.today[dimension.id].commission < data.value[dimension.id].standardDeviations[1].minus) {
-										newCellClass = 'alert';
-									}
+							console.log(data);
+							console.log(dimension.value);
+
+							valueCell.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision) );
+
+							if(data.today[dimension.id]) {
+								if(data.today[dimension.id].commission >= data.value[dimension.id].mean) {
+									newCellClass = 'good';
 								}
-
-								cell.parent()
-									.removeClass('warn alert good')
-									.addClass(newCellClass);
-
-								if(newCellClass) {
-									indicatorCell.removeClass('hidden');
+								else if(data.today[dimension.id].commission >= data.value[dimension.id].standardDeviations[1].minus) {
+									newCellClass = 'warn';
 								}
-								else {
-									indicatorCell.addClass('hidden');
+								else if(data.today[dimension.id].commission < data.value[dimension.id].standardDeviations[1].minus) {
+									newCellClass = 'alert';
 								}
+							}
+
+							cell.parent()
+								.removeClass('warn alert good')
+								.addClass(newCellClass);
+
+							if(newCellClass) {
+								indicatorCell.removeClass('hidden');
+							}
+							else {
+								indicatorCell.addClass('hidden');
 							}
 						});
 					});
@@ -229,7 +312,9 @@
 		var columnsViewModel = _.map(configuration.dimensions, function(dimension) {
 			return {
 				name: dimension.name,
-				id: dimension.id
+				id: dimension.id,
+				isTotalCell: dimension.cellType === 'total',
+				showPercentage: typeof dimension.showPercentage === 'undefined' ? true : dimension.showPercentage
 			};
 		});
 
@@ -254,7 +339,14 @@
 				idPrefix: idPrefix,
 				dashboard: site.dashboard,
 				view: site.view,
-				columns: Mustache.render('{{#columns}}<td class="data-cell" data-dashboard="{{dashboard}}" data-view="{{view}}" data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div><div class="status-cell-percentage">%</div></div></td>{{/columns}}', { columns: columns })
+				columns: Mustache.render('{{#columns}}' 
+					+ '{{#isTotalCell}}'
+						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
+					+ '{{/isTotalCell}}'
+					+ '{{^isTotalCell}}'
+						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
+					+ '{{/isTotalCell}}'
+					+ '{{/columns}}', { columns: columns })
 			};
 		});
 
@@ -274,11 +366,11 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 			container.append(
 				'<div><table class="status-table">'
 				+ '<tr class="status-header-row">'
-				+ '<th>&nbsp;</th><th class="total-cell">Total</th>'
+				+ '<th>&nbsp;</th>'
 				+ Mustache.render('{{#columns}}<th>{{name}}</th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row">'
-					+ '<th>{{name}}</th><td class="total-cell data-cell" data-dashboard="{{dashboard}}" data-view="{{view}}" id="{{idPrefix}}-total" data-cell-identifier="total"><span>-</span>%<div class="status-cell-indicator hidden"></div></td>'
+					+ '<th>{{name}}</th>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');

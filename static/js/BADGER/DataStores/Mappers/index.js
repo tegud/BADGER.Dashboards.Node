@@ -90,7 +90,13 @@
                     var itemValues = {};
 
                     _.each(mapping.values, function(value) {
-                        setValueOnSubProperty(itemValues, value.to, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(currentData, value.from))
+                        var itemValue = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(currentData, value.from);
+
+                        if(typeof itemValue === 'undefined' && typeof mapping.defaultTo !== 'undefined') {
+                            itemValue = mapping.defaultTo;
+                        }
+
+                        setValueOnSubProperty(itemValues, value.to, itemValue);
                     });
 
                     matchedValues[key] = itemValues;

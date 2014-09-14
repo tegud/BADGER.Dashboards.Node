@@ -183,6 +183,13 @@
 											"type":"hotel_acquisitions_errors"
 										}
 									}
+									],
+									"must_not": [
+									{
+										"term":{
+											"tags":"noterror"
+										}
+									}
 									]
 								}
 							},

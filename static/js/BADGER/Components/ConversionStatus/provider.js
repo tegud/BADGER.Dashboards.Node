@@ -416,7 +416,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				toolTip = $('<div id="graph-tooltip" class="hidden"></div>').appendTo('body');
 			}
 
-	// 		container
+	 		container
 	// 			.on('click', '.data-cell', function() {
 	// 				var cell = $(this);
 	// 				var dashboard = cell.data('dashboard');
@@ -439,84 +439,89 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 	// 					queryParameters: cellKey === 'total' ? false : dimension.filter
 	// 				});
 	// 			})
-	// 			.on('mouseover', '.data-cell', function() {
-	// 				var cell = $(this);
+				.on('mouseover', '.data-cell', function() {
+					var cell = $(this);
 
-	// 				toolTip.removeClass('hidden');
+					toolTip.removeClass('hidden');
 
-	// 				var toolTipWidth = toolTip.width();
-	// 				var cellWidth = cell.width();
-	// 				var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
+					var toolTipWidth = toolTip.width();
+					var cellWidth = cell.width();
+					var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
 
-	// 				toolTip.css({
-	// 					top: cell.offset().top + cell.height() + 10,
-	// 					left: left
-	// 				});
+					toolTip.css({
+						top: cell.offset().top + cell.height() + 10,
+						left: left
+					});
 
-	// 				var cellKey = cell.data('dataRoot');
+					var cellKey = cell.data('dataRoot');
 
-	// 				if(cellKey && lastData) {
-	// 					var rootStatsObject = lastData.value;
+					if(cellKey && lastData) {
+						var rootStatsObject = lastData.value;
 
-	// 					if(cellKey !== 'total') {
-	// 						rootStatsObject = rootStatsObject[cellKey];
-	// 					}
+						if(cellKey !== 'total') {
+							rootStatsObject = rootStatsObject[cellKey];
+						}
 
-	// 					var dayOrder = {
-	// 						'yesterday': 1,
-	// 						'lastWeek': 2,
-	// 						'2weeksago': 3,
-	// 						'1monthago': 4,
-	// 						'lastmonth': 5
-	// 					};
+						var dayOrder = {
+							'today': 1,
+							'yesterday': 2,
+							'lastWeek': 3,
+							'2weeksago': 4,
+							'1monthago': 5,
+							'lastmonth': 6
+						};
 
-	// 					var niceDayNames = {
-	// 						'yesterday': 'Yesterday',
-	// 						'lastWeek': 'Last Week',
-	// 						'2weeksago': '2 Weeks Ago',
-	// 						'3weeksago': '3 Weeks Ago',
-	// 						'1monthago': 'Last Month'
-	// 					};
+						var niceDayNames = {
+							'today': 'Today',
+							'yesterday': 'Yesterday',
+							'lastWeek': 'Last Week',
+							'2weeksago': '2 Weeks Ago',
+							'3weeksago': '3 Weeks Ago',
+							'1monthago': 'Last Month'
+						};
 
-	// 					var toolTipModel = {
-	// 						days: _.chain(lastData).map(function(data, day) {
-	// 							if(day === 'today' || day === 'value') {
-	// 								return;
-	// 							}
-	// 							var conversion = 0;
+						var toolTipModel = {
+							days: _.chain(lastData).map(function(data, day) {
+								if(day === 'value') {
+									return;
+								}
+								var conversion = 0;
 
-	// 							if(data[cellKey] && data[cellKey].commission) {
-	// 								conversion = data[cellKey].commission.toFixed(2) + '%';
-	// 							}
+								if(data[cellKey].commission === Infinity) {
+									conversion = 'No data';
+								}
+								else if(data[cellKey] && data[cellKey].commission) {
+									conversion = data[cellKey].commission.toFixed(2) + '%';
+								}
 
-	// 							return { 
-	// 								day: niceDayNames[day] || day,
-	// 								conversion: conversion,
-	// 								index: dayOrder[day] || 999
-	// 							};
-	// 						}).filter(function(item) {
-	// 							return item;
-	// 						}).sortBy(function(item) {
-	// 							return item.index;
-	// 						}).value(),
-	// 						average: rootStatsObject.mean.toFixed(2),
-	// 						std: rootStatsObject.deviation.toFixed(2),
-	// 						thresholds: [
-	// 							{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
-	// 							{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
-	// 							{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
-	// 						]
-	// 					};
+								return { 
+									day: niceDayNames[day] || day,
+									conversion: conversion,
+									index: dayOrder[day] || 999
+								};
+							}).filter(function(item) {
+								return item;
+							}).sortBy(function(item) {
+								return item.index;
+							}).value(),
+							average: rootStatsObject.mean.toFixed(2),
+							std: rootStatsObject.deviation.toFixed(2),
+							thresholds: [
+								{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
+								{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
+								{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
+							]
+						};
 
-	// 					toolTip.html(Mustache.render(
-	// 						'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
-	// 						+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
-	// 						+ '', toolTipModel));
-	// 				}
-	// 			})
-	// .on('mouseout', '.data-cell', function() {
-	// 	toolTip.addClass('hidden');
-	// });
+						toolTip.html(Mustache.render(
+							'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
+							+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
+							+ '', toolTipModel));
+					}
+				})
+	.on('mouseout', '.data-cell', function() {
+		toolTip.addClass('hidden');
+	});
 }
 }
 ]

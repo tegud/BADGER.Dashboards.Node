@@ -247,7 +247,8 @@
 				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
-				"property": "total.commission"
+				"property": "total.commission",
+				"toField": "value.stats.commission.total"
 			}
 		];
 
@@ -259,13 +260,23 @@
 				"notFromHistogram": true,
 				"toField": site.id + ".commission"
 			});
+
 			mappings.push({
 				"type": "stats",
 				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
-				"toField": 'value.' + site.id,
+				"toField": 'value.stats.commission.' + site.id,
 				"property": site.id + ".commission"
+			});
+
+			mappings.push({
+				"type": "stats",
+				"fields": daysToCompareAgainst,
+				"stds": [1, 2],
+				"notFromHistogram": true,
+				"toField": 'value.stats.bookings.' + site.id,
+				"property": site.id + ".bookings"
 			});
 		});
 
@@ -345,6 +356,7 @@
 			return {
 				name: dimension.name,
 				id: dimension.id,
+				field: dimension.value,
 				isTotalCell: dimension.cellType === 'total',
 				showPercentage: typeof dimension.showPercentage === 'undefined' ? true : dimension.showPercentage
 			};
@@ -363,6 +375,7 @@
 
 				column.cellId = idPrefix + '-' + column.id;
 				column.dataRoot = site.id;
+				column.dimensionValue = column.field;
 
 				return column;
 			});
@@ -376,10 +389,10 @@
 				view: site.view,
 				columns: Mustache.render('{{#columns}}' 
 					+ '{{#isTotalCell}}'
-						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
+						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
 					+ '{{/isTotalCell}}'
 					+ '{{^isTotalCell}}'
-						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
+						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
 					+ '{{/isTotalCell}}'
 					+ '{{/columns}}', { columns: columns })
 			};
@@ -454,6 +467,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 					});
 
 					var cellKey = cell.data('dataRoot');
+					var dimensionKey = cell.data('dimensionValue');
 
 					if(cellKey && lastData) {
 						var rootStatsObject = lastData.value;
@@ -480,6 +494,8 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'1monthago': 'Last Month'
 						};
 
+						var stats = lastData.value.stats[cell.data('dimensionValue')][cellKey];
+
 						var toolTipModel = {
 							days: _.chain(lastData).map(function(data, day) {
 								if(day === 'value') {
@@ -491,7 +507,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 									conversion = 'No data';
 								}
 								else if(data[cellKey] && data[cellKey].commission) {
-									conversion = data[cellKey].commission.toFixed(2) + '%';
+									conversion = data[cellKey][cell.data('dimensionValue')].toFixed(2) + '%';
 								}
 
 								return { 
@@ -504,12 +520,12 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							}).sortBy(function(item) {
 								return item.index;
 							}).value(),
-							average: rootStatsObject.mean.toFixed(2),
-							std: rootStatsObject.deviation.toFixed(2),
+							average: stats.mean.toFixed(2),
+							std: stats.deviation.toFixed(2),
 							thresholds: [
-								{ id: 'good', text: 'Good', value: '>= ' + rootStatsObject.mean.toFixed(2) + '%' }, 
-								{ id: 'warn', text: 'Warn', value: '>= ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' }, 
-								{ id: 'alert', text: 'Alert', value: '< ' + rootStatsObject.standardDeviations[1].minus.toFixed(2) + '%' } 
+								{ id: 'good', text: 'Good', value: '>= ' + stats.mean.toFixed(2) + '%' }, 
+								{ id: 'warn', text: 'Warn', value: '>= ' + stats.standardDeviations[1].minus.toFixed(2) + '%' }, 
+								{ id: 'alert', text: 'Alert', value: '< ' + stats.standardDeviations[1].minus.toFixed(2) + '%' } 
 							]
 						};
 

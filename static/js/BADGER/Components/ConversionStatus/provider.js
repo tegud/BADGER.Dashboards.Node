@@ -348,13 +348,13 @@
 							}
 
 							if(typeof value !== 'undefined' && stats && stats.standardDeviations && stats.standardDeviations.length > 1) {
-								if(value >= stats.mean) {
+								if(((dimension.kpiDirection || 'up') === 'up' && value >= stats.mean) || (dimension.kpiDirection === 'down' && value <= stats.mean)) {
 									newCellClass = 'good';
 								}
-								else if(value >= stats.standardDeviations[1].minus) {
+								else if(((dimension.kpiDirection || 'up') === 'up' && value >= stats.standardDeviations[1].minus) || (dimension.kpiDirection === 'down' && value <= stats.standardDeviations[1].plus)) {
 									newCellClass = 'warn';
 								}
-								else if(value < stats.standardDeviations[1].minus) {
+								else if(((dimension.kpiDirection || 'up') === 'up' && value < stats.standardDeviations[1].minus) || (dimension.kpiDirection === 'down' && value > stats.standardDeviations[1].plus)) {
 									newCellClass = 'alert';
 								}
 							}
@@ -384,7 +384,8 @@
 				id: dimension.id,
 				field: dimension.value,
 				isTotalCell: dimension.cellType === 'total',
-				showPercentage: typeof dimension.showPercentage === 'undefined' ? true : dimension.showPercentage
+				showPercentage: typeof dimension.showPercentage === 'undefined' ? true : dimension.showPercentage,
+				lessIsBetter: dimension.kpiDirection === 'down'
 			};
 		});
 
@@ -418,10 +419,10 @@
 				view: site.view,
 				columns: Mustache.render('{{#columns}}' 
 					+ '{{#isTotalCell}}'
-						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
+						+ '<td class="total-cell data-cell{{#lessIsBetter}} lessIsBetter{{/lessIsBetter}}" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
 					+ '{{/isTotalCell}}'
 					+ '{{^isTotalCell}}'
-						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
+						+ '<td class="data-cell{{#lessIsBetter}} lessIsBetter{{/lessIsBetter}}" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
 					+ '{{/isTotalCell}}'
 					+ '{{/columns}}', { columns: columns })
 			};
@@ -553,9 +554,9 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 								average: stats.mean.toFixed(precision),
 								std: stats.deviation.toFixed(precision),
 								thresholds: [
-									{ id: 'good', text: 'Good', value: '>= ' + stats.mean.toFixed(precision) + showPercentageString }, 
-									{ id: 'warn', text: 'Warn', value: '>= ' + stats.standardDeviations[1].minus.toFixed(precision) + showPercentageString }, 
-									{ id: 'alert', text: 'Alert', value: '< ' + stats.standardDeviations[1].minus.toFixed(precision) + showPercentageString } 
+									{ id: 'good', text: 'Good', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') +  stats.mean.toFixed(precision) + showPercentageString }, 
+									{ id: 'warn', text: 'Warn', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') + stats.standardDeviations[1].plus.toFixed(precision) + showPercentageString }, 
+									{ id: 'alert', text: 'Alert', value: (dimension.kpiDirection === 'down' ? '> ' : '< ') + stats.standardDeviations[1].plus.toFixed(precision) + showPercentageString } 
 								]
 							};
 

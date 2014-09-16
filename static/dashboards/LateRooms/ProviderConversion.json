@@ -71,16 +71,17 @@
               "id": "bkg-err-today",
               "showPercentage": false,
               "precision": 0,
-              "value": "bookingErrors"
+              "value": "bookingErrors",
+              "kpiDirection": "down"
             },
             {
               "name": "Connectivity Errors Today",
               "id": "conn-errors-today",
               "showPercentage": false,
               "precision": 0,
-              "value": "connectivityErrors"
+              "value": "connectivityErrors",
+              "kpiDirection": "down"
             },
-
             {
               "name": "Conversion 1hr",
               "id": "conv-1hr",

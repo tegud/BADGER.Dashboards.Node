@@ -498,17 +498,23 @@ h3 {margin: 0;padding: 0 }
 
 .total-cell .status-cell-indicator { width: 20px; height: 20px;position: absolute; top: 13px; right: 5px;background-image: url('../images/conversion_indicators.png'); }
 
+.total-cell.lessIsBetter .status-cell-indicator { background-position: 0 -20px }
+
 .status-cell-container { display: inline-block; position: relative; padding-right: 15px; }
 
 .status-cell-value { font-size: 1.5em; }
 
 .status-cell-indicator { width: 10px; height: 10px; background-image: url('../images/conversion_indicators_small.png'); position: absolute; top: 0; right: 0; }
+.lessIsBetter .status-cell-indicator { background-position: 0 -10px }
 
 .warn .status-cell-indicator { background-position: 0 -10px }
 .alert .status-cell-indicator { background-position: 0 -20px }
 
 .warn.total-cell .status-cell-indicator { background-position: 0 -20px }
 .alert.total-cell .status-cell-indicator { background-position: 0 -40px }
+
+.lessIsBetter.warn .status-cell-indicator,
+.lessIsBetter.warn.total-cell .status-cell-indicator { background-position: 0 0 }
 
 .status-cell-percentage { font-size: 0.8em; position: absolute; bottom: 0; right: 0; }
 

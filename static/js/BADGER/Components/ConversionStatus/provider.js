@@ -278,6 +278,24 @@
 				"toField": 'value.stats.bookings.' + site.id,
 				"property": site.id + ".bookings"
 			});
+
+			mappings.push({
+				"type": "stats",
+				"fields": daysToCompareAgainst,
+				"stds": [1, 2],
+				"notFromHistogram": true,
+				"toField": 'value.stats.bookingErrors.' + site.id,
+				"property": site.id + ".bookingErrors"
+			});
+
+			mappings.push({
+				"type": "stats",
+				"fields": daysToCompareAgainst,
+				"stds": [1, 2],
+				"notFromHistogram": true,
+				"toField": 'value.stats.connectivityErrors.' + site.id,
+				"property": site.id + ".connectivityErrors"
+			});
 		});
 
 		// _.each(configuration.dimensions, function(dimension) {
@@ -321,19 +339,27 @@
 
 							valueCell.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision) );
 
-							if(data.today[dimension.id]) {
-								if(data.today[dimension.id].commission >= data.value[dimension.id].mean) {
+							var stats;
+							if(site.id === 'all') {
+
+							}
+							else if(typeof data.value.stats[dimension.value] !== 'undefined' && typeof data.value.stats[dimension.value][site.id] !== 'undefined') {
+								stats = data.value.stats[dimension.value][site.id];
+							}
+
+							if(typeof value !== 'undefined' && stats && stats.standardDeviations && stats.standardDeviations.length > 1) {
+								if(value >= stats.mean) {
 									newCellClass = 'good';
 								}
-								else if(data.today[dimension.id].commission >= data.value[dimension.id].standardDeviations[1].minus) {
+								else if(value >= stats.standardDeviations[1].minus) {
 									newCellClass = 'warn';
 								}
-								else if(data.today[dimension.id].commission < data.value[dimension.id].standardDeviations[1].minus) {
+								else if(value < stats.standardDeviations[1].minus) {
 									newCellClass = 'alert';
 								}
 							}
 
-							cell.parent()
+							(dimension.cellType === 'total' ? cell : cell.parent())
 								.removeClass('warn alert good')
 								.addClass(newCellClass);
 
@@ -377,6 +403,9 @@
 				column.dataRoot = site.id;
 				column.dimensionValue = column.field;
 
+				column.site = site.id;
+				column.dimension = column.id;
+
 				return column;
 			});
 
@@ -389,10 +418,10 @@
 				view: site.view,
 				columns: Mustache.render('{{#columns}}' 
 					+ '{{#isTotalCell}}'
-						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
+						+ '<td class="total-cell data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
 					+ '{{/isTotalCell}}'
 					+ '{{^isTotalCell}}'
-						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
+						+ '<td class="data-cell" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><div id="{{cellId}}" class="status-cell-container"><div class="status-cell-value">-</div><div class="status-cell-indicator hidden"></div>{{#showPercentage}}<div class="status-cell-percentage">%</div>{{/showPercentage}}</div></td>' 
 					+ '{{/isTotalCell}}'
 					+ '{{/columns}}', { columns: columns })
 			};
@@ -457,24 +486,9 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 
 					toolTip.removeClass('hidden');
 
-					var toolTipWidth = toolTip.width();
-					var cellWidth = cell.width();
-					var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
-
-					toolTip.css({
-						top: cell.offset().top + cell.height() + 10,
-						left: left
-					});
-
 					var cellKey = cell.data('dataRoot');
-					var dimensionKey = cell.data('dimensionValue');
 
 					if(cellKey && lastData) {
-						var rootStatsObject = lastData.value;
-
-						if(cellKey !== 'total') {
-							rootStatsObject = rootStatsObject[cellKey];
-						}
 
 						var dayOrder = {
 							'today': 1,
@@ -494,46 +508,80 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							'1monthago': 'Last Month'
 						};
 
-						var stats = lastData.value.stats[cell.data('dimensionValue')][cellKey];
+						var dimension = _.chain(configuration.dimensions)
+							.filter(function(dimension) { 
+								return dimension.id === cell.data('dimension'); 
+							})
+							.first()
+							.value();
+						var site = _.chain(configuration.sites)
+							.filter(function(dimension) { 
+								return dimension.id === cell.data('site'); 
+							})
+							.first()
+							.value();
+						var showPercentageString = typeof dimension.showPercentage === 'undefined' || dimension.showPercentage ? '%' : '';
+						var precision = typeof dimension.precision === 'undefined' ? 2 : dimension.precision;
 
-						var toolTipModel = {
-							days: _.chain(lastData).map(function(data, day) {
-								if(day === 'value') {
-									return;
-								}
-								var conversion = 0;
+						if(dimension && site) {
+							var stats = lastData.value.stats[dimension.value][cellKey];
 
-								if(data[cellKey].commission === Infinity) {
-									conversion = 'No data';
-								}
-								else if(data[cellKey] && data[cellKey].commission) {
-									conversion = data[cellKey][cell.data('dimensionValue')].toFixed(2) + '%';
-								}
+							var toolTipModel = {
+								days: _.chain(lastData).map(function(data, day) {
+									if(day === 'value') {
+										return;
+									}
+									var conversion = 0;
 
-								return { 
-									day: niceDayNames[day] || day,
-									conversion: conversion,
-									index: dayOrder[day] || 999
-								};
-							}).filter(function(item) {
-								return item;
-							}).sortBy(function(item) {
-								return item.index;
-							}).value(),
-							average: stats.mean.toFixed(2),
-							std: stats.deviation.toFixed(2),
-							thresholds: [
-								{ id: 'good', text: 'Good', value: '>= ' + stats.mean.toFixed(2) + '%' }, 
-								{ id: 'warn', text: 'Warn', value: '>= ' + stats.standardDeviations[1].minus.toFixed(2) + '%' }, 
-								{ id: 'alert', text: 'Alert', value: '< ' + stats.standardDeviations[1].minus.toFixed(2) + '%' } 
-							]
-						};
+									if(data[cellKey].commission === Infinity) {
+										conversion = 'No data';
+									}
+									else if(data[cellKey] && data[cellKey].commission) {
+										conversion = data[cellKey][cell.data('dimensionValue')].toFixed(precision) + showPercentageString;
+									}
 
-						toolTip.html(Mustache.render(
-							'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
-							+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
-							+ '', toolTipModel));
+									return { 
+										day: niceDayNames[day] || day,
+										conversion: conversion,
+										index: dayOrder[day] || 999
+									};
+								}).filter(function(item) {
+									return item;
+								}).sortBy(function(item) {
+									return item.index;
+								}).value(),
+								average: stats.mean.toFixed(precision),
+								std: stats.deviation.toFixed(precision),
+								thresholds: [
+									{ id: 'good', text: 'Good', value: '>= ' + stats.mean.toFixed(precision) + showPercentageString }, 
+									{ id: 'warn', text: 'Warn', value: '>= ' + stats.standardDeviations[1].minus.toFixed(precision) + showPercentageString }, 
+									{ id: 'alert', text: 'Alert', value: '< ' + stats.standardDeviations[1].minus.toFixed(precision) + showPercentageString } 
+								]
+							};
+
+							toolTip.html(Mustache.render(
+								'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
+								+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
+								+ '', toolTipModel));
+						}
+						else {
+							toolTip.html('Error loading tooltip');
+						}
 					}
+
+					var toolTipWidth = toolTip.width();
+					var cellWidth = cell.width();
+					var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
+					var top = cell.offset().top + cell.height() + 10;
+
+					if(top + toolTip.height() > $(window).height()) {
+						top = cell.offset().top - toolTip.height() - 15;
+					}
+
+					toolTip.css({
+						top: top,
+						left: left
+					});
 				})
 	.on('mouseout', '.data-cell', function() {
 		toolTip.addClass('hidden');

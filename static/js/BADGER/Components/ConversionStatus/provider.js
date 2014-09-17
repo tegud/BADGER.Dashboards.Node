@@ -182,6 +182,13 @@
 										"term":{
 											"type":"hotel_acquisitions_errors"
 										}
+									},
+									{
+										"range": {
+											"@timestamp": {
+												"gte": "2014-09-15T00:00:00.000Z"
+											}
+										}
 									}
 									],
 									"must_not": [
@@ -532,18 +539,18 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 									if(day === 'value') {
 										return;
 									}
-									var conversion = 0;
+									var value = 0;
 
-									if(data[cellKey].commission === Infinity) {
-										conversion = 'No data';
+									if(data[cellKey][cell.data('dimensionValue')] === Infinity) {
+										value = 'No data';
 									}
 									else if(data[cellKey] && data[cellKey].commission) {
-										conversion = data[cellKey][cell.data('dimensionValue')].toFixed(precision) + showPercentageString;
+										value = data[cellKey][cell.data('dimensionValue')].toFixed(precision) + showPercentageString;
 									}
 
 									return { 
 										day: niceDayNames[day] || day,
-										conversion: conversion,
+										conversion: value,
 										index: dayOrder[day] || 999
 									};
 								}).filter(function(item) {

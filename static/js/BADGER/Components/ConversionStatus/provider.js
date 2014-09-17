@@ -61,7 +61,7 @@
 		var dataStoreConfiguration = {
 			"host": "http://logs.laterooms.com:9200",
 			"timeProperties": [
-			"query.filtered.filter.bool.must.0.range.@timestamp"
+				"query.filtered.filter.bool.must.0.range.@timestamp"
 			],
 			"defaultTimeFrame": {
 				"timeFrame": 0,
@@ -589,7 +589,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 					var left = cell.offset().left + (cellWidth / 2) - (toolTipWidth / 2);
 					var top = cell.offset().top + cell.height() + 10;
 
-					if(top + toolTip.height() > $(window).height()) {
+					if((top + toolTip.height()) - document.body.scrollTop > $(window).height()) {
 						top = cell.offset().top - toolTip.height() - 15;
 					}
 

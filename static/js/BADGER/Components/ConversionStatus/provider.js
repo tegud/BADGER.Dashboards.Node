@@ -99,6 +99,11 @@
 										"term": {
 											"user.type": "human"
 										}
+									},
+									{
+										"exists": {
+											"field": "requests.providersEncountered"
+										}
 									}
 									],
 									"must_not": {
@@ -342,16 +347,18 @@
 							var valueCell = dimension.cellType === 'total' ?  $('span', cell) : $('.status-cell-value', cell);
 							var indicatorCell = $('.status-cell-indicator', cell);
 							var newCellClass = '';
-							var value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, 'today.' + (site.id === 'all' ? 'total.' : (site.id + '.')) + dimension.value);
+							var value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, 'today.' + (site.id === 'total' ? 'total.' : (site.id + '.')) + dimension.value);
 
 							valueCell.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision) );
 
 							var stats;
-							if(site.id === 'all') {
-
-							}
-							else if(typeof data.value.stats[dimension.value] !== 'undefined' && typeof data.value.stats[dimension.value][site.id] !== 'undefined') {
-								stats = data.value.stats[dimension.value][site.id];
+							if(dimension.value){
+								if(site.id === 'total') {
+									stats = data.value.stats[dimension.value][site.id];
+								}
+								else if(typeof data.value.stats[dimension.value] !== 'undefined' && typeof data.value.stats[dimension.value][site.id] !== 'undefined') {
+									stats = data.value.stats[dimension.value][site.id];
+								}
 							}
 
 							if(typeof value !== 'undefined' && stats && stats.standardDeviations && stats.standardDeviations.length > 1) {

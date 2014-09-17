@@ -49,7 +49,7 @@
           "sites": [
             {
               "name": "All",
-              "id": "all"
+              "id": "total"
             }
           ],
           "dimensions": [

@@ -187,7 +187,7 @@
             function calculateAverage(rootObject) {
                 var values = _.map(mapping.fields, function(field) {
                     var currentValue = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(rootObject[field], mapping.property);
-                    if(isNaN(currentValue) || currentValue == Number.POSITIVE_INFINITY) return;
+                    if(isNaN(currentValue) || currentValue == Number.POSITIVE_INFINITY || ((typeof mapping.includeZeroValues !== 'undefined' && !mapping.includeZeroValues) && currentValue === 0)) return;
 
                     return currentValue;
                 });
@@ -195,6 +195,10 @@
                 values = _.filter(values, function(value) {
                     return typeof value !== 'undefined';
                 });
+
+                if(!values.length) {
+                    values = [0];
+                }
 
                 var stats = average(values);
 

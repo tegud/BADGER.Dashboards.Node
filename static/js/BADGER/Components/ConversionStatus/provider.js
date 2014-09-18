@@ -260,6 +260,7 @@
 				"stds": [1, 2],
 				"notFromHistogram": true,
 				"property": "total.commission",
+				"includeZeroValues": false,
 				"toField": "value.stats.commission.total"
 			}
 		];
@@ -287,6 +288,7 @@
 				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
+				"includeZeroValues": false,
 				"toField": 'value.stats.bookings.' + site.id,
 				"property": site.id + ".bookings"
 			});
@@ -296,6 +298,7 @@
 				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
+				"includeZeroValues": false,
 				"toField": 'value.stats.bookingErrors.' + site.id,
 				"property": site.id + ".bookingErrors"
 			});
@@ -305,6 +308,7 @@
 				"fields": daysToCompareAgainst,
 				"stds": [1, 2],
 				"notFromHistogram": true,
+				"includeZeroValues": false,
 				"toField": 'value.stats.connectivityErrors.' + site.id,
 				"property": site.id + ".connectivityErrors"
 			});

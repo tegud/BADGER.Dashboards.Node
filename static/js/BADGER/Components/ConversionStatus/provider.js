@@ -573,8 +573,8 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 								std: stats.deviation.toFixed(precision),
 								thresholds: [
 									{ id: 'good', text: 'Good', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') +  stats.mean.toFixed(precision) + showPercentageString }, 
-									{ id: 'warn', text: 'Warn', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') + stats.standardDeviations[1].plus.toFixed(precision) + showPercentageString }, 
-									{ id: 'alert', text: 'Alert', value: (dimension.kpiDirection === 'down' ? '> ' : '< ') + stats.standardDeviations[1].plus.toFixed(precision) + showPercentageString } 
+									{ id: 'warn', text: 'Warn', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') + stats.standardDeviations[1][dimension.kpiDirection === 'down' ? 'plus' : 'minus'].toFixed(precision) + showPercentageString }, 
+									{ id: 'alert', text: 'Alert', value: (dimension.kpiDirection === 'down' ? '> ' : '< ') + stats.standardDeviations[1][dimension.kpiDirection === 'down' ? 'plus' : 'minus'].toFixed(precision) + showPercentageString } 
 								]
 							};
 

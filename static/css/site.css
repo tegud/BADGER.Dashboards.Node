@@ -557,9 +557,9 @@ h3 {margin: 0;padding: 0 }
 
 .name-cell .order-indicator { float: none; }
 
-.order-indicator.desc { background-position: 0 0; }
+.order-indicator.desc { background-position: 0 0;display: block }
 
-.order-indicator.active { display: block; }
+.order-indicator.asce { display: block; }
 
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }

@@ -5,6 +5,13 @@
 
 	var idIncrementor = 0;
 
+	var tierOrder = {
+		'P': 0,
+		'G': 1,
+		'S': 2,
+		'B': 3
+	};
+
 	function appendConfiguration(configuration) {
 		var providers = [];
 
@@ -435,6 +442,7 @@
 				type: site.type,
 				typeCode: site.type ? site.type[0].toUpperCase() : '',
 				view: site.view,
+				isAllRow: site.id === 'total',
 				columns: Mustache.render('{{#columns}}' 
 					+ '{{#isTotalCell}}'
 						+ '<td class="total-cell data-cell{{#lessIsBetter}} lessIsBetter{{/lessIsBetter}}" {{#dashboard}}data-dashboard="{{dashboard}}"{{/dashboard}} {{#view}}data-view="{{view}}"{{/view}} id="{{cellId}}" data-cell-identifier="{{id}}" data-data-root="{{dataRoot}}" data-dimension-value="{{dimensionValue}}" data-dimension="{{dimension}}" data-site="{{site}}"><span>-</span>{{#showPercentage}}%{{/showPercentage}}<div class="status-cell-indicator hidden"></div></td>'
@@ -460,13 +468,16 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 	{
 		appendTo: function (container) {
 			container.append(
-				'<div><table class="status-table">'
+				'<div>'
+				+ '<div></div>'
+				+ '<table class="status-table">'
 				+ '<tr class="status-header-row">'
-				+ '<th>&nbsp;</th>'
-				+ Mustache.render('{{#columns}}<th>{{name}}</th>{{/columns}}', tableViewModel)
+				+ '<th class="name-cell column-header" data-order-property="name">&nbsp;<div class="order-indicator"></div></th>'
+				+ '<th class="column-header" data-order-property="tier">Tier<div class="order-indicator active desc"></th>'
+				+ Mustache.render('{{#columns}}<th class="column-header">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
 				+ '</tr>'
-				+ Mustache.render('{{#rows}}<tr class="status-row">'
-					+ '<th>{{#type}}<div class="tier-indicator {{type}}" title="Tier: {{type}}">{{typeCode}}</div>{{/type}}<div class="provider-name">{{name}}</div></th>'
+				+ Mustache.render('{{#rows}}<tr class="status-row{{#isAllRow}} all-row{{/isAllRow}}">'
+					+ '<th><div class="provider-name">{{name}}</div></th><th class="provider-tier">{{#type}}<div class="tier-indicator {{type}}" title="{{type}}">{{typeCode}}</div>{{/type}}</th>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');
@@ -478,6 +489,45 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 			}
 
 	 		container
+	 			.on('click', '.column-header', function() {
+	 				var cell = $(this);
+	 				var table = cell.closest('table');
+	 				var orderProperty = cell.data('order-property');
+	 				var rows = $('.status-row:not(.all-row)', table);
+	 				var orderIndictator = cell.children('.order-indicator');
+	 				
+ 					orderIndictator.addClass('active').end().siblings().children('.order-indicator').removeClass('active desc');
+
+	 				var newRowOrder = _.chain(rows)
+		 				.map(function(row) {
+		 					var value;
+
+		 					if(orderProperty === 'name') {
+		 						value = $('.provider-name', row).text();
+		 					}
+		 					else if(orderProperty === 'tier') {
+		 						value = tierOrder[$('.provider-tier', row).text()];
+		 					}
+
+		 					return {
+		 						value: value,
+		 						row: row
+		 					};
+		 				})
+		 				.sortBy('value')
+		 				.pluck('row')
+		 				.value();
+
+	 				if(orderIndictator.hasClass('desc')) {
+	 					newRowOrder = newRowOrder.reverse();
+	 					orderIndictator.removeClass('desc');
+	 				}
+	 				else {
+	 					orderIndictator.addClass('desc');
+	 				}
+
+	 				$(newRowOrder).remove().appendTo(table)
+	 			})
 	// 			.on('click', '.data-cell', function() {
 	// 				var cell = $(this);
 	// 				var dashboard = cell.data('dashboard');

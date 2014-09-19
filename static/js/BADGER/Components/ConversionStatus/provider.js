@@ -124,6 +124,7 @@
 								"providers": {
 									"terms": {
 										"field": "requests.providersEncountered",
+										"exclude": "laterooms",
 										"size": 100
 									}
 								},
@@ -174,7 +175,12 @@
 											"field": "AdditionalLoggingInformation.ProviderName"
 										}
 									}
-									]
+									],
+									"must_not": {
+										"term": {
+											"AdditionalLoggingInformation.ProviderName": "laterooms"
+										}
+									}
 								}
 							},
 							"aggs": {
@@ -437,6 +443,7 @@
 
 			return {
 				name: site.name,
+				id: site.id,
 				idPrefix: idPrefix,
 				dashboard: site.dashboard,
 				type: site.type,
@@ -474,9 +481,9 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				+ '<tr class="status-header-row">'
 				+ '<th class="name-cell column-header" data-order-property="name">&nbsp;<div class="order-indicator"></div></th>'
 				+ '<th class="column-header" data-order-property="tier">Tier<div class="order-indicator active desc"></th>'
-				+ Mustache.render('{{#columns}}<th class="column-header">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
+				+ Mustache.render('{{#columns}}<th class="column-header" data-order-property="{{id}}">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
 				+ '</tr>'
-				+ Mustache.render('{{#rows}}<tr class="status-row{{#isAllRow}} all-row{{/isAllRow}}">'
+				+ Mustache.render('{{#rows}}<tr class="status-row{{#isAllRow}} all-row{{/isAllRow}}" data-row-id="{{id}}">'
 					+ '<th><div class="provider-name">{{name}}</div></th><th class="provider-tier">{{#type}}<div class="tier-indicator {{type}}" title="{{type}}">{{typeCode}}</div>{{/type}}</th>'
 					+ '{{{columns}}}'
 					+ '</tr>{{/rows}}', tableViewModel)
@@ -507,6 +514,11 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 		 					}
 		 					else if(orderProperty === 'tier') {
 		 						value = tierOrder[$('.provider-tier', row).text()];
+		 					}
+		 					else {
+								var cell = $('#' + (configuration.idPrefix || '') + $(row).data('rowId') + '-' + orderProperty);
+
+								value = parseFloat(cell.text().replace(/%/, ''));
 		 					}
 
 		 					return {

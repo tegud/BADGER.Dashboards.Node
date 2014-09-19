@@ -553,6 +553,14 @@ h3 {margin: 0;padding: 0 }
 
 .provider-name { min-width: 440px; padding-top: 10px; }
 
+.order-indicator { background-image: url('../images/conversion_indicators.png'); width: 20px; height: 20px; float: right;display: none;background-position: 0 -20px; }
+
+.name-cell .order-indicator { float: none; }
+
+.order-indicator.desc { background-position: 0 0; }
+
+.order-indicator.active { display: block; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

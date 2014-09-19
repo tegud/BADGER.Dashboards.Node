@@ -480,7 +480,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 				+ '<table class="status-table">'
 				+ '<tr class="status-header-row">'
 				+ '<th class="name-cell column-header" data-order-property="name">&nbsp;<div class="order-indicator"></div></th>'
-				+ '<th class="column-header" data-order-property="tier">Tier<div class="order-indicator active desc"></th>'
+				+ '<th class="column-header" data-order-property="tier">Tier<div class="order-indicator desc"></th>'
 				+ Mustache.render('{{#columns}}<th class="column-header" data-order-property="{{id}}">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row{{#isAllRow}} all-row{{/isAllRow}}" data-row-id="{{id}}">'
@@ -503,7 +503,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 	 				var rows = $('.status-row:not(.all-row)', table);
 	 				var orderIndictator = cell.children('.order-indicator');
 	 				
- 					orderIndictator.addClass('active').end().siblings().children('.order-indicator').removeClass('active desc');
+ 					orderIndictator.parent().siblings().children('.order-indicator').removeClass('asce desc');
 
 	 				var newRowOrder = _.chain(rows)
 		 				.map(function(row) {
@@ -530,12 +530,28 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 		 				.pluck('row')
 		 				.value();
 
-	 				if(orderIndictator.hasClass('desc')) {
-	 					newRowOrder = newRowOrder.reverse();
-	 					orderIndictator.removeClass('desc');
+
+	 				if(!orderIndictator.hasClass('desc') && !orderIndictator.hasClass('asce')) {
+	 					if(orderProperty === 'name' || orderProperty === 'tier') {
+	 						orderIndictator.addClass('asce');
+	 					}
+	 					else {
+	 						orderIndictator.addClass('desc');
+	 					}
+	 				}
+	 				else if(orderIndictator.hasClass('desc')) {
+	 					orderIndictator
+	 						.removeClass('desc')
+	 						.addClass('asce');
 	 				}
 	 				else {
-	 					orderIndictator.addClass('desc');
+	 					orderIndictator
+	 						.removeClass('asce')
+	 						.addClass('desc');
+	 				}
+
+	 				if(orderIndictator.hasClass('desc')) {
+	 					newRowOrder = newRowOrder.reverse();
 	 				}
 
 	 				$(newRowOrder).remove().appendTo(table)

@@ -433,6 +433,7 @@
 
 							valueCell
 								.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision));
+
 							cell
 								.data('differenceFromNorm', differenceFromNorm)
 								.data('thresholdBreach', thresholdBreach);
@@ -689,6 +690,17 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 
 						if(dimension && site) {
 							var stats = lastData.value.stats[dimension.value][cellKey];
+							var thresholdBreach;
+							var distanceFromMean;
+
+							if(cell.data('site') === 'total') {
+								thresholdBreach = typeof cell.data('thresholdBreach') !== 'undefined' ? cell.data('thresholdBreach').toFixed(2) + showPercentageString : '?';
+								distanceFromMean = typeof cell.data('differenceFromNorm') !== 'undefined' ? cell.data('differenceFromNorm').toFixed(2) + showPercentageString : '?';
+							}
+							else {
+								thresholdBreach = typeof cell.children().data('thresholdBreach') !== 'undefined' ? cell.children().data('thresholdBreach').toFixed(2) + showPercentageString : '?';
+								distanceFromMean = typeof cell.children().data('differenceFromNorm') !== 'undefined' ? cell.children().data('differenceFromNorm').toFixed(2) + showPercentageString : '?';	
+							}
 
 							var toolTipModel = {
 								days: _.chain(lastData).map(function(data, day) {
@@ -717,8 +729,8 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 								}).value(),
 								average: stats.mean.toFixed(precision) + showPercentageString,
 								std: stats.deviation.toFixed(precision),
-								distanceFromMean: typeof cell.data('differenceFromNorm') !== 'undefined' ? cell.data('differenceFromNorm').toFixed(2) + showPercentageString : '?',
-								thresholdBreach: typeof cell.data('thresholdBreach') !== 'undefined' ? cell.data('thresholdBreach').toFixed(2) + showPercentageString : '?',
+								distanceFromMean: distanceFromMean,
+								thresholdBreach: thresholdBreach,
 								thresholds: [
 									{ id: 'good', text: 'Good', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') +  stats.mean.toFixed(precision) + showPercentageString }, 
 									{ id: 'warn', text: 'Warn', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') + stats.standardDeviations[1][dimension.kpiDirection === 'down' ? 'plus' : 'minus'].toFixed(precision) + showPercentageString }, 

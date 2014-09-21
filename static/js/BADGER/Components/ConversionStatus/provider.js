@@ -392,7 +392,7 @@
 									newCellClass = 'good';
 
 									differenceFromNorm = Math.abs(stats.mean - value);
-									thresholdBreach = 0;
+									thresholdBreach = -differenceFromNorm;
 								}
 								else if((kpiDirectionIsUp && value >= stats.standardDeviations[1].minus) || (!kpiDirectionIsUp && value <= stats.standardDeviations[1].plus)) {
 									newCellClass = 'warn';

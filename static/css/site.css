@@ -561,6 +561,14 @@ h3 {margin: 0;padding: 0 }
 
 .order-indicator.asce { display: block; }
 
+.value-column-sorter { border: solid 1px #000; border-bottom: 0 }
+
+.tier-header,
+.provider-tier,
+.provider-status-table { border-right: solid 1px #000; }
+
+#value-sort-modifier { margin: 5px auto; width: 550px; }
+
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }
 

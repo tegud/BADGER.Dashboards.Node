@@ -47,6 +47,10 @@
 	TLRGRP.BADGER.Dashboard.Components.ProviderConversion = function (configuration) {
 		configuration = appendConfiguration(configuration);
 
+		var table;
+		var orderByProperty = 'tier';
+		var orderDirection = 'asce';
+
 		var queryModifiers = {
 			"today": {  },
 			"yesterday": { "timeOffset": { "days": -1 }, "limitToCurrentTime": true, "currentTimeOffset": { "m": -30 } },
@@ -365,11 +369,16 @@
 							var indicatorCell = $('.status-cell-indicator', cell);
 							var newCellClass = '';
 							var value = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, 'today.' + (site.id === 'total' ? 'total.' : (site.id + '.')) + dimension.value);
+							var differenceFromNorm;
+							var thresholdBreach;
+							var kpiDirectionIsUp = (dimension.kpiDirection || 'up') === 'up';
 
-							valueCell.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision) );
+							if(isNaN(value)) { 
+								value = 0;
+							}
 
 							var stats;
-							if(dimension.value){
+							if(dimension.value) {
 								if(site.id === 'total') {
 									stats = data.value.stats[dimension.value][site.id];
 								}
@@ -379,14 +388,35 @@
 							}
 
 							if(typeof value !== 'undefined' && stats && stats.standardDeviations && stats.standardDeviations.length > 1) {
-								if(((dimension.kpiDirection || 'up') === 'up' && value >= stats.mean) || (dimension.kpiDirection === 'down' && value <= stats.mean)) {
+								if((kpiDirectionIsUp && value >= stats.mean) || (!kpiDirectionIsUp && value <= stats.mean)) {
 									newCellClass = 'good';
+
+									differenceFromNorm = Math.abs(stats.mean - value);
+									thresholdBreach = 0;
 								}
-								else if(((dimension.kpiDirection || 'up') === 'up' && value >= stats.standardDeviations[1].minus) || (dimension.kpiDirection === 'down' && value <= stats.standardDeviations[1].plus)) {
+								else if((kpiDirectionIsUp && value >= stats.standardDeviations[1].minus) || (!kpiDirectionIsUp && value <= stats.standardDeviations[1].plus)) {
 									newCellClass = 'warn';
+									
+									if(kpiDirectionIsUp) {
+										thresholdBreach = stats.mean - value;
+									}
+									else {
+										thresholdBreach = value - stats.mean;
+									}
+									thresholdBreach = thresholdBreach * 1000;
+									differenceFromNorm = Math.abs(stats.mean - value);
 								}
-								else if(((dimension.kpiDirection || 'up') === 'up' && value < stats.standardDeviations[1].minus) || (dimension.kpiDirection === 'down' && value > stats.standardDeviations[1].plus)) {
+								else if((kpiDirectionIsUp && value < stats.standardDeviations[1].minus) || (!kpiDirectionIsUp && value > stats.standardDeviations[1].plus)) {
 									newCellClass = 'alert';
+									
+									if(kpiDirectionIsUp) {
+										thresholdBreach = stats.mean - value;
+									}
+									else {
+										thresholdBreach = value - stats.mean;
+									}
+									thresholdBreach = thresholdBreach * 10000;
+									differenceFromNorm = Math.abs(stats.mean - value);
 								}
 							}
 
@@ -400,6 +430,12 @@
 							else {
 								indicatorCell.addClass('hidden');
 							}
+
+							valueCell
+								.text(typeof value === 'undefined' ? '?' : value.toFixed(typeof dimension.precision === 'undefined' ? 2 : dimension.precision));
+							cell
+								.data('differenceFromNorm', differenceFromNorm)
+								.data('thresholdBreach', thresholdBreach);
 						});
 					});
 				}
@@ -466,6 +502,49 @@
 			rows: rowsViewModel
 		};
 
+		function orderTable() {
+			var orderProperty = orderByProperty;
+			var direction = orderDirection;
+			var rows = $('.status-row:not(.all-row)', table);
+			var selectedSortValue = $('.filter-option.selected', '#value-sort-modifier').data('filterValue');
+
+			var newRowOrder = _.chain(rows)
+				.map(function(row) {
+					var value;
+
+					if(orderProperty === 'name') {
+						value = $('.provider-name', row).text();
+					}
+					else if(orderProperty === 'tier') {
+						value = tierOrder[$('.provider-tier', row).text()];
+					}
+					else {
+						var cell = $('#' + (configuration.idPrefix || '') + $(row).data('rowId') + '-' + orderProperty);
+						var values = {
+							value: parseFloat(cell.text().replace(/%/, '')),
+							thresholdBreach: cell.data('thresholdBreach'),
+							differenceFromNorm: cell.data('differenceFromNorm')
+						};
+
+						value = values[selectedSortValue];
+					}
+
+					return {
+						value: value,
+						row: row
+					};
+				})
+				.sortBy('value')
+				.pluck('row')
+				.value();
+
+			if(direction === 'desc') {
+				newRowOrder = newRowOrder.reverse();
+			}
+
+			$(newRowOrder).detach().appendTo(table)
+		}
+
 var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 	title: configuration.title,
 	layout: configuration.layout,
@@ -476,12 +555,13 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 		appendTo: function (container) {
 			container.append(
 				'<div>'
-				+ '<div></div>'
-				+ '<table class="status-table">'
-				+ '<tr class="status-header-row">'
+				+ '<table class="status-table provider-status-table">'
+				+ '<tr><td colspan="2">&nbsp;</td><td colspan="8" class="value-column-sorter">'
+				+ '<div><div class="filter-item" id="value-sort-modifier"><label>Sort by:</label><div class="filter-option selected" data-filter-value="value"><div class="filter-option-checkbox radio"><div class="filter-option-checkbox-inner selected"></div></div>Value</div><div class="filter-option" data-filter-value="thresholdBreach"><div class="filter-option-checkbox radio"><div class="filter-option-checkbox-inner "></div></div>Threshold Breach</div><div class="filter-option " data-filter-value="differenceFromNorm"><div class="filter-option-checkbox radio"><div class="filter-option-checkbox-inner "></div></div>Difference form Norm</div></div></div>'
+				+ '</td></tr><tr class="status-header-row">'
 				+ '<th class="name-cell column-header" data-order-property="name">&nbsp;<div class="order-indicator"></div></th>'
-				+ '<th class="column-header" data-order-property="tier">Tier<div class="order-indicator desc"></th>'
-				+ Mustache.render('{{#columns}}<th class="column-header" data-order-property="{{id}}">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
+				+ '<th class="column-header tier-header" data-order-property="tier">Tier<div class="order-indicator asce"></th>'
+				+ Mustache.render('{{#columns}}<th class="column-header value-header" data-order-property="{{id}}">{{name}}<div class="order-indicator"></div></th>{{/columns}}', tableViewModel)
 				+ '</tr>'
 				+ Mustache.render('{{#rows}}<tr class="status-row{{#isAllRow}} all-row{{/isAllRow}}" data-row-id="{{id}}">'
 					+ '<th><div class="provider-name">{{name}}</div></th><th class="provider-tier">{{#type}}<div class="tier-indicator {{type}}" title="{{type}}">{{typeCode}}</div>{{/type}}</th>'
@@ -489,13 +569,27 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 					+ '</tr>{{/rows}}', tableViewModel)
 				+ '</table></div>');
 
+			table = $('.provider-status-table', container);
+
 			toolTip = $('#graph-tooltip');
 
 			if(!toolTip.length) {
 				toolTip = $('<div id="graph-tooltip" class="hidden"></div>').appendTo('body');
 			}
 
+			// var selectedSortValue = $('.filter-option.selected', '#value-sort-modifier').data('filterValue');
 	 		container
+	 			.on('click', '#value-sort-modifier .filter-option', function() {
+	 				var selectedItem = $(this);
+
+	 				if(selectedItem.hasClass('selected')) {
+	 					return;
+	 				}
+
+	 				selectedItem.addClass('selected').siblings().removeClass('selected');
+
+	 				orderTable();
+	 			})
 	 			.on('click', '.column-header', function() {
 	 				var cell = $(this);
 	 				var table = cell.closest('table');
@@ -504,32 +598,6 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 	 				var orderIndictator = cell.children('.order-indicator');
 	 				
  					orderIndictator.parent().siblings().children('.order-indicator').removeClass('asce desc');
-
-	 				var newRowOrder = _.chain(rows)
-		 				.map(function(row) {
-		 					var value;
-
-		 					if(orderProperty === 'name') {
-		 						value = $('.provider-name', row).text();
-		 					}
-		 					else if(orderProperty === 'tier') {
-		 						value = tierOrder[$('.provider-tier', row).text()];
-		 					}
-		 					else {
-								var cell = $('#' + (configuration.idPrefix || '') + $(row).data('rowId') + '-' + orderProperty);
-
-								value = parseFloat(cell.text().replace(/%/, ''));
-		 					}
-
-		 					return {
-		 						value: value,
-		 						row: row
-		 					};
-		 				})
-		 				.sortBy('value')
-		 				.pluck('row')
-		 				.value();
-
 
 	 				if(!orderIndictator.hasClass('desc') && !orderIndictator.hasClass('asce')) {
 	 					if(orderProperty === 'name' || orderProperty === 'tier') {
@@ -550,11 +618,10 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 	 						.addClass('desc');
 	 				}
 
-	 				if(orderIndictator.hasClass('desc')) {
-	 					newRowOrder = newRowOrder.reverse();
-	 				}
+	 				orderByProperty = orderProperty;
+	 				orderDirection = orderIndictator.hasClass('desc') ? 'desc' : 'asce';
 
-	 				$(newRowOrder).remove().appendTo(table)
+	 				orderTable();
 	 			})
 	// 			.on('click', '.data-cell', function() {
 	// 				var cell = $(this);
@@ -629,6 +696,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 										return;
 									}
 									var value = 0;
+									var actualValue;
 
 									if(data[cellKey][cell.data('dimensionValue')] === Infinity) {
 										value = 'No data';
@@ -647,8 +715,10 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 								}).sortBy(function(item) {
 									return item.index;
 								}).value(),
-								average: stats.mean.toFixed(precision),
+								average: stats.mean.toFixed(precision) + showPercentageString,
 								std: stats.deviation.toFixed(precision),
+								distanceFromMean: typeof cell.data('differenceFromNorm') !== 'undefined' ? cell.data('differenceFromNorm').toFixed(2) + showPercentageString : '?',
+								thresholdBreach: typeof cell.data('thresholdBreach') !== 'undefined' ? cell.data('thresholdBreach').toFixed(2) + showPercentageString : '?',
 								thresholds: [
 									{ id: 'good', text: 'Good', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') +  stats.mean.toFixed(precision) + showPercentageString }, 
 									{ id: 'warn', text: 'Warn', value: (dimension.kpiDirection === 'down' ? '<= ' : '>= ') + stats.standardDeviations[1][dimension.kpiDirection === 'down' ? 'plus' : 'minus'].toFixed(precision) + showPercentageString }, 
@@ -658,7 +728,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 
 							toolTip.html(Mustache.render(
 								'{{#thresholds}}<div class="tooltip-threshold-info {{id}}"><div class="tooltip-threshold-info-indicator"></div><span class="tooltip-threshold-info-title">{{text}}:</span> {{value}}</div>{{/thresholds}}'
-								+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}' 
+								+ '<hr />{{#days}}<div>{{day}}: {{conversion}}</div>{{/days}}<hr/>Mean: {{average}}<br />Dist. from Mean: {{distanceFromMean}}' 
 								+ '', toolTipModel));
 						}
 						else {

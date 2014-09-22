@@ -439,6 +439,8 @@
 								.data('thresholdBreach', thresholdBreach);
 						});
 					});
+
+					orderTable();
 				}
 			},
 			components: {
@@ -693,7 +695,7 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 							var thresholdBreach;
 							var distanceFromMean;
 
-							if(cell.data('site') === 'total') {
+							if(cell.hasClass('total-cell')) {
 								thresholdBreach = typeof cell.data('thresholdBreach') !== 'undefined' ? cell.data('thresholdBreach').toFixed(2) + showPercentageString : '?';
 								distanceFromMean = typeof cell.data('differenceFromNorm') !== 'undefined' ? cell.data('differenceFromNorm').toFixed(2) + showPercentageString : '?';
 							}

@@ -82,8 +82,8 @@
                   "query.aggs.histogram.aggs.requests.filter.bool.must.#.term.hotel_details_provider",
                   "query.aggs.histogram.aggs.sessions.filter.bool.must.#.term.requests|providersEncountered",
                   "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.term.provider",
-                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.term.provider",
-                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.term.provider"
+                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.term.AdditionalLoggingInformation|ProviderName",
+                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.term.Provider"
                 ]
               }
             }

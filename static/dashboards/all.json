@@ -39,10 +39,6 @@
             "id": "LateRooms",
             "name": "LateRooms",
             "views": {
-                "ExitPage": {
-                    "id": "ExitPage",
-                    "name": "Exit Page"
-                },
                 "CoversionStatus": {
                     "id": "ConversionStatus",
                     "name": "Conversion (In Progress)"
@@ -54,6 +50,10 @@
                 "ProviderConversion": {
                     "id": "ProviderConversion",
                     "name": "Provider Conversion"
+                },
+                "ProviderConversionGraph": {
+                    "id": "ProviderConversionGraph",
+                    "name": "Provider Conversion Graph"
                 }
             }
         },

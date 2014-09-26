@@ -1,0 +1,433 @@
+{
+    "id": "ProviderConversionGraph",
+    "name": "Provider Conversion Graph",
+    "components": [
+        {
+          "type": "SharedDataStore",
+          "title": "LateRooms Conversion",
+          "storeId": "BookingData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.histogram.date_histogram.extended_bounds"
+          ],
+          "filters": [
+            { 
+              "id": "tier",
+              "title": "Tier",
+              "defaultOption": "All",
+              "options": {
+                "All": false,
+                "Platinum": { "providers": ["siteminder","liberate","ihg","evivvo","smarthotel","bestwesterninternational","freetobook","hilton","hiltonota"] },
+                "Gold": { "providers": ["xn","availpro","seekom","siteminderau","welcomeconnect","synxis"] },
+                "Silver": { "providers": ["guestlineota", "hotelbookingsolutions", "hotelspider", "parityrate", "staah", "stardekk", "verticalbooking"] },
+                "Bronze": { "providers": ["apartmentsapart", "chinaonline", "cultuzz", "derbysoft", "ezeetechnosys", "finite", "finitede", "hermes", "igmweb", "levart", "yieldplanet"] }
+              },
+              "allowMultiple": false,
+              "setOnProperties": {
+                "providers": [
+                  "query.aggs.histogram.aggs.requests.filter.bool.must.#.terms.hotel_details_provider",
+                  "query.aggs.histogram.aggs.sessions.filter.bool.must.#.terms.requests|providersEncountered",
+                  "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.terms.provider",
+                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.terms.provider",
+                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.terms.provider"
+                ]
+              }
+            },
+            { 
+              "id": "provider",
+              "title": "Provider",
+              "defaultOption": "All",
+              "type": "drop-down",
+              "options": {
+                "All": false,
+                "Platinum": { "providers": ["siteminder","liberate","ihg","evivvo","smarthotel","bestwesterninternational","freetobook","hilton","hiltonota"] },
+                "Gold": { "providers": ["xn","availpro","seekom","siteminderau","welcomeconnect","synxis"] },
+                "Silver": { "providers": ["guestlineota", "hotelbookingsolutions", "hotelspider", "parityrate", "staah", "stardekk", "verticalbooking"] },
+                "Bronze": { "providers": ["apartmentsapart", "chinaonline", "cultuzz", "derbysoft", "ezeetechnosys", "finite", "finitede", "hermes", "igmweb", "levart", "yieldplanet"] }
+              },
+              "allowMultiple": false,
+              "setOnProperties": {
+                "providers": [
+                  "query.aggs.histogram.aggs.requests.filter.bool.must.#.term.hotel_details_provider",
+                  "query.aggs.histogram.aggs.sessions.filter.bool.must.#.term.requests|providersEncountered",
+                  "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.term.provider",
+                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.term.provider",
+                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.term.provider"
+                ]
+              }
+            }
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } },
+              "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
+            },
+            "query": {
+              "query":{
+                "filtered":{
+                  "filter":{
+                    "bool":{
+                      "must":[
+                        {
+                          "range":{
+                            "@timestamp":{ }
+                          }
+                        },
+                        {
+                          "terms": {
+                            "type": ["session", "lr_errors", "hotel_acquisitions_errors", "lr_varnish_request"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "histogram": {
+                  "date_histogram": {
+                    "min_doc_count": 0,
+                    "field" : "@timestamp",
+                    "interval" : "1h"
+                  },
+                  "aggs":{
+                    "requests": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "term": {
+                                "type": "lr_varnish_request"
+                              }
+                            },
+                            {
+                              "term": {
+                                "url_page_type.raw": "hotel-details"
+                              }
+                            },
+                            {
+                              "exists": {
+                                "field": "hotel_details_provider"
+                              }
+                            }
+                          ],
+                          "must_not": {
+                            "term": {
+                              "hotel_details_provider": "laterooms"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "sessions": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                          {
+                            "term":{
+                              "type":"session"
+                            }
+                          },
+                          {
+                            "term": {
+                              "user.type": "human"
+                            }
+                          },
+                          {
+                            "exists": {
+                              "field": "requests.providersEncountered"
+                            }
+                          }
+                          ],
+                          "must_not": {
+                            "term": {
+                              "requests.providersEncountered.raw": "LateRooms"
+                            }
+                          }
+                        }
+                      },
+                      "aggs": {
+                        "bookings": {
+                          "filter": { 
+                            "bool": {
+                              "must": [
+                                {
+                                  "term": {
+                                    "booked": true
+                                  }
+                                }
+                              ],
+                              "must_not": {
+                                "term": {
+                                  "provider": "laterooms"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "bookingerrors": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                          {
+                            "term":{
+                              "type":"lr_errors"
+                            }
+                          },
+                          {
+                            "term": {
+                              "url_page_type": "booking"
+                            }
+                          },
+                          {
+                            "exists": {
+                              "field": "AdditionalLoggingInformation.ProviderName"
+                            }
+                          }
+                          ],
+                          "must_not": {
+                            "term": {
+                              "AdditionalLoggingInformation.ProviderName": "laterooms"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "connectivityerrors": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                          {
+                            "term":{
+                              "type":"hotel_acquisitions_errors"
+                            }
+                          },
+                          {
+                            "range": {
+                              "@timestamp": {
+                                "gte": "2014-09-15T00:00:00.000Z"
+                              }
+                            }
+                          }
+                          ],
+                          "must_not": [
+                          {
+                            "term":{
+                              "tags":"noterror"
+                            }
+                          }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size":0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "histogram",
+              "fields": {
+                "sessions": "requests.doc_count",
+                "bookings": "sessions.bookings.doc_count",
+                "sessions": "sessions.doc_count",
+                "bookingerrors": "bookingerrors.doc_count",
+                "connectivityerrors": "connectivityerrors.doc_count"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "commission",
+              "toField": "value.stats.commission"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "bookingerrors",
+              "toField": "value.stats.bookingerrors"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "connectivityerrors",
+              "toField": "value.stats.connectivityerrors"
+            }
+          ]
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "BookingData",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "text": "Today" },
+                { "id": "average", "color": "green", "text": "Average" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "today", "color": "purple", "value": "today.commission" },
+                { "id": "mean", "color": "green", "value": "value.stats.commission.mean" }
+              ],
+              "areas": [
+                { "id": "plusTwoStd", "color": "#AAA", "start": "value.stats.commission.standardDeviations.2.minus", "end": "value.stats.commission.standardDeviations.2.plus" },
+                { "id": "plusOneStd", "color": "#CCC", "start": "value.stats.commission.standardDeviations.1.minus", "end": "value.stats.commission.standardDeviations.1.plus" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "BookingData",
+          "counter": {
+              "counters": [
+                { "id": "b-counter-today", "color": "purple", "text": "Today" },
+                { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
+                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" },
+                { "id": "b-counter-3weeksago", "color": "#0ADC45", "text": "3 Weeks Ago" },
+                { "id": "b-counter-1monthago", "color": "#907616", "text": "1 Month Ago" }
+              ]
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "b-today", "color": "purple", "value": "today.commission" },
+                { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
+                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" },
+                { "id": "b-3weeksago", "color": "#0ADC45", "value": "3weeksago.commission" },
+                { "id": "b-1monthago", "color": "#907616", "value": "1monthago.commission" }
+              ],
+              "window": false
+          }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Booking Errors",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Booking%20Errors",
+            "summaryText": "Booking Errors on LateRooms.com (WEB)",
+            "storeId": "BookingData",
+            "counter": {
+              "title": "Errors",
+              "counters": [
+                { "id": "booking-errors-counter-today", "color": "purple", "text": "Today" },
+                { "id": "booking-errors-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "booking-errors-line-today", "color": "purple", "value": "today.bookingerrors" },
+                { "id": "booking-errors-counter-mean", "color": "green", "value": "value.stats.bookingerrors.mean" }
+              ],
+              "areas": [
+                { "id": "booking-errors-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.bookingerrors.standardDeviations.2.minus", "end": "value.stats.bookingerrors.standardDeviations.2.plus" },
+                { "id": "booking-errors-counter-plusOneStd", "color": "#CCC", "start": "value.stats.bookingerrors.standardDeviations.1.minus", "end": "value.stats.bookingerrors.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Connectivity Errors",
+            "kibanaDashboard": "elasticsearch/LateRooms.com%20Errors",
+            "summaryText": "Connectivity Errors on LateRooms.com (WEB)",
+            "storeId": "BookingData",
+            "counter": {
+              "title": "Errors",
+              "counters": [
+                { "id": "errors-counter-today", "color": "orange", "text": "Today" },
+                { "id": "booking-errors-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "errors-line-today", "color": "orange", "value": "today.connectivityerrors" },
+                { "id": "errors-counter-mean", "color": "green", "value": "value.stats.connectivityerrors.mean" }
+              ],
+              "areas": [
+                { "id": "errors-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.connectivityerrors.standardDeviations.2.minus", "end": "value.stats.connectivityerrors.standardDeviations.2.plus" },
+                { "id": "errors-counter-plusOneStd", "color": "#CCC", "start": "value.stats.connectivityerrors.standardDeviations.1.minus", "end": "value.stats.connectivityerrors.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests",
+            "summaryText": "Requests on LateRooms.com (WEB)",
+            "storeId": "BookingData",
+            "counter": {
+              "counters": [
+                { "id": "requests-counter-today", "color": "purple", "text": "Today" },
+                { "id": "requests-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "requests-line-today", "color": "purple", "value": "today.requests" },
+                { "id": "requests-counter-mean", "color": "green", "value": "value.stats.requests.mean" }
+              ],
+              "areas": [
+                { "id": "requests-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.requests.standardDeviations.2.minus", "end": "value.requests.standardDeviations.2.plus" },
+                { "id": "requests-counter-plusOneStd", "color": "#CCC", "start": "value.stats.requests.standardDeviations.1.minus", "end": "value.requests.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Sessions",
+            "summaryText": "Sessions on LateRooms.com (WEB)",
+            "storeId": "BookingData",
+            "counter": {
+              "counters": [
+                { "id": "sessions-counter-today", "color": "purple", "text": "Today" },
+                { "id": "sessions-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "sessions-line-today", "color": "purple", "value": "today.sessions" },
+                { "id": "sessions-counter-mean", "color": "green", "value": "value.sessions.mean" }
+              ],
+              "areas": [
+                { "id": "sessions-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.sessions.standardDeviations.2.minus", "end": "value.stats.sessions.standardDeviations.2.plus" },
+                { "id": "sessions-counter-plusOneStd", "color": "#CCC", "start": "value.stats.sessions.standardDeviations.1.minus", "end": "value.stats.sessions.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        }
+    ]
+}

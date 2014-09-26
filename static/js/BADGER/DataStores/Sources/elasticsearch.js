@@ -144,7 +144,14 @@
     	if(_.isArray(filter.value)) {
     		if(filter.value.length === 1) {
         		_.each(filter.value[0], function(value, key) {
-            		setValueOnSubProperty(query, filter.setOnProperties[key], value);
+        			if(_.isArray(filter.setOnProperties[key])) {
+        				_.each(filter.setOnProperties[key], function(prop) {
+        					setValueOnSubProperty(query, prop, value);
+        				});
+        			}
+        			else {
+            			setValueOnSubProperty(query, filter.setOnProperties[key], value);
+        			}
         		});
     		}
     		else {

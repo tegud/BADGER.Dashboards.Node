@@ -65,11 +65,11 @@
             },
             setFilterOption: function(filterId, option) {
                 var filter = _.chain(filters).filter(function(filter) {
-                    return filter.id = filterId;
+                    return filter.id === filterId;
                 }).first().value();
 
-                filter.selectedOptions = filter.allOptions.filter(function(filter) {
-                    return filter.id === option;
+                filter.selectedOptions = filter.allOptions.filter(function(optionItem) {
+                    return optionItem.id === option;
                 });
             },
             setAgainstDataStore: function(dataStore) {
@@ -81,7 +81,7 @@
             },
             getValueForFilter: function(filterId) {
                 var filter = _.chain(filters).filter(function(filter) {
-                    return filter.id = filterId;
+                    return filter.id === filterId;
                 }).first().value();
 
                 if(!filter.selectedOptions.length) {
@@ -92,7 +92,7 @@
             },
             getSelectedOptionForFilter: function(filterId) {
                 var filter = _.chain(filters).filter(function(filter) {
-                    return filter.id = filterId;
+                    return filter.id === filterId;
                 }).first().value();
 
                 if(!filter.selectedOptions.length) {

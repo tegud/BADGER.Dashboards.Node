@@ -242,7 +242,8 @@
               "type": "extractFromDateHistogram",
               "aggregateName": "histogram",
               "fields": {
-                "sessions": "requests.doc_count",
+                "requests": "requests.doc_count",
+                "sessions": "sessions.doc_count",
                 "bookings": "sessions.bookings.doc_count",
                 "sessions": "sessions.doc_count",
                 "bookingerrors": "bookingerrors.doc_count",
@@ -275,6 +276,20 @@
               "stds": [1, 2],
               "property": "connectivityerrors",
               "toField": "value.stats.connectivityerrors"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "sessions",
+              "toField": "value.stats.sessions"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "requests",
+              "toField": "value.stats.requests"
             }
           ]
         },
@@ -400,8 +415,8 @@
                 { "id": "requests-counter-mean", "color": "green", "value": "value.stats.requests.mean" }
               ],
               "areas": [
-                { "id": "requests-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.requests.standardDeviations.2.minus", "end": "value.requests.standardDeviations.2.plus" },
-                { "id": "requests-counter-plusOneStd", "color": "#CCC", "start": "value.stats.requests.standardDeviations.1.minus", "end": "value.requests.standardDeviations.1.plus" }
+                { "id": "requests-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.requests.standardDeviations.2.minus", "end": "value.stats.requests.standardDeviations.2.plus" },
+                { "id": "requests-counter-plusOneStd", "color": "#CCC", "start": "value.stats.requests.standardDeviations.1.minus", "end": "value.stats.requests.standardDeviations.1.plus" }
               ],
               "window": false
             }
@@ -420,7 +435,7 @@
             "graph": {
               "lines": [
                 { "id": "sessions-line-today", "color": "purple", "value": "today.sessions" },
-                { "id": "sessions-counter-mean", "color": "green", "value": "value.sessions.mean" }
+                { "id": "sessions-counter-mean", "color": "green", "value": "value.stats.sessions.mean" }
               ],
               "areas": [
                 { "id": "sessions-counter-plusTwoStd", "color": "#AAA", "start": "value.stats.sessions.standardDeviations.2.minus", "end": "value.stats.sessions.standardDeviations.2.plus" },

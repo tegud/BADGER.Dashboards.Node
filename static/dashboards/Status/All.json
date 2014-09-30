@@ -21,6 +21,13 @@
             "title": "Connectivity Server Status",
             "host": "10.44.22.158",
             "port": 3000
+        },
+        {
+            "type": "HealthCheck",
+            "serverSet": "Elasticsearch",
+            "title": "Elasticsearch Server Status",
+            "host": "10.44.22.158",
+            "port": 3000
         }
     ]
 }

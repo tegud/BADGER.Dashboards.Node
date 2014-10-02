@@ -29,6 +29,11 @@
 
         function buildViewModel(dataset) {
             var data = dataset[toolTipContext.index];
+
+            if(!data) {
+                return;
+            }
+
             var dateForData = moment(data.time);
             var dateFormat = 'HH:mm';
             var endDateForData = moment(dateForData).add(toolTipContext.stepDuration);
@@ -71,6 +76,10 @@
         }
 
         function setToolTipPosition() {
+            if(!toolTipContext || !toolTipContext.mousePos) {
+                return;
+            }
+
             toolTip.css({
                 left: (dimensions.margin.left - (toolTip.width() / 2)) + toolTipContext.mousePos[0],
                 bottom: dimensions.height + dimensions.margin.top + dimensions.margin.bottom

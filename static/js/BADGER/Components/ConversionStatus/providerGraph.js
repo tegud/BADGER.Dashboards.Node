@@ -48,8 +48,8 @@
                   "query.aggs.histogram.aggs.requests.filter.bool.must.#.terms.hotel_details_provider",
                   "query.aggs.histogram.aggs.sessions.filter.bool.must.#.terms.requests|providersEncountered",
                   "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.terms.provider",
-                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.terms.provider",
-                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.terms.provider"
+                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.terms.AdditionalLoggingInformation|ProviderName",
+                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.terms.Provider"
                 ]
               }
             },
@@ -391,6 +391,7 @@
 			modules: [
 				{
 					appendTo: function (container) {
+						var selectedTier;
 						var filterPanel = $('<div>'
 								+ buildCompareOptions()
 								+ buildTierOptions(configuration)
@@ -398,6 +399,11 @@
 							+ '</div>')
 							.on('click', '.tier-options .filter-option', function() {
 								var selectedTierOption = $(this);
+
+								if(selectedTierOption.hasClass('selected')) {
+									return;
+								}
+
 								var filterValue = selectedTierOption.data('filterValue');
 								var providerOptions = $('.provider-options', filterPanel);
 
@@ -412,10 +418,20 @@
 									providerOptions.addClass('tier-' + filterValue);
 								}
 
+								selectedTier = filterValue;
 								dataStore.setFilterOption('tier', filterValue);
+
+								if(!$('.selected', providerOptions).is(':visible')) {
+									providerOptions.children('.filter-option:eq(0)').click();
+								}
 							})
 							.on('click', '.provider-options .filter-option', function() {
 								var selectedProviderOption = $(this);
+
+								if(selectedProviderOption.hasClass('selected')) {
+									return;
+								}
+
 								var filterValue = selectedProviderOption.data('filterValue');
 
 								selectedProviderOption
@@ -423,11 +439,16 @@
 									.siblings()
 									.removeClass('selected');
 
+								if(filterValue !== 'All') {
+									dataStore.setFilterOption('tier', 'All');
+								}
+								else {
+									dataStore.setFilterOption('tier', selectedTier);
+								}
+
 								dataStore.setFilterOption('provider', filterValue);
 							})
 							.appendTo(container);
-
-
 					}
 				}
 			]

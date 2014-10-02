@@ -214,13 +214,26 @@
                     return filter.id === id;
                 }).first().value();
 
-                console.log(filter);
-
                 if(!filter) {
                     return;
                 }
 
                 filter.value = value;
+            },
+            setFilterOption: function(id, optionId) {
+                var filter =_.chain(currentFilters).filter(function(filter) {
+                    return filter.id === id;
+                }).first().value();
+
+                if(!filter) {
+                    return;
+                }
+
+                var option = _.chain(filter.options).filter(function(option, key) {
+                    return key === optionId;
+                }).first().value();
+
+                filter.value = option;
             }
         };
     };

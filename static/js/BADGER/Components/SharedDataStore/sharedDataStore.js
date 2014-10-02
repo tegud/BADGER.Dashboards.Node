@@ -105,7 +105,7 @@
     };
 
     TLRGRP.BADGER.Dashboard.Components.SharedDataStore = function (configuration) {
-        var subscribedComponents = {};
+        var subscribedComponents = new TLRGRP.BADGER.Dashboard.ComponentModules.MultiComponentBus(configuration.storeId);
 
         setFiltersFromQueryString(configuration.filters);
 
@@ -114,17 +114,7 @@
             refresh: 5000,
             mappings: configuration.mappings,
             callbacks: {
-                success: function (data) {
-                    _.each(subscribedComponents, function(subscribedComponent) {
-                        if(subscribedComponent.refreshComplete) {
-                            subscribedComponent.refreshComplete(data);
-                        }
-
-                        if(subscribedComponent.loading) {
-                            subscribedComponent.loading.finished();
-                        }
-                    });
-                }
+                success: subscribedComponents.refreshComplete
             },
             filters: _.map(configuration.filters, function(filter) {
                 return {
@@ -135,20 +125,8 @@
             }),
             components: {
                 loading: {
-                    loading: function() {
-                        _.each(subscribedComponents, function(subscribedComponent) {
-                            if(subscribedComponent.loading) {
-                                subscribedComponent.loading.loading();
-                            }
-                        });
-                    },
-                    finished: function() {
-                        _.each(subscribedComponents, function(subscribedComponent) {
-                            if(subscribedComponent.loading) {
-                                subscribedComponent.loading.finished();
-                            }
-                        });
-                    }
+                    loading: subscribedComponents.showLoading,
+                    finished: subscribedComponents.hideLoading
                 }
             }
         });
@@ -213,17 +191,7 @@
             });
         }
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, function(storeSubscription) {
-            if(subscribedComponents[storeSubscription.id]) {
-                return;
-            }
-
-            subscribedComponents[storeSubscription.id] = storeSubscription;
-        });
-
-        TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId, function(id) {
-            delete subscribedComponents[id];
-        });
+        subscribedComponents.subscribeToEvents();
 
         return {
             render: function (container) {

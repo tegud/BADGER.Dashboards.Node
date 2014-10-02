@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                         dot: true,
                         cwd: 'static',
                         dest: 'dist/static',
-                        src: ['**/*.{js,css,wav,json}']
+                        src: ['**/*.{js,css,wav,json,otf,eot,svg,ttf,woff}']
                     }
                 ]
             },

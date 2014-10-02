@@ -158,9 +158,28 @@
     			console.log('Multiple filter terms no implemented');
     		}
     	}
+    	else if (_.isObject(filter.value)) {
+    		_.each(filter.value, function(value, key) {
+    			if(_.isArray(filter.setOnProperties[key])) {
+    				_.each(filter.setOnProperties[key], function(prop) {
+    					setValueOnSubProperty(query, prop, value);
+    				});
+    			}
+    			else {
+    				setValueOnSubProperty(query, filter.setOnProperties[key], value);
+    			}
+    		});
+    	}
     	else {
-    		_.each(filter.setOnProperties, function(property) {
-        		setValueOnSubProperty(query, property, filter.value);
+    		_.each(filter.setOnProperties, function(properties) {
+    			if(_.isArray(properties)) {
+    				_.each(properties, function(property) {
+        				setValueOnSubProperty(query, property, filter.value);
+    				});
+    			}
+    			else {
+        			setValueOnSubProperty(query, properties, filter.value);
+    			}
     		});
     	}
     }

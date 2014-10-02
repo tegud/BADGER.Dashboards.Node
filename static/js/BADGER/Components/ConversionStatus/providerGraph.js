@@ -21,7 +21,7 @@
 					var providerId = provider.id || provider.name.toLowerCase();
 
 					providerOptions[provider.name] = {
-						'provider': providerId
+						'provider': [providerId]
 					}
 
 					return providerId;
@@ -416,11 +416,14 @@
 							})
 							.on('click', '.provider-options .filter-option', function() {
 								var selectedProviderOption = $(this);
+								var filterValue = selectedProviderOption.data('filterValue');
 
 								selectedProviderOption
 									.addClass('selected')
 									.siblings()
 									.removeClass('selected');
+
+								dataStore.setFilterOption('provider', filterValue);
 							})
 							.appendTo(container);
 

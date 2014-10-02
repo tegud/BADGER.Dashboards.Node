@@ -3,322 +3,60 @@
     "name": "Provider Conversion Graph",
     "components": [
         {
-          "type": "SharedDataStore",
-          "title": "LateRooms Conversion",
-          "storeId": "BookingData",
-          "dataSource": "elasticsearch",
-          "host": "http://logs.laterooms.com:9200",
-          "timeProperties": [
-            "query.filtered.filter.bool.must.0.range.@timestamp",
-            "aggs.histogram.date_histogram.extended_bounds"
-          ],
-          "filters": [
+          "type": "ProviderConversionGraph",
+          "tiers": [
             { 
-              "id": "tier",
-              "title": "Tier",
-              "defaultOption": "All",
-              "options": {
-                "All": false,
-                "Platinum": { "providers": ["siteminder","liberate","ihg","evivvo","smarthotel","bestwesterninternational","freetobook","hilton","hiltonota"] },
-                "Gold": { "providers": ["xn","availpro","seekom","siteminderau","welcomeconnect","synxis"] },
-                "Silver": { "providers": ["guestlineota", "hotelbookingsolutions", "hotelspider", "parityrate", "staah", "stardekk", "verticalbooking"] },
-                "Bronze": { "providers": ["apartmentsapart", "chinaonline", "cultuzz", "derbysoft", "ezeetechnosys", "finite", "finitede", "hermes", "igmweb", "levart", "yieldplanet"] }
-              },
-              "allowMultiple": false,
-              "setOnProperties": {
-                "providers": [
-                  "query.aggs.histogram.aggs.requests.filter.bool.must.#.terms.hotel_details_provider",
-                  "query.aggs.histogram.aggs.sessions.filter.bool.must.#.terms.requests|providersEncountered",
-                  "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.terms.provider",
-                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.terms.provider",
-                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.terms.provider"
-                ]
-              }
+              "name": "Platinum", 
+              "providers": [
+                "SiteMinder",
+                "Liberate",
+                "IHG",
+                "Eviivo",
+                "SmartHotel",
+                { "id": "bestwesterninternational", "name": "Best Western" },
+                "FreeToBook",
+                "Hilton",
+                "HiltonOta"
+              ] 
             },
             { 
-              "id": "provider",
-              "title": "Provider",
-              "defaultOption": "All",
-              "type": "drop-down",
-              "options": {
-                "All": false,
-                "Siteminder": { "provider": "siteminder" },
-                "Liberate": { "provider": "liberate" },
-                "IHG": { "provider": "ihg" },
-                "Eviivo": { "provider": "eviivo" },
-                "Smart Hotel": { "provider": "smarthotel" },
-                "Best Western": { "provider": "bestwesterninternational" },
-                "freetobook": { "provider": "freetobook" },
-                "hilton": { "provider": "hilton" },
-                "hiltonota": { "provider": "hiltonota" },
-                "xn": { "provider": "xn" },
-                "availpro": { "provider": "availpro" },
-                "seekom": { "provider": "seekom" },
-                "siteminderau": { "provider": "siteminderau" },
-                "welcomeconnect": { "provider": "welcomeconnect" },
-                "synxis": { "provider": "synxis" },
-                "guestlineota": { "provider": "guestlineota" },
-                "hotelbookingsolutions": { "provider": "hotelbookingsolutions" },
-                "hotelspider": { "provider": "hotelspider" },
-                "parityrate": { "provider": "parityrate" },
-                "staah": { "provider": "staah" },
-                "stardekk": { "provider": "stardekk" },
-                "verticalbooking": { "provider": "verticalbooking" },
-                "apartmentsapart": { "provider": "apartmentsapart" },
-                "chinaonline": { "provider": "chinaonline" },
-                "cultuzz": { "provider": "cultuzz" },
-                "derbysoft": { "provider": "derbysoft" },
-                "ezeetechnosys": { "provider": "ezeetechnosys" },
-                "finite": { "provider": "finite" },
-                "finitede": { "provider": "finitede" },
-                "hermes": { "provider": "hermes" },
-                "igmweb": { "provider": "igmweb" },
-                "levart": { "provider": "levart" },
-                "yieldplanet": { "provider": "yieldplanet" }
-              },
-              "allowMultiple": false,
-              "setOnProperties": {
-                "provider": [
-                  "query.aggs.histogram.aggs.requests.filter.bool.must.#.term.hotel_details_provider",
-                  "query.aggs.histogram.aggs.sessions.filter.bool.must.#.term.requests|providersEncountered",
-                  "query.aggs.histogram.aggs.sessions.aggs.bookings.filter.bool.must.#.term.provider",
-                  "query.aggs.histogram.aggs.bookingerrors.filter.bool.must.#.term.AdditionalLoggingInformation|ProviderName",
-                  "query.aggs.histogram.aggs.connectivityerrors.filter.bool.must.#.term.Provider"
-                ]
-              }
-            }
-          ],
-          "defaultTimeFrame": {
-            "timeFrame": 0,
-            "units": "daysAgo"
-          },
-          "queries": {
-            "modifiers": {
-              "today": { },
-              "lastWeek": { "timeOffset": { "weeks": -1 } },
-              "2weeksago": { "timeOffset": { "weeks": -2 } },
-              "3weeksago": { "timeOffset": { "weeks": -3 } },
-              "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
-            },
-            "query": {
-              "query":{
-                "filtered":{
-                  "filter":{
-                    "bool":{
-                      "must":[
-                        {
-                          "range":{
-                            "@timestamp":{ }
-                          }
-                        },
-                        {
-                          "terms": {
-                            "type": ["session", "lr_errors", "hotel_acquisitions_errors", "lr_varnish_request"]
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "aggs": {
-                "histogram": {
-                  "date_histogram": {
-                    "min_doc_count": 0,
-                    "field" : "@timestamp",
-                    "interval" : "1h"
-                  },
-                  "aggs":{
-                    "requests": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                            {
-                              "term": {
-                                "type": "lr_varnish_request"
-                              }
-                            },
-                            {
-                              "term": {
-                                "url_page_type.raw": "hotel-details"
-                              }
-                            },
-                            {
-                              "exists": {
-                                "field": "hotel_details_provider"
-                              }
-                            }
-                          ],
-                          "must_not": {
-                            "term": {
-                              "hotel_details_provider": "laterooms"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "sessions": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                          {
-                            "term":{
-                              "type":"session"
-                            }
-                          },
-                          {
-                            "term": {
-                              "user.type": "human"
-                            }
-                          },
-                          {
-                            "exists": {
-                              "field": "requests.providersEncountered"
-                            }
-                          }
-                          ],
-                          "must_not": {
-                            "term": {
-                              "requests.providersEncountered.raw": "LateRooms"
-                            }
-                          }
-                        }
-                      },
-                      "aggs": {
-                        "bookings": {
-                          "filter": { 
-                            "bool": {
-                              "must": [
-                                {
-                                  "term": {
-                                    "booked": true
-                                  }
-                                }
-                              ],
-                              "must_not": {
-                                "term": {
-                                  "provider": "laterooms"
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "bookingerrors": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                          {
-                            "term":{
-                              "type":"lr_errors"
-                            }
-                          },
-                          {
-                            "term": {
-                              "url_page_type": "booking"
-                            }
-                          },
-                          {
-                            "exists": {
-                              "field": "AdditionalLoggingInformation.ProviderName"
-                            }
-                          }
-                          ],
-                          "must_not": {
-                            "term": {
-                              "AdditionalLoggingInformation.ProviderName": "laterooms"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "connectivityerrors": {
-                      "filter": {
-                        "bool": {
-                          "must": [
-                          {
-                            "term":{
-                              "type":"hotel_acquisitions_errors"
-                            }
-                          },
-                          {
-                            "range": {
-                              "@timestamp": {
-                                "gte": "2014-09-15T00:00:00.000Z"
-                              }
-                            }
-                          }
-                          ],
-                          "must_not": [
-                          {
-                            "term":{
-                              "tags":"noterror"
-                            }
-                          }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "size":0
-            }
-          },
-          "mappings": [
-            { 
-              "type": "extractFromDateHistogram",
-              "aggregateName": "histogram",
-              "fields": {
-                "requests": "requests.doc_count",
-                "sessions": "sessions.doc_count",
-                "bookings": "sessions.bookings.doc_count",
-                "sessions": "sessions.doc_count",
-                "bookingerrors": "bookingerrors.doc_count",
-                "connectivityerrors": "connectivityerrors.doc_count"
-              }
+              "name": "Gold", 
+              "providers": [
+                "XN",
+                "AvailPro",
+                "Seekom",
+                "SiteMinderAu",
+                "WelcomeConnect",
+                "Synxis"
+              ]
             },
             { 
-              "type": "calculation",
-              "calculation": "percentage",
-              "by": { "field": "bookings", "over": "sessions" },
-              "toField": "commission"
+              "name": "Silver",
+              "providers": [
+                "GuestLineOTA",
+                { "id": "hotelbookingsolutions", "name": "Hotel Booking Solutions" },
+                "HotelSpider",
+                "ParityRate",
+                "Staah",
+                "StarDekk",
+                "VerticalBooking"
+              ]
             },
-            {
-              "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
-              "stds": [1, 2],
-              "property": "commission",
-              "toField": "value.stats.commission"
-            },
-            {
-              "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
-              "stds": [1, 2],
-              "property": "bookingerrors",
-              "toField": "value.stats.bookingerrors"
-            },
-            {
-              "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
-              "stds": [1, 2],
-              "property": "connectivityerrors",
-              "toField": "value.stats.connectivityerrors"
-            },
-            {
-              "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
-              "stds": [1, 2],
-              "property": "sessions",
-              "toField": "value.stats.sessions"
-            },
-            {
-              "type": "stats",
-              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
-              "stds": [1, 2],
-              "property": "requests",
-              "toField": "value.stats.requests"
+            { 
+              "name": "Bronze",
+              "providers": [
+                "ApartmentsApart",
+                "ChinaOnline",
+                "Cultuzz",
+                "DerbySoft",
+                "EzeeTechnoSys",
+                "Finite",
+                "FiniteDe",
+                "Hermes",
+                "IgmWeb",
+                "Levart",
+                "YieldPlanet"
+              ]
             }
           ]
         },
@@ -326,7 +64,7 @@
           "type": "LineGraphAndCounter",
           "title": "Conversion",
           "summaryText": "Conversion tracking for LateRooms.com (WEB)",
-          "storeId": "BookingData",
+          "storeId": "ProviderData",
           "counter": {
               "precision": 0,
               "counters": [
@@ -355,7 +93,7 @@
           "type": "LineGraphAndCounter",
           "title": "Conversion",
           "summaryText": "Conversion tracking for LateRooms.com (WEB)",
-          "storeId": "BookingData",
+          "storeId": "ProviderData",
           "counter": {
               "counters": [
                 { "id": "b-counter-today", "color": "purple", "text": "Today" },
@@ -382,7 +120,7 @@
             "title": "Booking Errors",
             "kibanaDashboard": "elasticsearch/LateRooms.com%20Booking%20Errors",
             "summaryText": "Booking Errors on LateRooms.com (WEB)",
-            "storeId": "BookingData",
+            "storeId": "ProviderData",
             "counter": {
               "title": "Errors",
               "counters": [
@@ -407,7 +145,7 @@
             "title": "Connectivity Errors",
             "kibanaDashboard": "elasticsearch/LateRooms.com%20Errors",
             "summaryText": "Connectivity Errors on LateRooms.com (WEB)",
-            "storeId": "BookingData",
+            "storeId": "ProviderData",
             "counter": {
               "title": "Errors",
               "counters": [
@@ -431,7 +169,7 @@
             "type": "LineGraphAndCounter",
             "title": "Requests",
             "summaryText": "Requests on LateRooms.com (WEB)",
-            "storeId": "BookingData",
+            "storeId": "ProviderData",
             "counter": {
               "counters": [
                 { "id": "requests-counter-today", "color": "purple", "text": "Today" },
@@ -454,7 +192,7 @@
             "type": "LineGraphAndCounter",
             "title": "Sessions",
             "summaryText": "Sessions on LateRooms.com (WEB)",
-            "storeId": "BookingData",
+            "storeId": "ProviderData",
             "counter": {
               "counters": [
                 { "id": "sessions-counter-today", "color": "purple", "text": "Today" },

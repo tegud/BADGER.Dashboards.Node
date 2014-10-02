@@ -528,7 +528,7 @@ h3 {margin: 0;padding: 0 }
 
 .filter-item label { font-size: 1.1em; font-weight: bold; }
 
-.filter-option { display: inline-block; border: 1px solid #000; padding: 5px 5px 5px 30px; margin-left: 10px; cursor: pointer; position: relative; }
+.filter-option { display: inline-block; border: 1px solid #000; padding: 5px 5px 5px 30px; margin: 0 0 10px 10px; cursor: pointer; position: relative; }
 
 .filter-option:hover { background-color: #ddd; }
 
@@ -539,6 +539,8 @@ h3 {margin: 0;padding: 0 }
 .filter-option-checkbox-inner { width: 11px; height: 11px; background-color: #000; display: none }
 
 .filter-option.selected .filter-option-checkbox-inner { display: block }
+
+.filter-option.selected { background-color: #A5D3A8; }
 
 .radio .filter-option-checkbox-inner { border-radius: 6px; }
 
@@ -568,6 +570,58 @@ h3 {margin: 0;padding: 0 }
 .provider-status-table { border-right: solid 1px #000; }
 
 #value-sort-modifier { margin: 5px auto; width: 550px; }
+
+.provider-options.tier-platinum .tier-gold,
+.provider-options.tier-platinum .tier-silver,
+.provider-options.tier-platinum .tier-bronze { display: none; }
+
+.provider-options.tier-gold .tier-platinum,
+.provider-options.tier-gold .tier-silver,
+.provider-options.tier-gold .tier-bronze { display: none; }
+
+.provider-options.tier-silver .tier-platinum,
+.provider-options.tier-silver .tier-gold,
+.provider-options.tier-silver .tier-bronze { display: none; }
+
+.provider-options.tier-bronze .tier-platinum,
+.provider-options.tier-bronze .tier-silver,
+.provider-options.tier-bronze .tier-gold { display: none; }
+
+.compare-options .filter-option { padding-left: 5px; }
+
+.filter-icon { display: inline-block; font-size: 2em; vertical-align: middle }
+.filter-text { display: inline-block; margin-left: 6px; vertical-align: middle }
+
+.tier-options .filter-option,
+.provider-options .filter-option { padding-top: 7px; }
+
+.tier-options .filter-option-checkbox,
+.provider-options .filter-option-checkbox { font-size: 0.8em; padding: 1px 3px 3px 3px; height: 14px; width: 12px; font-weight: bold; }
+
+.tier-options .tier-option .filter-option-checkbox,
+.provider-options .tier-option .filter-option-checkbox { border: solid 2px #000; padding: 1px 1px 1px 3px; width: 12px; }
+
+.provider-option .filter-option-checkbox { width: 13px; padding-left: 2px; }
+
+.platinum.tier-option .filter-option-checkbox,
+.tier-platinum.provider-option .filter-option-checkbox { background-color: #ddd;border-color: #999 }
+.gold.tier-option .filter-option-checkbox,
+.tier-gold.provider-option .filter-option-checkbox { background-color: gold; border-color: #BFA100; }
+.silver.tier-option .filter-option-checkbox,
+.tier-silver.provider-option .filter-option-checkbox { background-color: #777; border-color: #333; }
+.bronze.tier-option .filter-option-checkbox,
+.tier-bronze.provider-option .filter-option-checkbox { background-color: #CD7F32; border-color: #B36F2C; }
+
+
+.platinum.tier-option .filter-option-checkbox { width: 11px; padding-left: 4px }
+.gold.tier-option .filter-option-checkbox { width: 13px; padding-left: 2px; }
+.silver.tier-option .filter-option-checkbox { background-color: #777; border-color: #333; }
+.bronze.tier-option .filter-option-checkbox { width: 11px; padding-left: 4px; }
+
+.all-option .filter-option-checkbox { padding-left: 2px; width: 13px;  }
+
+.filter-tick { display: none; }
+.selected .filter-tick { display: inline-block; }
 
 @media (max-width: 424px) {
     .inline-loading-container { float: right; }

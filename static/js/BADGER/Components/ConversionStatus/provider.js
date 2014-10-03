@@ -626,28 +626,45 @@ var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayo
 
 	 				orderTable();
 	 			})
-	// 			.on('click', '.data-cell', function() {
-	// 				var cell = $(this);
-	// 				var dashboard = cell.data('dashboard');
-	// 				var view = cell.data('view');
-	// 				var cellKey = cell.data('cellIdentifier');
-	// 				var dimension = _.chain(configuration.dimensions)
-	// 					.filter(function(dimension) {
-	// 						return dimension.id === cellKey;
-	// 					})
-	// 					.first()
-	// 					.value();
+				.on('click', '.tier-indicator', function() {
+					var cell = $(this);
+					var dashboard = 'LateRooms';
+					var view = 'ProviderConversionGraph';
 
-	// 				if(!dashboard) {
-	// 					return;
-	// 				}
+					var tier = cell.attr('title');
 
-	// 				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
-	// 					dashboard: dashboard,
-	// 					view: view,
-	// 					queryParameters: cellKey === 'total' ? false : dimension.filter
-	// 				});
-	// 			})
+					if(!tier) {
+						return;
+					}
+
+					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					 	dashboard: dashboard,
+					  	view: view,
+					  	queryParameters: { tier: tier }
+					});
+
+					toolTip.addClass('hidden');
+				})
+				.on('click', '.data-cell', function() {
+					var cell = $(this);
+					var dashboard = 'LateRooms';
+					var view = 'ProviderConversionGraph';
+
+					var site = _.chain(configuration.sites)
+						.filter(function(dimension) { 
+							return dimension.id === cell.data('site'); 
+						})
+						.first()
+						.value();
+
+					TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					 	dashboard: dashboard,
+					  	view: view,
+					  	queryParameters: site.id === 'total' ? false : { provider: site.id }
+					});
+
+					toolTip.addClass('hidden');
+				})
 				.on('mouseover', '.data-cell', function() {
 					var cell = $(this);
 

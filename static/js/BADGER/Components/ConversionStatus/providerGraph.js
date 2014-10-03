@@ -3,6 +3,15 @@
 
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
+    function getParameterByName(querystring, name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        var results = regex.exec(querystring);
+
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
 	function createDataStoreConfiguration(configuration) {
 		var tierOptions = { 'All': false };
 		var providerOptions = { 'All': false }
@@ -352,7 +361,7 @@
 						var tierClass = 'tier-' + tier.name.toLowerCase();
 
 						return {
-							cssClass: tierClass,
+							cssClass: tierClass + ' ' + id,
 							name: provider.name,
 							id: id
 						};
@@ -383,6 +392,9 @@
 				}
 			}
 		});
+
+		var tierToFilterBy = getParameterByName(location.search, 'tier');
+		var providerToFilterBy = getParameterByName(location.search, 'provider');
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: 'LateRooms conversion by Provider',
@@ -449,6 +461,26 @@
 								dataStore.setFilterOption('provider', filterValue);
 							})
 							.appendTo(container);
+
+							if(tierToFilterBy || providerToFilterBy) {
+
+								if(tierToFilterBy) {
+									dataStore.setFilterOption('tier', tierToFilterBy);
+								}
+
+								if(providerToFilterBy) {
+									dataStore.setFilterOption('provider', providerToFilterBy);
+								}
+
+								setTimeout(function() {
+									if(tierToFilterBy) {
+										$('.tier-options .filter-option.' + tierToFilterBy).click();
+									}
+									if(providerToFilterBy) {
+										$('.provider-options .filter-option.' + providerToFilterBy).click();
+									}
+								}, 0);
+							}
 					}
 				}
 			]

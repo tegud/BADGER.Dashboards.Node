@@ -62,9 +62,37 @@
                                 "interval": "1m"
                             },
                             "aggs": {
-                                "pages": {
-                                    "terms": {
-                                        "field": "url_page_type.raw"
+                                "beacon": {
+                                    "filter": {
+                                        "term": {
+                                            "tags": "beacon"
+                                        }
+                                    },
+                                    "aggs": {
+                                        "sessions": {
+                                            "cardinality": {
+                                                "field": "url_querystring_X_LOG_SessionId"
+                                            }
+                                        }
+                                        
+                                    }
+                                },
+                                "not_beacon": {
+                                    "filter": {
+                                        "bool": {
+                                            "must_not": {
+                                                "term": {
+                                                    "tags": "beacon"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "aggs": {
+                                        "pages": {
+                                            "terms": {
+                                                "field": "url_page_type.raw"
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -78,11 +106,45 @@
                     "type": "extractFromDateHistogram",
                     "aggregateName": "requests",
                     "fields": {
-                        "searchRequests": "pages.buckets.:find(key=search).doc_count",
-                        "hotelDetailsRequests": "pages.buckets.:find(key=hotel-details).doc_count"
+                        "searchRequests": "not_beacon.pages.buckets.:find(key=search).doc_count",
+                        "hotelDetailsRequests": "not_beacon.pages.buckets.:find(key=hotel-details).doc_count",
+                        "sessions": "beacon.sessions.value"
                     }
                 }
             ]
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Opted-in Sessions",
+            "storeId": "RequestsData",
+            "graph": {
+                "window": false,
+                "lines": [
+                    {
+                        "id": "search-requests",
+                        "color": "green",
+                        "value": "value.sessions"
+                    }
+                ]
+            },
+            "counter": {
+                "className": "commission-graph-counter",
+                "window": false,
+                "counters": [
+                    {
+                        "id": "search-requests",
+                        "color": "green",
+                        "value": "value.sessions",
+                        "text": "Search"
+                    }
+                ]
+            },
+            "counter": {
+                "title": "Sessions in Beta",
+                "className": "commission-graph-counter",
+                "precision": 0,
+                "value": "value.sessions"
+            }
         },
         {
             "type": "LineGraphAndCounter",

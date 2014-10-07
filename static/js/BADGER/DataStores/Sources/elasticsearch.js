@@ -125,16 +125,21 @@
 				});
 			}
 
+			var end = moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit.format('HH:mm:ss') + 'Z');
+			var endMoment = moment(end);
+
 			return {
+				live: endMoment.add(-10, 'mins').isAfter(moment()),
 				interval: '15m',
 			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
-		 		end: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit.format('HH:mm:ss') + 'Z')
+		 		end: end
 			};
 		}
 	};
 
 	var defaultTimeFrameMapper = function(timeFrame) {
 		return {
+			live: true,
 			start: mapTimeFrameToFilter(timeFrame.timeFrame, timeFrame.units),
 			interval: mapTimeFrameToInterval(timeFrame.timeFrame, timeFrame.units)
 		};
@@ -250,11 +255,12 @@
 					var indicies = indexBuilder.buildFromTimeFrame(timeFrame, queryItem);
 
 					 return {
-					 	id: key,
-						  url: configuration.host + '/' + indicies.join(',') + '/_search',
-						  method: 'POST',
-						  contentType: 'application/json',
-						  data: JSON.stringify(query)
+				 		id: key,
+						url: configuration.host + '/' + indicies.join(',') + '/_search',
+						method: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(query),
+						isLive: range.live
 					 };
 			 	});
 			 },

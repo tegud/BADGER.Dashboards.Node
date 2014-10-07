@@ -36,6 +36,16 @@
             }
         },
         {
+            "id": "Moonstick",
+            "name": "Moonstick",
+            "views": {
+                "Beta": {
+                    "id": "Beta",
+                    "name": "Beta"
+                }
+            }
+        },
+        {
             "id": "LateRooms",
             "name": "LateRooms",
             "views": {

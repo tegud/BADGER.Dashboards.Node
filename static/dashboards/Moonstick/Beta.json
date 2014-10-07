@@ -64,14 +64,33 @@
                             "aggs": {
                                 "beacon": {
                                     "filter": {
-                                        "term": {
-                                            "tags": "beacon"
+                                        "bool": {
+                                            "must": [
+                                                {
+                                                    "term": {
+                                                        "tags": "beacon"
+                                                    }
+                                                },
+                                                {
+                                                    "exists": {
+                                                        "field": "geoip.ip"
+                                                    }
+                                                }
+                                            ],
+                                            "must_not": [
+                                                {
+                                                    "term": {
+                                                        "geoip.ip": "193.240.116.146"
+                                                    }
+                                                }
+                                            ]
                                         }
+                                        
                                     },
                                     "aggs": {
                                         "sessions": {
                                             "cardinality": {
-                                                "field": "url_querystring_X_LOG_SessionId"
+                                                "field": "url_querystring_X_LOG_SessionId.raw"
                                             }
                                         }
                                         
@@ -117,6 +136,7 @@
             "type": "LineGraphAndCounter",
             "title": "Opted-in Sessions",
             "storeId": "RequestsData",
+            "summary": "Not internal users",
             "graph": {
                 "window": false,
                 "lines": [

@@ -1,0 +1,124 @@
+{
+    "name": "Moonstick (Main)",
+    "components": [
+        {
+            "type": "SharedDataStore",
+            "storeId": "RequestsData",
+            "dataSource": "elasticsearch",
+            "host": "http://logs.laterooms.com:9200",
+            "timeProperties": [
+                "query.filtered.filter.bool.must.0.range.@timestamp",
+                "aggs.requests.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+                "aggs.requests.date_histogram.interval"
+            ],
+            "queries": {
+                "modifiers": {
+                    "value": {}
+                },
+                "query": {
+                    "query": {
+                        "filtered": {
+                            "filter": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "range": {
+                                                "@timestamp": {
+                                                    "from": "now-60m"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "term": {
+                                                "type": "lr_varnish_request"
+                                            }
+                                        },
+                                        {
+                                            "term": {
+                                                "is_moonstick": true
+                                            }
+                                        },
+                                        {
+                                            "terms": {
+                                                "url_page_type.raw": ["search", "hotel-details"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "aggs": {
+                        "requests": {
+                            "date_histogram": {
+                                "min_doc_count": 0,
+                                "extended_bounds": {
+                                    "min": "now-60m",
+                                    "max": "now"
+                                },
+                                "field": "@timestamp",
+                                "interval": "1m"
+                            },
+                            "aggs": {
+                                "pages": {
+                                    "terms": {
+                                        "field": "url_page_type.raw"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "size": 0
+                }
+            },
+            "mappings": [
+                {
+                    "type": "extractFromDateHistogram",
+                    "aggregateName": "requests",
+                    "fields": {
+                        "searchRequests": "pages.buckets.:find(key=search).doc_count",
+                        "hotelDetailsRequests": "pages.buckets.:find(key=hotel-details).doc_count"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests by Page",
+            "storeId": "RequestsData",
+            "graph": {
+                "window": false,
+                "lines": [
+                    {
+                        "id": "search-requests",
+                        "color": "green",
+                        "value": "value.searchRequests"
+                    },
+                    {
+                        "id": "hotel-details-requests",
+                        "color": "orange",
+                        "value": "value.hotelDetailsRequests"
+                    }
+                ]
+            },
+            "counter": {
+                "className": "commission-graph-counter",
+                "window": false,
+                "counters": [
+                    {
+                        "id": "search-requests",
+                        "color": "green",
+                        "text": "Search"
+                    },
+                    {
+                        "id": "hotel-details-requests",
+                        "color": "orange",
+                        "text": "Hotel Detail"
+                    }
+                ]
+            }
+        }
+    ]
+}

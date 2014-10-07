@@ -25,6 +25,8 @@
         var defaultAjaxOptions = {
             type: 'GET'
         };
+        var queryCache = {};
+
         var stateMachine = nano.Machine({
             states: {
                 stopped: {
@@ -84,7 +86,14 @@
                         }, currentFilters) : { query: currentOptions.query };
 
                         var responses = {};
-                        var deferreds = _.map(queries, function(queryOptions) {
+                        var deferreds = _.chain(queries).filter(function(queryOptions) {
+                            // if(queryOptions.isLive) {
+                            //     responses[queryOptions.id] = queryCache[queryOptions.id];
+                            //     return false;
+                            // }
+
+                            return true;
+                        }).map(function(queryOptions) {
                             var ajaxOptions = {
                                 url: currentOptions.url,
                                 data: currentOptions.data,
@@ -106,7 +115,7 @@
                             }
 
                             return $.ajax($.extend(true, {}, defaultAjaxOptions, ajaxOptions));
-                        });
+                        }).value();
 
                         $.when.apply(undefined, deferreds)
                             .fail(function() {

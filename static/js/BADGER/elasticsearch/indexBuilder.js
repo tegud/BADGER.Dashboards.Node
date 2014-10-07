@@ -31,8 +31,6 @@
 							else {
 								day.add(unit, queryItem.timeOffset[unit]);
 							}
-
-							console.log(day.format());
 						}
 					}
 

@@ -87,10 +87,10 @@
 
                         var responses = {};
                         var deferreds = _.chain(queries).filter(function(queryOptions) {
-                            // if(queryOptions.isLive) {
-                            //     responses[queryOptions.id] = queryCache[queryOptions.id];
-                            //     return false;
-                            // }
+                            if(!queryOptions.isLive && queryCache[queryOptions.id]) {
+                                responses[queryOptions.id] = queryCache[queryOptions.id];
+                                return false;
+                            }
 
                             return true;
                         }).map(function(queryOptions) {
@@ -98,6 +98,7 @@
                                 url: currentOptions.url,
                                 data: currentOptions.data,
                                 success: function(data) {
+                                    queryCache[queryOptions.id] = data;
                                     responses[queryOptions.id] = data;
                                 }
                             };

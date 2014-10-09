@@ -87,7 +87,7 @@
 
                         var responses = {};
                         var deferreds = _.chain(queries).filter(function(queryOptions) {
-                            if(!queryOptions.isLive && queryCache[queryOptions.id]) {
+                            if(options.allowCache && !queryOptions.isLive && queryCache[queryOptions.id]) {
                                 responses[queryOptions.id] = queryCache[queryOptions.id];
                                 return false;
                             }

@@ -70,7 +70,7 @@
 		});
 
 		var dataStoreConfiguration = {
-			"host": "http://logs.laterooms.com:9200",
+			"host": "http://badger.laterooms.com:9200",
 			"timeProperties": [
 				"query.filtered.filter.bool.must.0.range.@timestamp"
 			],

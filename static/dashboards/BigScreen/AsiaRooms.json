@@ -13,7 +13,7 @@
             "title": "Errors",
             "summaryText": "Errors per one minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -103,7 +103,7 @@
             "title": "Commission",
             "summaryText": "Total commission generated per minute on AsiaRooms.com (WEB)",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.bookingsbytime.date_histogram.extended_bounds"

@@ -13,7 +13,7 @@
             "type": "SharedDataStore",
             "storeId": "RequestsData",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
                 "aggs.requests.date_histogram.extended_bounds"
@@ -144,7 +144,7 @@
             "type": "SharedDataStore",
             "storeId": "ARRequestsData",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
                 "aggs.requests.date_histogram.extended_bounds"
@@ -277,7 +277,7 @@
             "span": 8,
             "summaryText": "Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://badger.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",

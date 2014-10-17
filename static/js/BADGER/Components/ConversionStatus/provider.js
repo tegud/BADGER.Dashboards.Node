@@ -144,7 +144,7 @@
 											],
 											"must_not": {
 												"term": {
-													"provider": "laterooms"
+													"bookingDetails.hotel.provider": "laterooms"
 												}
 											}
 										}
@@ -152,7 +152,7 @@
 									"aggs": {
 										"providers": {
 											"terms": {
-												"field": "provider",
+												"field": "bookingDetails.hotel.provider",
 												"size": 100
 											}
 										}

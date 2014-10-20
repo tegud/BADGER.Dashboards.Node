@@ -28,6 +28,24 @@
             "title": "Elasticsearch Server Status",
             "host": "10.44.22.158",
             "port": 3000
+        },
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
+            "group": "Moonstick",
+            "title": "Moonstick Status",
+            "host": "localhost",
+            "port": 3000,
+            "span": 4
+        },
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
+            "group": "APIs",
+            "title": "API Status",
+            "host": "localhost",
+            "port": 3000,
+            "span": 4
         }
     ]
 }

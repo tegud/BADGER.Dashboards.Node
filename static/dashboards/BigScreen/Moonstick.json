@@ -2,10 +2,11 @@
     "name": "Moonstick (Main)",
     "components": [
         {
-            "type": "HealthCheck",
-            "serverSet": "Moonstick",
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
+            "group": "Moonstick",
             "title": "Status",
-            "host": "10.44.22.158",
+            "host": "localhost",
             "port": 3000,
             "span": 4
         },

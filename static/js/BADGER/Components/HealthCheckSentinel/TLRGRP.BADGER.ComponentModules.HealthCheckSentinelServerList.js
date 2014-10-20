@@ -9,8 +9,8 @@
                 return {
                     name: groupName,
                     servers: _(group).map(function (server, serverName) {
-                        server.id = serverName.replace(/\./ig, '_');
-                        server.name = server.id;
+                        server.id = serverName.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase();
+                        server.name = serverName;
 
                         return server;
                     })
@@ -37,7 +37,7 @@
             updateStatus: function (groupData) {
                 for (var group in groupData) {
                     for (var server in groupData[group]) {
-                        var serverId = server.replace(/\./g, '_').toLowerCase();
+                        var serverId = server.replace(/\./g, '_').replace(/\s/ig, '_').toLowerCase();
                         var serverStatusElement = document.getElementById(serverId);
 
                         serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].status.toLowerCase();

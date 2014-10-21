@@ -75,30 +75,7 @@
                 initialising: {
                     _onEnter: function () {
                         var internalApi = this;
-
-                        return $.ajax({
-                            url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName + '/serverSets/' + configuration.group,
-                            success: function (groups) {
-                                stateMachine.handle('complete', groups);
-                                dataStore.start(true);
-                            },
-                            error: function (errorInfo) {
-                                internalApi.transitionToState('failedToInitialise', errorInfo);
-                            }
-                        });
-                    },
-                    complete: function (groups) {
-                        serverList.setGroups(groups);
-                    }
-                },
-                failedToInitialise: {
-                    _onEnter: function (errorInfo) {
-                        if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
-                            componentLayout.append('<h4 class="health-check-comms-error">' + errorInfo.responseJSON.error + '</h4>');
-                            return;
-                        }
-
-                        componentLayout.append('<h4 class="health-check-comms-error">Could not access Health Check Server</h4>');
+                        dataStore.start(true);
                     }
                 }
             },

@@ -1,5 +1,5 @@
 {
-    "name": "Connectivity",
+    "name": "Live Server Status",
     "components": [
         {
             "type": "HealthCheck",
@@ -47,15 +47,6 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "localhost",
-            "port": 3000,
-            "span": 4
-        },
-        {
-            "type": "HealthCheckSentinel",
-            "alertName": "healthCheck.serviceHealth-sandbox",
-            "group": "APIs",
-            "title": "Sandbox API Status",
             "host": "localhost",
             "port": 3000,
             "span": 4

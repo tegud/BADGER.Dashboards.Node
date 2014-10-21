@@ -1,0 +1,14 @@
+{
+    "name": "Sanbox Server Status",
+    "components": [
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-sandbox",
+            "group": "APIs",
+            "title": "Sandbox API Status",
+            "host": "localhost",
+            "port": 3000,
+            "span": 4
+        }
+    ]
+}

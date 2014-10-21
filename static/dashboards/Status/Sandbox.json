@@ -4,7 +4,7 @@
         {
             "type": "HealthCheckSentinel",
             "alertName": "healthCheck.serviceHealth-sandbox",
-            "group": "APIs",
+            "group": "SandboxAPIs",
             "title": "Sandbox API Status",
             "host": "localhost",
             "port": 3000,

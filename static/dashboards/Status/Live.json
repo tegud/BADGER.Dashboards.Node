@@ -2,10 +2,11 @@
     "name": "Live Server Status",
     "components": [
         {
-            "type": "HealthCheck",
-            "serverSet": "LateRooms",
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
+            "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
-            "host": "10.44.22.158",
+            "host": "localhost",
             "port": 3000
         },
         {

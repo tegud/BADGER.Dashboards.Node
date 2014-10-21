@@ -3,13 +3,18 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
+    function buildId(group, name) {
+        return group.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase()
+            + name.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase();
+    }
+
     function buildViewModel(groups) {
         return {
             groups: _(groups).map(function (group, groupName) {
                 return {
                     name: groupName,
                     servers: _(group).map(function (server, serverName) {
-                        server.id = serverName.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase();
+                        server.id = buildId(groupName, serverName);
                         server.name = serverName;
 
                         return server;
@@ -29,15 +34,14 @@
             appendToLocation: function() {
                 return 'content';
             },
-            setGroups: function (groups) {
-                var viewModel = buildViewModel(groups);
+            updateStatus: function (groupData) {
+                var viewModel = buildViewModel(groupData);
 
                 containerElement.html($(Mustache.render('<div class="health-check-error hidden"><div class="health-check-error-text-container"><h3>Warning</h3><div class="health-check-error-text"></div></div></div><ul class="health-check-groups">{{#groups}}<li class="health-check-group-item"><h4>{{name}}</h4><ul class="health-check-group-server-list">{{#servers}}<li class="health-check-group-server-item" id="{{id}}">{{name}}</li>{{/servers}}</ul></li>{{/groups}}</ul>', viewModel)));
-            },
-            updateStatus: function (groupData) {
+
                 for (var group in groupData) {
                     for (var server in groupData[group]) {
-                        var serverId = server.replace(/\./g, '_').replace(/\s/ig, '_').toLowerCase();
+                        var serverId = buildId(group, server);
                         var serverStatusElement = document.getElementById(serverId);
 
                         serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].status.toLowerCase();

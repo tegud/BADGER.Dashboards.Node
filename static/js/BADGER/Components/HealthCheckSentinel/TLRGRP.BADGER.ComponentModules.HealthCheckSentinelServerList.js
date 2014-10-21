@@ -8,6 +8,22 @@
             + name.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase();
     }
 
+    function abbreviate(str, max, suffix)
+    {
+        if (str.length > max) {
+            var words = str.split(' ');
+            if (words.length > 1) {
+                return _(words)
+                    .reduce(function (memo, word) {
+                        memo = memo + word[0];
+                        return memo
+                    }, '');
+            }
+            return str.substring(0, max);
+        }
+        return str;
+    }
+
     function buildViewModel(groups) {
         return {
             groups: _(groups).map(function (group, groupName) {
@@ -15,7 +31,7 @@
                     name: groupName,
                     servers: _(group).map(function (server, serverName) {
                         server.id = buildId(groupName, serverName);
-                        server.name = serverName;
+                        server.name = abbreviate(serverName, 3);
 
                         return server;
                     })

@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000
         },
         {
@@ -14,7 +14,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "AsiaRooms",
             "title": "AsiaRooms Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4
         },
@@ -39,7 +39,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "Moonstick",
             "title": "Moonstick Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4
         },
@@ -48,7 +48,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4
         }

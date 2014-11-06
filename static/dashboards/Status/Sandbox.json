@@ -1,0 +1,14 @@
+{
+    "name": "Sanbox Server Status",
+    "components": [
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-sandbox",
+            "group": "SandboxAPIs",
+            "title": "Sandbox API Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        }
+    ]
+}

@@ -71,9 +71,13 @@
             "id": "Status",
             "name": "Status",
             "views": {
-                "All": {
-                    "id": "All",
-                    "name": "All"
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                },
+                "Sandbox": {
+                    "id": "Sandbox",
+                    "name": "Sandbox"
                 }
             }
         },

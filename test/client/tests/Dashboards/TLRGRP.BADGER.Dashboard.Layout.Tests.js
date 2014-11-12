@@ -72,19 +72,6 @@
 				expect(componentOne.layout.marginRight).to.be(undefined);
 			});
 
-			it('to 10px for first component in a row with more than one item', function() {
-				var componentOne = { span: 2 };
-
-				var components = [
-					componentOne,
-					{ span: 2 }
-				];
-
-				new TLRGRP.BADGER.Dashboard.Layout().set(components);
-
-				expect(componentOne.layout.marginRight).to.be('10px');
-			});
-
 			it('to nothing for last component in a row with more than one item', function() {
 				var componentOne = { span: 2 };
 				var componentTwo = { span: 2 };
@@ -97,22 +84,6 @@
 				new TLRGRP.BADGER.Dashboard.Layout().set(components);
 
 				expect(componentTwo.layout.marginRight).to.be(undefined);
-			});
-
-			it('sets to 10px for first component in second row with more than one item', function() {
-				var componentOne = { };
-				var componentTwo = { span: 2 };
-				var componentThree = { span: 2 };
-
-				var components = [
-					componentOne,
-					componentTwo,
-					componentThree
-				];
-
-				new TLRGRP.BADGER.Dashboard.Layout().set(components);
-
-				expect(componentTwo.layout.marginRight).to.be('10px');
 			});
 		});
 
@@ -139,22 +110,6 @@
 				new TLRGRP.BADGER.Dashboard.Layout().set(components, 400);
 
 				expect(componentOne.layout.width).to.be(400 / 4);
-			});
-
-			it('two components with span of 3 to a quarter of the container width mius one margin', function() {
-				var componentOne = { span: 3 };
-				var componentTwo = { span: 3 };
-				var expectedWidth = (400 - 10) / 4;
-
-				var components = [
-					componentOne,
-					componentTwo
-				];
-
-				new TLRGRP.BADGER.Dashboard.Layout().set(components, 400);
-
-				expect(componentOne.layout.width).to.be(expectedWidth);
-				expect(componentTwo.layout.width).to.be(expectedWidth);
 			});
 		});
 	});

@@ -4,14 +4,13 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard');
 
 	var ROW_MAX = 12;
-	var ROW_MARGIN = 10;
 
 	function setRowLayout(row, totalWidth) {
 		if(!row.length) {
 			return;
 		}
 
-		var availableWidth = totalWidth - ((row.length - 1) * ROW_MARGIN);
+		var availableWidth = totalWidth - (row.length - 1);
 		var spanUnitWidth = availableWidth / ROW_MAX;
 
 		if(row.length === 1) {
@@ -24,7 +23,6 @@
 
 		_.forEach(row.slice(0, row.length -1), function(component, i) {
 			component.layout = {
-				marginRight: ROW_MARGIN + "px",
 				position: i + 1,
 				width: spanUnitWidth * component.span
 			};

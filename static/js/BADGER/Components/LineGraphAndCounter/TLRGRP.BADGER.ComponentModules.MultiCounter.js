@@ -15,7 +15,12 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
     TLRGRP.BADGER.Dashboard.ComponentModules.MultiCounter = function (configuration) {
-        var containerElement = $('<div class="v2-graph-counter multi-counter' + (configuration.className ? ' ' + configuration.className : '') + '"></div>');
+        var boxElement = $('<div class="v2-graph-counter multi-counter'
+            + (configuration.className ? ' ' + configuration.className : '')
+            + '"></div>');
+
+        var containerElement = $('<div class="multi-counter-container"></div>');
+        boxElement.append(containerElement);
 
         _.each(configuration.counters, function(counterConfig) {
             containerElement.append('<div class="multi-counter-item"><div class="multi-counter-item-dot" style="background-color: ' + counterConfig.color + '"></div><div class="multi-counter-item-label">' + counterConfig.text + '</div>' 
@@ -43,7 +48,7 @@
                     return audioElement;
                 }));
                 
-                container.append(containerElement);
+                container.append(boxElement);
             },
             appendToLocation: function () {
                 return 'content';

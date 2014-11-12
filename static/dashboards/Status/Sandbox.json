@@ -1,5 +1,5 @@
 {
-    "name": "Sanbox Server Status",
+    "name": "Sandbox Server Status",
     "components": [
         {
             "type": "HealthCheckSentinel",

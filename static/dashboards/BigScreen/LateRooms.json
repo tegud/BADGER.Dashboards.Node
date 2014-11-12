@@ -7,7 +7,16 @@
             "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
             "host": "badger.laterooms.com",
-            "port": 3000
+            "port": 3000,
+            "span": 10
+        },
+        {
+            "type": "AlertsSentinel",
+            "alertName": "elasticsearch-simple-query.laterooms-errors",
+            "title": "Errors Alert",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 2
         },
         {
             "type": "LineGraphAndCounter",

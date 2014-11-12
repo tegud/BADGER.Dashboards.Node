@@ -105,9 +105,20 @@
                                 },
                                 "hotel-details": {
                                     "filter": {
-                                        "term": {
-                                            "url_page_type.raw": "hotel-details"
-                                        }
+                                        "and" : [
+                                            {
+                                                "term": {
+                                                    "url_page_type.raw": "hotel-details"
+                                                }
+                                            },
+                                            {
+                                                "not": {
+                                                    "term": {
+                                                        "url_page": "reviews"
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     },
                                     "aggs": {
                                         "beacon": {

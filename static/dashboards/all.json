@@ -122,6 +122,16 @@
                     "name": "All"
                 }
             }
+        },
+        {
+            "id": "Alerts",
+            "name": "Alerts",
+            "views": {
+                "Alerts": {
+                    "id": "Alerts",
+                    "name": "All"
+                }
+            }
         }
     ]
 }

@@ -30,8 +30,7 @@
                             '</div>'+
                         '</div>'+
                     '</div>'+
-                    '<div class="alert-info">{{}}</div>'+
-                    '<h3>{{alertState}}</h3>', viewModel)));
+                    '<div class="alert-info alert-state-{{alertState}}">{{alertState}}</div>', viewModel)));
             }
         };
     };

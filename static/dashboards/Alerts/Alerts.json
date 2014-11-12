@@ -3,8 +3,24 @@
     "components": [
         {
             "type": "AlertsSentinel",
+            "alertName": "elasticsearch-simple-query.laterooms-errors",
+            "title": "LateRooms Errors",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        },
+        {
+            "type": "AlertsSentinel",
             "alertName": "elasticsearch-simple-query.asiarooms-errors",
-            "title": "AsiaRooms Alerts",
+            "title": "AsiaRooms Errors",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        },
+        {
+            "type": "AlertsSentinel",
+            "alertName": "elasticsearch-simple-query.elasticsearch-lag",
+            "title": "ElasticSearch Lag",
             "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4

@@ -630,3 +630,20 @@ h3 {margin: 0;padding: 0 }
 
     .health-check-last-updated { margin: 6px 0 10px 0; }
 }
+
+@-webkit-keyframes pulse {
+    0% {background-color: #BB0000;}
+    25% {background-color: #CC0000;}
+    50% {background-color: #DD0000;}
+    75% {background-color: #EE0000;}
+    100% {background-color: #FF0000;}
+    }
+
+.alert-state-info { background-color: green; }
+.alert-state-breach { background-color: orange; }
+.alert-state-critical {
+    background-color: red;
+    -webkit-animation: pulse 2s infinite alternate;
+ }
+
+.alert-state-info { padding: 10px; }

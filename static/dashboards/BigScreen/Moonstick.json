@@ -21,7 +21,7 @@
         },
         {
             "type": "SharedDataStore",
-            "storeId": "RequestsData",
+            "storeId": "LRRequestsData",
             "dataSource": "elasticsearch",
             "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
@@ -55,7 +55,7 @@
                                         },
                                         {
                                             "term": {
-                                                "url_page_type": "home"
+                                                "is_moonstick": true
                                             }
                                         }
                                     ]
@@ -75,10 +75,10 @@
                                 "interval": "1m"
                             },
                             "aggs": {
-                                "legacy": {
+                                "home": {
                                     "filter": {
                                         "term": {
-                                            "is_moonstick": false
+                                            "url_page_type.raw": "home"
                                         }
                                     },
                                     "aggs": {
@@ -103,10 +103,38 @@
                                         }
                                     }
                                 },
-                                "moonstick": {
+                                "hotel-details": {
                                     "filter": {
                                         "term": {
-                                            "is_moonstick": true
+                                            "url_page_type.raw": "hotel-details"
+                                        }
+                                    },
+                                    "aggs": {
+                                        "beacon": {
+                                            "filter": {
+                                                "term": {
+                                                    "tags": "beacon"
+                                                }
+                                            },
+                                            "aggs": {
+                                                "page_complete": {
+                                                    "stats": {
+                                                        "field": "timing_done"
+                                                    }
+                                                },
+                                                "percentiles": {
+                                                    "percentiles": {
+                                                        "field": "timing_done"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "search": {
+                                    "filter": {
+                                        "term": {
+                                            "url_page_type.raw": "search"
                                         }
                                     },
                                     "aggs": {
@@ -142,17 +170,19 @@
                     "type": "extractFromDateHistogram",
                     "aggregateName": "requests",
                     "fields": {
-                        "moonstickRequests": "moonstick.doc_count",
-                        "legacyRequests": "legacy.doc_count",
-                        "legacyPageComplete": "legacy.beacon.percentiles.values.50|0",
-                        "moonstickPageComplete": "moonstick.beacon.percentiles.values.50|0"
+                        "homeRequests": "home.doc_count",
+                        "hotelDetailsRequests": "hotel-details.doc_count",
+                        "searchRequests": "search.doc_count",
+                        "homePageComplete": "home.beacon.percentiles.values.50|0",
+                        "hotelDetailsPageComplete": "hotel-details.beacon.percentiles.values.50|0",
+                        "searchPageComplete": "search.beacon.percentiles.values.50|0"
                     }
                 }
             ]
         },
         {
             "type": "SharedDataStore",
-            "storeId": "ARRequestsData",
+            "storeId": "ARHomeRequestsData",
             "dataSource": "elasticsearch",
             "host": "http://badger.laterooms.com:9200",
             "timeProperties": [
@@ -425,18 +455,23 @@
             "title": "LR Page Load Time (50th Percentile)",
             "span": 6,
             "summaryText": "",
-            "storeId": "RequestsData",
+            "storeId": "LRRequestsData",
             "graph": {
                 "lines": [
                     {
-                        "id": "legacy",
+                        "id": "home",
                         "color": "#411085",
-                        "value": "value.legacyPageComplete"
+                        "value": "value.homePageComplete"
                     },
                     {
-                        "id": "moonstick",
+                        "id": "hotel-details",
                         "color": "green",
-                        "value": "value.moonstickPageComplete"
+                        "value": "value.hotelDetailsPageComplete"
+                    },
+                    {
+                        "id": "search",
+                        "color": "orange",
+                        "value": "value.searchPageComplete"
                     }
                 ]
             },
@@ -452,26 +487,32 @@
                 "precision": 0,
                 "counters": [
                     {
-                        "id": "legacy",
+                        "id": "home",
                         "color": "#411085",
-                        "value": "value.legacyPageComplete",
-                        "text": "LR Legacy"
+                        "value": "value.homePageComplete",
+                        "text": "Home"
                     },
                     {
-                        "id": "moonstick",
+                        "id": "hotel-details",
                         "color": "green",
-                        "value": "value.moonstickPageComplete",
-                        "text": "LR Moon"
+                        "value": "value.hotelDetailsPageComplete",
+                        "text": "Hotel Details"
+                    },
+                    {
+                        "id": "search",
+                        "color": "orange",
+                        "value": "value.searchPageComplete",
+                        "text": "Search"
                     }
                 ]
             }
         },
         {
             "type": "LineGraphAndCounter",
-            "title": "AR Page Load Time (50th Percentile)",
+            "title": "AR Home Page Load Time (50th Percentile)",
             "span": 6,
             "summaryText": "",
-            "storeId": "ARRequestsData",
+            "storeId": "ARHomeRequestsData",
             "graph": {
                 "lines": [
                     {
@@ -501,13 +542,13 @@
                         "id": "ar-legacy",
                         "color": "#b00763",
                         "value": "value.legacyPageComplete",
-                        "text": "AR Legacy"
+                        "text": "Legacy"
                     },
                     {
                         "id": "ar-moonstick",
                         "color": "green",
                         "value": "value.moonstickPageComplete",
-                        "text": "AR Moon"
+                        "text": "Moon"
                     }
                 ]
             }
@@ -516,7 +557,7 @@
             "type": "LineGraphAndCounter",
             "title": "LR Requests",
             "span": 6,
-            "storeId": "RequestsData",
+            "storeId": "LRRequestsData",
             "summaryText": "Requests per minute",
             "graph": {
                 "window": {
@@ -525,14 +566,19 @@
                 },
                 "lines": [
                     {
-                        "id": "moonstick-requests",
-                        "color": "green",
-                        "value": "value.moonstickRequests"
+                        "id": "home-requests",
+                        "color": "#411085",
+                        "value": "value.homeRequests"
                     },
                     {
-                        "id": "legacy-requests",
-                        "color": "#411085",
-                        "value": "value.legacyRequests"
+                        "id": "hotel-details-requests",
+                        "color": "green",
+                        "value": "value.hotelDetailsRequests"
+                    },
+                    {
+                        "id": "search-requests",
+                        "color": "orange",
+                        "value": "value.searchRequests"
                     }
                 ]
             },
@@ -546,25 +592,31 @@
                 "precision": 0,
                 "counters": [
                     {
-                        "id": "legacy-requests",
+                        "id": "home-requests",
                         "color": "#411085",
-                        "value": "value.legacyRequests",
-                        "text": "LR Legacy"
+                        "value": "value.homeRequests",
+                        "text": "Home"
                     },
                     {
-                        "id": "moonstick-requests",
+                        "id": "hotel-details-requests",
                         "color": "green",
-                        "value": "value.moonstickRequests",
-                        "text": "LR Moon"
+                        "value": "value.hotelDetailsRequests",
+                        "text": "Hotel Details"
+                    },
+                    {
+                        "id": "search-requests",
+                        "color": "orange",
+                        "value": "value.searchRequests",
+                        "text": "Search"
                     }
                 ]
             }
         },
         {
             "type": "LineGraphAndCounter",
-            "title": "AR Requests",
+            "title": "AR Home Requests",
             "span": 6,
-            "storeId": "ARRequestsData",
+            "storeId": "ARHomeRequestsData",
             "summaryText": "Requests per minute",
             "graph": {
                 "window": {
@@ -597,13 +649,13 @@
                         "id": "ar-legacy-requests",
                         "color": "#b00763",
                         "value": "value.legacyRequests",
-                        "text": "AR Legacy"
+                        "text": "Legacy"
                     },
                     {
                         "id": "ar-moonstick-requests",
                         "color": "green",
                         "value": "value.moonstickRequests",
-                        "text": "AR Moon"
+                        "text": "Moon"
                     }
                 ]
             }

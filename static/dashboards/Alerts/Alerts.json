@@ -1,0 +1,13 @@
+{
+    "name": "Current Alerts",
+    "components": [
+        {
+            "type": "AlertsSentinel",
+            "alertName": "elasticsearch-simple-query.asiarooms-errors",
+            "title": "AsiaRooms Alerts",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        }
+    ]
+}

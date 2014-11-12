@@ -401,9 +401,9 @@ h3 {margin: 0;padding: 0 }
 
 .health-check-groups {margin: 0;padding: 0;list-style: none; }
 
-.health-check-group-item {display: inline-block;margin: 0 10px 10px 0;border: solid 1px #ddd;background-color: #eee;padding: 10px;vertical-align: top}
+.health-check-group-item {display: inline-block;margin: 0 5px 5px 0;border: solid 1px #ddd;background-color: #eee;padding: 5px;vertical-align: top}
 
-.health-check-group-server-list {margin: 8px 0 0 0;padding: 0;list-style: none; }
+.health-check-group-server-list {margin: 2px 0 0 0;padding: 0;list-style: none; }
 
 .health-check-group-server-item {border: solid 1px #ddd;margin: 0 5px 5px 0;text-align: center;width: 24px;padding: 10px 0;display: inline-block;font-weight: bold;font-size: 0.8em; }
 

@@ -3,9 +3,17 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
+    function getInfoText(alertData) {
+        if (alertData.info.matchedThreshold) {
+            return alertData.info.matchedThreshold.threshold;
+        }
+        return alertData.level;
+    }
+
     function buildViewModel(alertData) {
         return {
-            alertState: alertData.level
+            alertState: alertData.level,
+            infoText: getInfoText(alertData)
         };
     }
     
@@ -30,7 +38,9 @@
                             '</div>'+
                         '</div>'+
                     '</div>'+
-                    '<div class="alert-info alert-state-{{alertState}}">{{alertState}}</div>', viewModel)));
+                    '<div class="alert-state-info alert-state-{{alertState}}">'+
+                        '{{infoText}}'+
+                    '</div>', viewModel)));
             }
         };
     };

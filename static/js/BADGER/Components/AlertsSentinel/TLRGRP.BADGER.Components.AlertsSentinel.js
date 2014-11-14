@@ -39,8 +39,12 @@
             refresh: 2500,
             callbacks: {
                 success: function (data) {
-                    inlineError.hide();
-                    alertInfo.updateStatus(data);
+                    if (data != "") {
+                        inlineError.hide();
+                        alertInfo.updateStatus(data);
+                    } else {
+                        inlineError.show('No response from health check server.');
+                    }
                     dataStore.setNewRefresh(calculateNextRefresh(data.nextRefreshAt));
                 },
                 error: function (errorInfo) {

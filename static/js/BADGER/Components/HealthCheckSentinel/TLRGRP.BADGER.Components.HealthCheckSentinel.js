@@ -40,7 +40,7 @@
             callbacks: {
                 success: function (data) {
                     inlineError.hide();
-                    serverList.updateStatus(data);
+                    serverList.updateStatus(configuration.group, data);
                     dataStore.setNewRefresh(calculateNextRefresh(data.nextRefreshAt));
                 },
                 error: function (errorInfo) {

@@ -10,7 +10,7 @@
         var identifyTimeout;
 
         function setIdentityDiv() {
-            $('#identify').text(sessionName);
+            $('#identify').text(sessionName || sessionId);
         }
 
         setIdentityDiv();
@@ -35,6 +35,7 @@
 
         socket.on('connectionHandshake', function(connectionDetails) {
             sessionId = connectionDetails.sessionId;
+            setIdentityDiv();
 
             socket.emit('nameConnection', {
                 name: sessionName || sessionId

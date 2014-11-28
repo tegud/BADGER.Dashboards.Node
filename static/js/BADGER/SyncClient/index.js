@@ -8,6 +8,7 @@
         var sessionId;
         var sessionName = $.cookie('boardName');
         var identifyTimeout;
+        var lastDashboardEvent;
 
         function setIdentityDiv() {
             $('#identify').text(sessionName || sessionId);
@@ -40,6 +41,15 @@
             socket.emit('nameConnection', {
                 name: sessionName || sessionId
             });
+
+            if(lastDashboardEvent) {
+                socket.emit('viewSelected', lastDashboardEvent);
+            }
+        });
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', function(event) {
+            lastDashboardEvent = event;
+            socket.emit('viewSelected', event);
         });
 
         socket.on('clientCommand', function(commandDetails) {

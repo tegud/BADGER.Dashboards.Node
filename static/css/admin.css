@@ -1,0 +1,13 @@
+﻿#connections { list-style: none; padding: 0; }
+
+#connections > li { clear: both; padding: 5px; }
+
+#connections > li:nth-child(odd) { background-color: #ddd; }
+#connections > li:nth-child(even) { background-color: #ccc; }
+
+.connection-list { list-style: none; margin-top: 5px; }
+
+.connection-list > li { clear: both; margin-top: 10px; }
+
+.reload, .set-name, .change-name, .cancel-change-name { float: right; }
+

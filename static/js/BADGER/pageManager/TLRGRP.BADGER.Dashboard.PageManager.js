@@ -208,13 +208,16 @@
                     id: dashboard
                 });
 
+                var newUrl = buildUrl(dashboard, view, currentTimeFrame, dashboardAndView.queryParameters);
+
                 TLRGRP.messageBus.publish('TLRGRP.BADGER.View.Selected', {
                     dashboard: dashboard,
-                    id: view
+                    id: view,
+                    url: newUrl
                 });
 
                 TLRGRP.BADGER.URL.pushState({ 
-                    url: buildUrl(dashboard, view, currentTimeFrame, dashboardAndView.queryParameters),
+                    url: newUrl,
                     dashboard: dashboard,
                     view: view,
                     queryParameters: dashboardAndView.queryParameters

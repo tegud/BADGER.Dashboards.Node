@@ -36,11 +36,11 @@
             });
 
             var sortedConnectionNames = _.chain(groupedConnections).map(function(item, key) {
-                var isNamed = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(key);
+                var isNamed = !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(key);
                 
                 return isNamed ? key : item.ip;
             }).sortBy(function(item) {
-                var isNamed = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(item);
+                var isNamed = !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(item);
 
                 return isNamed ? item : '0' + item;
             }).reduce(function(memo, connectionName) {

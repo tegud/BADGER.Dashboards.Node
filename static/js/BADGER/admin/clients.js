@@ -38,11 +38,10 @@
             });
 
             var sortedConnectionNames = _.chain(groupedConnections).map(function(item, key) {
-                var isNamed = !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(key);
-                
-                return isNamed ? key : item[0].ip;
+                return key;
             }).sortBy(function(item) {
-                var isNamed = !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(item);
+                var isNamed = !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.exec(item) &&
+                    /^(\d\d?)|(1\d\d)|(0\d\d)|(2[0-4]\d)|(2[0-5])\.(\d\d?)|(1\d\d)|(0\d\d)|(2[0-4]\d)|(2[0-5])\.(\d\d?)|(1\d\d)|(0\d\d)|(2[0-4]\d)|(2[0-5])$/.exec(item);
 
                 return isNamed ? item : '0' + item;
             }).reduce(function(memo, connectionName) {

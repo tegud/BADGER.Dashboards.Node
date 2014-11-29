@@ -56,19 +56,20 @@
                 var existingItem = $('#' + elementId, listOfConnections).removeClass('to-delete');
 
                 if(!existingItem.length) {
-                    // var newItem = $('<li data-session-id="' + item.sessionId + '" id="session-' + item.sessionId + '"><input type="text" value="' + item.name + '" /> <button class="set-name">set name</button> <button class="reload">reload</button></li>');
-
                     var newItem = $(Mustache.render('<li id="{{connectionGroupId}}">'
                          + '<span class="view">'
-                             + '<button class="change-name">change name</button>'
-                             + '{{connectionGroupName}}'
+                             + '<button class="change-name">Change Name</button>'
+                             + '{{connectionGroupName}} ({{connections.0.ip}})'
                          + '</span>'
                          + '<span class="edit hidden">'
-                             + '<button class="set-name">set name</button>'
-                             + '<button class="cancel-change-name">cancel</button>'
+                             + '<button class="set-name">Set Name</button>'
+                             + '<button class="cancel-change-name">Cancel</button>'
                              + '<input type="text" value="{{connectionGroupName}}" />'
                          + '</span>'
-                         + '<ul class="connection-list">{{#connections}}<li data-session-id="{{sessionId}}">{{sessionId}}<button class="reload">reload</button></li></li>{{/connections}}</ul>'
+                         + '<ul class="connection-list">{{#connections}}<li data-session-id="{{sessionId}}">'
+                         + '<div>{{sessionId}} ({{ip}})<button class="reload">Reload</button></div>'
+                         + '<div>Url: {{currentView.url}}<button class="set-url">Set Url</button></div>'
+                         + '</li></li>{{/connections}}</ul>'
                          + '</li>', {
                         connectionGroupId: elementId,
                         connectionGroupName: key,

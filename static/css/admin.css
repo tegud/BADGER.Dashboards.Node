@@ -9,5 +9,7 @@
 
 .connection-list > li { clear: both; margin-top: 10px; }
 
-.reload, .set-name, .change-name, .cancel-change-name { float: right; }
+.connection-list > li > div { clear: both; margin-bottom: 5px; }
+
+.reload, .set-name, .change-name, .cancel-change-name, .set-url { float: right; }
 

@@ -38,9 +38,11 @@
             sessionId = connectionDetails.sessionId;
             setIdentityDiv();
 
-            socket.emit('nameConnection', {
-                name: sessionName || sessionId
-            });
+            if(sessionName) {
+                socket.emit('nameConnection', {
+                    name: sessionName
+                });
+            }
 
             if(lastDashboardEvent) {
                 socket.emit('viewSelected', lastDashboardEvent);

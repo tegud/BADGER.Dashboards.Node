@@ -47,7 +47,7 @@
             }).sortBy(function(item) {
                 var isNamed = connectionIsNamed(item);
 
-                return isNamed ? item : '0' + item;
+                return isNamed ? item : 'zzzzzzz' + item;
             }).reduce(function(memo, connectionName) {
                 memo[connectionName] = groupedConnections[connectionName];
 

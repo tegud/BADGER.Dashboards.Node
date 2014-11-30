@@ -8,12 +8,23 @@
 
     listOfConnections
         .on('click', '.set-name', function() {
-            var li = $(this).parent();
+            var li = $(this).closest('li');
             var input = $('input', li);
+            var deferreds = [];
 
-            $.get('/admin/command/setName/' + li.data('sessionId') + '/' + input.val(), function() {
-                setTimeout(getConnections, 1500);
+            $('ul > li', li).each(function() {
+                var currentConnection = $(this);
+                var sessionId = currentConnection.data('sessionId');
+
+                deferreds = $.get('/admin/command/setName/' + sessionId + '/' + input.val());
             });
+
+            $(this).closest('.edit').addClass('hidden').siblings('.view').removeClass('hidden').find('.connection-name').text(input.val());
+            
+            $.when.call(this, deferreds).done(function() {
+                setTimeout(getConnections, 150);
+            });
+            
         })
         .on('click', '.change-name', function() {
             $(this).closest('.view').addClass('hidden').siblings('.edit').removeClass('hidden');
@@ -58,12 +69,14 @@
                 var id = key.toLowerCase().replace(/[\W]/g, "");
                 var elementId = 'session-' + id;
                 var existingItem = $('#' + elementId, listOfConnections).removeClass('to-delete');
+                var numberOfIps = _.chain(groupedConnections[key]).countBy('ip').size().value();
+                var singleIp = numberOfIps === 1;
 
                 if(!existingItem.length) {
                     var newItem = $(Mustache.render('<li id="{{connectionGroupId}}">'
                          + '<span class="view">'
                              + '<button class="change-name">Change Name</button>'
-                             + '{{connectionGroupName}} ({{connections.0.ip}})'
+                             + '<span class="connection-name">{{connectionGroupName}}</span> {{#singleIp}}({{connections.0.ip}}){{/singleIp}}'
                          + '</span>'
                          + '<span class="edit hidden">'
                              + '<button class="set-name">Set Name</button>'
@@ -71,13 +84,14 @@
                              + '<input type="text" value="{{connectionGroupName}}" />'
                          + '</span>'
                          + '<ul class="connection-list">{{#connections}}<li data-session-id="{{sessionId}}">'
-                         + '<div>{{sessionId}} ({{ip}})<button class="reload">Reload</button></div>'
+                         + '<div>{{sessionId}}{{^singleIp}} ({{ip}}){{/singleIp}}<button class="reload">Reload</button></div>'
                          + '<div>Url: {{currentView.url}}<button class="set-url">Set Url</button></div>'
                          + '</li>{{/connections}}</ul>'
                          + '</li>', {
                         connectionGroupId: elementId,
                         connectionGroupName: key,
-                        connections: groupedConnections[key]
+                        connections: groupedConnections[key],
+                        singleIp: singleIp
                     }));
 
                     if(lastItem) {

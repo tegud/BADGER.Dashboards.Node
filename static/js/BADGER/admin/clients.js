@@ -22,7 +22,7 @@
             $(this).closest('.edit').addClass('hidden').siblings('.view').removeClass('hidden');
         })
         .on('click', '.reload', function() {
-            $.get('/admin/command/reload/' + $(this).parent().data('sessionId'), function() {
+            $.get('/admin/command/reload/' + $(this).closest('li').data('sessionId'), function() {
                 setTimeout(getConnections, 1500);
             });
         });
@@ -73,7 +73,7 @@
                          + '<ul class="connection-list">{{#connections}}<li data-session-id="{{sessionId}}">'
                          + '<div>{{sessionId}} ({{ip}})<button class="reload">Reload</button></div>'
                          + '<div>Url: {{currentView.url}}<button class="set-url">Set Url</button></div>'
-                         + '</li></li>{{/connections}}</ul>'
+                         + '</li>{{/connections}}</ul>'
                          + '</li>', {
                         connectionGroupId: elementId,
                         connectionGroupName: key,
@@ -90,6 +90,14 @@
                     lastItem = newItem;
                 }
                 else {
+                    var connectionList = $('.connection-list', existingItem).html(Mustache.render('{{#connections}}<li data-session-id="{{sessionId}}">'
+                         + '<div>{{sessionId}} ({{ip}})<button class="reload">Reload</button></div>'
+                         + '<div>Url: {{currentView.url}}<button class="set-url">Set Url</button></div>'
+                         + '</li>{{/connections}}', {
+                        connectionGroupId: elementId,
+                        connectionGroupName: key,
+                        connections: groupedConnections[key]
+                    }));
 
                     lastItem = existingItem;
                 }

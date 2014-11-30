@@ -47,17 +47,14 @@
             }).sortBy(function(item) {
                 var isNamed = connectionIsNamed(item);
 
-                return isNamed ? item : 'zzzzzzz' + item;
-            }).reduce(function(memo, connectionName) {
-                memo[connectionName] = groupedConnections[connectionName];
-
-                return memo;
-            }, {}).value();
+                return isNamed ? item.toLowerCase() : 'zzzzzzz' + item.toLowerCase();
+            }).value();
 
             listOfConnections.children('li').addClass('to-delete');
 
             var lastItem;
-            _.each(groupedConnections, function(item, key) {
+            _.each(sortedConnectionNames, function(key) {
+                var item = groupedConnections[key];
                 var id = key.toLowerCase().replace(/[\W]/g, "");
                 var elementId = 'session-' + id;
                 var existingItem = $('#' + elementId, listOfConnections).removeClass('to-delete');

@@ -11,7 +11,7 @@
         var lastDashboardEvent;
 
         function setIdentityDiv() {
-            $('#identify').text(sessionName || sessionId);
+            $('#identify').text(sessionName ? sessionName + (sessionId ? ' (' + sessionId.substr(0, 8) + ')' : '') : sessionId);
         }
 
         setIdentityDiv();

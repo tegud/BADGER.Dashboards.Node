@@ -7,7 +7,7 @@
             "title": "LateRooms Errors",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 4
+            "span": 3
         },
         {
             "type": "AlertsSentinel",
@@ -15,7 +15,15 @@
             "title": "AsiaRooms Errors",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 4
+            "span": 3
+        },
+        {
+            "type": "AlertsSentinel",
+            "alertName": "elasticsearch-simple-query.moonstick-errors",
+            "title": "Moonstick Errors",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 3
         },
         {
             "type": "AlertsSentinel",
@@ -23,7 +31,7 @@
             "title": "ElasticSearch Lag",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 4
+            "span": 3
         }
     ]
 }

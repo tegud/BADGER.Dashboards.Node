@@ -3,8 +3,9 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
-    function buildId(group, name) {
-        return group.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase()
+    function buildId(serverSet, group, name) {
+        return serverSet.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase()
+            + group.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase()
             + name.replace(/\./ig, '_').replace(/\s/ig, '_').toLowerCase();
     }
 
@@ -24,13 +25,13 @@
         return str;
     }
 
-    function buildViewModel(groups) {
+    function buildViewModel(serverSet, groups) {
         return {
             groups: _(groups).map(function (group, groupName) {
                 return {
                     name: groupName,
                     servers: _(group).map(function (server, serverName) {
-                        server.id = buildId(groupName, serverName);
+                        server.id = buildId(serverSet, groupName, serverName);
                         server.name = abbreviate(serverName, 3);
 
                         return server;
@@ -50,8 +51,8 @@
             appendToLocation: function() {
                 return 'content';
             },
-            updateStatus: function (groupData) {
-                var viewModel = buildViewModel(groupData);
+            updateStatus: function (serverSet, groupData) {
+                var viewModel = buildViewModel(serverSet, groupData);
 
                 containerElement.html($(Mustache.render(
                     '<div class="health-check-error hidden">'+
@@ -76,7 +77,7 @@
 
                 for (var group in groupData) {
                     for (var server in groupData[group]) {
-                        var serverId = buildId(group, server);
+                        var serverId = buildId(serverSet, group, server);
                         var serverStatusElement = document.getElementById(serverId);
 
                         serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].status.toLowerCase();

@@ -1,15 +1,28 @@
-﻿#connections { list-style: none; padding: 0; }
+﻿#identify-screens { font-size: 1.2em; padding: 3px 8px; border-radius: 15px; cursor: pointer; background-color: #fff; border: solid 2px #000; display: inline-block; margin-top: 5px; } 
 
-#connections > li { clear: both; padding: 5px; }
+#connections { list-style: none; padding: 0; }
 
-#connections > li:nth-child(odd) { background-color: #ddd; }
-#connections > li:nth-child(even) { background-color: #ccc; }
+#connections > li { background-color: #ddd;clear: both; padding: 5px 5px 5px 120px; margin-bottom: 10px; border-radius: 50px 10px 10px 10px; position: relative; min-height: 100px }
+
+.connection-type { position: absolute; top: 5px; left: 5px; width: 80px; height: 66px; padding-top: 14px; border: solid 10px black; border-radius: 50px; background-color: #fff; font-size: 3em; text-align: center; }
 
 .connection-list { list-style: none; margin-top: 5px; }
 
-.connection-list > li { clear: both; margin-top: 10px; }
+.connection-list-item { clear: both; margin-top: 10px; position: relative; }
 
-.connection-list > li > div { clear: both; margin-bottom: 5px; }
+.connection-item { position: absolute; top: 0; left: -45px; background-color: #fff; border: solid 4px #000; border-radius: 25px; width: 22px; padding: 4px; height: 22px; font-size: 1.3em; }
 
-.reload, .set-name, .change-name, .cancel-change-name, .set-url { float: right; }
+.set-name, .change-name, .cancel-change-name, .connection-options { float: right; }
 
+.connection-name { font-size: 1.4em; font-weight: bold; }
+
+.connection-details { color: #555; margin: 5px 0 5px 0; cursor: default; }
+
+.connection-details > div { display: inline-block; margin-right: 10px }
+
+.edit { min-height: 49px; }
+
+.connection-options > div,
+.change-name,
+.set-name,
+.cancel-change-name { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }

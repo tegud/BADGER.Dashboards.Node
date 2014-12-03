@@ -38,6 +38,14 @@
             sessionId = connectionDetails.sessionId;
             setIdentityDiv();
 
+            socket.emit('setConnectionProperties', {
+                windowSize: {
+                    width: $(window).width(),
+                    height: $(window).height()
+                },
+                userAgent: window.navigator.userAgent
+            });
+
             if(sessionName) {
                 socket.emit('nameConnection', {
                     name: sessionName

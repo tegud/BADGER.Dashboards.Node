@@ -105,6 +105,21 @@
                     });
                 }
 
+                function buildConnectionList(connections) {
+                    return Mustache.render('{{#connections}}'
+                             + '<li data-session-id="{{sessionId}}" class="connection-list-item">'
+                                 + '<div class="connection-item"><div class="fa fa-plug"></div></div>'
+                                 + '<div class="connection-options">'
+                                     + '<div class="reload" title="Referesh Screen"><div class="fa fa-refresh"></div></div>'
+                                     + '<div class="set-url" title="Set Screen Url"><div class="fa fa-link"></div></div>'
+                                 + '</div>'
+                                 + '<div>{{sessionId}}</div>'
+                                 + '{{{details}}}'
+                                 + '<div>Url: {{currentView.url}}</div>'
+                             + '</li>'
+                         + '{{/connections}}', { connections: connections })
+                }
+
                 _.each(groupedConnections[key], function(item, i) {
                     groupedConnections[key][i].details = buildConnectionDetails(false, item);
                 });
@@ -136,25 +151,14 @@
                              + 'Name: <input type="text" value="{{connectionGroupName}}" />'
                          + '</div>'
                          + '<ul class="connection-list">'
-                         + '{{#connections}}'
-                             + '<li data-session-id="{{sessionId}}" class="connection-list-item">'
-                                 + '<div class="connection-item"><div class="fa fa-plug"></div></div>'
-                                 + '<div class="connection-options">'
-                                     + '<div class="reload" title="Referesh Screen"><div class="fa fa-refresh"></div></div>'
-                                     + '<div class="set-url" title="Set Screen Url"><div class="fa fa-link"></div></div>'
-                                 + '</div>'
-                                 + '<div>{{sessionId}}</div>'
-                                 + '{{{details}}}'
-                                 + '<div>Url: {{currentView.url}}</div>'
-                             + '</li>'
-                         + '{{/connections}}' 
+                            + '{{{connectionList}}}' 
                          + '</ul>'
                          + '</li>', {
                         connectionGroupId: elementId,
                         connectionGroupName: key,
-                        connections: groupedConnections[key],
                         connectionDetails: buildConnectionDetails(true, groupedConnections[key][0]),
-                        bigIconClass: bigIconClass
+                        bigIconClass: bigIconClass,
+                        connectionList: buildConnectionList(groupedConnections[key])
                     }));
 
                     if(lastItem) {
@@ -167,15 +171,7 @@
                     lastItem = newItem;
                 }
                 else {
-                    var connectionList = $('.connection-list', existingItem).html(Mustache.render('{{#connections}}<li data-session-id="{{sessionId}}">'
-                         + '<div>{{sessionId}}{{^singleIp}} ({{ip}}){{/singleIp}}<button class="reload">Reload</button></div>'
-                         + '<div>Url: {{currentView.url}}<button class="set-url">Set Url</button></div>'
-                         + '</li>{{/connections}}', {
-                        connectionGroupId: elementId,
-                        connectionGroupName: key,
-                        connections: groupedConnections[key],
-                        singleIp: singleIp
-                    }));
+                    $('.connection-list', existingItem).html(buildConnectionList(groupedConnections[key]));
 
                     lastItem = existingItem;
                 }

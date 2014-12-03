@@ -28,11 +28,15 @@
 .cancel-change-name { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
 
 @media only screen and (max-width : 400px) {
-	#connections > li { padding-left: 10px; }
+	.connection-type { position: static; float: left; margin: 0 10px 10px 0 }
+
+	#connections > li { padding-left: 5px; }
 
 	.connection-name { margin-left: 100px; }
 
-	.view > .connection-details { margin-top: 85px; }
+	.view > .connection-details { clear: both; margin-left: 5px; }
 
 	.connection-details > div { display: block; margin-bottom: 5px; }
+
+	.connection-list { margin-left: 5px; }
 }

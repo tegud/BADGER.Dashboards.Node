@@ -6,6 +6,20 @@
         $.get('/admin/command/identify');
     });
 
+    $('#filter-types').on('click', 'li', function() {
+        var filter = $(this);
+
+        if(filter.hasClass('enabled')) {
+            filter.removeClass('enabled');
+            listOfConnections.removeClass(filter.data('filterClass'));
+        }
+        else {
+            filter.addClass('enabled');
+            listOfConnections.addClass(filter.data('filterClass'));
+
+        }
+    });
+
     listOfConnections
         .on('click', '.set-name', function() {
             var li = $(this).closest('li');
@@ -126,19 +140,23 @@
 
                 if(!existingItem.length) {
                     var bigIconClass = 'fa-question-circle';
+                    var itemFilterClass = 'unknown-item';
                     var lowerCaseName = key.toLowerCase();
 
                     if(lowerCaseName.indexOf('iPad') > -1 || lowerCaseName.indexOf('tablet') > -1) {
                         bigIconClass = 'fa-tablet';
+                        itemFilterClass = 'mobile-devices';
                     }
                     else if (lowerCaseName.indexOf('machine') > -1){
                         bigIconClass = 'fa-laptop';
+                        itemFilterClass = 'machines';
                     }
                     else if (lowerCaseName.indexOf('screen') > -1){
                         bigIconClass = 'fa-desktop';
+                        itemFilterClass = 'screens';
                     }
 
-                    var newItem = $(Mustache.render('<li id="{{connectionGroupId}}">'
+                    var newItem = $(Mustache.render('<li id="{{connectionGroupId}}" class="{{itemFilterClass}}">'
                          + '<div class="connection-type"><span class="fa {{bigIconClass}}"></span></div>'
                          + '<div class="view">'
                              + '<div class="change-name" title="Set Computer Name"><div class="fa fa-tags"></div></div>'
@@ -158,6 +176,7 @@
                         connectionGroupName: key,
                         connectionDetails: buildConnectionDetails(true, groupedConnections[key][0]),
                         bigIconClass: bigIconClass,
+                        itemFilterClass: itemFilterClass,
                         connectionList: buildConnectionList(groupedConnections[key])
                     }));
 

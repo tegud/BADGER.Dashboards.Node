@@ -21,7 +21,38 @@
 
     <div id="identify-screens"><span class="fa fa-wifi"></span>&nbsp;Identify Screens</div>
 
-    <ul id="connections">
+    <ul id="filter-types">
+        <li class="enabled" data-filter-class="screens">
+            <span class="fa fa-desktop"></span>
+            <div class="filter-toggle">
+                <span class="fa fa-check on"></span>
+                <span class="fa fa-times off"></span>
+            </div>
+        </li>
+        <li class="enabled" data-filter-class="machines">
+            <span class="fa fa-laptop"></span>
+            <div class="filter-toggle">
+                <span class="fa fa-check on"></span>
+                <span class="fa fa-times off"></span>
+            </div>
+        </li>
+        <li class="enabled" data-filter-class="mobile-devices">
+            <span class="fa fa-tablet"></span>
+            <div class="filter-toggle">
+                <span class="fa fa-check on"></span>
+                <span class="fa fa-times off"></span>
+            </div>
+        </li>
+        <li class="enabled" data-filter-class="unknown-item">
+            <span class="fa fa-question-circle"></span>
+            <div class="filter-toggle">
+                <span class="fa fa-check on"></span>
+                <span class="fa fa-times off"></span>
+            </div>
+        </li>
+    </ul>
+
+    <ul id="connections" class="unknown-item mobile-devices machines screens">
 
     </ul>
 </div>

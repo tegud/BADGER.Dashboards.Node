@@ -18,7 +18,7 @@
 
 #connections { list-style: none; padding: 0; }
 
-#connections > li { display:none; background-color: #ddd;clear: both; padding: 5px 5px 5px 120px; margin-bottom: 10px; border-radius: 50px 10px 10px 10px; position: relative; min-height: 100px }
+#connections > li { display:none; background-color: #ddd;clear: both; padding: 5px 5px 5px 120px; margin-bottom: 10px; border-radius: 50px 10px 10px 10px; position: relative; min-height: 100px; }
   
 #connections.unknown-item > li.unknown-item { display: block; }
 #connections.mobile-devices > li.mobile-devices { display: block; }
@@ -41,6 +41,8 @@
 
 .connection-details > div { display: inline-block; margin-right: 10px }
 
+.connection-url { word-break: break-all; }
+
 .edit { min-height: 49px; }
 
 .connection-options > div,
@@ -49,11 +51,11 @@
 .cancel-change-name { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
 
 @media only screen and (max-width : 400px) {
-	.connection-type { position: static; float: left; margin: 0 10px 10px 0 }
+	.connection-type { position: static; float: left; margin: 0 10px 10px 0; font-size: 2em; width: 50px; height: 43px; padding-top: 7px; border: solid 4px #000;  }
 
-	#connections > li { padding-left: 5px; }
+	#connections > li { padding-left: 5px; border-radius: 30px; }
 
-	.connection-name { margin-left: 100px; }
+	.connection-name { margin-left: 55px; }
 
 	.view > .connection-details { clear: both; margin-left: 5px; }
 

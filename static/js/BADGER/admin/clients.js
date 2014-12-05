@@ -129,7 +129,7 @@
                                  + '</div>'
                                  + '<div>{{sessionId}}</div>'
                                  + '{{{details}}}'
-                                 + '<div>Url: {{currentView.url}}</div>'
+                                 + '<div class="connection-url">Url: {{currentView.url}}</div>'
                              + '</li>'
                          + '{{/connections}}', { connections: connections })
                 }

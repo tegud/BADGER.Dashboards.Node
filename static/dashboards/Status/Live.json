@@ -51,6 +51,15 @@
             "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4
+        },
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-apis-live",
+            "group": "APIServers",
+            "title": "API Server Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 12
         }
     ]
 }

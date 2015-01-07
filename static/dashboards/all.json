@@ -46,6 +46,16 @@
             }
         },
         {
+            "id": "MultiChannel",
+            "name": "Multi Channel",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                }
+            }
+        },
+        {
             "id": "LateRooms",
             "name": "LateRooms",
             "views": {

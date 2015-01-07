@@ -1,0 +1,14 @@
+{
+    "name": "Live Server Status",
+    "components": [
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-reservations-live",
+            "group": "Reservations",
+            "title": "Server Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 12
+        }
+    ]
+}

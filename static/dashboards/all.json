@@ -92,6 +92,16 @@
             }
         },
         {
+            "id": "Reservations",
+            "name": "Reservations",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                }
+            }
+        },
+        {
             "id": "Bookings",
             "name": "Bookings",
             "views": {

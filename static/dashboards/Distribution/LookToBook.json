@@ -1,0 +1,11 @@
+{
+    "id": "LookToBook",
+    "name": "Distribution - Affiliate Look To Book",
+    "components": [
+    	{ 
+    		"type": "DistributionLookToBook",
+    		"title": "Affiliate Look To Book",
+    		"span": 6
+		}
+    ]
+}

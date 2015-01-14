@@ -46,6 +46,16 @@
             }
         },
         {
+            "id": "Distribution",
+            "name": "Distribution",
+            "views": {
+                "Beta": {
+                    "id": "LookToBook",
+                    "name": "Look To Book"
+                }
+            }
+        },
+        {
             "id": "MultiChannel",
             "name": "Multi Channel",
             "views": {

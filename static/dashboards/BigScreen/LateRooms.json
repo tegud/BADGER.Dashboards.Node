@@ -179,6 +179,38 @@
                     { "color": "#411485", "value": "query.commission", "id": "commission" }
                 ]
             }
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "origin.laterooms.com_HTTP",
+            "title": "laterooms.com",
+            "host": "localhost",
+            "port": 2345,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "www.laterooms.com_SSLOFFLOAD",
+            "title": "laterooms.com ssl",
+            "host": "localhost",
+            "port": 2345,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "www.laterooms.com.au_HTTP",
+            "title": "laterooms.com.au",
+            "host": "localhost",
+            "port": 2345,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "www.laterooms.com.au_SSL",
+            "title": "laterooms.com.au SSL",
+            "host": "localhost",
+            "port": 2345,
+            "span": 3
         }
     ]
 }

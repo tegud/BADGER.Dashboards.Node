@@ -85,9 +85,9 @@
                     "id": "Live",
                     "name": "Live"
                 },
-                "LiveLoadBalancer": {
-                    "id": "LiveLoadBalancer",
-                    "name": "Live Load Balancer"
+                "API LiveLoadBalancer": {
+                    "id": "APILiveLoadBalancer",
+                    "name": "Live API Load Balancer"
                 },
                 "Sandbox": {
                     "id": "Sandbox",

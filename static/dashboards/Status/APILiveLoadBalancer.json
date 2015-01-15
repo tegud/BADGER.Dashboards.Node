@@ -1,5 +1,5 @@
 {
-    "name": "Live Load Balancer Status",
+    "name": "Live API Load Balancer Status",
     "components": [
         {
             "type": "LoadBalancerStatus",

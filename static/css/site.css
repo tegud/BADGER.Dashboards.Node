@@ -415,8 +415,7 @@ h3 {margin: 0;padding: 0 }
 .load-balancer-node-item {border: solid 1px #ddd;margin: 0 5px 5px 0;text-align: center;width: 24px;padding: 10px 0;display: inline-block;font-weight: bold;font-size: 0.8em; }
 
 .load-balancer-node-item.alive { background-color: #008000 }
-.load-balancer-node-item.active { background-color: #008000 }
-.load-balancer-node-item.failed { background-color: #f00 }
+.load-balancer-node-item.dead { background-color: #f00 }
 .load-balancer-node-item.draining { background-color: #ffa500 }
 .load-balancer-node-item.disabled { background-color: #aaa }
 

@@ -32,7 +32,7 @@
     function buildViewModel(serverSet, pools) {
         return {
             pools: _(pools).map(function (pool, poolName) {
-                return {
+                var pool = {
                     name: poolName,
                     servers: _(pool.nodes).map(function (server, serverName) {
                         server.id = buildId(serverSet, poolName, server.node);
@@ -41,6 +41,8 @@
                         return server;
                     })
                 };
+                pool.servers.sort(function (a,b) { return a.name.localeCompare(b.name); });
+                return pool;
             })
         };
     }

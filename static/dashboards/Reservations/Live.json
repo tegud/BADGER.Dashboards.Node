@@ -17,6 +17,31 @@
             "host": "10.44.35.62",
             "port": 1234,
             "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "hotelauth.laterooms.com_HTTP",
+            "title": "Hotel Auth LB Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "contactcentre.laterooms.com_HTTP",
+            "title": "Contact Centre LB Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "contactcentre.laterooms.com_SSL",
+            "title": "Contact Centre SSL LB Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
         }
+        
     ]
 }

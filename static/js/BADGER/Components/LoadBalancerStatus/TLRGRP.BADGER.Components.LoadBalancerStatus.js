@@ -34,7 +34,7 @@
         });
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
             query: {
-                url: refreshServerBaseUrl + '10.44.35.62:1234/poolStatus?poolId=' + configuration.poolId,
+                url: refreshServerBaseUrl + 'poolStatus?poolId=' + configuration.poolId,
             },
             refresh: 2500,
             callbacks: {

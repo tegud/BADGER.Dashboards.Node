@@ -95,9 +95,23 @@
                     "id": "Live",
                     "name": "Live"
                 },
+                "API LiveLoadBalancer": {
+                    "id": "APILiveLoadBalancer",
+                    "name": "Live API Load Balancer"
+                },
                 "Sandbox": {
                     "id": "Sandbox",
                     "name": "Sandbox"
+                }
+            }
+        },
+        {
+            "id": "Reservations",
+            "name": "Reservations",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
                 }
             }
         },

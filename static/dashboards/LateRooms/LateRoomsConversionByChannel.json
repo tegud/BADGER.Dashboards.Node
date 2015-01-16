@@ -1,0 +1,269 @@
+{
+    "id": "LateRoomsConversionByChannel",
+    "name": "LateRooms.com Conversion By Channel",
+    "components": [
+        {
+          "type": "SharedDataStore",
+          "title": "LateRooms Conversion",
+          "storeId": "Data",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.byhour.date_histogram.extended_bounds"
+          ],
+          "filters": [
+            { 
+              "id": "partnerCode",
+              "title": "Channel",
+              "defaultOption": "All",
+              "options": {
+                "All": false,
+                "SEO/Direct": { "partnerIdDoesNotExist": true },
+                "SEM": { "partnerIds": [] },
+                "TripAdvisor": { "partnerIds": [] },
+                "Trivago": { "partnerIds": [] },
+                "EDM": { "partnerIds": [] },
+                "Affiliate": { "notPartnerIds": [], "partnerIdExists": true }
+              },
+              "allowMultiple": false,
+              "setOnProperties": {
+                "partnerIds": "query.query.filtered.filter.bool.must.#.term.user|userAgent|name",
+                "notPartnerIds": "query.query.filtered.filter.bool.must.#.term.user|userAgent|device",
+                "partnerIdExists": "",
+                "partnerIdDoesNotExist": ""
+              }
+            }
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { },
+              "lastWeek": { "timeOffset": { "weeks": -1 } },
+              "2weeksago": { "timeOffset": { "weeks": -2 } },
+              "3weeksago": { "timeOffset": { "weeks": -3 } },
+              "1monthago": { "timeOffset": { "relativeInMonth": -1 } }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "terms" : {
+                            "type" : ["lr_varnish_request","domain_events"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "byhour" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                    "bookings": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "term": {
+                                "type": "domain_events"
+                              }
+                            },
+                            {
+                              "term": {
+                                "isTestBooking": "false"
+                              }
+                            },
+                            {
+                              "term": {
+                                "domainEventType.raw": "booking made"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "requests": {
+                      "filter": {
+                        "bool": {
+                          "must": [
+                            {
+                              "term": {
+                                "type": "lr_varnish_request"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "aggs": {
+                        "sessions": {
+                          "cardinality": {
+                            "field": "sessionId.raw"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "byhour",
+              "fields": {
+                "bookings": "bookings.doc_count",
+                "requests": "requests.doc_count",
+                "sessions": "requests.sessions.value"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "commission"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "sessions",
+              "toField": "value.sessions"
+            },
+            {
+              "type": "stats",
+              "fields": ["lastWeek", "2weeksago", "3weeksago", "1monthago"],
+              "stds": [1, 2],
+              "property": "requests",
+              "toField": "value.requests"
+            }
+          ]
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "Data",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "text": "Today" },
+                { "id": "average", "color": "green", "text": "Average" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "today", "color": "purple", "value": "today.commission" },
+                { "id": "mean", "color": "green", "value": "value.mean" }
+              ],
+              "areas": [
+                { "id": "plusTwoStd", "color": "#AAA", "start": "value.standardDeviations.2.minus", "end": "value.standardDeviations.2.plus" },
+                { "id": "plusOneStd", "color": "#CCC", "start": "value.standardDeviations.1.minus", "end": "value.standardDeviations.1.plus" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion",
+          "summaryText": "Conversion tracking for LateRooms.com (WEB)",
+          "storeId": "Data",
+          "counter": {
+              "counters": [
+                { "id": "b-counter-today", "color": "purple", "text": "Today" },
+                { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
+                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" },
+                { "id": "b-counter-3weeksago", "color": "#0ADC45", "text": "3 Weeks Ago" },
+                { "id": "b-counter-1monthago", "color": "#907616", "text": "1 Month Ago" }
+              ]
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "b-today", "color": "purple", "value": "today.commission" },
+                { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.commission" },
+                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.commission" },
+                { "id": "b-3weeksago", "color": "#0ADC45", "value": "3weeksago.commission" },
+                { "id": "b-1monthago", "color": "#907616", "value": "1monthago.commission" }
+              ],
+              "window": false
+          }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Requests",
+            "summaryText": "Requests on LateRooms.com (WEB)",
+            "storeId": "Data",
+            "counter": {
+              "counters": [
+                { "id": "requests-counter-today", "color": "purple", "text": "Today" },
+                { "id": "requests-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "requests-line-today", "color": "purple", "value": "today.requests" },
+                { "id": "requests-counter-mean", "color": "green", "value": "value.requests.mean" }
+              ],
+              "areas": [
+                { "id": "requests-counter-plusTwoStd", "color": "#AAA", "start": "value.requests.standardDeviations.2.minus", "end": "value.requests.standardDeviations.2.plus" },
+                { "id": "requests-counter-plusOneStd", "color": "#CCC", "start": "value.requests.standardDeviations.1.minus", "end": "value.requests.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Sessions",
+            "summaryText": "Sessions on LateRooms.com (WEB)",
+            "storeId": "Data",
+            "counter": {
+              "counters": [
+                { "id": "sessions-counter-today", "color": "purple", "text": "Today" },
+                { "id": "sessions-counter-mean", "color": "green", "text": "Average" }
+              ]
+            },
+            "graph": {
+              "lines": [
+                { "id": "sessions-line-today", "color": "purple", "value": "today.sessions" },
+                { "id": "sessions-counter-mean", "color": "green", "value": "value.sessions.mean" }
+              ],
+              "areas": [
+                { "id": "sessions-counter-plusTwoStd", "color": "#AAA", "start": "value.sessions.standardDeviations.2.minus", "end": "value.sessions.standardDeviations.2.plus" },
+                { "id": "sessions-counter-plusOneStd", "color": "#CCC", "start": "value.sessions.standardDeviations.1.minus", "end": "value.sessions.standardDeviations.1.plus" }
+              ],
+              "window": false
+            }
+        }
+    ]
+}

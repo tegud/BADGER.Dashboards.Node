@@ -652,3 +652,20 @@ h3 {margin: 0;padding: 0 }
  }
 
 .alert-state-info { padding: 10px; }
+
+.affiliate-looktobook { width: 100%; }
+
+.affiliate-looktobook th { text-align: left; }
+
+.affiliate-looktobook td { padding: 4px; }
+
+.affiliate-looktobook tr:nth-child(odd) { background-color: #f7f7f7 }
+.affiliate-looktobook tr:nth-child(even) { background-color: #e8e8e8 }
+
+.requests-header { width: 100px; }
+.bookings-header { width: 100px; }
+.looktobook-header { width: 180px; }
+
+.title-row .fa { display: none; }
+
+.title-row .sort-by .fa { display: inline; }

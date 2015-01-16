@@ -79,6 +79,27 @@
     };
 
     TLRGRP.BADGER.Dashboard.DataStores.Mappers = {
+        'groupBy': function(mapping, data) {
+            function group(root, data) {
+                var rootObject = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data, root);
+
+                return _.reduce(rootObject, function(memo, item) {
+                    memo[item.key] = item.doc_count;
+
+                    return memo;
+                }, {});
+            };
+
+            if(typeof mapping.root === 'string') {
+                return group(mapping.root, data);
+            }
+
+            return _.reduce(mapping.root, function(memo, root) {
+                memo[root.target] = group(root.field, data);
+
+                return memo;
+            }, {});
+        },
         'pickValue': function(mapping, data) {
             return data[mapping.field];
         },

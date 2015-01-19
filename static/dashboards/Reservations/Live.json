@@ -9,46 +9,6 @@
             "host": "badger.laterooms.com",
             "port": 3000,
             "span": 12
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "Booking.api_HTTP",
-            "title": "Booking API LB Status",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "hotelauth.laterooms.com_HTTP",
-            "title": "Hotel Auth LB Status",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "contactcentre.laterooms.com_HTTP",
-            "title": "Contact Centre LB Status",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "contactcentre.laterooms.com_SSL",
-            "title": "Contact Centre SSL LB Status",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "SecureCardPortal.api_HTTP",
-            "title": "Secure Card Api LB Status",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
         }
     ]
 }

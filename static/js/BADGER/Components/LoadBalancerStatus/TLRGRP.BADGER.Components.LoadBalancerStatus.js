@@ -36,7 +36,7 @@
             query: {
                 url: refreshServerBaseUrl + 'poolStatus?poolId=' + configuration.poolId,
             },
-            refresh: 2500,
+            refresh: 15000,
             callbacks: {
                 success: function (data) {
                     inlineError.hide();
@@ -51,7 +51,7 @@
                         inlineError.show('Cannot access health check server.');
                     }
 
-                    dataStore.setNewRefresh(10000);
+                    dataStore.setNewRefresh(30000);
                 }
             },
             mappings: [

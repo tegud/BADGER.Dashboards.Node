@@ -4,9 +4,9 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
     function calculateNextRefresh(nextServerSideRefresh) {
-        var adjustedNextServerSideRefresh = moment(nextServerSideRefresh).add(500, 'ms');
+        var adjustedNextServerSideRefresh = moment(nextServerSideRefresh).add(15000, 'ms');
         var refreshIn = moment(adjustedNextServerSideRefresh).diff(moment());
-        var minRefreshInterval = 1000;
+        var minRefreshInterval = 15000;
 
         if (refreshIn < minRefreshInterval) {
             refreshIn = minRefreshInterval;
@@ -36,7 +36,7 @@
             query: {
                 url: refreshServerBaseUrl + 'poolStatus?poolId=' + configuration.poolId,
             },
-            refresh: 2500,
+            refresh: 15000,
             callbacks: {
                 success: function (data) {
                     inlineError.hide();
@@ -51,7 +51,7 @@
                         inlineError.show('Cannot access health check server.');
                     }
 
-                    dataStore.setNewRefresh(10000);
+                    dataStore.setNewRefresh(30000);
                 }
             },
             mappings: [

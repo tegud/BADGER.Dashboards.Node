@@ -670,6 +670,22 @@
                     }
                 ]
             }
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "moonstick_http",
+            "title": "Moonstick Servers",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "origin.laterooms.com_HTTP",
+            "title": "Varnish Servers",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
         }
     ]
 }

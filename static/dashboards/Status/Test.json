@@ -1,0 +1,14 @@
+{
+    "name": "Test Server Status",
+    "components": [
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-apis-test",
+            "group": "TestAPIs",
+            "title": "Test API Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        }
+    ]
+}

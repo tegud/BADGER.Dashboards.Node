@@ -103,6 +103,10 @@
                     "id": "Sandbox",
                     "name": "Sandbox"
                 },
+                "Test": {
+                    "id": "Test",
+                    "name": "Test"
+                },
                 "Blogs": {
                     "id": "Blogs",
                     "name": "Blogs"

@@ -681,7 +681,7 @@
         },
         {
             "type": "LoadBalancerStatus",
-            "poolId": "origin.laterooms.com_HTTP",
+            "poolId": "Varnish",
             "title": "Varnish Servers",
             "host": "10.44.35.62",
             "port": 1234,

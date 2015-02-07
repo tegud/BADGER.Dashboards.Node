@@ -21,8 +21,7 @@
         {
             "type": "HealthCheckSentinel",
             "alertName": "healthCheck.serviceHealth-live",
-            "serverSet": "Elasticsearch",
-            "group": "ELK",
+            "group": "Elasticsearch",
             "title": "Elasticsearch Server Status",
             "host": "badger.laterooms.com",
             "port": 3000,

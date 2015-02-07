@@ -19,18 +19,11 @@
             "span": 4
         },
         {
-            "type": "HealthCheck",
-            "serverSet": "Connectivity",
-            "title": "Connectivity Server Status",
-            "host": "10.44.22.158",
-            "port": 3000,
-            "span": 4
-        },
-        {
-            "type": "HealthCheck",
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
             "serverSet": "Elasticsearch",
             "title": "Elasticsearch Server Status",
-            "host": "10.44.22.158",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4
         },

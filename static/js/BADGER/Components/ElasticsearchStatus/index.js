@@ -10,26 +10,49 @@
 		text: 'Could not retrieve cluster state', 
 		description: 'Cluster state is unknown, check Sentinel is <a href="badger.laterooms.com:3000/currentStatus?pretty" target="_blank">returning valid data</a>.'
 	};
+
+	var nodeStatusMap = {
+		'OK': 'ok',
+		'TIMEOUT': 'timed out',
+		'LONG-TIMEOUT': 'critically timed out',
+		'FAILED': 'erroring'
+	};
+
+	function nodesStatus(nodes) {
+		if(_.every(nodes, function(node) {
+			return node.status === 'OK';
+		})) {
+			return 'All nodes are responding';
+		}
+		else {
+			var nodeStatusString = '';
+
+			var countByStatus = _.countBy(nodes, function(node) { return node.status; });
+
+			return _.map(countByStatus, function(count, status) { return count + ' node' + (count === 1 ? ' ' : 's ') + nodeStatusMap[status]; }).join(', ');
+		}
+	}
+
 	var stateMap = {
 		green: { 
 			className: 'ok', 
 			text: 'All Good',
 			description: function(data) {
-				return 'All nodes are responding correctly, all indicies and replicas are assigned.';
+				return nodesStatus(data.info.nodes) + ', all indicies and replicas are assigned.';
 			}
 		},
 		yellow: { 
 			className: 'recovering', 
 			text: 'In Recovery',
 			description: function(data) {
-				return 'All nodes are responding, and all primary shards assigned, however ' + data.info.shards.unassigned + ' replica shards are unassigned.';
+				return nodesStatus(data.info.nodes) + ', all primary shards assigned, however ' + data.info.shards.unassigned + ' replica shards are unassigned.';
 			}
 		},
 		red: { 
 			className: 'critical', 
 			text: 'CRITICAL',
 			description: function(data) {
-				return '';
+				return nodesStatus(data.info.nodes) + ', ';
 			}
 		}
 	};
@@ -116,7 +139,7 @@
 
 					$('.node-list', clusterStatusElement).html(_.map(data.info.nodes, function(node) {
 						var name = node.name.replace(/pentlrges/, '')
-						return '<li class="' + node.status + '">' + (node.isMaster ? '<div class="master"></div>' : '') + name + '</li>';
+						return '<li class="' + node.status + '">' + (node.isMaster ? '<div class="master"></div>' : '') + '<div class="node-container">' + name + '</div>' + '</li>';
 					}));
 
 					setShardsPanel(data.info.shards);

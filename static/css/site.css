@@ -711,4 +711,4 @@ h3 {margin: 0;padding: 0 }
 
 .shard-allocation-states { margin-top: 5px; list-style: none; padding: 0; font-size: 1.25em; }
 
-.shard-allocation-states > li > .fa { display: inline-block; width: 22px; }
+.shard-allocation-states > li > .fa { display: inline-block; width: 22px; text-align: center; }

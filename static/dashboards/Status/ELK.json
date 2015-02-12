@@ -1,0 +1,12 @@
+{
+    "name": "ELK",
+    "components": [
+        {
+            "type": "ElasticsearchStatus",
+            "alertName": "elasticsearch-health.elasticsearch-health",
+            "title": "Cluster Status",
+            "host": "localhost",
+            "port": 3000
+        }
+    ]
+}

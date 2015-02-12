@@ -95,6 +95,10 @@
                     "id": "Live",
                     "name": "Live"
                 },
+                "ELK": {
+                    "id": "ELK",
+                    "name": "ELK"
+                },
                 "API LiveLoadBalancer": {
                     "id": "APILiveLoadBalancer",
                     "name": "Live API Load Balancer"

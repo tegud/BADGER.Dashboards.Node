@@ -674,10 +674,12 @@ h3 {margin: 0;padding: 0 }
 
 .cluster-state-panels > li { display: inline-block; vertical-align: top; margin-right: 20px; }
 
+
 .main-status,
 .node-status-header { font-size: 2em; }
 
 .cluster-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
+
 
 .cluster-status-indicator.unknown { color: #aaa; border-color: #aaa; }
 
@@ -695,7 +697,7 @@ h3 {margin: 0;padding: 0 }
 .cluster-status-indicator.recovering .status-indicator.recovery { display: block; margin-top: 4px; }
 .cluster-status-indicator.critical .status-indicator.critical { display: block; margin-top: 6px; }
 
-.status-text { max-width: 300px; min-width: 250px; }
+.status-text { max-width: 400px; min-width: 250px; min-height: 160px; }
 
 .nodes-panel { max-width: 320px; min-width: 200px; }
 
@@ -705,13 +707,40 @@ h3 {margin: 0;padding: 0 }
 
 .node-list li .node-container { border: 4px solid #000; padding: 5px; background-color: #fff;width:18px;height:18px; text-align: center; }
 
-.node-list li.OK .node-container { background-color: #008000 }
-.node-list li.FAILED .node-container { background-color: #f00 }
-.node-list li.TIMEOUT .node-container { background-color: #aaa }
-.node-list li.LONG-TIMEOUT .node-container { background-color: #ffa500 }
+.node-list li.OK .node-container,
+.node-legend li.OK .block { background-color: #008000 }
+.node-list li.FAILED .node-container,
+.node-legend li.FAILED .block { background-color: #f00 }
+.node-list li.TIMEOUT .node-container,
+.node-legend li.TIMEOUT .block { background-color: #aaa }
+.node-list li.LONG-TIMEOUT .node-container,
+.node-legend li.LONG-TIMEOUT .block { background-color: #ffa500 }
 
 .node-list li .master { width: 32px; height:30px; background-image: url('../images/crown.png'); margin: 0 0 3px 1px; }
 
 .shard-allocation-states { margin-top: 5px; list-style: none; padding: 0; font-size: 1.25em; }
 
 .shard-allocation-states > li > .fa { display: inline-block; width: 22px; text-align: center; }
+
+.node-legend { list-style: none; padding: 0 }
+
+.node-legend li { display: inline-block; margin-right: 5px; }
+
+.node-legend li .block { width: 0.8em; height: 0.8em; display: inline-block; margin-right: 0.1em; border-radius: 50px }
+
+.small.cluster-state-panels > li { margin-right: 5px; }
+.small .cluster-status-indicator { width: 38px; height: 38px; border-width: 5px; font-size: 2em; padding: 3px; margin-top: 6px; }
+.small .status-text,
+.small .node-status-header { display: none }
+.small .nodes-panel { max-width: auto; min-width: auto; }
+.small .shard-allocation-panel { display: none; }
+.small .node-list li .node-container { border-width: 2px; }
+.small .node-list li .master { width: 15px; height:14px; background-image: url('../images/crown_small.png'); margin: 0 0 3px 8px; }
+
+.last-updated-top-right { float: right; padding-top: 3px; }
+
+.loading-clear-bottom { margin-bottom: 0 }
+
+.goto-elk { position: absolute; bottom: 10px; right: 10px; }
+
+.goto-elk-icon { display: inline-block; margin-left: 4px; }

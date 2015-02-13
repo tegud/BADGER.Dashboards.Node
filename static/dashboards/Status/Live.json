@@ -19,13 +19,13 @@
             "span": 4
         },
         {
-            "type": "HealthCheckSentinel",
-            "alertName": "healthCheck.serviceHealth-live",
-            "group": "Elasticsearch",
-            "title": "Elasticsearch Server Status",
-            "host": "badger.laterooms.com",
+            "type": "ElasticsearchStatus",
+            "alertName": "elasticsearch-health.elasticsearch-health",
+            "title": "ELK Status",
+            "host": "localhost",
             "port": 3000,
-            "span": 4
+            "span": 4,
+            "profile": "small"
         },
         {
             "type": "HealthCheckSentinel",

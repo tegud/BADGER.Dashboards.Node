@@ -4,6 +4,37 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
 	var idIncrementor = 0;
+	var largeTemplate = '<ul class="cluster-state-panels" style="margin-top: 0; margin-bottom: 32px;">'
+		+ '<li><div class="cluster-status-indicator unknown">'
+				+ '<span class="fa fa-question status-indicator unknown"></span>'
+				+ '<span class="fa fa-check status-indicator ok"></span>'
+				+ '<span class="fa fa-life-ring status-indicator recovery"></span>'
+				+ '<span class="fa fa-exclamation status-indicator critical"></span>'
+			+ '</div></li>'
+		+ '<li class="status-text">'
+			+ '<div class="main-status"></div>'
+			+ '<div class="status-description"></div>'
+		+ '</li>'
+		+ '<li class="nodes-panel">'
+			+ '<div class="node-status-header">Nodes</div>'
+			+ '<ul class="node-list"></ul>'
+			+ '<ul class="node-legend">'
+				+ '<li class="OK"><div class="block"></div>OK</li>'
+				+ '<li class="TIMEOUT"><div class="block"></div>Timeout</li>'
+				+ '<li class="LONG-TIMEOUT"><div class="block"></div>Critical Timeout</li>'
+				+ '<li class="FAILED"><div class="block"></div>Error</li>'
+			+ '</ul>'
+		+ '</li>'
+		+ '<li class="shard-allocation-panel">'
+			+ '<div class="node-status-header">Shard Allocation</div>'
+			+ '<ul class="shard-allocation-states">'
+				+ '<li class="unassigned-shards-row hidden"><span class="fa fa-exclamation-triangle"></span> <span class="count"></span> unassigned</li>'
+				+ '<li class="relocating-shards-row hidden"><span class="fa fa-arrows"></span> <span class="count"></span> relocating</li>'
+				+ '<li class="initialising-shards-row hidden"><span class="fa fa-stack-overflow"></span> <span class="count"></span> initialising</li>'
+				+ '<li class="all-good-shards-row"><span class="fa fa-thumbs-up"></span> All primary and replica shards allocated.</li>'
+			+ '</ul>'
+		+ '</li>'
+	+ '</ul>';
 
 	var unknownState = {
 		className: 'unknown', 
@@ -33,6 +64,61 @@
 		}
 	}
 
+	function shardStateForCritical(data) {
+		var shardStatus = ' ' + data.info.shards.unassigned + ' shard' + (data.info.shards.unassigned === 1 ? '' : 's') + ' unassigned';
+		if(_.every(data.info.nodes, function(node) { return node.status === 'OK'; })) {
+			return shardStatus + ', which may include primaries (POTENTIAL DATA LOSS).';
+		}
+			
+		return shardStatus + ', cannot determine if this includes primary indicies due to presence of sick node.' ;
+	}
+
+	function suggestedAction(data) {
+		var shardAdvice = '';
+		var nodeAdvice = '';
+
+		if(data.info.state === 'yellow') {
+			shardAdvice = 'Recovery should continue as normal, if the shard' + (data.info.shards.unassigned === 1 ? ' stays' : 's stay') + ' unassigned for a prolonged period, ensure ' + (data.info.shards.unassigned === 1 ? 'it is' : 'they are') + ' not corrupted.';
+
+			if(_.any(data.info.nodes, function(node) { return node.status === 'TIMEOUT'; })) {
+				nodeAdvice = 'Monitor gray nodes to ensure they do not timeout critically. Restart if needed.';
+			}
+		}
+		else if(data.info.state === 'red') {
+			var failedNodes = _.filter(data.info.nodes, function(node) { return node.status === 'FAILED'; });
+			var timedoutNodes = _.filter(data.info.nodes, function(node) { return node.status === 'TIMEOUT' || node.status === 'LONG-TIMEOUT'; });
+			var criticalTimeoutNodes = _.filter(timedoutNodes, function(node) { return node.status === 'LONG-TIMEOUT'; });
+
+			if(failedNodes.length) {
+				if(timedoutNodes.length) {
+					var masterNodeTimedOut = _.chain(timedoutNodes).filter(function(node) { return (node.status === 'TIMEOUT' || node.status === 'LONG-TIMEOUT') && node.isMaster; }).first().value();
+
+					if(masterNodeTimedOut) {
+						nodeAdvice = 'Master node (' + masterNodeTimedOut.name + ')  has timed out, restart this first to determine if failed nodes have just lost contact with master.';
+					}
+					else {
+						nodeAdvice = 'Nodes have timed out and failed, suggest restarting timed out nodes first.';
+					}
+
+				}
+				else {
+					nodeAdvice = 'Failed nodes ';
+				}
+			}
+			else if(criticalTimeoutNodes.length) {
+				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out for a prelonged period of time, suggest restarting these nodes.';
+			}
+			else if(timedoutNodes.length) {
+				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out, suggest monitoring to see if they recover, and if not, restarting.';
+			}
+			else {
+				shardAdvice = 'Investigate unassigned indicies as a priority, data loss may occur.';
+			}
+		}
+
+		return (shardAdvice + nodeAdvice) ? (shardAdvice + (shardAdvice && nodeAdvice ? '<br /><br />' : '') + nodeAdvice) : '';
+	}
+
 	var stateMap = {
 		green: { 
 			className: 'ok', 
@@ -45,48 +131,36 @@
 			className: 'recovering', 
 			text: 'In Recovery',
 			description: function(data) {
-				return nodesStatus(data.info.nodes) + ', all primary shards assigned, however ' + data.info.shards.unassigned + ' replica shards are unassigned.';
+				return nodesStatus(data.info.nodes) + ', all primary shards assigned, however ' + data.info.shards.unassigned + ' replica shard' + (data.info.shards.unassigned === 1 ? ' is ' : 's are ') + 'unassigned.';
 			}
 		},
 		red: { 
 			className: 'critical', 
 			text: 'CRITICAL',
 			description: function(data) {
-				return nodesStatus(data.info.nodes) + ', ';
+				return nodesStatus(data.info.nodes) + '. ' + shardStateForCritical(data);
 			}
 		}
 	};
 
 	TLRGRP.BADGER.Dashboard.Components.ElasticsearchStatus = function (configuration) {
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
-        var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
-        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated();
+        var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
+        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
-        var clusterStatusElement = $('<ul class="cluster-state-panels">'
-								+ '<li><div class="cluster-status-indicator unknown">'
-										+ '<span class="fa fa-question status-indicator unknown"></span>'
-										+ '<span class="fa fa-check status-indicator ok"></span>'
-										+ '<span class="fa fa-life-ring status-indicator recovery"></span>'
-										+ '<span class="fa fa-exclamation status-indicator critical"></span>'
-									+ '</div></li>'
-								+ '<li class="status-text">'
-									+ '<div class="main-status"></div>'
-									+ '<div class="status-description"></div>'
-								+ '</li>'
-								+ '<li class="nodes-panel">'
-									+ '<div class="node-status-header">Nodes</div>'
-									+ '<ul class="node-list"></ul>'
-								+ '</li>'
-								+ '<li class="shard-allocation-panel">'
-									+ '<div class="node-status-header">Shard Allocation</div>'
-									+ '<ul class="shard-allocation-states">'
-										+ '<li class="unassigned-shards-row hidden"><span class="fa fa-exclamation-triangle"></span> <span class="count"></span> Shards Unassigned</li>'
-										+ '<li class="relocating-shards-row hidden"><span class="fa fa-arrows"></span> <span class="count"></span> Shards Relocating</li>'
-										+ '<li class="initialising-shards-row hidden"><span class="fa fa-stack-overflow"></span> <span class="count"></span> Shards Initialising</li>'
-										+ '<li class="all-good-shards-row"><span class="fa fa-thumbs-up"></span> All primary and replica shards allocated.</li>'
-									+ '</ul>'
-								+ '</li>'
-							+ '</ul>');
+        var clusterStatusElement = $(largeTemplate);
+
+        if(configuration.profile) {
+        	var gotoElkButton = $('<a class="goto-elk" href="javascript: void(0);">Go to ELK Dashboard<span class="goto-elk-icon fa fa-arrow-circle-o-right"></span></a>').on('click', function() {
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'Status',
+					view: 'ELK'
+				});
+        	});
+
+        	clusterStatusElement.addClass(configuration.profile);
+        	clusterStatusElement.append(gotoElkButton);
+        }
 
 		function setShardsPanel(shardsInfo) {
 			var shardStates = $('.shard-allocation-states', clusterStatusElement);
@@ -97,25 +171,32 @@
 			else {
 				$('.all-good-shards-row', shardStates).addClass('hidden');
 
-				$('.unassigned-shards-row', shardStates)[shardsInfo.unassigned ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.unassigned);
-				$('.relocating-shards-row', shardStates)[shardsInfo.relocating ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.relocating);
-				$('.initialising-shards-row', shardStates)[shardsInfo.initializing ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.initializing);
+				$('.unassigned-shards-row', shardStates)[shardsInfo.unassigned ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.unassigned + ' shard' + (shardsInfo.unassigned === 1 ? '' : 's'));
+				$('.relocating-shards-row', shardStates)[shardsInfo.relocating ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.relocating + ' shard' + (shardsInfo.relocating === 1 ? '' : 's'));
+				$('.initialising-shards-row', shardStates)[shardsInfo.initializing ? 'removeClass' : 'addClass']('hidden').find('.count').text(shardsInfo.initializing + ' shard' + (shardsInfo.initializing === 1 ? '' : 's'));
 			}
 		}
+
+		var modules = [];
+		if(configuration.profile === 'small') {
+			modules.push(lastUpdated);
+			modules.push(inlineLoading);
+		}
+		else {
+			modules.push(lastUpdated);
+			modules.push(inlineLoading);
+		}
+		modules.push({
+			appendTo: function (container) {
+				container.append(clusterStatusElement);
+			}
+		});
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
 			componentClass: 'conversion-status',
-			modules: [
-				inlineLoading,
-				lastUpdated,
-				{
-					appendTo: function (container) {
-						container.append(clusterStatusElement);
-					}
-				}
-			]
+			modules: modules
 		});
 
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
@@ -134,8 +215,10 @@
                 	var descriptionText = $('.status-description', clusterStatusElement);
 
 					indicatorElement[0].className = 'cluster-status-indicator ' + currentState.className;
+					indicatorElement.attr('title', currentState.text);
+
 					statusText.text(currentState.text);
-					descriptionText.html(typeof currentState.description === 'function' ? currentState.description(data) : currentState.description);
+					descriptionText.html((typeof currentState.description === 'function' ? currentState.description(data) : currentState.description) + '<br/></br>' + suggestedAction(data));
 
 					$('.node-list', clusterStatusElement).html(_.map(data.info.nodes, function(node) {
 						var name = node.name.replace(/pentlrges/, '')

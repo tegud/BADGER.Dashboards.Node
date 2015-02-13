@@ -22,7 +22,7 @@
             "type": "ElasticsearchStatus",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "ELK Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 4,
             "profile": "small"

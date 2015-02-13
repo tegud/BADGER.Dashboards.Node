@@ -5,7 +5,7 @@
             "type": "ElasticsearchStatus",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "Cluster Status",
-            "host": "localhost",
+            "host": "badger.laterooms.com",
             "port": 3000
         }
     ]

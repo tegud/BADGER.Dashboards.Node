@@ -4,7 +4,7 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
 	var idIncrementor = 0;
-	var largeTemplate = '<ul class="cluster-state-panels" style="margin-top: 0; margin-bottom: 32px;">'
+	var largeTemplate = '<ul class="cluster-state-panels">'
 		+ '<li><div class="cluster-status-indicator unknown">'
 				+ '<span class="fa fa-question status-indicator unknown"></span>'
 				+ '<span class="fa fa-check status-indicator ok"></span>'
@@ -151,6 +151,11 @@
         var clusterStatusElement = $(largeTemplate);
 
         if(configuration.profile) {
+        	clusterStatusElement.css({
+    			marginTop: 0,
+    			marginBottom: '32px'
+        	});
+
         	var gotoElkButton = $('<a class="goto-elk" href="javascript: void(0);">Go to ELK Dashboard<span class="goto-elk-icon fa fa-arrow-circle-o-right"></span></a>').on('click', function() {
 				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
 					dashboard: 'Status',

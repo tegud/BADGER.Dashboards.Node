@@ -7,6 +7,20 @@
             "title": "Cluster Status",
             "host": "badger.laterooms.com",
             "port": 3000
+        },
+        {
+            "type": "ElasticsearchTodaysIndexHealth",
+            "alertName": "elasticsearch-health.elasticsearch-health",
+            "title": "Today's Index",
+            "host": "badger.laterooms.com",
+            "port": 3000
+        },
+        {
+            "type": "ElasticsearchServerHealth",
+            "alertName": "elasticsearch-health.elasticsearch-health",
+            "title": "Server Health",
+            "host": "badger.laterooms.com",
+            "port": 3000
         }
     ]
 }

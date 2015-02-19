@@ -2,6 +2,15 @@
     "name": "Live API Load Balancer Status",
     "components": [
         {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-loadbalancerapi",
+            "group": "TestAPIs",
+            "title": "Load Balancer API Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        },
+        {
             "type": "LoadBalancerStatus",
             "poolId": "Address.api_HTTP",
             "title": "Address API Status",

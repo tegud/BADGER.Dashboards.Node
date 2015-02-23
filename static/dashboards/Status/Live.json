@@ -8,7 +8,7 @@
             "title": "LateRooms Front End Server Status",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 8
+            "span": 6
         },
         {
             "type": "HealthCheckSentinel",
@@ -17,7 +17,16 @@
             "title": "AsiaRooms Status",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 4
+            "span": 3
+        },
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-loadbalancerapi",
+            "group": "TestAPIs",
+            "title": "LB API Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 3
         },
         {
             "type": "ElasticsearchStatus",

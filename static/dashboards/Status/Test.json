@@ -8,6 +8,14 @@
             "title": "Test API Status",
             "host": "badger.laterooms.com",
             "port": 3000,
+            "span": 12
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Search Service",
+            "title": "API LB Status",
+            "host": "10.44.35.63",
+            "port": 1234,
             "span": 4
         }
     ]

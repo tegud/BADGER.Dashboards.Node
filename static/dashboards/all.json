@@ -95,6 +95,10 @@
                     "id": "Live",
                     "name": "Live"
                 },
+                "DevTools": {
+                    "id": "DevTools",
+                    "name": "Dev Tools"
+                },
                 "ELK": {
                     "id": "ELK",
                     "name": "ELK"

@@ -125,13 +125,13 @@
 				});
 			}
 
-			var end = moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit.format('HH:mm:ss') + 'Z');
+			var end = moment(day.format('YYYY-MM-DD 00:00:00') + 'Z').format('YYYY-MM-DDT' + endTimeLimit.format('HH:mm:ss') + 'Z');
 			var endMoment = moment(end);
 
 			return {
 				live: endMoment.add(-10, 'mins').isAfter(moment()),
 				interval: '15m',
-			 	start: moment(day.format('YYYY.MM.DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
+			 	start: moment(day.format('YYYY-MM-DD 00:00:00') + 'Z').format('YYYY-MM-DDT00:00:00Z'),
 		 		end: end
 			};
 		}

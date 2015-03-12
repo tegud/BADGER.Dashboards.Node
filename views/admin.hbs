@@ -20,7 +20,18 @@
     <h1>Active Clients</h1>
 
     <div id="identify-screens"><span class="fa fa-wifi"></span>&nbsp;Identify Screens</div>
-
+    
+    <div class="message-screens-view">
+        <div id="message-view" class="message-view">
+            <div id="message-screens"><span class="fa fa-wifi"></span>&nbsp;Message Screens</div>
+        </div>
+        <div id="message-edit" class="message-edit hidden">
+            <div id="send-message"><div class="fa fa-check"></div></div>
+            <div id="cancel-send-message"><div class="fa fa-ban"></div></div>
+            Message: <input id="message-text" type="text" value="Hi There!" />
+        </div>
+    </div>
+    
     <ul id="filter-types">
         <li class="enabled" data-filter-class="screens">
             <span class="fa fa-desktop"></span>

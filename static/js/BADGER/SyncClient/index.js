@@ -8,6 +8,7 @@
         var sessionId;
         var sessionName = $.cookie('boardName');
         var identifyTimeout;
+        var messageTimeout;
         var lastDashboardEvent;
 
         function setIdentityDiv() {
@@ -30,6 +31,14 @@
                 $('#identify').removeClass('hidden');
                 identifyTimeout = setTimeout(function() {
                     $('#identify').addClass('hidden');
+                }, 5000);
+            },
+            message: function(data) {
+                clearTimeout(messageTimeout);
+                $('#message').text(data.message);
+                $('#message').removeClass('hidden');
+                messageTimeout = setTimeout(function() {
+                    $('#message').addClass('hidden');
                 }, 5000);
             }
         };

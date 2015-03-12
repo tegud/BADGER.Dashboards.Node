@@ -1,7 +1,5 @@
 ﻿#identify-screens { font-size: 1.2em; padding: 3px 8px; border-radius: 20px; cursor: pointer; background-color: #fff; border: solid 4px #000; display: inline-block; margin-top: 5px; } 
 
-.message-screens-view { font-size: 1.2em; padding: 3px 8px; border-radius: 20px; cursor: pointer; background-color: #fff; border: solid 4px #000; display: inline-block; margin-top: 5px; } 
-
 #filter-types { margin: 0; padding: 0; list-style: none; margin-top: 10px; }
 
 #filter-types > li { width: 60px; padding: 5px 0px 4px 0px; height: 21px; border: solid 4px #999; color: #999; background-color: #fff; text-align: center; font-size: 1.1em;border-radius: 40px; display: inline-block; overflow: hidden; cursor: pointer }
@@ -52,9 +50,11 @@
 .set-name,
 .cancel-change-name { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
 
+.message-screens-view { padding: 3px 8px; border-radius: 20px; cursor: pointer; background-color: #fff; border: solid 4px #000; display: inline-block; margin-top: 5px; } 
+
 #send-message, #cancel-send-message  { float: right; }
 
-#message-edit { min-height: 49px; }
+#message-view { font-size: 1.2em; }
 #send-message,
 #cancel-send-message { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
 

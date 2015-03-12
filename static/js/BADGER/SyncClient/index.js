@@ -39,7 +39,7 @@
                 $('#message').removeClass('hidden');
                 messageTimeout = setTimeout(function() {
                     $('#message').addClass('hidden');
-                }, 5000);
+                }, 25000);
             }
         };
 

@@ -6,6 +6,22 @@
         $.get('/admin/command/identify');
     });
 
+    $('#message-screens').on('click', function() {
+        $('#message-view').addClass('hidden');
+        $('#message-edit').removeClass('hidden');
+    });
+
+    $('#send-message').on('click', function() {
+        $('#message-view').removeClass('hidden');
+        $('#message-edit').addClass('hidden');
+        $.get('/admin/command/messageAll?message=' + $('#message-text').val());
+    });
+
+    $('#cancel-send-message').on('click', function() {
+        $('#message-view').removeClass('hidden');
+        $('#message-edit').addClass('hidden');
+    });
+
     $('#filter-types').on('click', 'li', function() {
         var filter = $(this);
 
@@ -16,7 +32,6 @@
         else {
             filter.addClass('enabled');
             listOfConnections.addClass(filter.data('filterClass'));
-
         }
     });
 

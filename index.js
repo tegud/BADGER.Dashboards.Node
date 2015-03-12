@@ -42,6 +42,11 @@ var server = function() {
         res.send();
     });
 
+    app.get('/admin/command/messageAll', function(req, res) {
+        sync.messageAll(req.query.message);
+        res.send();
+    });
+
     app.get(/^(.*)$/, function(req, res, next){
         if(req.originalUrl.indexOf('.') === -1) {
             return res.render('index.hbs');

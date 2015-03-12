@@ -50,6 +50,14 @@
 .set-name,
 .cancel-change-name { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
 
+.message-screens-view { padding: 3px 8px; border-radius: 20px; cursor: pointer; background-color: #fff; border: solid 4px #000; display: inline-block; margin-top: 5px; } 
+
+#send-message, #cancel-send-message  { float: right; }
+
+#message-view { font-size: 1.2em; }
+#send-message,
+#cancel-send-message { display: inline-block; margin-right: 10px; font-size: 1.3em; width: 30px; padding: 4px 0px 4px 0px; height: 22px; border: solid 4px #000; border-radius: 40px; background-color: #fff; cursor: pointer; text-align: center }
+
 @media only screen and (max-width : 400px) {
 	.connection-type { position: static; float: left; margin: 0 10px 10px 0; font-size: 2em; width: 50px; height: 43px; padding-top: 7px; border: solid 4px #000;  }
 

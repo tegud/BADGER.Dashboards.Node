@@ -21,7 +21,7 @@
         {
             "type": "LoadBalancerStatus",
             "poolId": "Partners_API",
-            "title": "Adverts API LB Status",
+            "title": "Partners API LB Status",
             "host": "10.44.35.63",
             "port": 1234,
             "span": 3
@@ -29,7 +29,7 @@
         {
             "type": "LoadBalancerStatus",
             "poolId": "Keywords_API",
-            "title": "Adverts API LB Status",
+            "title": "Keywords API LB Status",
             "host": "10.44.35.63",
             "port": 1234,
             "span": 3
@@ -45,7 +45,7 @@
         {
             "type": "LoadBalancerStatus",
             "poolId": "SEOContent_API",
-            "title": "Adverts API LB Status",
+            "title": "SEOContent API LB Status",
             "host": "10.44.35.63",
             "port": 1234,
             "span": 3

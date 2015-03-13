@@ -8,15 +8,47 @@
             "title": "Test API Status",
             "host": "badger.laterooms.com",
             "port": 3000,
-            "span": 12
+            "span": 9
         },
         {
             "type": "LoadBalancerStatus",
             "poolId": "Search Service",
-            "title": "API LB Status",
+            "title": "API LB Status (Search Service)",
             "host": "10.44.35.63",
             "port": 1234,
-            "span": 4
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Partners_API",
+            "title": "Adverts API LB Status",
+            "host": "10.44.35.63",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Keywords_API",
+            "title": "Adverts API LB Status",
+            "host": "10.44.35.63",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Adverts_API",
+            "title": "Adverts API LB Status",
+            "host": "10.44.35.63",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "SEOContent_API",
+            "title": "Adverts API LB Status",
+            "host": "10.44.35.63",
+            "port": 1234,
+            "span": 3
         }
     ]
 }

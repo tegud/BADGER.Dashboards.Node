@@ -132,6 +132,16 @@
             }
         },
         {
+            "id": "Rates",
+            "name": "Rates",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                }
+            }
+        },
+        {
             "id": "Bookings",
             "name": "Bookings",
             "views": {

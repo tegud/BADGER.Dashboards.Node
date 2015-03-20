@@ -52,6 +52,10 @@
                 "Beta": {
                     "id": "LookToBook",
                     "name": "Look To Book"
+                },
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
                 }
             }
         },

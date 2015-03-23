@@ -1,0 +1,22 @@
+{
+    "name": "Live Server Status",
+    "components": [
+        {
+            "type": "HealthCheckSentinel",
+            "alertName": "healthCheck.serviceHealth-live",
+            "group": "APIs",
+            "title": "API Status",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "myaccount.laterooms.com_HTTPS",
+            "title": "MyAccount SSL LB",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        }
+    ]
+}

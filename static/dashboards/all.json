@@ -70,6 +70,16 @@
             }
         },
         {
+            "id": "CustomerManagement",
+            "name": "Customer Management",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                }
+            }
+        },
+        {
             "id": "LateRooms",
             "name": "LateRooms",
             "views": {

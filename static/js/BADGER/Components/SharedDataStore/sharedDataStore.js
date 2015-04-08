@@ -109,8 +109,7 @@
 
         setFiltersFromQueryString(configuration.filters);
 
-        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            request:  new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource)](configuration),
+        var dataStoreConfig = {
             refresh: 5000,
             mappings: configuration.mappings,
             callbacks: {
@@ -129,7 +128,16 @@
                     finished: subscribedComponents.hideLoading
                 }
             }
-        });
+        };
+
+        if(configuration.dataSource) {
+            dataStoreConfig.request = new TLRGRP.BADGER.Dashboard.DataSource[(configuration.dataSource)](configuration);
+        }
+        else {
+            dataStoreConfig.url = configuration.url;
+        }
+
+        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore(dataStoreConfig);
 
         var filters = new TLRGRP.BADGER.Dashboard.Components.Filters(configuration.filters);
         var componentLayout;

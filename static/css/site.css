@@ -360,9 +360,15 @@ h3 {margin: 0;padding: 0 }
 
 .v2-graph-container {height: 140px;margin-right: 145px;border: solid 1px #ddd;background-color: #fff; position: relative }
 
+.v2-graph-container.with-alert {height: 140px;margin-right: 185px;border: solid 1px #ddd;background-color: #fff; position: relative }
+
 .v2-graph-component h3 {margin-top: 5px;margin-bottom: 5px; }
 
 .v2-graph-counter {float: right;width: 125px;height: 110px;text-align: center;padding: 15px 5px 15px 5px;font-size: 1.1em;border: solid 1px #ddd;background-color: #fff;position:relative }
+
+.v2-graph-alert { float: right; width: 35px;height: 140px;text-align: center; margin: 0 5px 0 5px;font-size: 1.1em;border: solid 1px #ddd;background-color: #fff;position:relative }
+
+.v2-graph-alert .indicator { position: absolute; left:0; top: -40px; height: 27px; width: 21px; padding: 0 0 0 6px; text-align: left; color: #999; border: #999 solid 4px; border-radius: 70px; font-size: 1.4em; }
 
 .v2-graph-counter-value {display: block;font-size: 3.6em;margin-top: 4px; }
 
@@ -757,3 +763,25 @@ h3 {margin: 0;padding: 0 }
 .goto-elk { position: absolute; bottom: 10px; right: 10px; }
 
 .goto-elk-icon { display: inline-block; margin-left: 4px; }
+
+.server-health-node-list { min-height: 300px; }
+
+.node-info { min-height: 300px; padding: 10px; border: solid 5px #000; border-radius: 10px; width: 122px; margin-bottom: 15px; }
+
+.node-info h3 { font-size: 1em; margin-top: 3px; }
+
+.node-type { float: right; width: 20px; font-size: 1.3em }
+
+.item-text { display: inline-block; margin: 0 0 0 3px; }
+
+.node-item { clear: both; color: #555; margin: 0 0 3px 0; }
+
+.big-item-side { float: left; width: 38px; font-size: 0.8em }
+
+.big-item-side .item-text { display: block; margin: 0; width: 32px; text-align: center; font-size: 0.9em; }
+
+.big-item-icon { font-size: 32px; width: 32px; text-align: center; }
+
+.big-item-value { font-size: 2.6em; }
+
+.main-items { margin: 10px 0; }

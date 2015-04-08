@@ -98,8 +98,13 @@
                                 url: currentOptions.url,
                                 data: currentOptions.data,
                                 success: function(data) {
-                                    queryCache[queryOptions.id] = data;
-                                    responses[queryOptions.id] = data;
+                                    if(queryOptions && queryOptions.id) {
+                                        queryCache[queryOptions.id] = data;
+                                        responses[queryOptions.id] = data;
+                                    }
+                                    else {
+                                        responses['query'] = data;
+                                    }
                                 }
                             };
 

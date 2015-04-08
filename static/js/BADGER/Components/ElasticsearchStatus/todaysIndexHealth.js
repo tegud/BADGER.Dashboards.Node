@@ -7,32 +7,10 @@
 	var largeTemplate = '<ul class="cluster-state-panels">'
 		+ '<li><div class="cluster-status-indicator unknown">'
 				+ '<span class="fa fa-question status-indicator unknown"></span>'
-				+ '<span class="fa fa-check status-indicator ok"></span>'
-				+ '<span class="fa fa-life-ring status-indicator recovery"></span>'
-				+ '<span class="fa fa-exclamation status-indicator critical"></span>'
 			+ '</div></li>'
 		+ '<li class="status-text">'
-			+ '<div class="main-status"></div>'
-			+ '<div class="status-description"></div>'
-		+ '</li>'
-		+ '<li class="nodes-panel">'
-			+ '<div class="node-status-header">Nodes</div>'
-			+ '<ul class="node-list"></ul>'
-			+ '<ul class="node-legend">'
-				+ '<li class="OK"><div class="block"></div>OK</li>'
-				+ '<li class="TIMEOUT"><div class="block"></div>Timeout</li>'
-				+ '<li class="LONG-TIMEOUT"><div class="block"></div>Critical Timeout</li>'
-				+ '<li class="FAILED"><div class="block"></div>Error</li>'
-			+ '</ul>'
-		+ '</li>'
-		+ '<li class="shard-allocation-panel">'
-			+ '<div class="node-status-header">Shard Allocation</div>'
-			+ '<ul class="shard-allocation-states">'
-				+ '<li class="unassigned-shards-row hidden"><span class="fa fa-exclamation-triangle"></span> <span class="count"></span> unassigned</li>'
-				+ '<li class="relocating-shards-row hidden"><span class="fa fa-arrows"></span> <span class="count"></span> relocating</li>'
-				+ '<li class="initialising-shards-row hidden"><span class="fa fa-stack-overflow"></span> <span class="count"></span> initialising</li>'
-				+ '<li class="all-good-shards-row"><span class="fa fa-thumbs-up"></span> All primary and replica shards allocated.</li>'
-			+ '</ul>'
+			+ '<div class="main-status">Today\'s Index State Unknown</div>'
+			+ '<div class="status-description">Loading sentinel health information for cluster</div>'
 		+ '</li>'
 	+ '</ul>';
 
@@ -52,42 +30,58 @@
 				inlineLoading,
 				{
 					appendTo: function (container) {
-						container.append(clusterStatusElement);
+						return;
+                        container.append(clusterStatusElement);
 					}
 				}
 			]
 		});
 
-        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            query: {
-                url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+        var callbacks = {
+            success: function (data) {
+                clusterStatusElement.html('');
             },
-            refresh: 5000,
-            callbacks: {
-                success: function (data) {
-                	
-
-                    dataStore.setNewRefresh(10000);
-                },
-                error: function (errorInfo) {
-                    if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
-                        inlineError.show(errorInfo.responseJSON.error);
-                    }
-                    else {
-                        inlineError.show('Cannot access health check server.');
-                    }
-
-                    dataStore.setNewRefresh(10000);
+            error: function (errorInfo) {
+                if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
+                    inlineError.show(errorInfo.responseJSON.error);
                 }
-            },
-            mappings: [
-                { "type": "pickValue", "value": "query" }
-            ],
-            components: {
-                loading: inlineLoading,
-                lastUpdated: lastUpdated
+                else {
+                    inlineError.show('Cannot access health check server.');
+                }
             }
-        });
+        };
+        var dataStore;
+
+        if(configuration.storeId) {
+            dataStore = {
+                start: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
+                        id: 'TodaysIndexHealth',
+                        refreshComplete: callbacks.success,
+                        loading: inlineLoading
+                    });
+                },
+                stop: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId, 'TodaysIndexHealth');
+                }
+            };
+        } 
+        else {
+            dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+                query: {
+                    url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+                },
+                refresh: 5000,
+                callbacks: callbacks,
+                mappings: [
+                    { "type": "pickValue", "value": "query" }
+                ],
+                components: {
+                    loading: inlineLoading,
+                    lastUpdated: lastUpdated
+                }
+            });
+        }
 
         var stateMachine = nano.Machine({
             states: {

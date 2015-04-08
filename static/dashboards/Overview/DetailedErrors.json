@@ -1,0 +1,318 @@
+{
+    "name": "Detailed (Errors)",
+    "components": [
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Front End",
+            "dataSource": "elasticsearch",
+            "host": "http://badger.laterooms.com:9200",
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "ms_errors"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "total": "doc_count"
+                }
+              }
+            ],
+            "alert": {
+                "show": true
+            },
+            "counter": {
+                "title": "Errors in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0,
+                "value": "query.total"
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lines": [
+                    { "color": "#f00", "value": "query.total", "id": "all" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Booking",
+            "dataSource": "elasticsearch",
+            "host": "http://badger.laterooms.com:9200",
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "lr_errors"
+                            }
+                        },
+                        {
+                            "term": {
+                                "url_page_type": "booking"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "total": "doc_count"
+                }
+              }
+            ],
+            "alert": {
+                "show": true
+            },
+            "counter": {
+                "title": "Errors in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0,
+                "value": "query.total"
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lines": [
+                    { "color": "#f00", "value": "query.total", "id": "all" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "APIs",
+            "dataSource": "elasticsearch",
+            "host": "http://badger.laterooms.com:9200",
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "terms": {
+                                "type": ["hotel_api_errors", "adverts_api_error", "lr_errors"]
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        },
+                        "aggs": {
+                            "bytype": {
+                                "terms": {
+                                    "field": "type"
+                                }
+                            }
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                    "total": "doc_count",
+                    "hotelDetailsApi": "bytype.buckets.:find(key=lr_errors).doc_count"
+                }
+              }
+            ],
+            "alert": {
+                "show": true
+            },
+            "counter": {
+                "title": "Errors in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0,
+                "value": "query.hotelDetailsApi"
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lines": [
+                    { "color": "#f00", "value": "query.hotelDetailsApi", "id": "hotelDetailsApi" }
+                ]
+            }
+        },
+        {
+            "type": "LineGraphAndCounter",
+            "title": "Connectivity",
+            "dataSource": "elasticsearch",
+            "host": "http://badger.laterooms.com:9200",
+            "timeProperties": [
+              "query.filtered.filter.bool.must.0.range.@timestamp",
+              "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+              "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : {
+                                "from" : "now-60m"
+                            }
+                          }
+                        },
+                        {
+                            "term": {
+                                "type": "ms_errors"
+                            }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "errorsbytime" : {
+                        "date_histogram" : {
+                            "min_doc_count": 0,
+                            "extended_bounds" : {
+                                "min" : "now-60m",
+                                "max" : "now"
+                            },
+                            "field" : "@timestamp",
+                            "interval" : "1m"
+                        }
+                    }
+              },
+              "size": 0
+            },
+            "mappings": [
+              { 
+                "type": "extractFromDateHistogram",
+                "aggregateName": "errorsbytime",
+                "fields": {
+                  "total": "doc_count"
+                }
+              }
+            ],
+            "alert": {
+                "show": true
+            },
+            "counter": {
+                "title": "Errors in last 10mins",
+                "className": "commission-graph-counter",
+                "precision": 0,
+                "value": "query.total"
+            },
+            "graph": {
+                "className": "commission-graph",
+                "lines": [
+                    { "color": "#f00", "value": "query.total", "id": "all" }
+                ]
+            }
+        }
+    ]
+}

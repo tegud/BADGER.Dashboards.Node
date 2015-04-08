@@ -101,7 +101,7 @@
             }, {});
         },
         'pickValue': function(mapping, data) {
-            return data[mapping.field];
+            return data[mapping.field || 'query'];
         },
         'pickValues': function(mapping, data) {
             var matchedValues = {};

@@ -2,25 +2,30 @@
     "name": "ELK",
     "components": [
         {
+            "type": "SharedDataStore",
+            "storeId": "ELKStatus",
+            "url": "http://localhost:3000/currentStatus/elasticsearch-health.elasticsearch-health",
+            "mappings": [
+                { "type": "pickValue", "value": "query" }
+            ]
+        },
+        {
             "type": "ElasticsearchStatus",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "Cluster Status",
-            "host": "badger.laterooms.com",
-            "port": 3000
+            "storeId": "ELKStatus"
         },
         {
             "type": "ElasticsearchTodaysIndexHealth",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "Today's Index",
-            "host": "badger.laterooms.com",
-            "port": 3000
+            "storeId": "ELKStatus"
         },
         {
             "type": "ElasticsearchServerHealth",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "Server Health",
-            "host": "badger.laterooms.com",
-            "port": 3000
+            "storeId": "ELKStatus"
         }
     ]
 }

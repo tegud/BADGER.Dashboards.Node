@@ -66,6 +66,12 @@
 
 	function shardStateForCritical(data) {
 		var shardStatus = ' ' + data.info.shards.unassigned + ' shard' + (data.info.shards.unassigned === 1 ? '' : 's') + ' unassigned';
+		var containsPrimaryShards = _.filter(data.info.shards.unassignedShards, function(shard) { return shard.primary });
+
+		if(containsPrimaryShards.length) {
+			return shardStatus + ', including primary shards (DATA LOSS).';
+		}
+
 		if(_.every(data.info.nodes, function(node) { return node.status === 'OK'; })) {
 			return shardStatus + ', which may include primaries (POTENTIAL DATA LOSS).';
 		}
@@ -106,10 +112,10 @@
 				}
 			}
 			else if(criticalTimeoutNodes.length) {
-				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out for a prelonged period of time, suggest restarting these nodes.';
+				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out for a prelonged period of time, suggest restarting ' + (criticalTimeoutNodes.length === 1 ? 'this' : 'these') + ' node' + (criticalTimeoutNodes.length === 1 ? '' : 's') + '.';
 			}
 			else if(timedoutNodes.length) {
-				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out, suggest monitoring to see if they recover, and if not, restarting.';
+				nodeAdvice = criticalTimeoutNodes.length + ' Node' + (criticalTimeoutNodes.length === 1 ? ' has' : 's have') + ' timed out, suggest monitoring to see if ' + (criticalTimeoutNodes.length === 1 ? 'it' : 'they') + ' recover' + (criticalTimeoutNodes.length === 1 ? 's' : '') + ', and if not, restarting.';
 			}
 			else {
 				shardAdvice = 'Investigate unassigned indicies as a priority, data loss may occur.';
@@ -204,57 +210,71 @@
 			modules: modules
 		});
 
-        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            query: {
-                url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+		var callbacks = {
+            success: function (data) {
+            	var clusterState = data.info.state;
+
+            	var currentState = stateMap[clusterState] || unknownState;
+
+            	var indicatorElement = $('.cluster-status-indicator', clusterStatusElement);
+            	var statusText = $('.main-status', clusterStatusElement);
+            	var descriptionText = $('.status-description', clusterStatusElement);
+
+				indicatorElement[0].className = 'cluster-status-indicator ' + currentState.className;
+				indicatorElement.attr('title', currentState.text);
+
+				statusText.text(currentState.text);
+				descriptionText.html((typeof currentState.description === 'function' ? currentState.description(data) : currentState.description) + '<br/></br>' + suggestedAction(data));
+
+				$('.node-list', clusterStatusElement).html(_.map(data.info.nodes, function(node) {
+					var name = node.name.replace(/pentlrges/, '')
+					return '<li class="' + node.status + '">' + (node.isMaster ? '<div class="master"></div>' : '') + '<div class="node-container">' + name + '</div>' + '</li>';
+				}));
+
+				setShardsPanel(data.info.shards);
             },
-            refresh: 5000,
-            callbacks: {
-                success: function (data) {
-                	var clusterState = data.info.state;
-
-                	var currentState = stateMap[clusterState] || unknownState;
-
-                	var indicatorElement = $('.cluster-status-indicator', clusterStatusElement);
-                	var statusText = $('.main-status', clusterStatusElement);
-                	var descriptionText = $('.status-description', clusterStatusElement);
-
-					indicatorElement[0].className = 'cluster-status-indicator ' + currentState.className;
-					indicatorElement.attr('title', currentState.text);
-
-					statusText.text(currentState.text);
-					descriptionText.html((typeof currentState.description === 'function' ? currentState.description(data) : currentState.description) + '<br/></br>' + suggestedAction(data));
-
-					$('.node-list', clusterStatusElement).html(_.map(data.info.nodes, function(node) {
-						var name = node.name.replace(/pentlrges/, '')
-						return '<li class="' + node.status + '">' + (node.isMaster ? '<div class="master"></div>' : '') + '<div class="node-container">' + name + '</div>' + '</li>';
-					}));
-
-					setShardsPanel(data.info.shards);
-
-                    console.log(data);
-
-                    dataStore.setNewRefresh(10000);
-                },
-                error: function (errorInfo) {
-                    if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
-                        inlineError.show(errorInfo.responseJSON.error);
-                    }
-                    else {
-                        inlineError.show('Cannot access health check server.');
-                    }
-
-                    dataStore.setNewRefresh(10000);
+            error: function (errorInfo) {
+                if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
+                    inlineError.show(errorInfo.responseJSON.error);
                 }
-            },
-            mappings: [
-                { "type": "pickValue", "value": "query" }
-            ],
-            components: {
-                loading: inlineLoading,
-                lastUpdated: lastUpdated
+                else {
+                    inlineError.show('Cannot access health check server.');
+                }
             }
-        });
+        };
+
+        var dataStore;
+
+        if(configuration.storeId) {
+	        dataStore = {
+	            start: function () {
+	                TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
+	                    id: configuration.storeId,
+	                    refreshComplete: callbacks.success,
+	                    loading: inlineLoading
+	                });
+	            },
+	            stop: function () {
+	                TLRGRP.messageBus.publish(dataStoreId);
+	            }
+	        };
+        } 
+        else {
+	        dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+	            query: {
+	                url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+	            },
+	            refresh: 5000,
+	            callbacks: callbacks,
+	            mappings: [
+	                { "type": "pickValue", "value": "query" }
+	            ],
+	            components: {
+	                loading: inlineLoading,
+	                lastUpdated: lastUpdated
+	            }
+	        });
+        }
 
         var stateMachine = nano.Machine({
             states: {

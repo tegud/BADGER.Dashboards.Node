@@ -55,7 +55,7 @@
                 }
             },
             mappings: [
-                { "type": "pickValue", "value": "query" }
+                { "type": "pickValue", "value": "query", "field": "query" }
             ],
             components: {
                 loading: inlineLoading,

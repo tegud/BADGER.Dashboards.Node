@@ -20,6 +20,22 @@
             "span": 3
         },
         {
+            "type": "LoadBalancerStatus",
+            "poolId": "moonstick_http",
+            "title": "Moonstick Servers",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Varnish",
+            "title": "Varnish Servers",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
             "type": "SharedDataStore",
             "storeId": "LRRequestsData",
             "dataSource": "elasticsearch",
@@ -192,141 +208,69 @@
             ]
         },
         {
-            "type": "SharedDataStore",
-            "storeId": "ARHomeRequestsData",
-            "dataSource": "elasticsearch",
-            "host": "http://badger.laterooms.com:9200",
-            "timeProperties": [
-                "query.filtered.filter.bool.must.0.range.@timestamp",
-                "aggs.requests.date_histogram.extended_bounds"
-            ],
-            "intervalProperties": [
-                "aggs.requests.date_histogram.interval"
-            ],
-            "queries": {
-                "modifiers": {
-                    "value": {}
+            "type": "LineGraphAndCounter",
+            "title": "LR Requests",
+            "span": 6,
+            "storeId": "LRRequestsData",
+            "summaryText": "Requests per minute",
+            "graph": {
+                "window": {
+                    "skip": 0,
+                    "take": 60
                 },
-                "query": {
-                    "query": {
-                        "filtered": {
-                            "filter": {
-                                "bool": {
-                                    "must": [
-                                        {
-                                            "range": {
-                                                "@timestamp": {
-                                                    "from": "now-60m"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "term": {
-                                                "type": "ar_varnish"
-                                            }
-                                        },
-                                        {
-                                            "term": {
-                                                "url_path.raw": "/"
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                "lines": [
+                    {
+                        "id": "home-requests",
+                        "color": "#411085",
+                        "value": "value.homeRequests"
                     },
-                    "aggs": {
-                        "requests": {
-                            "date_histogram": {
-                                "min_doc_count": 0,
-                                "extended_bounds": {
-                                    "min": "now-60m",
-                                    "max": "now"
-                                },
-                                "field": "@timestamp",
-                                "interval": "1m"
-                            },
-                            "aggs": {
-                                "legacy": {
-                                    "filter": {
-                                        "term": {
-                                            "is_moonstick": false
-                                        }
-                                    },
-                                    "aggs": {
-                                        "beacon": {
-                                            "filter": {
-                                                "term": {
-                                                    "tags": "beacon"
-                                                }
-                                            },
-                                            "aggs": {
-                                                "page_complete": {
-                                                    "stats": {
-                                                        "field": "timing_done"
-                                                    }
-                                                },
-                                                "percentiles": {
-                                                    "percentiles": {
-                                                        "field": "timing_done"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "moonstick": {
-                                    "filter": {
-                                        "term": {
-                                            "is_moonstick": true
-                                        }
-                                    },
-                                    "aggs": {
-                                        "beacon": {
-                                            "filter": {
-                                                "term": {
-                                                    "tags": "beacon"
-                                                }
-                                            },
-                                            "aggs": {
-                                                "page_complete": {
-                                                    "stats": {
-                                                        "field": "timing_done"
-                                                    }
-                                                },
-                                                "percentiles": {
-                                                    "percentiles": {
-                                                        "field": "timing_done"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    {
+                        "id": "hotel-details-requests",
+                        "color": "green",
+                        "value": "value.hotelDetailsRequests"
                     },
-                    "size": 0
-                }
-            },
-            "mappings": [
-                {
-                    "type": "extractFromDateHistogram",
-                    "aggregateName": "requests",
-                    "fields": {
-                        "moonstickRequests": "moonstick.doc_count",
-                        "legacyRequests": "legacy.doc_count",
-                        "legacyPageComplete": "legacy.beacon.percentiles.values.50|0",
-                        "moonstickPageComplete": "moonstick.beacon.percentiles.values.50|0"
+                    {
+                        "id": "search-requests",
+                        "color": "orange",
+                        "value": "value.searchRequests"
                     }
-                }
-            ]
+                ]
+            },
+            "counter": {
+                "title": "Requests per min (Last whole)",
+                "className": "commission-graph-counter",
+                "window": {
+                    "skip": 1,
+                    "take": 10
+                },
+                "precision": 0,
+                "counters": [
+                    {
+                        "id": "home-requests",
+                        "color": "#411085",
+                        "value": "value.homeRequests",
+                        "text": "Home"
+                    },
+                    {
+                        "id": "hotel-details-requests",
+                        "color": "green",
+                        "value": "value.hotelDetailsRequests",
+                        "text": "Hotel Details"
+                    },
+                    {
+                        "id": "search-requests",
+                        "color": "orange",
+                        "value": "value.searchRequests",
+                        "text": "Search"
+                    }
+                ]
+            }
         },
         {
             "type": "LineGraphAndCounter",
-            "title": "Errors",
+            "title": "Server Errors",
             "span": 6,
-            "summaryText": "Errors per one minute on Moonstick",
+            "summaryText": "Server Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
             "host": "http://badger.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
@@ -351,13 +295,7 @@
                                         }
                                     },
                                     {
-                                        "terms": {
-                                            "type": [
-                                                "ms_errors",
-                                                "ar_varnish",
-                                                "lr_varnish_request"
-                                            ]
-                                        }
+                                        "term": { "type": "ms_errors" }
                                     }
                                 ]
                             }
@@ -374,51 +312,6 @@
                             },
                             "field": "@timestamp",
                             "interval": "1m"
-                        },
-                        "aggs": {
-                            "server": {
-                                "filter": {
-                                    "term": {
-                                        "type": "ms_errors"
-                                    }
-                                }
-                            },
-                            "ar-client": {
-                                "filter": {
-                                    "bool": {
-                                        "must": [
-                                            {
-                                                "term": {
-                                                    "type": "ar_varnish"
-                                                }
-                                            },
-                                            {
-                                                "term": {
-                                                    "url_path.raw": "/beacon/moonstick-clienterrors"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            },
-                            "lr-client": {
-                                "filter": {
-                                    "bool": {
-                                        "must": [
-                                            {
-                                                "term": {
-                                                    "type": "lr_varnish_request"
-                                                }
-                                            },
-                                            {
-                                                "term": {
-                                                    "url_path.raw": "/beacon/moonstick-clienterrors"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
                         }
                     }
                 },
@@ -429,28 +322,16 @@
                     "type": "extractFromDateHistogram",
                     "aggregateName": "errorsbytime",
                     "fields": {
-                        "errors": "server.doc_count",
-                        "arerrors": "ar-client.doc_count",
-                        "lrerrors": "lr-client.doc_count"
+                        "errors": "doc_count"
                     }
                 }
             ],
             "graph": {
                 "lines": [
                     {
-                        "color": "green",
+                        "color": "#f00",
                         "id": "errors",
                         "value": "query.errors"
-                    },
-                    {
-                        "color": "#b00763",
-                        "id": "ar-errors",
-                        "value": "query.arerrors"
-                    },
-                    {
-                        "color": "#411085",
-                        "id": "lr-errors",
-                        "value": "query.lrerrors"
                     }
                 ]
             },
@@ -520,172 +401,93 @@
         },
         {
             "type": "LineGraphAndCounter",
-            "title": "AR Home Page Load Time (50th Percentile)",
+            "title": "Client Side Errors",
             "span": 6,
-            "summaryText": "",
-            "storeId": "ARHomeRequestsData",
-            "graph": {
-                "lines": [
-                    {
-                        "id": "ar-legacy",
-                        "color": "#b00763",
-                        "value": "value.legacyPageComplete"
-                    },
-                    {
-                        "id": "ar-moonstick",
-                        "color": "green",
-                        "value": "value.moonstickPageComplete"
+            "summaryText": "Client Errors per one minute on Moonstick",
+            "dataSource": "elasticsearch",
+            "host": "http://badger.laterooms.com:9200",
+            "aggregateProperty": "errorsbytime",
+            "timeProperties": [
+                "query.filtered.filter.bool.must.0.range.@timestamp",
+                "aggs.errorsbytime.date_histogram.extended_bounds"
+            ],
+            "intervalProperties": [
+                "aggs.errorsbytime.date_histogram.interval"
+            ],
+            "query": {
+                "query": {
+                    "filtered": {
+                        "filter": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "range": {
+                                            "@timestamp": {
+                                                "from": "now-60m"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "terms": {
+                                            "type": [
+                                                "lr_varnish_request"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "term": {
+                                            "type": "lr_varnish_request"
+                                        }
+                                    },
+                                    {
+                                        "term": {
+                                            "url_path.raw": "/beacon/moonstick-clienterrors"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
                     }
-                ]
+                },
+                "aggs": {
+                    "errorsbytime": {
+                        "date_histogram": {
+                            "min_doc_count": 0,
+                            "extended_bounds": {
+                                "min": "now-60m",
+                                "max": "now"
+                            },
+                            "field": "@timestamp",
+                            "interval": "1m"
+                        }
+                    }
+                },
+                "size": 0
             },
-            "counter": {
-                "title": "Average Time to Page Load",
-                "className": "counter-smallest-text",
-                "type": "average",
-                "window": {
-                    "skip": 1,
-                    "take": 10
-                },
-                "suffix": "ms",
-                "precision": 0,
-                "counters": [
-                    {
-                        "id": "ar-legacy",
-                        "color": "#b00763",
-                        "value": "value.legacyPageComplete",
-                        "text": "Legacy"
-                    },
-                    {
-                        "id": "ar-moonstick",
-                        "color": "green",
-                        "value": "value.moonstickPageComplete",
-                        "text": "Moon"
+            "mappings": [
+                {
+                    "type": "extractFromDateHistogram",
+                    "aggregateName": "errorsbytime",
+                    "fields": {
+                        "lrerrors": "doc_count"
                     }
-                ]
-            }
-        },
-        {
-            "type": "LineGraphAndCounter",
-            "title": "LR Requests",
-            "span": 6,
-            "storeId": "LRRequestsData",
-            "summaryText": "Requests per minute",
+                }
+            ],
             "graph": {
-                "window": {
-                    "skip": 0,
-                    "take": 60
-                },
                 "lines": [
                     {
-                        "id": "home-requests",
                         "color": "#411085",
-                        "value": "value.homeRequests"
-                    },
-                    {
-                        "id": "hotel-details-requests",
-                        "color": "green",
-                        "value": "value.hotelDetailsRequests"
-                    },
-                    {
-                        "id": "search-requests",
-                        "color": "orange",
-                        "value": "value.searchRequests"
+                        "id": "lr-errors",
+                        "value": "query.lrerrors"
                     }
                 ]
             },
             "counter": {
-                "title": "Requests per min (Last whole)",
+                "title": "Client Errors in last 10mins",
                 "className": "commission-graph-counter",
-                "window": {
-                    "skip": 1,
-                    "take": 10
-                },
                 "precision": 0,
-                "counters": [
-                    {
-                        "id": "home-requests",
-                        "color": "#411085",
-                        "value": "value.homeRequests",
-                        "text": "Home"
-                    },
-                    {
-                        "id": "hotel-details-requests",
-                        "color": "green",
-                        "value": "value.hotelDetailsRequests",
-                        "text": "Hotel Details"
-                    },
-                    {
-                        "id": "search-requests",
-                        "color": "orange",
-                        "value": "value.searchRequests",
-                        "text": "Search"
-                    }
-                ]
+                "value": "query.lrerrors"
             }
-        },
-        {
-            "type": "LineGraphAndCounter",
-            "title": "AR Home Requests",
-            "span": 6,
-            "storeId": "ARHomeRequestsData",
-            "summaryText": "Requests per minute",
-            "graph": {
-                "window": {
-                    "skip": 0,
-                    "take": 60
-                },
-                "lines": [
-                    {
-                        "id": "ar-moonstick-requests",
-                        "color": "green",
-                        "value": "value.moonstickRequests"
-                    },
-                    {
-                        "id": "ar-legacy-requests",
-                        "color": "#b00763",
-                        "value": "value.legacyRequests"
-                    }
-                ]
-            },
-            "counter": {
-                "title": "Requests per min (Last whole)",
-                "className": "commission-graph-counter",
-                "window": {
-                    "skip": 1,
-                    "take": 10
-                },
-                "precision": 0,
-                "counters": [
-                    {
-                        "id": "ar-legacy-requests",
-                        "color": "#b00763",
-                        "value": "value.legacyRequests",
-                        "text": "Legacy"
-                    },
-                    {
-                        "id": "ar-moonstick-requests",
-                        "color": "green",
-                        "value": "value.moonstickRequests",
-                        "text": "Moon"
-                    }
-                ]
-            }
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "moonstick_http",
-            "title": "Moonstick Servers",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
-        },
-        {
-            "type": "LoadBalancerStatus",
-            "poolId": "Varnish",
-            "title": "Varnish Servers",
-            "host": "10.44.35.62",
-            "port": 1234,
-            "span": 3
         }
     ]
 }

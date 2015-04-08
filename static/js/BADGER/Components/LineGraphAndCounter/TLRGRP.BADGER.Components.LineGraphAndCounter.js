@@ -16,6 +16,10 @@
             configuration.graph.counterWindow = configuration.counter.window;
         }
 
+        if(configuration.alert && configuration.alert.show) {
+            configuration.graph.className = (configuration.graph.className ? ' ' : '') + 'with-alert';
+        }
+
         var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom', showExact: true });
@@ -30,6 +34,18 @@
         } 
         componentModules.push(inlineLoading);
         componentModules.push(counter);
+
+        if(configuration.alert && configuration.alert.show) {
+            componentModules.push({
+                appendTo: function (container) {
+                    container.append($('<div class="v2-graph-alert"><div class="indicator fa fa-question"></div></div>'));
+                },
+                appendToLocation: function () {
+                    return 'content';
+                }
+            });
+        }
+
         componentModules.push(lineGraph);
         componentModules.push({
             appendTo: function (container) {

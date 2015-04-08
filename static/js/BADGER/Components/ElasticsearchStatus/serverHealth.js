@@ -4,35 +4,13 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
 	var idIncrementor = 0;
-	var largeTemplate = '<ul class="cluster-state-panels">'
+	var largeTemplate = '<ul class="cluster-state-panels server-health-node-list">'
 		+ '<li><div class="cluster-status-indicator unknown">'
 				+ '<span class="fa fa-question status-indicator unknown"></span>'
-				+ '<span class="fa fa-check status-indicator ok"></span>'
-				+ '<span class="fa fa-life-ring status-indicator recovery"></span>'
-				+ '<span class="fa fa-exclamation status-indicator critical"></span>'
 			+ '</div></li>'
 		+ '<li class="status-text">'
-			+ '<div class="main-status"></div>'
-			+ '<div class="status-description"></div>'
-		+ '</li>'
-		+ '<li class="nodes-panel">'
-			+ '<div class="node-status-header">Nodes</div>'
-			+ '<ul class="node-list"></ul>'
-			+ '<ul class="node-legend">'
-				+ '<li class="OK"><div class="block"></div>OK</li>'
-				+ '<li class="TIMEOUT"><div class="block"></div>Timeout</li>'
-				+ '<li class="LONG-TIMEOUT"><div class="block"></div>Critical Timeout</li>'
-				+ '<li class="FAILED"><div class="block"></div>Error</li>'
-			+ '</ul>'
-		+ '</li>'
-		+ '<li class="shard-allocation-panel">'
-			+ '<div class="node-status-header">Shard Allocation</div>'
-			+ '<ul class="shard-allocation-states">'
-				+ '<li class="unassigned-shards-row hidden"><span class="fa fa-exclamation-triangle"></span> <span class="count"></span> unassigned</li>'
-				+ '<li class="relocating-shards-row hidden"><span class="fa fa-arrows"></span> <span class="count"></span> relocating</li>'
-				+ '<li class="initialising-shards-row hidden"><span class="fa fa-stack-overflow"></span> <span class="count"></span> initialising</li>'
-				+ '<li class="all-good-shards-row"><span class="fa fa-thumbs-up"></span> All primary and replica shards allocated.</li>'
-			+ '</ul>'
+			+ '<div class="main-status">Server Health State Unknown</div>'
+			+ '<div class="status-description">Loading sentinel health information for cluster</div>'
 		+ '</li>'
 	+ '</ul>';
 
@@ -58,36 +36,86 @@
 			]
 		});
 
-        var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            query: {
-                url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+        var callbacks = {
+            success: function (data) {
+                clusterStatusElement.html(_.map(data.info.nodes, function(node) {
+                    var nodeTypeClass = 'fa-question-circle';
+
+                    if(node.tags && node.tags.indexOf('archive') > -1) {
+                        nodeTypeClass = 'fa-archive';
+                    }
+                    else if (node.tags && node.tags.indexOf('realtime') > -1) {
+                        nodeTypeClass = 'fa-line-chart';
+                    }
+
+                    var fs = node.stats.fs.data[0] || node.stats.fs.total;
+
+
+
+                    return '<li class="node-info">'
+                         + '<div class="node-type"><span class="fa ' + nodeTypeClass + '"></span></div>'
+                         + '<h3>' + node.name + '</h3>'
+                         + '<div class="node-item"><span class="fa fa-plug"></span><div class="item-text">' + node.ip + '</div></div>'
+                         + '<div class="node-item"><span class="fa fa-tags"></span><div class="item-text">' + node.tags + '</div></div>'
+                         + '<div class="main-items">'
+                             + '<div class="node-item big-item">'
+                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-dashboard"></div><div class="item-text">CPU</div></div>'
+                                + '<div><span class="big-item-value">' + node.stats.cpu.os.usage + '</span>%</div>'
+                             + '</div>'
+                             + '<div class="node-item big-item">'
+                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-circuit-board"></div><div class="item-text">HEAP</div></div>'
+                                + '<div><span class="big-item-value">' + node.stats.memory.heap.used.percent + '</span>%</div>'
+                             + '</div>'
+                             + '<div class="node-item big-item">'
+                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-database"></div><div class="item-text">DISK</div></div>'
+                                + '<div><span class="big-item-value">' + (((fs.total_in_bytes - fs.available_in_bytes) / fs.total_in_bytes) * 100).toFixed(0) + '</span>%</div>'
+                                + '<div>' + (fs.available_in_bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB Free</div>'
+                             + '</div>'
+                         + '</div>'
+                    + '</li>';
+                }).join(''));
             },
-            refresh: 5000,
-            callbacks: {
-                success: function (data) {
-                	
-
-                    dataStore.setNewRefresh(10000);
-                },
-                error: function (errorInfo) {
-                    if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
-                        inlineError.show(errorInfo.responseJSON.error);
-                    }
-                    else {
-                        inlineError.show('Cannot access health check server.');
-                    }
-
-                    dataStore.setNewRefresh(10000);
+            error: function (errorInfo) {
+                if (errorInfo && errorInfo.responseJSON && errorInfo.responseJSON.error) {
+                    inlineError.show(errorInfo.responseJSON.error);
                 }
-            },
-            mappings: [
-                { "type": "pickValue", "value": "query" }
-            ],
-            components: {
-                loading: inlineLoading,
-                lastUpdated: lastUpdated
+                else {
+                    inlineError.show('Cannot access health check server.');
+                }
             }
-        });
+        };
+        var dataStore;
+
+        if(configuration.storeId) {
+            dataStore = {
+                start: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
+                        id: 'ServerHealth',
+                        refreshComplete: callbacks.success,
+                        loading: inlineLoading
+                    });
+                },
+                stop: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId, 'ServerHealth');
+                }
+            };
+        } 
+        else {
+            dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+                query: {
+                    url: refreshServerBaseUrl + 'currentStatus/' + configuration.alertName
+                },
+                refresh: 5000,
+                callbacks: callbacks,
+                mappings: [
+                    { "type": "pickValue", "value": "query" }
+                ],
+                components: {
+                    loading: inlineLoading,
+                    lastUpdated: lastUpdated
+                }
+            });
+        }
 
         var stateMachine = nano.Machine({
             states: {

@@ -8,8 +8,8 @@
                     "name": "Summary"
                 },
                 "Traffic": {
-                    "id": "Traffic",
-                    "name": "Traffic"
+                    "id": "DetailedErrors",
+                    "name": "Detailed (Errors)"
                 }
             }
         },

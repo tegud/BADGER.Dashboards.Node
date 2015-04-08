@@ -1,0 +1,94 @@
+{
+    "name": "Summary",
+    "components": [
+    	{
+	        "type": "LineGraphAndCounter",
+	        "title": "Commission",
+	        "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
+	        "dataSource": "elasticsearch",
+	        "host": "http://badger.laterooms.com:9200",
+	        "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
+	        "timeProperties": [
+	          "query.filtered.filter.bool.must.0.range.@timestamp",
+	          "aggs.bookingsbytime.date_histogram.extended_bounds"
+	        ],
+	        "intervalProperties": [
+	          "aggs.bookingsbytime.date_histogram.interval"
+	        ],
+	        "query": {
+	          "query": {
+	            "filtered": {
+	              "filter": {
+	                "bool": {
+	                  "must": [
+	                    {
+	                      "range" : {
+	                        "@timestamp" : {
+	                            "from" : "now-60m"
+	                        }
+	                      }
+	                    },
+	                    {
+	                        "term": {
+	                            "type": "domain_events"
+	                        }
+	                    },
+	                    {
+	                       "term":{
+	                          "domainEventType.raw":"booking made"
+	                       }
+	                    }
+	                  ]
+	                }
+	              }
+	            }
+	          },
+	          "aggs": {
+	            "bookingsbytime" : {
+	                    "date_histogram" : {
+	                        "min_doc_count": 0,
+	                        "extended_bounds" : {
+	                            "min" : "now-60m",
+	                            "max" : "now"
+	                        },
+	                        "field" : "@timestamp",
+	                        "interval" : "1m"
+	                    },
+	                    "aggs": {
+	                        "totalCommission": {
+	                            "sum": {
+	                                "field": "commissionValue"
+	                            }
+	                        }
+	                    }
+	                }
+	          },
+	          "size": 0
+	        },
+	        "mappings": [
+	          { 
+	            "type": "extractFromDateHistogram",
+	            "aggregateName": "bookingsbytime",
+	            "fields": {
+	              "commission": "totalCommission.value"
+	            }
+	          }
+	        ],
+	        "counter": {
+	            "title": "Commission made in last 10mins",
+	            "className": "commission-graph-counter",
+	            "prefix": "£",
+	            "precision": 0,
+	            "value": "query.commission",
+	            "upClass": "good",
+	            "downClass": "bad"
+	        },
+	        "graph": {
+	            "className": "commission-graph",
+	            "lines": [
+	                { "color": "#411485", "value": "query.commission", "id": "commission" }
+	            ]
+	        }
+	    }
+    ]
+}

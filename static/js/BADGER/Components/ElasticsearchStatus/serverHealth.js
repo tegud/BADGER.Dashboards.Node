@@ -38,6 +38,20 @@
 
         var callbacks = {
             success: function (data) {
+                var thresholds;
+
+                thresholds = data && data.info && data.info.thresholds ? data.info.thresholds : [];
+
+                var nodesThresholds = _.chain(data.info.thresholds).filter(function(threshold) {
+                    return threshold.type === 'nodes';
+                }).first().value();
+
+                var nodeThresholdBreaches = nodesThresholds ? _.reduce(nodesThresholds.nodes, function(result, node) {
+                    result[node.name] = node;
+
+                    return result;
+                }, {}) : {};
+
                 clusterStatusElement.html(_.map(data.info.nodes, function(node) {
                     var nodeTypeClass = 'fa-question-circle';
 
@@ -48,25 +62,43 @@
                         nodeTypeClass = 'fa-line-chart';
                     }
 
-                    var fs = node.stats.fs.data[0] || node.stats.fs.total;
+                    var fs = node.stats.fs;
+                    var nodeStatusClass = 'info';
+                    var breachedStats = {};
 
+                    if(nodeThresholdBreaches[node.name]) {
+                        nodeStatusClass = nodeThresholdBreaches[node.name].level;
 
+                        breachedStats = _.reduce(nodeThresholdBreaches[node.name].breaches, function(result, current) {
+                            result[current.stat] = current;
 
-                    return '<li class="node-info">'
+                            return result;
+                        }, {});
+                    }
+
+                    function getThresholdStatusForStat(stat) {
+                        if(!breachedStats[stat]) {
+                            return 'info';
+                        }
+
+                        return breachedStats[stat].breach.level;
+                    }
+
+                    return '<li class="node-info ' + nodeStatusClass + '">'
                          + '<div class="node-type"><span class="fa ' + nodeTypeClass + '"></span></div>'
                          + '<h3>' + node.name + '</h3>'
                          + '<div class="node-item"><span class="fa fa-plug"></span><div class="item-text">' + node.ip + '</div></div>'
                          + '<div class="node-item"><span class="fa fa-tags"></span><div class="item-text">' + node.tags + '</div></div>'
                          + '<div class="main-items">'
-                             + '<div class="node-item big-item">'
+                             + '<div class="node-item big-item ' + getThresholdStatusForStat('cpu') + '">'
                                 + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-dashboard"></div><div class="item-text">CPU</div></div>'
-                                + '<div><span class="big-item-value">' + node.stats.cpu.os.usage + '</span>%</div>'
+                                + '<div><span class="big-item-value">' + node.stats.cpu + '</span>%</div>'
                              + '</div>'
-                             + '<div class="node-item big-item">'
+                             + '<div class="node-item big-item ' + getThresholdStatusForStat('memory.heap.used.percent') + '">'
                                 + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-circuit-board"></div><div class="item-text">HEAP</div></div>'
                                 + '<div><span class="big-item-value">' + node.stats.memory.heap.used.percent + '</span>%</div>'
                              + '</div>'
-                             + '<div class="node-item big-item">'
+                             + '<div class="node-item big-item ' + getThresholdStatusForStat('fs.available_in_bytes') + '">'
                                 + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-database"></div><div class="item-text">DISK</div></div>'
                                 + '<div><span class="big-item-value">' + (((fs.total_in_bytes - fs.available_in_bytes) / fs.total_in_bytes) * 100).toFixed(0) + '</span>%</div>'
                                 + '<div>' + (fs.available_in_bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB Free</div>'

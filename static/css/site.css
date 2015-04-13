@@ -785,3 +785,18 @@ h3 {margin: 0;padding: 0 }
 .big-item-value { font-size: 2.6em; }
 
 .main-items { margin: 10px 0; }
+
+.node-info { border-color: #008000 }
+
+.node-info.breach { border-color: #ffa500 }
+.node-item.breach { color: #ffa500 }
+
+.node-info.critical { border-color: #f00 }
+.node-item.critical { color: #f00 }
+
+.node-list li.FAILED .node-container,
+.node-legend li.FAILED .block { background-color: #f00 }
+.node-list li.TIMEOUT .node-container,
+.node-legend li.TIMEOUT .block { background-color: #aaa }
+.node-list li.LONG-TIMEOUT .node-container,
+.node-legend li.LONG-TIMEOUT .block { background-color: #ffa500 }

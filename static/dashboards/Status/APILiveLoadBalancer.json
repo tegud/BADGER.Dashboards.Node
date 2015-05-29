@@ -60,6 +60,22 @@
         },
         {
             "type": "LoadBalancerStatus",
+            "poolId": "Searchv2.api_HTTP",
+            "title": "Search V2 API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "search.services.thelateroomsgroup.com_HTTP",
+            "title": "Search API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
             "poolId": "beyond.api _HTTP",
             "title": "Beyond API Status",
             "host": "10.44.35.62",

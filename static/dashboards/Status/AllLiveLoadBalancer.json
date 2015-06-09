@@ -1,0 +1,11 @@
+{
+    "name": "Live Load Balancer Status All Pools",
+    "components": [
+        {
+            "type": "AllPoolsLoadBalancerStatus",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        }
+    ]
+}

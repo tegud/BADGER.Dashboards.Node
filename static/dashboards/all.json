@@ -117,9 +117,13 @@
                     "id": "ELK",
                     "name": "ELK"
                 },
-                "API LiveLoadBalancer": {
+                "APILiveLoadBalancer": {
                     "id": "APILiveLoadBalancer",
                     "name": "Live API Load Balancer"
+                },
+                "AllPoolsLiveLoadBalancer": {
+                    "id": "AllLiveLoadBalancer",
+                    "name": "All Pools Live Load Balancer"
                 },
                 "Sandbox": {
                     "id": "Sandbox",

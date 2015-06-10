@@ -125,6 +125,10 @@
                     "id": "AllLiveLoadBalancer",
                     "name": "All Pools Live Load Balancer"
                 },
+                "DevTestPoolsLiveLoadBalancer": {
+                    "id": "DevTestLiveLoadBalancer",
+                    "name": "Dev/Test Pools Live Load Balancer"
+                },
                 "Sandbox": {
                     "id": "Sandbox",
                     "name": "Sandbox"

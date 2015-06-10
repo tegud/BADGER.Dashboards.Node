@@ -64,6 +64,29 @@
             };
         };
 
+        TLRGRP.BADGER.Dashboard.Components.Four = function() {
+            return {
+                render: function (container) {
+                    $('<div id="component-four"></div>').appendTo(container);
+                }
+            };
+        };
+
+        TLRGRP.BADGER.Dashboard.ComponentFactories.TwoAndFourFactory = function() {
+            return {
+                load: function() {
+                    var deferred = $.Deferred();
+
+                    deferred.resolve([
+                    	{ type: 'Two' },
+                    	{ type: 'Four' }
+                	]);
+
+                    return deferred;
+                }
+            };
+        };
+
         var ajaxyDataForDashboard = {
             'Summary': {
                 name: 'Summary',
@@ -77,6 +100,10 @@
                 components: [
                     { type: 'Three' }
                 ]
+            },
+            'Other': {
+                name: 'Other',
+                componentFactory: { type: 'TwoAndFourFactory' }
             }
         };
 
@@ -90,6 +117,9 @@
 				}, {
                     id: 'Traffic',
                     name: 'Traffic'
+                }, {
+                    id: 'Other',
+                    name: 'Other'
                 }]
 			});
 
@@ -139,6 +169,19 @@
 				expect(dashboardContainer.html()).to.be(expectedHtml);
 			});
 
+			it('uses component factory if one is specified', function() {
+				var expectedHtml = '<div id="component-two"></div><div id="component-four"></div>';
+				var dashboardContainer = $('#dashboard-container');
+
+				new TLRGRP.BADGER.Dashboard.Loader(dashboardContainer);
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'Overview',
+					view: 'Other'
+				});
+
+				expect(dashboardContainer.html()).to.be(expectedHtml);
+			});
 
 			it('hides loading screen once html is set', function() {
 				var loadingHidden = false;

@@ -43,16 +43,27 @@
                     var windowOffset = $(window).height() < $(document).height() ? 25 : 5;
                     windowOffset = 25;
 
-                    layoutManager.set(data.components, dashboardContainer.innerWidth() - windowOffset);
+                    var componentFactoryDeferred = $.Deferred();
+                    componentFactoryDeferred.resolve(data.components);
 
-                    _(data.components).forEach(function(component) {
-                        var dashboardComponent = new TLRGRP.BADGER.Dashboard.Components[component.type](component);
+                    if (data.componentFactory) {
+                        var componentFactory = new TLRGRP.BADGER.Dashboard.ComponentFactories[data.componentFactory.type](data.componentFactory);
+                        componentFactoryDeferred = componentFactory.load();
+                    }
 
-                        currentComponents.push(dashboardComponent);
-                        renderDeferreds.push(dashboardComponent.render(dashboardContainer));
+                    componentFactoryDeferred.then(function(newComponents) {
+
+                        layoutManager.set(newComponents, dashboardContainer.innerWidth() - windowOffset);
+
+                        _(newComponents).forEach(function(component) {
+                            var dashboardComponent = new TLRGRP.BADGER.Dashboard.Components[component.type](component);
+
+                            currentComponents.push(dashboardComponent);
+                            renderDeferreds.push(dashboardComponent.render(dashboardContainer));
+                        });
+
+                        $.when.apply(undefined, renderDeferreds).always(loadingComplete);
                     });
-
-                    $.when.apply(undefined, renderDeferreds).always(loadingComplete);
                 });
             }
 

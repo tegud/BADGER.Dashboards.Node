@@ -106,7 +106,8 @@
             alertDivState = '';
         }            
 
-        return {
+        return 
+        {
             kafconData,
             kafconLevel,
             alertDivState      

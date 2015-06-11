@@ -132,7 +132,15 @@
                 "Blogs": {
                     "id": "Blogs",
                     "name": "Blogs"
-                }
+                },
+                "KafkaQA": {
+                    "id": "KafkaQA",
+                    "name": "Kafka QA"
+                },
+                "KafkaLive": {
+                    "id": "KafkaLive",
+                    "name": "Kafka Live"
+                }   
             }
         },
         {

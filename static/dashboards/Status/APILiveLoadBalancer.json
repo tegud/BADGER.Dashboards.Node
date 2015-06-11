@@ -76,8 +76,8 @@
         },
         {
             "type": "LoadBalancerStatus",
-            "poolId": "beyond.api _HTTP",
-            "title": "Beyond API Status",
+            "poolId": "RES-API",
+            "title": "Reservations API Status",
             "host": "10.44.35.62",
             "port": 1234,
             "span": 4

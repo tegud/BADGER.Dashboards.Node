@@ -1,0 +1,10 @@
+{
+    "name": "Dev/Test Load Balancer Status All Pools",
+    "componentFactory":
+        {
+            "type": "AllPoolsLoadBalancerStatus",
+            "host": "10.44.35.63",
+            "port": 1234,
+            "span": 4
+        }
+}

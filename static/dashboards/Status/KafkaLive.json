@@ -7,7 +7,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Kafka Broker Status",
-            "host": "10.44.10.68",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 6
         },
@@ -17,7 +17,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Zookeeper Node Status",
-            "host": "10.44.10.68",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 6
         },          
@@ -27,7 +27,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "KAFCON Level",
-            "host": "10.44.10.68",
+            "host": "badger.laterooms.com",
             "port": 3000,
             "span": 3
         }      

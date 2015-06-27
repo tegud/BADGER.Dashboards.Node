@@ -1,0 +1,478 @@
+{
+    "id": "RatesAndAvailabilityOverview",
+    "name": "Overview",
+    "components": [
+        {
+          "type": "SharedDataStore",
+          "title": "LateRooms Conversion",
+          "storeId": "AllOutComes",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "type" : "session"
+                          }
+                        },
+                        {
+                          "term": {
+                            "user.type": "human"
+                          }
+                        }
+                      ],
+                      "must_not": {
+                        "term": {
+                          "ratesAccuracySummary.outcomes.raw": ""
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                    "bookings": {
+                      "filter": {
+                        "term": {
+                          "booked": "true"
+                        }
+                      }
+                    },
+                    "availabilityState": {
+                      "filters": {
+                        "filters": {
+                          "OK": {
+                            "term": {
+                              "ratesAccuracySummary.failures": 0
+                            }
+                          },
+                          "lessExpensive": {
+                            "term": {
+                              "ratesAccuracySummary.outcomes": "less_expensive"
+                            }
+                          },
+                          "noCorrect": {
+                            "not": {
+                              "term": {
+                                "ratesAccuracySummary.outcomes": "ok"
+                              }
+                            }
+                          },
+                          "moreExpensive": {
+                            "term": {
+                              "ratesAccuracySummary.outcomes": "more_expensive"
+                            }
+                          },
+                          "noAvailability": {
+                            "term": {
+                              "ratesAccuracySummary.outcomes": "no_availability"
+                            }
+                          }
+                        }
+                      },
+                      "aggs": {
+                        "bookings": {
+                          "filter": {
+                            "term": {
+                              "booked": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "bookingsbytime",
+              "fields": {
+                "bookings": "bookings.doc_count",
+                "sessions": "doc_count",
+                "okBookings": "availabilityState.buckets.OK.bookings.doc_count",
+                "okSessions": "availabilityState.buckets.OK.doc_count",
+                "noCorrectBookings": "availabilityState.buckets.noCorrect.bookings.doc_count",
+                "noCorrectSessions": "availabilityState.buckets.noCorrect.doc_count",
+                "moreExpensiveBookings": "availabilityState.buckets.moreExpensive.bookings.doc_count",
+                "moreExpensiveSessions": "availabilityState.buckets.moreExpensive.doc_count",
+                "lessExpensiveSessions": "availabilityState.buckets.lessExpensive.doc_count",
+                "lessExpensiveBookings": "availabilityState.buckets.lessExpensive.bookings.doc_count",
+                "noAvailabilityBookings": "availabilityState.buckets.noAvailability.bookings.doc_count",
+                "noAvailabilitySessions": "availabilityState.buckets.noAvailability.doc_count"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission.all"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "okBookings", "over": "okSessions" },
+              "toField": "commission.ok"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "noCorrectBookings", "over": "noCorrectSessions" },
+              "toField": "commission.noCorrect"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "moreExpensiveBookings", "over": "moreExpensiveSessions" },
+              "toField": "commission.moreExpensive"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "lessExpensiveBookings", "over": "lessExpensiveSessions" },
+              "toField": "commission.lessExpensive"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "noAvailabilityBookings", "over": "noAvailabilitySessions" },
+              "toField": "commission.noAvailability"
+            }
+          ]
+        },
+        {
+          "type": "SharedDataStore",
+          "title": "LateRooms Conversion",
+          "storeId": "LastOutcome",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "type" : "session"
+                          }
+                        },
+                        {
+                          "term": {
+                            "user.type": "human"
+                          }
+                        }
+                      ],
+                      "must_not": {
+                        "term": {
+                          "ratesAccuracySummary.outcomes.raw": ""
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "aggs": {
+                "bookingsbytime" : {
+                  "date_histogram" : {
+                      "min_doc_count": 0,
+                      "field" : "@timestamp",
+                      "interval" : "1h",
+                      "extended_bounds": {}
+                  },
+                  "aggs": {
+                    "bookings": {
+                      "filter": {
+                        "term": {
+                          "booked": "true"
+                        }
+                      }
+                    },
+                    "availabilityState": {
+                      "filters": {
+                        "filters": {
+                          "OK": {
+                            "term": {
+                              "ratesAccuracySummary.failures": 0
+                            }
+                          },
+                          "lessExpensive": {
+                            "term": {
+                              "ratesAccuracySummary.lastOutcome": "less_expensive"
+                            }
+                          },
+                          "noCorrect": {
+                            "not": {
+                              "term": {
+                                "ratesAccuracySummary.lastOutcome": "ok"
+                              }
+                            }
+                          },
+                          "moreExpensive": {
+                            "term": {
+                              "ratesAccuracySummary.lastOutcome": "more_expensive"
+                            }
+                          },
+                          "noAvailability": {
+                            "term": {
+                              "ratesAccuracySummary.lastOutcome": "no_availability"
+                            }
+                          }
+                        }
+                      },
+                      "aggs": {
+                        "bookings": {
+                          "filter": {
+                            "term": {
+                              "booked": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          },
+          "mappings": [
+            { 
+              "type": "extractFromDateHistogram",
+              "aggregateName": "bookingsbytime",
+              "fields": {
+                "bookings": "bookings.doc_count",
+                "sessions": "doc_count",
+                "okBookings": "availabilityState.buckets.OK.bookings.doc_count",
+                "okSessions": "availabilityState.buckets.OK.doc_count",
+                "noCorrectBookings": "availabilityState.buckets.noCorrect.bookings.doc_count",
+                "noCorrectSessions": "availabilityState.buckets.noCorrect.doc_count",
+                "moreExpensiveBookings": "availabilityState.buckets.moreExpensive.bookings.doc_count",
+                "moreExpensiveSessions": "availabilityState.buckets.moreExpensive.doc_count",
+                "lessExpensiveSessions": "availabilityState.buckets.lessExpensive.doc_count",
+                "lessExpensiveBookings": "availabilityState.buckets.lessExpensive.bookings.doc_count",
+                "noAvailabilityBookings": "availabilityState.buckets.noAvailability.bookings.doc_count",
+                "noAvailabilitySessions": "availabilityState.buckets.noAvailability.doc_count"
+              }
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "bookings", "over": "sessions" },
+              "toField": "commission.all"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "okBookings", "over": "okSessions" },
+              "toField": "commission.ok"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "noCorrectBookings", "over": "noCorrectSessions" },
+              "toField": "commission.noCorrect"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "moreExpensiveBookings", "over": "moreExpensiveSessions" },
+              "toField": "commission.moreExpensive"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "lessExpensiveBookings", "over": "lessExpensiveSessions" },
+              "toField": "commission.lessExpensive"
+            },
+            { 
+              "type": "calculation",
+              "calculation": "percentage",
+              "by": { "field": "noAvailabilityBookings", "over": "noAvailabilitySessions" },
+              "toField": "commission.noAvailability"
+            }
+          ]
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Sessions",
+          "storeId": "AllOutComes",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "text": "Overall" },
+                { "id": "all-correct", "color": "green", "text": "All Good" },
+                { "id": "no-availability", "color": "red", "text": "All Bad" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "all", "color": "purple", "value": "today.sessions" },
+                { "id": "ok", "color": "green", "value": "today.okSessions" },
+                { "id": "noCorrect", "color": "red", "value": "today.noCorrectSessions" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Bookings",
+          "storeId": "AllOutComes",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "text": "Overall" },
+                { "id": "all-correct", "color": "green", "text": "All Good" },
+                { "id": "no-availability", "color": "red", "text": "All Bad" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "all", "color": "purple", "value": "today.bookings" },
+                { "id": "ok", "color": "green", "value": "today.okBookings" },
+                { "id": "noCorrect", "color": "red", "value": "today.noCorrectBookings" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion (Any Outcome)",
+          "storeId": "AllOutComes",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "today", "color": "purple", "text": "Overall" },
+                { "id": "all-correct", "color": "green", "text": "All Good" },
+                { "id": "no-availability", "color": "red", "text": "All Bad" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "all", "color": "purple", "value": "today.commission.all" },
+                { "id": "ok", "color": "green", "value": "today.commission.ok" },
+                { "id": "noCorrect", "color": "red", "value": "today.commission.noCorrect" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion (Last Tracked Outcome)",
+          "storeId": "LastOutcome",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "all-last", "color": "purple", "text": "Overall" },
+                { "id": "all-correct-last", "color": "green", "text": "Good" },
+                { "id": "no-availability-last", "color": "red", "text": "Bad" }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "all-last", "color": "purple", "value": "today.commission.all" },
+                { "id": "ok-all", "color": "green", "value": "today.commission.ok" },
+                { "id": "noCorrect-all", "color": "red", "value": "today.commission.noCorrect" }
+              ],
+              "window": false
+          }
+        },
+        {
+          "type": "LineGraphAndCounter",
+          "title": "Conversion (Any Outcome, By Failure Type)",
+          "storeId": "AllOutComes",
+          "counter": {
+              "precision": 0,
+              "counters": [
+                { "id": "all-fail", "color": "purple", "text": "Overall" },
+                { "id": "no-availability-fail", "color": "yellow", "text": "Cheaper" },
+                { "id": "moreExpensive-fail", "color": "orange", "text": "More Exp." },
+                { "id": "noAvailability-fail", "color": "red", "text": "No Avail." }
+              ],
+              "window": {
+                "skip": 0,
+                "take": 0
+              }
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "all-fail", "color": "purple", "value": "today.commission.all" },
+                { "id": "lessExpensive-fail", "color": "yellow", "value": "today.commission.lessExpensive" },
+                { "id": "moreExpensive-fail", "color": "orange", "value": "today.commission.moreExpensive" },
+                { "id": "no-availability-fail", "color": "red", "value": "today.commission.noAvailability" }
+              ],
+              "window": false
+          }
+        }
+    ]
+}

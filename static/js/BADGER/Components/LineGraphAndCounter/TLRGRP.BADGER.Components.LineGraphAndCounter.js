@@ -7,20 +7,31 @@
 
     TLRGRP.BADGER.Dashboard.Components.LineGraphAndCounter = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
-        
+
         if(!configuration.graph) {
             configuration.graph = {};
         }
 
-        if(configuration.counter) {
-            configuration.graph.counterWindow = configuration.counter.window;
+        if(configuration.counter || configuration.counterV2) {
+            configuration.graph.counterWindow = configuration.counter ? configuration.counter.window : configuration.counterV2.window;
         }
 
         if(configuration.alert && configuration.alert.show) {
             configuration.graph.className = (configuration.graph.className ? ' ' : '') + 'with-alert';
         }
+        var counter;
 
-        var counter = new TLRGRP.BADGER.Dashboard.ComponentModules[configuration.counter && configuration.counter.counters ? 'MultiCounter': 'Counter'](configuration.counter);
+        if(configuration.counter && configuration.counter.counters) {
+            counter = new TLRGRP.BADGER.Dashboard.ComponentModules.MultiCounter(configuration.counter);
+        }
+        else if (configuration.counterV2) {
+            counter = new TLRGRP.BADGER.Dashboard.ComponentModules.CounterV2(configuration.counterV2);
+            configuration.graph.className = (configuration.graph.className || '') + " with-v2-counter";
+        }
+        else {
+            counter = new TLRGRP.BADGER.Dashboard.ComponentModules.Counter(configuration.counter);
+        }
+
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom', showExact: true });
         var componentModules = [];

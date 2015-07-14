@@ -130,7 +130,7 @@
                     graph = new TLRGRP.BADGER.Dashboard.ComponentModules.GraphCanvas(element, currentOptions);
                     
                     _.each(lines, function(line) {
-                        line.circle = graph.append("circle")
+                        line.circle = graph.insert("circle", ":first-child")
                             .attr('class', 'hidden hover-circle-' + line.id)
                             .attr("cx", 30)
                             .attr("cy", 30)

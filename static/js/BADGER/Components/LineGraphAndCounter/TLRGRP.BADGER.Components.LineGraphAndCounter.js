@@ -32,7 +32,14 @@
             counter = new TLRGRP.BADGER.Dashboard.ComponentModules.Counter(configuration.counter);
         }
 
-        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
+        var lineGraph;
+
+        if(configuration.graph.type === 'bar') {
+            lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.BarGraph(configuration.graph);
+        }
+        else {
+            lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
+        }
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-bottom', showExact: true });
         var componentModules = [];
 
@@ -70,7 +77,7 @@
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
             layout: configuration.layout,
-            componentClass: 'graph-and-counter-component',
+            componentClass: 'graph-and-counter-component ' + configuration.className,
             modules: componentModules
         });
 

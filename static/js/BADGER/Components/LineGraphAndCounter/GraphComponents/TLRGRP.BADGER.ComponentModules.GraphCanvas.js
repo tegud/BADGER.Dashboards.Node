@@ -60,9 +60,20 @@
         }
 
         var lastData;
+
+        var svg = d3.select(element[0]).append("svg")
+            .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
+            .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
+    
+
         var graphCanvas = {
             append: function(element) {
                 return svg.append(element);
+            },
+            insert: function(element, insert) {
+                return svg.insert(element, insert);
             },
             select: function (selector) {
                 return svg.select(selector);
@@ -105,15 +116,24 @@
             },
             axisFunctions: function() {
                 return axis;
-            }
+            },
+            setExtents: function(timeData, y) {
+                _.each(axis, function(eachAxis, label) {
+                    if(label === 'x') {
+                        var extent = d3.extent(timeData, function (d) { return d; });
+
+                        eachAxis.domain(extent);
+                    }
+                    else {
+                        eachAxis.domain(y);
+                    }
+                });
+
+                graphAxis.call();
+            },
+            svg: svg
         };
 
-        var svg = d3.select(element[0]).append("svg")
-            .attr("width", dimensions.width + dimensions.margin.left + dimensions.margin.right)
-            .attr("height", dimensions.height + dimensions.margin.top + dimensions.margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + dimensions.margin.left + "," + dimensions.margin.top + ")");
-    
         svg
             .append("rect")
             .attr('style', 'fill: transparent; z-index:-1')

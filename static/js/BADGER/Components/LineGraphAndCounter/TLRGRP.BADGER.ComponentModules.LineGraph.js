@@ -22,10 +22,13 @@
         var graph;
         var lastDataSet;
         var toolTipIsOnGraph;
+
         var lines = currentOptions.lines || [
             { id: 'error-line', color: currentOptions.lineColor || 'red' }
         ];
         var areas = currentOptions.areas || [];
+        var bars = currentOptions.bars || [];
+
         var counterWindow = _.extend({}, {
             take: 10,
             skip: 0

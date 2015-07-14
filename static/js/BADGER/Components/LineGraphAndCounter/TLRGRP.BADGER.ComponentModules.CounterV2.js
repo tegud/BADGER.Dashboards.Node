@@ -15,7 +15,9 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.ComponentModules');
 
     TLRGRP.BADGER.Dashboard.ComponentModules.CounterV2 = function (configuration) {
-        var containerElement = $('<div class="v3-graph-counter' + (configuration.className ? ' ' + configuration.className : '') + '"></div>');
+        var containerElement = $('<div class="v3-graph-counter' 
+            + (configuration.expandedView ? ' expanded-view' : '')
+            + (configuration.className ? ' ' + configuration.className : '') + '"></div>');
         var listElement = $('<ul class="v3-graph-counter-list"></ul>');
         var windowSettings = _.extend({}, {
             take: 10,
@@ -27,7 +29,7 @@
 
         return {
             appendTo: function (container) {
-                values = _.reduce(configuration.values, function(allValues, value) {
+                values = _.reduce(configuration.values, function(allValues, value, x) {
                     var alertIndicator = '<div class="v3-graph-counter-alert-indicator">'
                         + '<span class="state-indicator unknown-state fa fa-question"></span>'
                         + '<span class="hidden state-indicator ok-state fa fa-check"></span>'
@@ -35,7 +37,7 @@
                         + '<span class="hidden state-indicator critical-state fa fa-bomb"></span>'
                     + '</div>';
 
-                    allValues[value.id] =  $('<li>'
+                    allValues[value.id] =  $('<li' + (x === configuration.values.length-1 ? ' class="last-item"' : '') + '>'
                          + '<div class="v3-graph-counter-legend" style="background-color: ' + value.color + '"></div>'
                          + (showAlert ? alertIndicator : '')
                          + '<div class="v3-graph-counter-label">' + value.text + '</div>'
@@ -81,7 +83,16 @@
                 }, startTotals);
 
                 var alerts = _.reduce(configuration.values, function(alerts, item) {
-                    alerts[item.id] = 'ok-state';
+                    if(item.thresholds) {
+                        alerts[item.id] = 'ok-state';
+
+                        if(totals[item.id] >= item.thresholds.critical) {
+                            alerts[item.id] = 'critical-state';
+                        }
+                        else if (totals[item.id] >= item.thresholds.warning) {
+                            alerts[item.id] = 'warning-state';
+                        }
+                    }
 
                     return alerts;
                 }, startAlerts);
@@ -93,9 +104,6 @@
                         .filter('.' + alerts[key])
                             .removeClass('hidden');
                 });
-
-                console.log(totals);
-                console.log(alerts);
 
                 // var value = _.reduce(relevantValues, function (totals, item) {
                 //     totals[item.value] += getValueFromSubProperty(item, 'query.legacy') || 0;

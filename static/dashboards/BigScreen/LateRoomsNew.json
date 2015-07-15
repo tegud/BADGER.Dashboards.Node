@@ -15,7 +15,6 @@
             "dataSource": "elasticsearch",
             "host": "http://badger.laterooms.com:9200",
             "className": "tall-graph",
-            "kibanaDashboard": "elasticsearch/LateRooms.com%20Errors",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -83,9 +82,9 @@
             "counterV2": {
                 "expandedView": true,
                 "values": [
-                    { "id": "bf_errors", "color": "red", "value": "query.bookingForm", "text": "New Bkg", "thresholds": { "warning": 1, "critical": 10 }  },
-                    { "id": "ms_errors", "color": "orange", "value": "query.moonstick", "text": "Moonstick" },
-                    { "id": "lr_errors", "color": "#411485", "value": "query.legacy", "text": "Legacy" }
+                    { "id": "bf_errors", "color": "red", "value": "query.bookingForm", "text": "New Bkg", "thresholds": { "warning": 1, "critical": 10 }, "link": { "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/BookingWeb%20Errors", "newTab": true } },
+                    { "id": "ms_errors", "color": "orange", "value": "query.moonstick", "text": "Moonstick", "link": { "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/Moonstick%20Server%20Errors", "newTab": true } },
+                    { "id": "lr_errors", "color": "#411485", "value": "query.legacy", "text": "Legacy", "link": { "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/LateRooms.com%20Errors", "newTab": true } }
                 ]
             },
             "graph": {
@@ -165,7 +164,7 @@
                                 "filters": {
                                     "filters": {
                                         "resApi":  { "term": { "resAPI": true } },
-                                        "legacy":  { "not": { "exists": { "field": "resAPI" } } }
+                                        "legacy":  { "not": { "term": { "resAPI": true } } }
                                     }
                                 },
                                 "aggs": {
@@ -198,7 +197,7 @@
                 "values": [
                     { "id": "legacy_commission", "color": "orange", "value": "query.legacy", "text": "LG", "threshold": false },
                     { "id": "bookingweb_commission", "color": "green", "value": "query.res", "text": "Res", "threshold": false },
-                    { "id": "total_commission", "value": "query.total", "color": "#411485", "text": "Total" }
+                    { "id": "total_commission", "value": "query.total", "color": "#411485", "text": "All" }
                 ]
             },
             "graph": {

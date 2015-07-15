@@ -41,7 +41,7 @@
                          + '<div class="v3-graph-counter-legend" style="background-color: ' + value.color + '"></div>'
                          + (showAlert ? alertIndicator : '')
                          + '<div class="v3-graph-counter-label">' + value.text + '</div>'
-                         + '<div class="v3-graph-counter-value">--</div>'
+                         + '<div class="v3-graph-counter-value-holder">' + (value.link ? '<a href="' + value.link.link + '" class="dashboard-link"' + (value.link.newTab ? ' target="_blank"' : '') + '><span class="fa fa-external-link"></span></a>' : '') + '<span class="v3-graph-counter-value">--</span></div>'
                      + '</li>');
 
                     return allValues;
@@ -77,7 +77,7 @@
 
                         return total;
                     }, 0);
-                    totals[item.id] = total;
+                    totals[item.id] = (configuration.prefix ? configuration.prefix : '') + total;
 
                     return totals;
                 }, startTotals);
@@ -104,31 +104,6 @@
                         .filter('.' + alerts[key])
                             .removeClass('hidden');
                 });
-
-                // var value = _.reduce(relevantValues, function (totals, item) {
-                //     totals[item.value] += getValueFromSubProperty(item, 'query.legacy') || 0;
-
-                //     console.log(getValueFromSubProperty(item, 'query.moonstick'));
-                //     console.log(getValueFromSubProperty(item, 'query.bookingForm'));
-                //     // { "id": "lr_errors", "color": "#411485", "value": "query.legacy", "text": "LG" },
-                //     // { "id": "ms_errors", "color": "orange", "value": "query.moonstick", "text": "MS" },
-                //     // { "id": "bf_errors", "color": "red", "value": "query.bookingForm", "text": "BW" }
-
-                //         // var value = item;
-
-                //         // if(configuration.value && configuration.value.indexOf('.') < 0) {
-                //         //     value = value.value;
-                //         // }
-                //         // else if(configuration.value) {
-                //         //     value = getValueFromSubProperty(value, configuration.value);
-                //         // }
-
-                //         // return total + value;
-
-                //         return totals;
-                //     }, startTotals);
-
-
             }
         };
     };

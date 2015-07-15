@@ -31,11 +31,14 @@
             }
 
             highlightedRegion = svg
-                .append("rect")
+                .insert('rect', ':first-child')
+                .attr('class', 'insert-before-marker')
+                .attr('height', 0);
+
+            highlightedRegion = svg
+                .insert('rect', ':first-child')
                 .attr('class', 'highlighted-region')
                 .attr('height', dimensions.height + dimensions.margin.top + dimensions.margin.bottom);
-
-            svg[0][0].insertBefore(highlightedRegion[0][0], svg[0][0].firstChild);
         }
 
         return {

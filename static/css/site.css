@@ -393,10 +393,6 @@ h3 {margin: 0;padding: 0 }
 
 .v3-graph-counter {float: right;width: 205px;height: 110px;text-align: center;padding: 15px 5px 15px 5px;font-size: 1.1em;border: solid 1px #ddd;background-color: #fff;position:relative }
 
-.tall-graph .v3-graph-counter { height: 210px; }
-.tall-graph .v2-graph-container.with-v2-counter,
-.tall-graph .v2-graph-container { height: 240px; }
-
 .v3-graph-counter-list { list-style: none; margin: 0 0 0 5px; padding:0; text-align: left; }
 
 .v3-graph-counter-list > li {  margin-bottom: 3px; border-bottom: solid 1px #999; }
@@ -415,6 +411,11 @@ h3 {margin: 0;padding: 0 }
 
 .v3-graph-counter-label { font-size: 1.5em; font-weight: bold; padding-top: 3px; }
 .v3-graph-counter-value { font-size: 1.5em; padding-top: 3px; text-align: right; }
+
+.tall-graph .v3-graph-counter { height: 250px; }
+.tall-graph .v2-graph-container.with-v2-counter,
+.tall-graph .v2-graph-container { height: 280px; }
+.tall-graph .v3-graph-counter-value { font-size: 2.4em; padding-top: 3px; text-align: right; }
 
 .expanded-view .v3-graph-counter-value { clear: left; }
 

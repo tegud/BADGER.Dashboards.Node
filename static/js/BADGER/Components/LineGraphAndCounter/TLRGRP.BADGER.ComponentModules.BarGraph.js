@@ -139,7 +139,7 @@
                     graph = new TLRGRP.BADGER.Dashboard.ComponentModules.GraphCanvas(element, currentOptions);
                     
                     _.each(lines, function(line) {
-                        line.circle = graph.insert("circle", ":first-child")
+                        line.circle = graph.insert("circle", ".insert-before-marker")
                             .attr('class', 'hidden hover-circle-' + line.id)
                             .attr("cx", 30)
                             .attr("cy", 30)
@@ -195,6 +195,7 @@
 
                 lastDataSet = specificData;
                 toolTipContentFactory.setData(specificData);
+                graph.triggerData(specificData);
 
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {
@@ -222,7 +223,7 @@
 
                     var state = graph.svg.selectAll(".state")
                         .data(specificData)
-                    .enter().insert("g", ":first-child")
+                    .enter().insert("g", ".insert-before-marker")
                         .attr("class", "state")
                         .attr("transform", function(d, x) { 
                             var xPos = (graph.axisFunctions().x(d.time) - barOffset + 1);

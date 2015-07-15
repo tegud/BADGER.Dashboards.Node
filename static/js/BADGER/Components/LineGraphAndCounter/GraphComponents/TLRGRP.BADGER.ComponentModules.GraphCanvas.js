@@ -94,6 +94,15 @@
 
                 return svg.on(event, handler);
             },
+            triggerData: function(data) {
+                lastData = data;
+
+                highlightedRegion.setData(data);
+
+                _.each(dataEvents, function(handler) {
+                    handler(data);
+                });
+            },
             setData: function(data) {
                 lastData = data;
 

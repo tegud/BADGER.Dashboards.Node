@@ -18,8 +18,12 @@
             "name": "Big Screen",
             "views": {
                 "Summary": {
-                    "id": "LateRooms",
+                    "id": "LateRoomsNew",
                     "name": "Late Rooms (Main)"
+                },
+                "Legacy": {
+                    "id": "LateRooms",
+                    "name": "Legacy (Main)"
                 },
                 "Requests": {
                     "id": "LateRoomsRequests",

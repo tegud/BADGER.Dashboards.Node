@@ -87,6 +87,13 @@
                         line.circle
                             .attr('cx', graph.axisFunctions().x(lastDataSet[index].time))
                             .attr('cy', graph.axisFunctions().y(lineValue || 0) );
+
+                        if(lineValue) {
+                            line.circle.classed('has-value', true);
+                        }
+                        else {
+                            line.circle.classed('has-value', false);
+                        }
                     });
                 }
             };
@@ -96,7 +103,7 @@
             toolTipIsOnGraph = true;
 
             _.each(lines, function(line) {
-                line.circle.classed('hidden', false);
+                line.circle.classed('hidden', !line.circle.classed('has-value'));
             });
 
             var updateRequired = toolTipContentFactory.setCurrentIndex(mousePos);

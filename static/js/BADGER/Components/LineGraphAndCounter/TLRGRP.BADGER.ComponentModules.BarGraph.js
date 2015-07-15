@@ -195,7 +195,6 @@
 
                 lastDataSet = specificData;
                 toolTipContentFactory.setData(specificData);
-                graph.triggerData(specificData);
 
                 $.when(graphReady).then(function() {
                     for (var m = 0; m < data.length; m++) {
@@ -249,6 +248,7 @@
                         .style("fill", function(d) { return d.color; });
 
                     toolTipContentFactory.setLineCircles();
+                    graph.triggerData(specificData);
                 });
             }
         };

@@ -90,9 +90,11 @@
 
                         if(lineValue) {
                             line.circle.classed('has-value', true);
+                            line.circle.classed('hidden', false);
                         }
                         else {
                             line.circle.classed('has-value', false);
+                            line.circle.classed('hidden', true);
                         }
                     });
                 }

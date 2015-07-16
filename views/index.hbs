@@ -16,20 +16,35 @@
 
 </head>
 <body>
+
+<nav id="dashboard-menu">
+    <div class="connection-indicator"></div>
+    <ul class="status-menu">
+        <li class="top-level-item text v2-label">V2</li>
+    </ul>
+    <div class="ticker" id="news-ticker">
+        <div class="ticket-icon">
+            <span class="mega-octicon octicon-broadcast"></span>
+        </div>
+        <div class="ticker-text"></div>
+    </div>
+</nav>
+
 <div class="main-body">
     <div class="hidden" id="identify"></div>
     <div class="hidden" id="message"></div>
 
     <nav id="settings">
         <ul class="settings-menu">
-            <li class="top-level-item text clock">00:00</li>
+            <li class="top-level-item text clock" id="clock">
+                <span class="hours-and-minutes"></span><span class="seconds"></span>
+            </li>
             <li class="top-level-item time-control-header" id="time-control-button">
                 <div class="current-item">
                     <span class="time-period">1 Hour</span>
                     <span class="time-period-end-point">Ending now</span>
                 </div>
             </li>
-            <li class="top-level-item options"></li>
         </ul>
     </nav>
 
@@ -59,11 +74,6 @@
         </div>-->
     </div>
 
-    <nav id="dashboard-menu">
-        <ul class="status-menu">
-            <li class="top-level-item text">V2</li>
-        </ul>
-    </nav>
     <div id="content"></div>
 
 </div>
@@ -84,6 +94,7 @@
 <script type="text/javascript" src="/static/js/BADGER/Utilities/objectHelpers.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.Layout.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.Loader.js"></script>
+<script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.Menu.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/dashboard/TLRGRP.BADGER.Dashboard.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/pageManager/TLRGRP.BADGER.Dashboard.PageManager.js"></script>
 <script type="text/javascript" src="/static/js/BADGER/menu/TLRGRP.BADGER.Dashboard.ViewSelector.js"></script>

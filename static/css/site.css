@@ -222,7 +222,10 @@ h3 {margin: 0;padding: 0 }
 }
 
 /* Menu */
-.connection-indicator { float: left; background-color: green; width: 15px; height: 70px; }
+.connection-indicator { float: left; background-color: #999; width: 15px; height: 70px; }
+
+.connection-indicator.connected { background-color: green; } 
+.connection-indicator.disconnected { background-color: red; } 
 
 .settings-menu { position: absolute; top: 0px; right: 10px; }
 

@@ -104,6 +104,8 @@
 
         setupTimeControlEvents();
 
+        var menu = new TLRGRP.BADGER.Dashboard.Menu();
+
         TLRGRP.BADGER.Dashboard.clear = function () {
             dashboards = {};
         };

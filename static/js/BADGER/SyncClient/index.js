@@ -44,6 +44,8 @@
         };
 
         socket.on('connectionHandshake', function(connectionDetails) {
+            $('#connection-indicator').addClass('connected');
+
             sessionId = connectionDetails.sessionId;
             setIdentityDiv();
 

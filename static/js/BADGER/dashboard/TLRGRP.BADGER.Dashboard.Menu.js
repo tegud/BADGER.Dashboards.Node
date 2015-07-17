@@ -8,7 +8,7 @@
             setTimeout(function() {
                 var clockLeftPosition = 0;
 
-                if(!clock.length) {
+                if(clock.length) {
                     clockLeftPosition = clock.offset().left;
                 } 
 

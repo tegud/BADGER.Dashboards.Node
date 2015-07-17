@@ -7,7 +7,7 @@
         if(!ticker.length) {
             return;
         }
-        
+
         TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', function(dashboardAndView) {
             setTimeout(function() {
                 var clockLeftPosition = 0;
@@ -37,22 +37,31 @@
                 return;
             }
 
-            $('.ticket-icon span', ticker)[0].className = 'fa fa-check';
-            $('.ticker-text').text('Nothing to report...');
+            $('.ticket-icon span', ticker)[0].className = icon;
+            $('.ticker-text').text(text);
         }
 
-        if(!ticker.length) { 
+        if(ticker.length) { 
             TLRGRP.messageBus.subscribe('TLRGRP.BADGER.Ticker.Show', function(tickerItem) {
-                    // level: 'info',
-                    // message: sessionName ? sessionName + (sessionId ? ' (' + sessionId.substr(0, 8) + ')' : '') : sessionId,                    
-                    // for: 5000
+                    if(tickerItem.for) {
+                        setTimeout(setTickerText.bind(undefined, 'fa fa-check', 'Nothing to report...'), tickerItem.for);
+                    }
 
+                    var levelIcons = {
+                        info: 'mega-octicon octicon-info',
+                        ok: 'fa fa-check'
+                    };
 
+                    setTickerText(levelIcons[tickerItem.level], tickerItem.message)
             });
         };
 
         setTime();
         setTickerWidth(ticker, clock);
-        setTickerText()
+
+        TLRGRP.messageBus.publish('TLRGRP.BADGER.Ticker.Show', {
+            level: 'ok',
+            message: 'Nothing to report...'
+        });
     };
 })();

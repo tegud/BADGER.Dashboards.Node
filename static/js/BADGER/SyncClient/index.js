@@ -27,7 +27,7 @@
                 setIdentityDiv();
             },
             identify: function() {
-                TLRGRP.messageBus.subscribe('TLRGRP.BADGER.Ticker.Show', {
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.Ticker.Show', {
                     level: 'info',
                     message: sessionName ? sessionName + (sessionId ? ' (' + sessionId.substr(0, 8) + ')' : '') : sessionId,                    
                     for: 5000

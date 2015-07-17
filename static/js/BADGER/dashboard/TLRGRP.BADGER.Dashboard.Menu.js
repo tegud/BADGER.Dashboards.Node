@@ -4,10 +4,13 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard');
 
     function setTickerWidth(ticker, clock) {
+        if(!ticker.length) {
+            return;
+        }
+        
         TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', function(dashboardAndView) {
             setTimeout(function() {
                 var clockLeftPosition = 0;
-
                 if(clock.length) {
                     clockLeftPosition = clock.offset().left;
                 } 
@@ -37,6 +40,16 @@
             $('.ticket-icon span', ticker)[0].className = 'fa fa-check';
             $('.ticker-text').text('Nothing to report...');
         }
+
+        if(!ticker.length) { 
+            TLRGRP.messageBus.subscribe('TLRGRP.BADGER.Ticker.Show', function(tickerItem) {
+                    // level: 'info',
+                    // message: sessionName ? sessionName + (sessionId ? ' (' + sessionId.substr(0, 8) + ')' : '') : sessionId,                    
+                    // for: 5000
+
+
+            });
+        };
 
         setTime();
         setTickerWidth(ticker, clock);

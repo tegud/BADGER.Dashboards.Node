@@ -27,18 +27,11 @@
                 setIdentityDiv();
             },
             identify: function() {
-                clearTimeout(identifyTimeout);
-
-                TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', {
-                    icon: '',
-                    message: '',                    
+                TLRGRP.messageBus.subscribe('TLRGRP.BADGER.Ticker.Show', {
+                    level: 'info',
+                    message: sessionName ? sessionName + (sessionId ? ' (' + sessionId.substr(0, 8) + ')' : '') : sessionId,                    
                     for: 5000
                 });
-                
-                $('#identify').removeClass('hidden');
-                identifyTimeout = setTimeout(function() {
-                    $('#identify').addClass('hidden');
-                }, 5000);
             },
             message: function(data) {
                 clearTimeout(messageTimeout);

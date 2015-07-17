@@ -24,6 +24,10 @@
         }
 
         function setTickerText(icon, text) {
+            if(!ticker.length) { 
+                return;
+            }
+
             $('.ticket-icon span', ticker)[0].className = 'fa fa-check';
             $('.ticker-text').text('Nothing to report...');
         }

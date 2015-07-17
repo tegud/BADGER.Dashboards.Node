@@ -224,8 +224,22 @@ h3 {margin: 0;padding: 0 }
 /* Menu */
 .connection-indicator { float: left; background-color: #999; width: 15px; height: 70px; }
 
-.connection-indicator.connected { background-color: green; } 
-.connection-indicator.disconnected { background-color: red; } 
+.connection-indicator-icon { width: 30px; height: 27px; padding-top:3px; background-color: #999; margin-top: 20px; border-radius: 15px; text-align: center  }
+
+.connection-indicator-icon span { font-size: 22px; color: #fff; }
+
+.connection-indicator.connected,
+.connection-indicator.connected .connection-indicator-icon { background-color: green; } 
+.connection-indicator.disconnected,
+.connection-indicator.disconnected .connection-indicator-icon { background-color: red; } 
+
+.connection-indicator.connected span.connected      { display: block; }
+.connection-indicator span.connected,
+.connection-indicator.disconnected span.connected   { display: none; }
+
+.connection-indicator.connected span.disconnected    { display: none; }
+.connection-indicator span.disconnected,
+.connection-indicator.disconnected span.disconnected { display: block; }
 
 .settings-menu { position: absolute; top: 0px; right: 10px; }
 
@@ -249,6 +263,8 @@ h3 {margin: 0;padding: 0 }
 
 .settings-menu .clock { font-size: 3em; vertical-align: top; padding-top: 5px; }
 .settings-menu .clock .seconds { font-size: 0.6em; }
+
+.clock-icon { float: right; font-size: 40px; margin-left: 10px; font-color: #888; }
 
 .time-control-header { padding-top: 15px; }
 

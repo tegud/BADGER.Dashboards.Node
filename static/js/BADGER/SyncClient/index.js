@@ -28,6 +28,13 @@
             },
             identify: function() {
                 clearTimeout(identifyTimeout);
+
+                TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', {
+                    icon: '',
+                    message: '',                    
+                    for: 5000
+                });
+                
                 $('#identify').removeClass('hidden');
                 identifyTimeout = setTimeout(function() {
                     $('#identify').addClass('hidden');

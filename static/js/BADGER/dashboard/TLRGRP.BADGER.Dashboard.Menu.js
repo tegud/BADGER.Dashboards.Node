@@ -6,7 +6,13 @@
     function setTickerWidth(ticker, clock) {
         TLRGRP.messageBus.subscribe('TLRGRP.BADGER.View.Selected', function(dashboardAndView) {
             setTimeout(function() {
-                ticker.css({ width: (clock.offset().left - ticker.offset().left - 20) }, 'fast');
+                var clockLeftPosition = 0;
+
+                if(!clock.length) {
+                    clockLeftPosition = clock.offset().left;
+                } 
+
+                ticker.css({ width: (clockLeftPosition - ticker.offset().left - 20) }, 'fast');
             }, 50);
         });
     }

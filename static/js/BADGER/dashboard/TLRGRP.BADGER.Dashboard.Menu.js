@@ -49,7 +49,8 @@
 
                     var levelIcons = {
                         info: 'mega-octicon octicon-info',
-                        ok: 'fa fa-check'
+                        ok: 'fa fa-check',
+                        broadcast: 'mega-octicon octicon-broadcast'
                     };
 
                     setTickerText(levelIcons[tickerItem.level], tickerItem.message)

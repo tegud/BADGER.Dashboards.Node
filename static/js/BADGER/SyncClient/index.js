@@ -34,12 +34,11 @@
                 });
             },
             message: function(data) {
-                clearTimeout(messageTimeout);
-                $('#message').text(data.message);
-                $('#message').removeClass('hidden');
-                messageTimeout = setTimeout(function() {
-                    $('#message').addClass('hidden');
-                }, 25000);
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.Ticker.Show', {
+                    level: 'broadcast',
+                    message: data.message,                    
+                    for: 25000
+                });
             }
         };
 

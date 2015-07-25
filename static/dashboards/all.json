@@ -36,12 +36,12 @@
             }
         },
         {
-            "id": "Moonstick",
-            "name": "Moonstick",
+            "id": "Releases",
+            "name": "Releases",
             "views": {
-                "Beta": {
-                    "id": "Beta",
-                    "name": "Beta"
+                "Overview": {
+                    "id": "Overview",
+                    "name": "Overview"
                 }
             }
         },

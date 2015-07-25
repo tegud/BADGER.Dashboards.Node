@@ -356,6 +356,32 @@
           }
         },
         {
+          "type": "LineGraphAndCounter",
+          "title": "Bookings",
+          "summaryText": "Booking tracking for LateRooms.com (WEB)",
+          "storeId": "BookingData",
+          "counter": {
+              "counters": [
+                { "id": "b-counter-today", "color": "purple", "text": "Today" },
+                { "id": "b-counter-lastWeek", "color": "#0C5046", "text": "Last Week" },
+                { "id": "b-counter-2weeksago", "color": "#01CFB0", "text": "2 Weeks Ago" },
+                { "id": "b-counter-3weeksago", "color": "#0ADC45", "text": "3 Weeks Ago" },
+                { "id": "b-counter-1monthago", "color": "#907616", "text": "1 Month Ago" }
+              ]
+          },
+          "graph": {
+              "className": "commission-graph",
+              "lines": [
+                { "id": "b-today", "color": "purple", "value": "today.bookings" },
+                { "id": "b-lastWeek", "color": "#0C5046", "value": "lastWeek.bookings" },
+                { "id": "b-2weeksago", "color": "#01CFB0", "value": "2weeksago.bookings" },
+                { "id": "b-3weeksago", "color": "#0ADC45", "value": "3weeksago.bookings" },
+                { "id": "b-1monthago", "color": "#907616", "value": "1monthago.bookings" }
+              ],
+              "window": false
+          }
+        },
+        {
             "type": "LineGraphAndCounter",
             "title": "Booking Errors",
             "kibanaDashboard": "elasticsearch/LateRooms.com%20Booking%20Errors",

@@ -18,6 +18,10 @@ h2 { margin: 10px 0; }
 
 .fake-link:hover { text-decoration: underline; }
 
+.release-list { margin-right: 5px; }
+
+.release-list h3 { font-size: 1.7em; }
+
 #identify { position: absolute; top: 0; left: 0; width: 100%; height: 30px; padding: 20px 0; font-size: 2em; text-align: center; background-color: #fff; z-index: 10 }
 #message { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; font-size: 3em; text-align: center; background-color: #fff; z-index: 10 }
 
@@ -877,3 +881,39 @@ h3 {margin: 0;padding: 0 }
 .node-legend li.TIMEOUT .block { background-color: #aaa }
 .node-list li.LONG-TIMEOUT .node-container,
 .node-legend li.LONG-TIMEOUT .block { background-color: #ffa500 }
+
+.releases-list { list-style: none; padding: 0; margin: 5px }
+
+.releases-inprogress .release-item { border: solid 5px #000; margin: 5px 0; padding: 10px; border-radius: 20px; min-height: 160px }
+
+.releases-list .release-item h3 { float: none; font-size: 2em }
+
+.releases-inprogress .team-icon { float: left; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-right: 15px; position: relative; }
+
+.releases-inprogress .team-label { position: absolute; width: 140px; top: 115px; font-size: 1.9em; left: -15px; text-align: center;  }
+
+.releases-inprogress .team-icon .mega-octicon { font-size: 90px }
+
+.releases-inprogress .release-status { float: right; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-left: 10px; position:relative; }
+
+.releases-inprogress .release-status .mega-octicon { font-size: 90px }
+
+.releases-inprogress .release-status-label {position: absolute; width: 140px; top: 115px; font-size: 1.9em; left: -15px; text-align: center; }
+
+.release-progress-header { float: left; font-size: 1.4em; padding-top: 6px; }
+
+.release-progress { display: block; margin: 0 0 0 245px; }
+
+.release-progress li { display: inline-block; margin-right: 5px; }
+
+.release-progress li.stage { width: 30px; height: 30px; display: inline-block; border: solid 3px #000; margin-right: 5px; vertical-align: middle; border-radius: 20px;margin-bottom: 25px }
+
+.release-progress li.stage-complete { background-color: green; }
+.release-progress li.stage-inprogress { background-color: orange; position: relative }
+
+.release-progress li.stage .stage-pointer { display: none; }
+.release-progress li.stage-inprogress .stage-pointer { display: block; bottom: -30px; left: 5px; position: absolute; }
+
+.release-progress-label { vertical-align: middle; font-size: 1.3em; margin-bottom: 25px; }
+
+.release-info { list-style: none; margin: 0 0 0 145px; padding: 0 }

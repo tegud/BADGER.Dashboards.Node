@@ -53,11 +53,18 @@
 
 				var indexLimit = parseInt(latestIndexRequired.format('YYYYMMDD'), 10);
 				while(parseInt(day.format('YYYYMMDD'), 10) <= indexLimit) {
-					indicies.push(options.prefix + day.format('YYYY.MM.DD')); 
+					var indexName = options.prefix + '';
+					var dateParts = day.format('YYYY|MM|DD').split('|');
+
+					indexName = indexName.replace(/\$\{YYYY\}/g, dateParts[0]);
+					indexName = indexName.replace(/\$\{MM\}/g, dateParts[1]);
+					indexName = indexName.replace(/\$\{DD\}/g, dateParts[2]);
+
+					indicies.push(indexName); 
 					day.add('d', 1);
 				}
 
-				return indicies;
+				return _.uniq(indicies);
 			}
 		};
 	};

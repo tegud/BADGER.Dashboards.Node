@@ -251,7 +251,7 @@
 						setValueOnSubProperty(query, intervalPropertyLocation, range.interval);
 					});
 
-					var indexBuilder = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({ prefix: 'logstash-' });
+					var indexBuilder = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({ prefix: configuration.index || 'logstash-${YYYY}.${MM}.${DD}' });
 					var indicies = indexBuilder.buildFromTimeFrame(timeFrame, queryItem);
 
 					 return {

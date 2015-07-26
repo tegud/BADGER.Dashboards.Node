@@ -3,6 +3,8 @@
 
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
+    var idIncrementor = 0;
+
     var testData = {
         'inprogress': '<li class="release-item">' 
             + '<div class="team-icon"><span class="no-logo mega-octicon octicon-package"></span><div class="team-label">Moonstick</div></div>' 
@@ -26,9 +28,9 @@
                 + '<li class="release-progress-label">3/19</li>'
             + '</ul>' 
             + '<ul class="release-info">' 
-                + '<li>Current Stage: </li>'
-                + '<li>Started at: </li>'
-                + '<li>Triggered By: </li>'
+                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>Current Stage: </li>'
+                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Started at: </li>'
+                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: </li>'
             + '</ul>'
         + '</li>'
     };
@@ -54,17 +56,46 @@
             ]
         });
 
+        function refreshComplete(data) {
+            var todaysReleases = _.pluck(data.today.hits.hits, '_source');
+            var relaventReleases = _.filter(todaysReleases, function(release) {
+                return release.isComplete === (releaseState === 'completed');
+            });
+
+            console.log(relaventReleases);
+        }
+
+        var dataStoreId = 'LineGraph-' + idIncrementor++;
+
+        var dataStore = {
+            start: function () {
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
+                    id: dataStoreId,
+                    refreshComplete: refreshComplete,
+                    loading: inlineLoading
+                });
+            },
+            stop: function () {
+                TLRGRP.messageBus.publish(dataStoreId);
+            }
+        };
+
         var stateMachine = nano.Machine({
             states: {
                 uninitialised: {
                     initialise: function (container) {
                         componentLayout.appendTo(container);
 
-                        return this.transitionToState('initialising');
+                        return this.transitionToState('initialised');
                     }
                 },
-                initialising: {
-                    _onEnter: function () { }
+                initialised: {
+                    _onEnter: function () {
+                        dataStore.start(true);
+                    },
+                    stop: function() {
+                        dataStore.stop();
+                    }
                 }
             },
             initialState: 'uninitialised'

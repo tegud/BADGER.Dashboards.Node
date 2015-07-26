@@ -917,3 +917,7 @@ h3 {margin: 0;padding: 0 }
 .release-progress-label { vertical-align: middle; font-size: 1.3em; margin-bottom: 25px; }
 
 .release-info { list-style: none; margin: 0 0 0 145px; padding: 0 }
+
+.release-info-item { font-size: 1.2em; margin-bottom: 3px  }
+
+.release-info-icon { width: 40px; text-align: center }

@@ -10,8 +10,8 @@
 			return;
 		}
 
-		var availableWidth = totalWidth - (row.length - 1);
-		var spanUnitWidth = availableWidth / ROW_MAX;
+		var availableWidth = totalWidth - (row.length - 1) - 15;
+		var spanUnitWidth = (availableWidth / ROW_MAX);
 
 		if(row.length === 1) {
 			row[0].layout = {

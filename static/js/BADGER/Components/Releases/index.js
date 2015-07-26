@@ -5,39 +5,59 @@
 
     var idIncrementor = 0;
 
-    var testData = {
-        'inprogress': '<li class="release-item">' 
-            + '<div class="team-icon"><span class="no-logo mega-octicon octicon-package"></span><div class="team-label">Moonstick</div></div>' 
-            + '<div class="release-status"><span class="mega-octicon octicon-squirrel"></span><div class="release-status-label">Shipping</div></div>' 
-            + '<h3>Moonstick.JS</h3>' 
-            + '<div class="release-progress-header">Progress: </div>'
-            + '<ul class="release-progress">' 
-                + '<li class="stage stage-complete"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage stage-complete"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage stage-complete"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage stage-complete"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage stage-inprogress"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="stage"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
-                + '<li class="release-progress-label">3/19</li>'
-            + '</ul>' 
-            + '<ul class="release-info">' 
-                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>Current Stage: </li>'
-                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Started at: </li>'
-                + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: </li>'
-            + '</ul>'
-        + '</li>'
+    var template = {
+        'inprogress': function(release) {
+            console.log(release);
+
+            var stages = [];
+
+            for(var x = 0; x < release.totalStages; x++) {
+                var stageClass = '';
+                if(release.currentStage.number === x) {
+                    stageClass = ' stage-inprogress'
+                }
+                else if (release.currentStage.number > x) {
+                    stageClass = ' stage-complete'
+                }
+
+                stages.push({
+                    stageClass: stageClass
+                });
+            }
+
+            var progress = Mustache.render('<ul class="release-progress">{{#stages}}' 
+                    + '<li class="stage {{stageClass}}"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
+                + '{{/stages}}<li class="release-progress-label">{{current}}/{{total}}</li></ul>', {
+                stages: stages,
+                total: release.totalStages,
+                current: release.currentStage.number
+            });
+
+            return Mustache.render('<li class="release-item">' 
+                + '<div class="team-icon"><span class="no-logo mega-octicon octicon-package"></span><div class="team-label">{{team}}</div></div>' 
+                + '<div class="release-status"><span class="mega-octicon octicon-squirrel"></span><div class="release-status-label">Shipping</div></div>' 
+                + '<h3>{{name}}</h3>' 
+                + '<div class="release-progress-header">Progress: </div>'
+                + '{{{progress}}}' 
+                + '<ul class="release-info">' 
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>Current Stage: {{currentStage}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Started at: {{startedAt}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: {{triggeredBy}}</li>'
+                + '</ul>'
+            + '</li>', {
+                name: release.pipeline,
+                team: release.team,
+                progress: progress,
+                startedAt: moment(release.startedAt).format('HH:mm:ss'),
+                currentStage: release.currentStage.name,
+                triggeredBy: release.triggeredBy
+            });
+        }
     };
 
     function releasePanelFactory(releaseState) {
         return function releasesPanel(configuration) {
-            var containerElement = $('<ul class="releases-list releases-' + releaseState + '">' + (testData[releaseState] || '') + '</ul>');
+            var containerElement = $('<ul class="releases-list releases-' + releaseState + '"></ul>');
 
             var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
             var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
@@ -62,8 +82,15 @@
                 var relaventReleases = _.filter(todaysReleases, function(release) {
                     return release.isComplete === (releaseState === 'completed');
                 });
+                var sortedReleases = _.sortBy(relaventReleases, function(release) {
+                    return moment(release.startedAt).valueOf();
+                });
 
-                console.log(relaventReleases);
+                containerElement.html(_.map(sortedReleases, function(release) {
+                    if(!template[releaseState]) { return; }
+
+                    return template[releaseState](release);
+                }).join(''));
             }
 
             var dataStoreId = 'LineGraph-' + idIncrementor++;

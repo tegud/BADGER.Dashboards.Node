@@ -97,7 +97,7 @@
 
 				new TLRGRP.BADGER.Dashboard.Layout().set(components, 400);
 
-				expect(componentOne.layout.width).to.be(400);
+				expect(componentOne.layout.width).to.be(385);
 			});
 
 			it('component with span of 3 to a quarter of the container width', function() {
@@ -109,7 +109,7 @@
 
 				new TLRGRP.BADGER.Dashboard.Layout().set(components, 400);
 
-				expect(componentOne.layout.width).to.be(400 / 4);
+				expect(componentOne.layout.width).to.be(96.25);
 			});
 		});
 	});

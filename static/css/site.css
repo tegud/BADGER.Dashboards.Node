@@ -890,7 +890,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-inprogress .team-icon { float: left; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-right: 15px; position: relative; }
 
-.releases-inprogress .team-label { position: absolute; width: 140px; top: 115px; font-size: 1.9em; left: -15px; text-align: center;  }
+.releases-inprogress .team-label { position: absolute; width: 140px; top: 120px; font-size: 1.9em; left: -15px; text-align: center;  }
 
 .releases-inprogress .team-icon .mega-octicon { font-size: 90px }
 
@@ -898,7 +898,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-inprogress .release-status .mega-octicon { font-size: 90px }
 
-.releases-inprogress .release-status-label {position: absolute; width: 140px; top: 115px; font-size: 1.9em; left: -15px; text-align: center; }
+.releases-inprogress .release-status-label {position: absolute; width: 140px; top: 120px; font-size: 1.9em; left: -15px; text-align: center; }
 
 .release-progress-header { float: left; font-size: 1.4em; padding-top: 6px; }
 

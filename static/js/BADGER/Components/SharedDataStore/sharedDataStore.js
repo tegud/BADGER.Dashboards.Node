@@ -209,7 +209,7 @@
                     componentLayout.appendTo(container);
                 }
 
-                dataStore.start();
+                setTimeout(function() { dataStore.start(true); }, 100)
             },
             unload: function () {
                 dataStore.stop();

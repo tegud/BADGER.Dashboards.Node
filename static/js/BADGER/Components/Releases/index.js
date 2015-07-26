@@ -35,85 +35,86 @@
         + '</li>'
     };
 
-	function releasesPanel(releaseState, configuration) {
-        var containerElement = $('<ul class="releases-list releases-' + releaseState + '">' + (testData[releaseState] || '') + '</ul>');
+    function releasePanelFactory(releaseState) {
+        return function releasesPanel(configuration) {
+            var containerElement = $('<ul class="releases-list releases-' + releaseState + '">' + (testData[releaseState] || '') + '</ul>');
 
-        var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
-        var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
-            title: configuration.title,
-            componentClass: 'release-list',
-            layout: configuration.layout,
-            modules: [
-                inlineLoading,
-                {
-                    appendTo: function(componentElement) {
-                        componentElement.append(containerElement);
-                    },
-                    appendToLocation: function() {
-                        return 'content';
+            var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
+            var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
+                title: configuration.title,
+                componentClass: 'release-list',
+                layout: configuration.layout,
+                modules: [
+                    inlineLoading,
+                    {
+                        appendTo: function(componentElement) {
+                            componentElement.append(containerElement);
+                        },
+                        appendToLocation: function() {
+                            return 'content';
+                        }
                     }
-                }
-            ]
-        });
-
-        function refreshComplete(data) {
-            var todaysReleases = _.pluck(data.today.hits.hits, '_source');
-            var relaventReleases = _.filter(todaysReleases, function(release) {
-                return release.isComplete === (releaseState === 'completed');
+                ]
             });
 
-            console.log(relaventReleases);
-        }
-
-        var dataStoreId = 'LineGraph-' + idIncrementor++;
-
-        var dataStore = {
-            start: function () {
-                TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
-                    id: dataStoreId,
-                    refreshComplete: refreshComplete,
-                    loading: inlineLoading
+            function refreshComplete(data) {
+                var todaysReleases = _.pluck(data.today.hits.hits, '_source');
+                var relaventReleases = _.filter(todaysReleases, function(release) {
+                    return release.isComplete === (releaseState === 'completed');
                 });
-            },
-            stop: function () {
-                TLRGRP.messageBus.publish(dataStoreId);
+
+                console.log(relaventReleases);
             }
-        };
 
-        var stateMachine = nano.Machine({
-            states: {
-                uninitialised: {
-                    initialise: function (container) {
-                        componentLayout.appendTo(container);
+            var dataStoreId = 'LineGraph-' + idIncrementor++;
 
-                        return this.transitionToState('initialised');
+            var dataStore = {
+                start: function () {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
+                        id: dataStoreId,
+                        refreshComplete: refreshComplete,
+                        loading: inlineLoading
+                    });
+                },
+                stop: function () {
+                    TLRGRP.messageBus.publish(dataStoreId);
+                }
+            };
+
+            var stateMachine = nano.Machine({
+                states: {
+                    uninitialised: {
+                        initialise: function (container) {
+                            componentLayout.appendTo(container);
+
+                            return this.transitionToState('initialised');
+                        }
+                    },
+                    initialised: {
+                        _onEnter: function () {
+                            dataStore.start(true);
+                        },
+                        stop: function() {
+                            dataStore.stop();
+                        }
                     }
                 },
-                initialised: {
-                    _onEnter: function () {
-                        dataStore.start(true);
-                    },
-                    stop: function() {
-                        dataStore.stop();
-                    }
+                initialState: 'uninitialised'
+            });
+            
+            return {
+                render: function (container) {
+                    return stateMachine.handle('initialise', container);
+                },
+                unload: function () {
+                    stateMachine.handle('stop');
+                    stateMachine.handle('remove');
                 }
-            },
-            initialState: 'uninitialised'
-        });
-        
-        return {
-            render: function (container) {
-                return stateMachine.handle('initialise', container);
-            },
-            unload: function () {
-                stateMachine.handle('stop');
-                stateMachine.handle('remove');
-            }
-        };
-	}
+            };
+        }
+    }
 
-
-	TLRGRP.BADGER.Dashboard.Components.InProgressReleases = releasesPanel.bind(undefined, 'inprogress');
-	TLRGRP.BADGER.Dashboard.Components.CompletedReleases = releasesPanel.bind(undefined, 'completed');
-	TLRGRP.BADGER.Dashboard.Components.ScheduledReleases = releasesPanel.bind(undefined, 'scheduled');
+	TLRGRP.BADGER.Dashboard.Components.InProgressReleases = releasePanelFactory('inprogress');
+	TLRGRP.BADGER.Dashboard.Components.CompletedReleases = releasePanelFactory('completed');
+	TLRGRP.BADGER.Dashboard.Components.ScheduledReleases = releasePanelFactory('scheduled');
 })();

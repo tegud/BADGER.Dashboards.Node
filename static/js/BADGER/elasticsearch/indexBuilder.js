@@ -4,6 +4,12 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Elasticsearch');
 
 	TLRGRP.BADGER.Elasticsearch.IndexBuilder = function(options) {
+		if(!options) {
+			options = {
+				prefix: 'logstash-${YYYY}.${MM}.${DD}'
+			}
+		}
+
 		return { 
 			buildFromTimeFrame: function(timeFrame, queryItem) {
 				var indicies = [];

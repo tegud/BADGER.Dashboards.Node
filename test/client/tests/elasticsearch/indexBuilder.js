@@ -26,9 +26,7 @@
 				it('returns index with specified prefix and the current date.', function () {
 					currentDate = '2014-04-05 11:00:00Z';
 
-					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-						prefix: 'logstash-'
-					});
+					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 					expect(menu.buildFromTimeFrame({ timeFrame: 15, units: 'm' })[0]).to.be('logstash-2014.04.05');
 				});
@@ -36,9 +34,7 @@
 				it('returns index with specified prefix and the yesterdays date and todays date when time period extends outside current date.', function () {
 					currentDate = '2014-04-05 00:10:00+00:00';
 
-					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-						prefix: 'logstash-'
-					});
+					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 					var indicies = menu.buildFromTimeFrame({ timeFrame: 1, units: 'hours' });
 
@@ -49,9 +45,7 @@
 				it('returns index with specified prefix and the yesterdays date and todays date when time period extends outside current date.', function () {
 					currentDate = '2014-04-05 00:10:00+00:00';
 
-					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-						prefix: 'logstash-'
-					});
+					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 					var indicies = menu.buildFromTimeFrame({ timeFrame: 1, units: 'hours' });
 
@@ -64,9 +58,7 @@
 				it('returns index with specified prefix and the specified date.', function () {
 					currentDate = '2014-04-05 11:00:00Z';
 
-					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-						prefix: 'logstash-'
-					});
+					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 					expect(menu.buildFromTimeFrame({ timeFrame: 1, units: 'daysAgo' })[0]).to.be('logstash-2014.04.04');
 				});
@@ -74,9 +66,7 @@
 				it('returns index with only specified prefix and the specified date.', function () {
 					currentDate = '2014-04-05 11:00:00+00:00';
 
-					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-						prefix: 'logstash-'
-					});
+					var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 					var indicies = menu.buildFromTimeFrame({ timeFrame: 1, units: 'daysAgo' });
 					expect(indicies.length).to.be(1);
@@ -87,9 +77,7 @@
 					it('returns index with specified prefix and the specified date.', function () {
 						currentDate = '2014-04-05 11:00:00Z';
 
-						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-							prefix: 'logstash-'
-						});
+						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 						expect(menu.buildFromTimeFrame({ timeFrame: 1, units: 'daysAgo' }, { timeOffset: { "days": -1 } })[0]).to.be('logstash-2014.04.03');
 					});
@@ -99,9 +87,7 @@
 					it('returns index with previous date.', function () {
 						currentDate = '2014-04-05 11:00:00+01:00';
 
-						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-							prefix: 'logstash-'
-						});
+						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 						expect(menu.buildFromTimeFrame({ timeFrame: 0, units: 'daysAgo' })[0]).to.be('logstash-2014.04.04');
 					});
@@ -111,9 +97,7 @@
 					it('returns index with next date.', function () {
 						currentDate = '2014-04-05 11:00:00-01:00';
 
-						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder({
-							prefix: 'logstash-'
-						});
+						var menu = new TLRGRP.BADGER.Elasticsearch.IndexBuilder();
 
 						expect(menu.buildFromTimeFrame({ timeFrame: 0, units: 'daysAgo' })[1]).to.be('logstash-2014.04.06');
 					});

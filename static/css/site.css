@@ -895,6 +895,7 @@ h3 {margin: 0;padding: 0 }
 .releases-inprogress .release-status-icon { font-size: 90px }
 
 .releases-inprogress .release-status-waiting { font-size: 80px; margin: 6px 10px; }
+.releases-inprogress .release-status-failed { font-size: 81px; margin: 0px 5px; }
 
 .releases-inprogress .release-status { float: right; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-left: 10px; position:relative; }
 
@@ -912,6 +913,15 @@ h3 {margin: 0;padding: 0 }
 
 .release-progress li.stage-complete { background-color: green; }
 .release-progress li.stage-inprogress { background-color: orange; position: relative }
+.release-progress li.stage-failed { background-color: red; }
+
+.releases-inprogress .release-status-icon-failed { border-color: red; }
+.releases-inprogress .release-status-icon-shipping { border-color: green; }
+.releases-inprogress .release-status-icon-waiting { border-color: orange; }
+
+.release-status-failed { color: red; }
+.release-status-waiting { color: orange; }
+.release-status-shipping { color: green; }
 
 .release-progress li.stage .stage-pointer { display: none; }
 .release-progress li.stage-inprogress .stage-pointer { display: block; bottom: -30px; left: 5px; position: absolute; }
@@ -922,7 +932,7 @@ h3 {margin: 0;padding: 0 }
 
 .release-info-item { font-size: 1.2em; margin-bottom: 3px  }
 
-.release-info-icon { width: 40px; text-align: center }
+.release-info-icon { font-size: 32px; width: 40px; text-align: center }
 
 .releases-completed .release-item { border: solid 5px #000; margin: 5px 0; padding: 5px; border-radius: 20px; min-height: 80px }
 
@@ -948,3 +958,5 @@ h3 {margin: 0;padding: 0 }
 
 .desc .release-order-selector-icon-asc { display: none; }
 .desc .release-order-selector-label-asc { display: none; }
+
+.no-releases { font-size: 3em; }

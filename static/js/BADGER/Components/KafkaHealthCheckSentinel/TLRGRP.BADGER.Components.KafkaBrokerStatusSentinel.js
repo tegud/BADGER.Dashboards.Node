@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     'use strict';
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
@@ -15,12 +15,12 @@
         return refreshIn;
     }
     
-    TLRGRP.BADGER.Dashboard.Components.KafkaHealthCheckSentinel = function (configuration) {
+    TLRGRP.BADGER.Dashboard.Components.KafkaBrokerStatusSentinel = function (configuration) {
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated();
         var inlineError = new TLRGRP.BADGER.Dashboard.ComponentModules.Error();
-        var serverList = new TLRGRP.BADGER.Dashboard.ComponentModules.KafkaHealthCheckSentinel();
+        var serverList = new TLRGRP.BADGER.Dashboard.ComponentModules.KafkaBrokerStatusSentinel();
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
             componentClass: 'health-check-component',
@@ -34,7 +34,7 @@
         });
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
             query: {
-                url: refreshServerBaseUrl + 'currentStatus/kafka-check.' + configuration.environment + '.broker-status',
+                url: refreshServerBaseUrl + 'currentStatus/kafka-check.' + configuration.environment + '.brokers',
             },
             refresh: 2500,
             callbacks: {

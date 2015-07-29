@@ -1,29 +1,39 @@
 {
-    "name": "Live Kafka Server Status",    
+    "name": "QA Kafka Server Status",
     "components": [
         {
             "type": "KafkaHealthCheckSentinel",
-            "environment": "live",
+            "environment": "aws-production",
             "alertName": "",
             "group": "Kafka",
-            "title": "Kafka Broker Status",
+            "title": "Kafka Broker Status (Check TCP Connection)",
             "host": "badger.laterooms.com",
             "port": 3000,
             "span": 6
         },
         {
             "type": "ZookeeperHealthCheckSentinel",
-            "environment": "live",
+            "environment": "aws-production",
             "alertName": "",
             "group": "Kafka",
-            "title": "Zookeeper Node Status",
+            "title": "Zookeeper Node Status (Check TCP Connection)",
             "host": "badger.laterooms.com",
             "port": 3000,
             "span": 6
-        },          
+        },   
+        {
+            "type": "KafkaBrokerStatusSentinel",
+            "environment": "aws-production",
+            "alertName": "",
+            "group": "Kafka",
+            "title": "Kafka Broker IDs Registered with Zookeeper",
+            "host": "badger.laterooms.com",
+            "port": 3000,
+            "span": 6
+        },        
         {
             "type": "KafkaTopicCheckSentinel",
-            "environment": "live",
+            "environment": "aws-production",
             "alertName": "",
             "group": "Kafka",
             "title": "KAFCON Level",

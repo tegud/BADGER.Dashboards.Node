@@ -890,9 +890,11 @@ h3 {margin: 0;padding: 0 }
 
 .releases-inprogress .team-icon { float: left; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-right: 15px; position: relative; }
 
-.releases-inprogress .team-label { position: absolute; width: 140px; top: 120px; font-size: 1.9em; left: -15px; text-align: center;  }
+.releases-inprogress .team-label { position: absolute; width: 140px; top: 120px; font-size: 1.4em; left: -15px; text-align: center;  }
 
-.releases-inprogress .team-icon .mega-octicon { font-size: 90px }
+.releases-inprogress .release-status-icon { font-size: 90px }
+
+.releases-inprogress .release-status-waiting { font-size: 80px; margin: 6px 10px; }
 
 .releases-inprogress .release-status { float: right; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-left: 10px; position:relative; }
 
@@ -921,3 +923,28 @@ h3 {margin: 0;padding: 0 }
 .release-info-item { font-size: 1.2em; margin-bottom: 3px  }
 
 .release-info-icon { width: 40px; text-align: center }
+
+.releases-completed .release-item { border: solid 5px #000; margin: 5px 0; padding: 5px; border-radius: 20px; min-height: 80px }
+
+.releases-completed .release-status-icon { font-size: 48px; padding: 5px; border: solid 8px #000; width: 54px; height: 54px; border-radius: 100px; text-align: center; float: left; }
+
+.releases-completed .release-complete-ok { color: green; border-color: green; }
+
+.releases-completed .release-complete-failed { color: red; border-color: red; } 
+
+.completed-releases-container { margin-left: 95px; }
+
+.completed-release-name { font-size: 1.3em; font-weight: bold }
+
+.releases-completed .release-info { margin: 0 } 
+
+.release-order-selector { position: absolute; top: -40px; right: 5px; cursor: pointer; font-size: 1.2em; }
+
+.release-order-selector-icon-desc { display: none; }
+.release-order-selector-label-desc { display: none; }
+
+.desc .release-order-selector-icon-desc { display: inline; }
+.desc .release-order-selector-label-desc { display: inline; }
+
+.desc .release-order-selector-icon-asc { display: none; }
+.desc .release-order-selector-label-asc { display: none; }

@@ -42,6 +42,10 @@
                 "Overview": {
                     "id": "Overview",
                     "name": "Overview"
+                },
+                "Monitoring": {
+                    "id": "Monitoring",
+                    "name": "Monitoring"
                 }
             }
         },

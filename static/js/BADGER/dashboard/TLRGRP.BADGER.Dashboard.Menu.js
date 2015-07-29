@@ -15,7 +15,7 @@
                     clockLeftPosition = clock.offset().left;
                 } 
 
-                ticker.css({ width: (clockLeftPosition - ticker.offset().left - 20) }, 'fast');
+                ticker.css({ width: (clockLeftPosition - ticker.offset().left - 40) }, 'fast');
             }, 50);
         });
     }

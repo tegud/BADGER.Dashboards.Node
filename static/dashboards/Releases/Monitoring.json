@@ -1,5 +1,5 @@
 {
-    "name": "Releases (Overview)",
+    "name": "Monitoring Releases",
     "components": [
     {
           "type": "SharedDataStore",
@@ -32,7 +32,7 @@
                         },
                         {
                           "term" : {
-                            "environment.raw" : "live"
+                            "environment.raw" : "floor-11-server-cupboard"
                           }
                         }
                       ]

@@ -107,7 +107,7 @@
 
     function render(releaseState, data) {
         if(!data.length) {
-            return this.html('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing Shipping</div>');
+            return this.html('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' + (releaseState === 'completed' ? 'Shipped' : 'Shipping') + '</div>');
         }
 
         this.html(_.map(data, function(release) {

@@ -30,6 +30,16 @@
             "host": "10.44.10.68",
             "port": 3000,
             "span": 3
-        }      
+        },
+        {
+            "type": "KafkaConsumersSentinel",
+            "environment": "qa",
+            "alertName": "",
+            "group": "Kafka",
+            "title": "Kafka consumer status",
+            "host": "localhost",
+            "port": 3000,
+            "span": 6
+        }
     ]
 }

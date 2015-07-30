@@ -98,10 +98,9 @@
             kafconData.push(new KAFCONlevel("Producing and consuming OK", 1, false));
         }
 
-        return 
-        {
-            kafconData,
-            kafconLevel
+        return {
+            kafconData: kafconData,
+            kafconLevel: kafconLevel
         };
     }
     

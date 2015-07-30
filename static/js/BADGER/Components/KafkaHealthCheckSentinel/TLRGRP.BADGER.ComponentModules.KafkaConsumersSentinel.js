@@ -38,7 +38,7 @@
                                             '<h6>Partitions</h6>'+
                                             '<ul>'+
                                                 '{{#partitions}}'+
-                                                    '<li>{{id}}</li>'+
+                                                    '<li>{{id}} (lag {{lag}})</li>'+
                                                 '{{/partitions}}'+
                                             '</ul>'+
                                         '</li>'+

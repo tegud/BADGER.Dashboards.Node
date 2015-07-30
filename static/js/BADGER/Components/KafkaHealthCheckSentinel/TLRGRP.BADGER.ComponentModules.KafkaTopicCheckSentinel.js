@@ -35,17 +35,16 @@
         }        
     }
 
-    function buildViewModel(kafkaData, enviroment) {
+    function buildViewModel(kafkaData, environment) {
 
         var kafconData = [];
         var kafconLevel = 5;
-        var alertDivState;
 
-        var metric = _.first(_(kafkaData).where({ metricName: enviroment + ".kafka.healthcheck" }));
+        var metric = _.first(_(kafkaData).where({ metricName: environment + ".kafka.healthcheck" }));
         if(metric.code < 3){
             if(metric.code == 1)
             {
-                kafconData.push(new KAFCONlevel("Unable to produce to all partitions", 1, true));
+                kafconData.push(new KAFCONlevel("Unable to produce or consume to all partitions", 1, true));
             }
             else
             {
@@ -56,10 +55,10 @@
         }
         else
         {
-            kafconData.push(new KAFCONlevel("All partitions replicating", 4, false));
+            kafconData.push(new KAFCONlevel("Producing and consuming from all partitions", 4, false));
         }
 
-        metric = _.first(_(kafkaData).where({ metricName: enviroment + ".kafka.zookeepers" }));
+        metric = _.first(_(kafkaData).where({ metricName: environment + ".kafka.zookeepers" }));
         if(_(metric.status).find({ "alive" : false }))
         {
             kafconData.push(new KAFCONlevel("Zookeeper operating under reduced capacity", 3, true));
@@ -70,7 +69,7 @@
             kafconData.push(new KAFCONlevel("All Zookeeper instances operating OK", 3, false));
         }
 
-        metric = _.first(_(kafkaData).where({ metricName: enviroment + ".kafka.brokers" }));
+        metric = _.first(_(kafkaData).where({ metricName: environment + ".kafka.brokers" }));
         if(_(metric.status).find({ "alive" : false }))
         {
             kafconData.push(new KAFCONlevel("Kafka operating under reduced capacity", 2, true));
@@ -81,36 +80,28 @@
             kafconData.push(new KAFCONlevel("All Kafka brokers operating OK", 2, false));
         }
 
-        metric = _.first(_(kafkaData).where({ metricName: enviroment + ".kafka.replicated_healthcheck" }));
+        metric = _.first(_(kafkaData).where({ metricName: environment + ".kafka.replicated_healthcheck" }));
         if(metric.code < 3){
             if(metric.code == 1)
             {
-                kafconData.push(new KAFCONlevel("Unable to produce to any topic", 1, true));
+                kafconData.push(new KAFCONlevel("Unable to produce or consume topics", 1, true));
             }
             else
             {
-                kafconData.push(new KAFCONlevel("Unable to consume from any topic", 1, true));
+                kafconData.push(new KAFCONlevel("Unable to consume from topics", 1, true));
             }
             
             kafconLevel = 1;
         }
         else
         {
-            kafconData.push(new KAFCONlevel("All topics accessible", 1, false));
+            kafconData.push(new KAFCONlevel("Producing and consuming OK", 1, false));
         }
-
-        if(kafconLevel == 5){
-            alertDivState = ' hidden';            
-        }
-        else {
-            alertDivState = '';
-        }            
 
         return 
         {
             kafconData,
-            kafconLevel,
-            alertDivState      
+            kafconLevel
         };
     }
     
@@ -124,25 +115,18 @@
             appendToLocation: function() {
                 return 'content';
             },
-            updateStatus: function (kafkaData, enviroment) {
-                var viewModel = buildViewModel(kafkaData, enviroment);
+            updateStatus: function (kafkaData, environment) {
+                var viewModel = buildViewModel(kafkaData, environment);
 
                 containerElement.html($(Mustache.render(
+                    '<h3>Current level : {{kafconLevel}}</h3>' +
                     '<div class="health-check-error hidden">'+
                         '<div class="health-check-error-text-container">'+
                             '<h3>Warning</h3>'+
                             '<div class="health-check-error-text">'+
                             '</div>'+
                         '</div>'+
-                    '</div>'+                 
-                    '<div class="health-check-error {{alertDivState}}" style="opacity: 0.5; padding:20px">'+
-                        '<div class="health-check-error-text-container">'+
-                            '<h3>Warning</h3>'+
-                            '<br /><br />' + 
-                            '<div class="health-check-error-text">KAFCON level {{kafconLevel}}'+
-                            '</div>'+
-                        '</div>'+
-                    '</div>' +                     
+                    '</div>'+                                    
                     '<ul class="health-check-groups">'+                      
                         '<li class="health-check-group-item">'+
                             '{{#kafconData}}'+

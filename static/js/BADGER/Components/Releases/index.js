@@ -10,6 +10,8 @@
             var stages = [];
             var currentStatus = 'Shipping';
             var releaseStatusIcon = '<span class="release-status-icon release-status-shipping mega-octicon octicon-squirrel"></span>';
+            var startedAt = moment(release.startedAt);
+            var releaseStatusIconClass = 'release-status-icon-shipping';
 
             for(var x = 1; x <= release.totalStages; x++) {
                 var stageClass = '';
@@ -18,6 +20,13 @@
                         stageClass = ' stage-complete';
                         currentStatus = 'Waiting';
                         releaseStatusIcon = '<span class="release-status-icon release-status-waiting fa fa-pause"></span>';
+                        releaseStatusIconClass = 'release-status-icon-waiting';
+                    }
+                    else if(release.currentStage.state === 'Failed') {
+                        stageClass = ' stage-failed';
+                        currentStatus = 'Failed';
+                        releaseStatusIcon = '<span class="release-status-icon release-status-failed fa fa-exclamation-triangle"></span>'
+                        releaseStatusIconClass = 'release-status-icon-failed';
                     }
                     else {
                         stageClass = ' stage-inprogress';
@@ -39,10 +48,9 @@
                 total: release.totalStages,
                 current: release.currentStage.number
             });
-
             return Mustache.render('<li class="release-item">' 
                 + '<div class="team-icon"><span class="release-status-icon no-logo mega-octicon octicon-package"></span><div class="team-label">{{team}}</div></div>' 
-                + '<div class="release-status">' 
+                + '<div class="release-status {{releaseStatusIconClass}}">' 
                     + '{{{releaseStatusIcon}}}'
                     + '<div class="release-status-label">{{currentStatus}}</div>' 
                 + '</div>' 
@@ -50,7 +58,7 @@
                 + '<div class="release-progress-header">Progress: </div>'
                 + '{{{progress}}}' 
                 + '<ul class="release-info">' 
-                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>Current Stage: {{currentStage}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>{{currentStage}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Started at: {{startedAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: {{triggeredBy}}</li>'
                 + '</ul>'
@@ -58,15 +66,18 @@
                 name: release.pipeline,
                 team: release.team,
                 progress: progress,
-                startedAt: moment(release.startedAt).format('HH:mm:ss'),
-                currentStage: release.currentStage.name,
+                startedAt: startedAt.format('HH:mm:ss') + ' (' + startedAt.fromNow(true) + ')',
+                currentStage: (currentStatus === 'shipping' ? 'Current Stage: ' + release.currentStage.name : 'Last Stage: ' + release.currentStage.name),
                 triggeredBy: release.triggeredBy,
                 currentStatus: currentStatus,
-                releaseStatusIcon: releaseStatusIcon
+                releaseStatusIcon: releaseStatusIcon,
+                releaseStatusIconClass: releaseStatusIconClass
             });
         },
         'completed': function(release) {
             var statusClass = 'release-status-icon release-complete-ok fa fa-thumbs-up';
+            var startedAt = moment(release.startedAt);
+            var completedAt = moment(release.completedAt);
 
             if(release.currentStage.result === 'Failed') {
                 statusClass = 'release-status-icon release-complete-failed mega-octicon octicon-flame';
@@ -76,22 +87,29 @@
                     + '<div class="completed-releases-container">' 
                         + '<div class="completed-release-name">{{name}}</div>'
                         + '<ul class="release-info">' 
-                            + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>{{startedAt}} - {{completedAt}}</li>'
+                            + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>{{startedAt}} - {{completedAt}} ({{duration}})</li>'
                             + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-organization"></span>Team: {{team}}</li>'
                             + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: {{triggeredBy}}</li>'
+                            + '{{{failedOn}}}'
                         + '</ul>'
                     + '</div></li>', {
                 name: release.pipeline,
                 team: release.team,
                 statusClass: statusClass,
-                startedAt: moment(release.startedAt).format('HH:mm'),
-                completedAt: moment(release.completedAt).format('HH:mm'),
-                triggeredBy: release.triggeredBy
+                startedAt: startedAt.format('HH:mm'),
+                completedAt: completedAt.format('HH:mm'),
+                duration: startedAt.from(completedAt, true),
+                triggeredBy: release.triggeredBy,
+                failedOn: release.currentStage.result === 'Failed' ? '<li class="release-info-item"><span class="release-info-icon fa fa-exclamation-triangle"></span>Failed On: ' + release.currentStage.name + '</li>' : ''
             });
         }
     };
 
     function render(releaseState, data) {
+        if(!data.length) {
+            return this.html('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' + (releaseState === 'completed' ? 'Shipped' : 'Shipping') + '</div>');
+        }
+
         this.html(_.map(data, function(release) {
             if(!template[releaseState]) { return; }
 
@@ -143,7 +161,8 @@
                     return release.isComplete === (releaseState === 'completed');
                 });
                 var sortedReleases = _.sortBy(relaventReleases, function(release) {
-                    return moment(release.startedAt).valueOf();
+                    var orderBy = releaseState === 'completed' ? 'completedAt' : 'startedAt';
+                    return moment(release[orderBy]).valueOf();
                 });
 
                 if(orderElement.hasClass('desc')) {

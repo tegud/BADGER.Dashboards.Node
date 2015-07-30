@@ -34,7 +34,7 @@
         });
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
             query: {
-                url: refreshServerBaseUrl + 'currentStatus/kafka-check.qa.zookeeper-status',
+                url: refreshServerBaseUrl + 'currentStatus/kafka-check.' + configuration.environment + '.zookeeper-status',
             },
             refresh: 2500,
             callbacks: {

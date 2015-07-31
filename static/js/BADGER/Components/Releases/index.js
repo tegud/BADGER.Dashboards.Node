@@ -28,6 +28,12 @@
                         releaseStatusIcon = '<span class="release-status-icon release-status-failed fa fa-exclamation-triangle"></span>'
                         releaseStatusIconClass = 'release-status-icon-failed';
                     }
+                    else if(release.currentStage.state === 'Cancelled') {
+                        stageClass = ' stage-cancelled';
+                        currentStatus = 'Cancelled';
+                        releaseStatusIcon = '<span class="release-status-icon release-status-cancelled mega-octicon octicon-x"></span>'
+                        releaseStatusIconClass = 'release-status-icon-cancelled';
+                    }
                     else {
                         stageClass = ' stage-inprogress';
                     }
@@ -42,7 +48,7 @@
             }
 
             var progress = Mustache.render('<ul class="release-progress">{{#stages}}' 
-                    + '<li class="stage {{stageClass}}"><span class="stage-pointer mega-octicon octicon-arrow-up"></span></li>' 
+                    + '<li class="stage {{stageClass}}"><span class="stage-pointer mega-octicon octicon-arrow-up"></span><span class="stage-cancelled mega-octicon octicon-x"></span></li>' 
                 + '{{/stages}}<li class="release-progress-label">{{current}}/{{total}}</li></ul>', {
                 stages: stages,
                 total: release.totalStages,
@@ -54,20 +60,22 @@
                     + '{{{releaseStatusIcon}}}'
                     + '<div class="release-status-label">{{currentStatus}}</div>' 
                 + '</div>' 
-                + '<h3>{{name}}</h3>' 
+                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span></h3>' 
                 + '<div class="release-progress-header">Progress: </div>'
                 + '{{{progress}}}' 
                 + '<ul class="release-info">' 
-                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>{{currentStage}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>{{currentStage}}{{currentStageFor}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Started at: {{startedAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Triggered By: {{triggeredBy}}</li>'
                 + '</ul>'
             + '</li>', {
                 name: release.pipeline,
                 team: release.team,
+                counter: release.counter,
                 progress: progress,
                 startedAt: startedAt.format('HH:mm:ss') + ' (' + startedAt.fromNow(true) + ')',
-                currentStage: (currentStatus === 'shipping' ? 'Current Stage: ' + release.currentStage.name : 'Last Stage: ' + release.currentStage.name),
+                currentStage: (currentStatus === 'Shipping' ? 'Current Stage: ' + release.currentStage.name : 'Last Stage: ' + release.currentStage.name),
+                currentStageFor: ' (' + moment(release['@timestamp']).fromNow(currentStatus === 'Shipping') + ')',
                 triggeredBy: release.triggeredBy,
                 currentStatus: currentStatus,
                 releaseStatusIcon: releaseStatusIcon,
@@ -82,10 +90,13 @@
             if(release.currentStage.result === 'Failed') {
                 statusClass = 'release-status-icon release-complete-failed mega-octicon octicon-flame';
             }
+            if(release.currentStage.result === 'Cancelled') {
+                statusClass = 'release-status-icon release-complete-cancelled mega-octicon octicon-x';
+            }
 
             return Mustache.render('<li class="release-item"><div class="release-status"><span class="{{statusClass}}"></span></div>' 
                     + '<div class="completed-releases-container">' 
-                        + '<div class="completed-release-name">{{name}}</div>'
+                        + '<div class="completed-release-name">{{name}} <span class="pipeline-name-counter">(#{{counter}})</span></div>'
                         + '<ul class="release-info">' 
                             + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>{{startedAt}} - {{completedAt}} ({{duration}})</li>'
                             + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-organization"></span>Team: {{team}}</li>'
@@ -94,13 +105,14 @@
                         + '</ul>'
                     + '</div></li>', {
                 name: release.pipeline,
+                counter: release.counter,
                 team: release.team,
                 statusClass: statusClass,
                 startedAt: startedAt.format('HH:mm'),
                 completedAt: completedAt.format('HH:mm'),
                 duration: startedAt.from(completedAt, true),
                 triggeredBy: release.triggeredBy,
-                failedOn: release.currentStage.result === 'Failed' ? '<li class="release-info-item"><span class="release-info-icon fa fa-exclamation-triangle"></span>Failed On: ' + release.currentStage.name + '</li>' : ''
+                failedOn: release.currentStage.result === 'Failed' || release.currentStage.result === 'Cancelled' ? '<li class="release-info-item"><span class="release-info-icon fa fa-exclamation-triangle"></span>' + (release.currentStage.result === 'Failed' ? 'Failed' : 'Cancelled') + ' On: ' + release.currentStage.name + '</li>' : ''
             });
         }
     };

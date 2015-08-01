@@ -133,6 +133,19 @@
             var containerElement = $('<ul class="releases-list releases-' + releaseState + '"></ul>');
             var setUpRender = render.bind(containerElement, releaseState);
 
+            if(releaseState === 'scheduled') {
+                containerElement.append('<div class="hubot-info-icon mega-octicon octicon-hubot"></div>' 
+                    + '<div class="hubot-info">' 
+                    + '<h3>Not Implemented Yet</h3>'
+                    + 'But hubot in <span class="fa fa-slack"></span>slack would be happy to help:'
+                    + '<ul>'
+                        + '<li>hubot releases for <day> (today, tomorrow, date format: YYYY-MM-DD)</li>'
+                        + '<li>hubot changes for <day> (today, tomorrow, date format: YYYY-MM-DD)</li>'
+                        + '<li>hubot approvals for <id></li>'
+                    + '</ul>' 
+                    + '</div>')
+            }
+
             var orderElement = $('<div class="release-order-selector' + (releaseState === 'completed' ? ' desc': '') + '">' 
                 + '<span class="release-order-selector-icon-asc fa fa-sort-numeric-asc"></span>' 
                 + '<span class="release-order-selector-icon-desc fa fa-sort-numeric-desc"></span>&nbsp;' 

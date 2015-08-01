@@ -977,3 +977,11 @@ h3 {margin: 0;padding: 0 }
 .no-releases { font-size: 3em; }
 
 .pipeline-name-counter { font-size: 0.8em; color: #bbb; font-style: italic; }
+
+.hubot-info-icon { float: left; font-size: 90px; color: #FAAF5D; }
+
+.hubot-info { margin-left: 100px; font-size: 1.2em; }
+
+.hubot-info h3 { float:none; }
+
+.hubot-info ul { margin: 5px 0; }

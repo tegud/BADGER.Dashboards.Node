@@ -982,6 +982,8 @@ h3 {margin: 0;padding: 0 }
 
 .hubot-info { margin-left: 110px; font-size: 1.2em; }
 
+.hubot-info .fa.fa-slack { font-size: 0.8em; }
+
 .hubot-info h3 { float:none; font-size: 1.9em; }
 
 .hubot-info ul { margin: 5px 0; }

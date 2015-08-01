@@ -136,7 +136,7 @@
             if(releaseState === 'scheduled') {
                 containerElement.append('<div class="hubot-info-icon mega-octicon octicon-hubot"></div>' 
                     + '<div class="hubot-info">' 
-                    + '<h3>Not Implemented Yet</h3>'
+                    + '<h3>Coming Soon</h3>'
                     + 'But hubot in <span class="fa fa-slack"></span> slack would be happy to help:'
                     + '<ul>'
                         + '<li>hubot releases for <day> (today, tomorrow, date format: YYYY-MM-DD)</li>'

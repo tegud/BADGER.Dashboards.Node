@@ -141,7 +141,7 @@
                     + '<ul>'
                         + '<li>hubot releases for <day> (today, tomorrow, date format: YYYY-MM-DD)</li>'
                         + '<li>hubot changes for <day> (today, tomorrow, date format: YYYY-MM-DD)</li>'
-                        + '<li>hubot approvals for <id></li>'
+                        + '<li>hubot approvals for &lt;id&gt;</li>'
                     + '</ul>' 
                     + '</div>')
             }

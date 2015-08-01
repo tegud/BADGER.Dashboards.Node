@@ -9,7 +9,6 @@
         'inprogress': function(release) {
             var stages = [];
             var currentStatus = 'Shipping';
-            var releaseStatusIcon = '<span class="release-status-icon release-status-shipping mega-octicon octicon-squirrel"></span>';
             var startedAt = moment(release.startedAt);
             var releaseStatusIconClass = 'release-status-icon-shipping';
 
@@ -19,19 +18,16 @@
                     if(release.currentStage.state === 'Passed') {
                         stageClass = ' stage-complete';
                         currentStatus = 'Waiting';
-                        releaseStatusIcon = '<span class="release-status-icon release-status-waiting fa fa-pause"></span>';
                         releaseStatusIconClass = 'release-status-icon-waiting';
                     }
                     else if(release.currentStage.state === 'Failed') {
                         stageClass = ' stage-failed';
                         currentStatus = 'Failed';
-                        releaseStatusIcon = '<span class="release-status-icon release-status-failed fa fa-exclamation-triangle"></span>'
                         releaseStatusIconClass = 'release-status-icon-failed';
                     }
                     else if(release.currentStage.state === 'Cancelled') {
                         stageClass = ' stage-cancelled';
                         currentStatus = 'Cancelled';
-                        releaseStatusIcon = '<span class="release-status-icon release-status-cancelled mega-octicon octicon-x"></span>'
                         releaseStatusIconClass = 'release-status-icon-cancelled';
                     }
                     else {
@@ -57,7 +53,10 @@
             return Mustache.render('<li class="release-item">' 
                 + '<div class="team-icon"><span class="release-status-icon no-logo mega-octicon octicon-package"></span><div class="team-label">{{team}}</div></div>' 
                 + '<div class="release-status {{releaseStatusIconClass}}">' 
-                    + '{{{releaseStatusIcon}}}'
+                    + '<span class="release-status-icon release-status-waiting fa fa-pause"></span>'
+                    + '<span class="release-status-icon release-status-failed fa fa-exclamation-triangle"></span>'
+                    + '<span class="release-status-icon release-status-cancelled mega-octicon octicon-x"></span>'
+                    + '<span class="release-status-icon release-status-shipping mega-octicon octicon-squirrel"></span>'
                     + '<div class="release-status-label">{{currentStatus}}</div>' 
                 + '</div>' 
                 + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span></h3>' 
@@ -78,7 +77,6 @@
                 currentStageFor: ' (' + moment(release['@timestamp']).fromNow(currentStatus === 'Shipping') + ')',
                 triggeredBy: release.triggeredBy,
                 currentStatus: currentStatus,
-                releaseStatusIcon: releaseStatusIcon,
                 releaseStatusIconClass: releaseStatusIconClass
             });
         },

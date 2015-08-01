@@ -924,6 +924,13 @@ h3 {margin: 0;padding: 0 }
 .releases-inprogress .release-status-icon-waiting { border-color: orange; }
 .releases-inprogress .release-status-icon-cancelled { border-color: #886A08; }
 
+.releases-inprogress .release-status .release-status-icon { display: none; }
+
+.releases-inprogress .release-status.release-status-icon-waiting .release-status-waiting { display: block; }
+.releases-inprogress .release-status.release-status-icon-failed .release-status-failed { display: block; }
+.releases-inprogress .release-status.release-status-icon-cancelled .release-status-cancelled { display: block; }
+.releases-inprogress .release-status.release-status-icon-shipping .release-status-shipping { display: block; }
+
 .release-status-failed { color: red; }
 .release-status-waiting { color: orange; }
 .release-status-shipping { color: green; }
@@ -969,4 +976,4 @@ h3 {margin: 0;padding: 0 }
 
 .no-releases { font-size: 3em; }
 
-.pipeline-name-counter { font-size: 0.8em; color: #aaa; }
+.pipeline-name-counter { font-size: 0.8em; color: #bbb; font-style: italic; }

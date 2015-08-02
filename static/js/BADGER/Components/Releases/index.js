@@ -146,12 +146,14 @@
                     + '</div>')
             }
 
-            var orderElement = $('<div class="release-order-selector' + (releaseState === 'completed' ? ' desc': '') + '">' 
+            var orderElement = $(Mustache.render('<div class="release-order-selector{{directionClass}}">' 
                 + '<span class="release-order-selector-icon-asc fa fa-sort-numeric-asc"></span>' 
                 + '<span class="release-order-selector-icon-desc fa fa-sort-numeric-desc"></span>&nbsp;' 
                 + '<span class="release-order-selector-label-asc">Order By Oldest First</span>' 
                 + '<span class="release-order-selector-label-desc">Order By Latest First</span>' 
-                + '</div>').on('click', function() { 
+                + '</div>', {
+                    directionClass: releaseState === 'completed' ? ' desc': ''
+                })).on('click', function() { 
                     orderElement.toggleClass('desc'); 
                     lastData = lastData.reverse();
                     setUpRender(lastData);

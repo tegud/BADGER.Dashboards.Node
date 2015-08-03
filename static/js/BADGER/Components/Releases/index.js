@@ -117,20 +117,33 @@
 
     function render(releaseState, data) {
         if(!data.length) {
-            var nothingHtml = $('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' + (releaseState === 'completed' ? 'Shipped' : 'Shipping') + '</div>');
+            var nothingHtml = $('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' 
+                + (releaseState === 'completed' ? 'Shipped' : '<span class="nothing-shipped-counter">Shipping</span>') + '</div>');
 
-            if(releaseState === 'completed') {
-                
-            }
+            this.html(nothingHtml);
+        }
+        else {
+            this.html(_.map(data, function(release) {
+                if(!template[releaseState]) { return; }
 
-            return this.html(nothingHtml);
+                return template[releaseState](release);
+            }).join(''));
         }
 
-        this.html(_.map(data, function(release) {
-            if(!template[releaseState]) { return; }
-
-            return template[releaseState](release);
-        }).join(''));
+        if(releaseState === 'completed') {
+            if(!data.length) {
+                $('.nothing-shipped-counter').text('Shipped Today!');
+            }
+            else {
+                $('.nothing-shipped-counter').text('Shipped for ' + _.chain(data)
+                    .map(function(item) { return moment(item.completedAt); })
+                    .sortBy(function(item) { return item.valueOf(); })
+                    .reverse()
+                    .first()
+                    .value()
+                    .fromNow(true));
+            }
+        }
     }
 
     function releasePanelFactory(releaseState) {
@@ -198,6 +211,10 @@
 
                 if(orderElement.hasClass('desc')) {
                     sortedReleases = sortedReleases.reverse();
+                }
+
+                if(lastData) {
+                     return;
                 }
 
                 lastData = sortedReleases;

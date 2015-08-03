@@ -886,7 +886,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-inprogress .release-item { border: solid 5px #000; margin: 5px 0; padding: 10px; border-radius: 20px; min-height: 160px }
 
-.releases-list .release-item h3 { float: none; font-size: 2em }
+.releases-list .release-item h3 { float: none; font-size: 2em; word-break: break-all }
 
 .releases-inprogress .team-icon { float: left; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-right: 15px; position: relative; }
 
@@ -959,7 +959,7 @@ h3 {margin: 0;padding: 0 }
 
 .completed-releases-container { margin-left: 95px; }
 
-.completed-release-name { font-size: 1.3em; font-weight: bold }
+.completed-release-name { font-size: 1.3em; font-weight: bold; word-break: break-all; }
 
 .releases-completed .release-info { margin: 0 } 
 

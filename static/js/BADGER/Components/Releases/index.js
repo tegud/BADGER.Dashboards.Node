@@ -117,7 +117,13 @@
 
     function render(releaseState, data) {
         if(!data.length) {
-            return this.html('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' + (releaseState === 'completed' ? 'Shipped' : 'Shipping') + '</div>');
+            var nothingHtml = $('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' + (releaseState === 'completed' ? 'Shipped' : 'Shipping') + '</div>');
+
+            if(releaseState === 'completed') {
+                
+            }
+
+            return this.html(nothingHtml);
         }
 
         this.html(_.map(data, function(release) {
@@ -192,10 +198,6 @@
 
                 if(orderElement.hasClass('desc')) {
                     sortedReleases = sortedReleases.reverse();
-                }
-
-                if(lastData) {
-                     return;
                 }
 
                 lastData = sortedReleases;

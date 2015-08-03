@@ -213,10 +213,6 @@
                     sortedReleases = sortedReleases.reverse();
                 }
 
-                if(lastData) {
-                     return;
-                }
-
                 lastData = sortedReleases;
 
                 setUpRender(sortedReleases);

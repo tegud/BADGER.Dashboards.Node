@@ -29,16 +29,18 @@
 
     function buildViewModel(kafkaData) {
 
-        var broker = kafkaData.brokers[0];
-        var brokerIsAnObject = typeof(broker) === 'object' ? true : false;
+        if(kafkaData.brokers){
+            var broker = kafkaData.brokers[0];
+            var brokerIsAnObject = typeof(broker) === 'object' ? true : false;
 
-        if(brokerIsAnObject) {
-            //Return an error
-            return {
-                "errorBroker" : {
-                    "errorMessage" : JSON.stringify(broker.errorMessage)
-                }
-            };
+            if(brokerIsAnObject) {
+                //Return an error
+                return {
+                    "errorBroker" : {
+                        "errorMessage" : JSON.stringify(broker.errorMessage)
+                    }
+                };
+            }            
         }
 
         _(kafkaData.brokers).forEach(function(broker){

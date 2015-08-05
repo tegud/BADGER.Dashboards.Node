@@ -886,7 +886,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-inprogress .release-item { border: solid 5px #000; margin: 5px 0; padding: 10px; border-radius: 20px; min-height: 160px }
 
-.releases-list .release-item h3 { float: none; font-size: 2em }
+.releases-list .release-item h3 { float: none; font-size: 2em; word-break: break-all }
 
 .releases-inprogress .team-icon { float: left; border: 10px solid #000; width: 90px; height: 90px; padding: 10px; border-radius: 100px; margin-right: 15px; position: relative; }
 
@@ -914,14 +914,27 @@ h3 {margin: 0;padding: 0 }
 .release-progress li.stage-complete { background-color: green; }
 .release-progress li.stage-inprogress { background-color: orange; position: relative }
 .release-progress li.stage-failed { background-color: red; }
+.release-progress li.stage-cancelled { background-color: #886A08; }
+
+.stage-cancelled { display: none; }
+.release-progress li.stage-cancelled .stage-cancelled { display: block; width: 100%; text-align: center; }
 
 .releases-inprogress .release-status-icon-failed { border-color: red; }
 .releases-inprogress .release-status-icon-shipping { border-color: green; }
 .releases-inprogress .release-status-icon-waiting { border-color: orange; }
+.releases-inprogress .release-status-icon-cancelled { border-color: #886A08; }
+
+.releases-inprogress .release-status .release-status-icon { display: none; }
+
+.releases-inprogress .release-status.release-status-icon-waiting .release-status-waiting { display: block; }
+.releases-inprogress .release-status.release-status-icon-failed .release-status-failed { display: block; }
+.releases-inprogress .release-status.release-status-icon-cancelled .release-status-cancelled { display: block; }
+.releases-inprogress .release-status.release-status-icon-shipping .release-status-shipping { display: block; }
 
 .release-status-failed { color: red; }
 .release-status-waiting { color: orange; }
 .release-status-shipping { color: green; }
+.release-status-cancelled { text-align: center; color: #886A08; width: 100%; }
 
 .release-progress li.stage .stage-pointer { display: none; }
 .release-progress li.stage-inprogress .stage-pointer { display: block; bottom: -30px; left: 5px; position: absolute; }
@@ -942,9 +955,11 @@ h3 {margin: 0;padding: 0 }
 
 .releases-completed .release-complete-failed { color: red; border-color: red; } 
 
+.releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08;font-size: 56px; }
+
 .completed-releases-container { margin-left: 95px; }
 
-.completed-release-name { font-size: 1.3em; font-weight: bold }
+.completed-release-name { font-size: 1.3em; font-weight: bold; word-break: break-all; }
 
 .releases-completed .release-info { margin: 0 } 
 
@@ -960,3 +975,15 @@ h3 {margin: 0;padding: 0 }
 .desc .release-order-selector-label-asc { display: none; }
 
 .no-releases { font-size: 3em; }
+
+.pipeline-name-counter { font-size: 0.8em; color: #bbb; font-style: italic; }
+
+.hubot-info-icon { float: left; font-size: 90px; color: #FAAF5D; }
+
+.hubot-info { margin-left: 110px; font-size: 1.2em; }
+
+.hubot-info .fa.fa-slack { font-size: 0.8em; }
+
+.hubot-info h3 { float:none; font-size: 1.9em; }
+
+.hubot-info ul { margin: 5px 0; }

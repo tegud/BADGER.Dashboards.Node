@@ -51,13 +51,13 @@
             "span":"3"
         },
         {
-            "title": "In Progress",
+            "title": "Shipping",
             "type": "InProgressReleases",
             "span":"6",
             "storeId": "ReleaseData"
         },
         {
-            "title": "Completed",
+            "title": "Shipped",
             "type": "CompletedReleases",
             "span":"3",
             "storeId": "ReleaseData"

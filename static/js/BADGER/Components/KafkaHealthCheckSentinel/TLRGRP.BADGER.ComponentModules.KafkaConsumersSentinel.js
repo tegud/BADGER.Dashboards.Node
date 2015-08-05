@@ -7,6 +7,16 @@
         var containerElement = $('<div class="health-check-server-groups-container"></div>');
 
         function buildViewModel(data) {
+            _(data).forEach(function (consumer) {
+                _(consumer.topics).forEach(function (topic) {
+                    _(topic.partitions).forEach(function (part) {
+                        part.lagging = part.lag > 0;
+                        topic.lagging = (topic.lagging || part.lagging);
+                    });
+                    consumer.lagging = (consumer.lagging || topic.lagging);
+console.log("lag: ", consumer.group, topic.name, consumer.lagging);
+                });
+            });
             return data;
         }
 
@@ -28,27 +38,28 @@
                             '</div>'+
                         '</div>'+
                     '</div>'+
-                    '<ul class="health-check-groups">'+
+                    '<div class="dashboard-component conversion-status" style="width: 1815px; margin-right: ">' +
+                        '<ul class="cluster-state-panels server-health-node-list">' +
                         '{{#.}}'+
-                            '<li class="health-check-group-item">'+
-                                '<h4>{{group}}</h4>'+
-                                '<ul>'+
-                                    '{{#topics}}'+
-                                        '<li><h5>{{name}}</h5>'+
-                                            '<h6>Partitions</h6>'+
-                                            '<ul>'+
-                                                '{{#partitions}}'+
-                                                    '<li>{{id}} (lag {{lag}})</li>'+
-                                                '{{/partitions}}'+
-                                            '</ul>'+
-                                        '</li>'+
-                                    '{{/topics}}'+
-                                    '{{^topics}}<li>none</li>{{/topics}}'+
+                            '<li class="node-info {{#lagging}}breach{{/lagging}}" style="width: auto">' +
+                                '<span class="fa fa-tag"></span><div class="item-text"><h4>{{group}}</h4></div>'+
+                                '<ul style="list-style-type: none; padding-left: 0; margin-left: 0;">'+
+                                '{{#topics}}'+
+                                    '<li style="padding-left: 0;">'+
+                                        '<span class="fa fa-list-alt"></span><div class="item-text"><h5 style="margin: 1em 0;">{{name}}</h5></div>'+
+                                        '<ul style="list-style-type: none; padding-left: 0.5em;">'+
+                                            '{{#partitions}}'+
+                                                '<li><span class="fa fa-dot-circle-o"></span><div class="item-text" style="margin-left: 0.5em;">{{id}} (lag {{lag}})</div></li>'+
+                                            '{{/partitions}}'+
+                                        '</ul>'+
+                                    '</li>'+
+                                '{{/topics}}'+
+                                '{{^topics}}<li>none</li>{{/topics}}'+
                                 '</ul>'+
                             '</li>'+
                         '{{/.}}'+
                     '</ul>'+
-                    '<br />', viewModel)));
+                    '</div>', viewModel)));
             }
         };
     };

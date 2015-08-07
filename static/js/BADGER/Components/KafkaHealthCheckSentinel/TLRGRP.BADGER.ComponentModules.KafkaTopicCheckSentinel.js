@@ -98,10 +98,9 @@
             kafconData.push(new KAFCONlevel("Producing and consuming OK", 1, false));
         }
 
-        return 
-        {
-            kafconData,
-            kafconLevel
+        return {
+            kafconData: kafconData,
+            kafconLevel: kafconLevel
         };
     }
     
@@ -119,7 +118,7 @@
                 var viewModel = buildViewModel(kafkaData, environment);
 
                 containerElement.html($(Mustache.render(
-                    '<h3>Current level : {{kafconLevel}}</h3>' +
+                    '<h3>Current level : {{kafconLevel}}</h3><br /><br />' +
                     '<div class="health-check-error hidden">'+
                         '<div class="health-check-error-text-container">'+
                             '<h3>Warning</h3>'+

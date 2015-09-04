@@ -166,6 +166,20 @@
             }
         },
         {
+            "id": "Search",
+            "name": "Search",
+            "views": {
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
+                },
+                "CI": {
+                    "id": "CI",
+                    "name": "CI"
+                }
+            }
+        },
+        {
             "id": "Reservations",
             "name": "Reservations",
             "views": {

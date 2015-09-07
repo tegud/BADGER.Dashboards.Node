@@ -49,7 +49,8 @@
             "title": "In Progress",
             "type": "InProgressReleases",
             "span":"9",
-            "storeId": "SearchCIData"
+            "storeId": "SearchCIData",
+            "defaultSortOrder": "Descending"
         },
         {
             "title": "Completed",

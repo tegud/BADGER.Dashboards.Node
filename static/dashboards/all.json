@@ -162,7 +162,7 @@
                 "KafkaLive": {
                     "id": "KafkaLive",
                     "name": "Kafka Live"
-                }   
+                }
             }
         },
         {
@@ -176,6 +176,16 @@
                 "CI": {
                     "id": "CI",
                     "name": "CI"
+                }
+            }
+        },
+        {
+            "id": "SWP",
+            "name": "SWP",
+            "views": {
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Moonstick Build Status"
                 }
             }
         },

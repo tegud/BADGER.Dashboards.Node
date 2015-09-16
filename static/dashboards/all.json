@@ -162,7 +162,7 @@
                 "KafkaLive": {
                     "id": "KafkaLive",
                     "name": "Kafka Live"
-                }   
+                }
             }
         },
         {
@@ -180,12 +180,26 @@
             }
         },
         {
+            "id": "SWP",
+            "name": "SWP",
+            "views": {
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Build Status"
+                },
+                "CI": {
+                    "id": "CI",
+                    "name": "CI"
+                }
+            }
+        },
+        {
             "id": "Reservations",
             "name": "Reservations",
             "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Moosntick BUild Status"
                 }
             }
         },

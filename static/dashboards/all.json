@@ -185,11 +185,7 @@
             "views": {
                 "BuildStatus": {
                     "id": "BuildStatus",
-                    "name": "Build Status"
-                },
-                "CI": {
-                    "id": "CI",
-                    "name": "CI"
+                    "name": "Moonstick Build Status"
                 }
             }
         },
@@ -197,9 +193,9 @@
             "id": "Reservations",
             "name": "Reservations",
             "views": {
-                "BuildStatus": {
-                    "id": "BuildStatus",
-                    "name": "Moosntick BUild Status"
+                "Live": {
+                    "id": "Live",
+                    "name": "Live"
                 }
             }
         },

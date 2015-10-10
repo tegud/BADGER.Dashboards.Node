@@ -987,3 +987,27 @@ h3 {margin: 0;padding: 0 }
 .hubot-info h3 { float:none; font-size: 1.9em; }
 
 .hubot-info ul { margin: 5px 0; }
+
+.ooh-rota { padding: 0;margin: 0; list-style: none }
+
+.ooh-rota > li { padding: 0; margin-bottom: 5px; }
+
+.ooh-rota > li > div { display: inline-block; }
+
+.team-title { font-size: 2em; width: 350px; margin-right: 5px; }
+
+.team-title-text { vertical-align: middle; padding-top: 5px }
+
+.team-icon { vertical-align: middle;display: inline-block; width: 50px; height: 44px; border: 5px #000 solid; border-radius: 50px; margin-right: 5px; text-align: center; padding-top: 6px; }
+
+.user-icon { vertical-align: middle;display: inline-block; width: 50px; height: 44px; border: 5px #000 solid; border-radius: 50px; margin-right: 5px; text-align: center; padding-top: 6px; }
+
+.user-icon > span { font-size: 32px }
+
+.team-current-oncall { font-size: 1.5em; width: 200px; }
+
+.header .team-current-oncall { font-size: 2em; }
+
+.rotation-calendar-row { height: 50px; background-color: #eee; border: 1px #ccc solid; vertical-align: middle; }
+
+.rotation-calendar-block { float: left; background: #ddd; height: 20px; margin-top: 3px; padding: 12px 5px; font-size: 1.2em; overflow: hidden; }

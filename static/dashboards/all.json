@@ -50,6 +50,16 @@
             }
         },
         {
+            "id": "OutOfHours",
+            "name": "Out of Hours",
+            "views": {
+                "Rota": {
+                    "id": "Rota",
+                    "name": "Rota"
+                }
+            }
+        },
+        {
             "id": "RatesAndAvailability",
             "name": "Rates and Availability",
             "views": {

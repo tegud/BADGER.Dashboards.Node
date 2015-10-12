@@ -1004,16 +1004,20 @@ h3 {margin: 0;padding: 0 }
 
 .user-icon > span { font-size: 32px }
 
-.user-title-text { vertical-align: middle; padding-top:12px; }
+.user-title-text { vertical-align: middle; padding-top:14px; }
 
 .team-current-oncall { font-size: 1.5em; width: 230px; }
 
 .header .team-current-oncall { font-size: 2em; }
 
-.rotation-calendar-row { height: 60px; background-color: #eee; border: 1px #ccc solid; vertical-align: middle; }
+.rotation-calendar-row { height: 60px; background-color: #eee; border: 1px #ccc solid; vertical-align: top; }
 
-.rotation-calendar-block { float: left; background: #ddd; height: 24px; margin-top: 3px; padding: 15px 5px; font-size: 1.2em; overflow: hidden; }
+.rotation-calendar-block { float: left; background: #ddd; height: 20px; margin-top: 3px; padding: 17px 5px; font-size: 1.2em; overflow: hidden; }
 
-.calendar-header-months { font-size: 1.8em; }
+.calendar-header-months { font-size: 1.8em; clear: both; }
+
+.calendar-header-month { float: left; }
+
+.calendar-header-days  { clear: both; }
 
 .calendar-header-day { float: left; }

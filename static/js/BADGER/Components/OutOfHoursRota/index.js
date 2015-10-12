@@ -59,6 +59,9 @@
                     return moment(detail.schedule[detail.schedule.length - 1].end).valueOf();
                 }).max().value();
 
+                var maxDateMoment = moment(maxDate).subtract('weeks', 1);
+                maxDate = maxDateMoment.valueOf();
+
                 var seconds = moment(maxDate).diff(currentDate, 's');
                 var calendarWidth = rotas.width() - 600;
                 var blockSize = calendarWidth / seconds;
@@ -67,22 +70,43 @@
                     return;
                 }
 
-                var days = _.range(0, moment(maxDate).diff(currentDate, 'days'));
+                var days = _.range(0, moment(maxDate).diff(currentDate, 'days') + 2);
                 var months = [currentDate.format('MMM')];
 
                 if (moment(maxDate).month() !== currentDate.month()) {
-
+                    months.push(moment(maxDate).format('MMM'));
                 };
 
-                console.log(days);
-
                 var calendarHeader = '<div class="calendar-header"><div class="calendar-header-months">' 
-                        + _.map(months, function(month) {
-                            return Mustache.render('<div class="calendar-header-month">{{month}}</div>', { month: month });
+                        + _.map(months, function(month, i) {
+                            var width = 'auto';
+
+                            if(months.length === 2 && !i) {
+                                var beginningOfNextMonth = moment(currentDate).add('month', 1).startOf('month');
+                                width = 'width: ' + ((beginningOfNextMonth.unix() - moment(currentDate).unix()) * blockSize) + 'px';
+                            }
+
+                            return Mustache.render('<div class="calendar-header-month" style="{{width}}">{{month}}</div>', { 
+                                month: month,
+                                width: width
+                            });
                         }).join('')
                         + '</div><div class="calendar-header-days">'
                         + _.map(days, function(day) {
-                            return Mustache.render('<div class="calendar-header-day">{{day}}</div>', { day: moment(currentDate).add('days', day).format('DD') });
+                            var dayMoment = moment(currentDate).add('days', day);
+                            var width = blockSize * 24 * 60 * 60;
+
+                            if(dayMoment.isSame(currentDate)) {
+                                width = ((24 * 60 * 60) - (dayMoment.unix() - moment(dayMoment).startOf('day').unix())) * blockSize;
+                            }
+                            else if (moment(dayMoment).startOf('day').isSame(moment(maxDate).startOf('day'))) {
+                                width = (moment(maxDate).unix() - moment(maxDate).startOf('day').unix()) * blockSize;
+                            }
+
+                            return Mustache.render('<div class="calendar-header-day" style="width: {{width}}px">{{{day}}}</div>', { 
+                                day: width > 16 ? dayMoment.format('DD') : '&nbsp;',
+                                width: width
+                            });
                         }).join('')
                     + '</div></div>';
 
@@ -96,25 +120,34 @@
                         var scheduleItemStart = moment(scheduleItem.start);
                         var scheduleItemEnd = moment(scheduleItem.end);
                         var segmentStartDate;
+                        var segmentEndDate;
 
-                        if(scheduleItemStart.isBefore(currentDate) && scheduleItemEnd.isBefore(currentDate)) {
+                        if((scheduleItemStart.isBefore(currentDate) && scheduleItemEnd.isBefore(currentDate))
+                            || ((scheduleItemStart.isAfter(maxDateMoment) || scheduleItemStart.isSame(maxDateMoment)) && scheduleItemEnd.isAfter(maxDateMoment))) {
                             return;
                         }
-                        else if (scheduleItemStart.isBefore(currentDate)) {
+                        
+                        if (scheduleItemStart.isBefore(currentDate)) {
                             segmentStartDate = moment();
                         }
                         else {
                             segmentStartDate = moment(scheduleItem.start);
                         }
+                        
+                        if (scheduleItemEnd.isAfter(maxDateMoment)) {
+                            segmentEndDate = maxDateMoment;
+                        }
+                        else {
+                            segmentEndDate = moment(scheduleItem.end);
+                        }
 
-                        var segmentEndDate = moment(scheduleItem.end);
                         var width = (segmentEndDate.diff(segmentStartDate, 's') * blockSize) - 12;
 
-                        return Mustache.render('<div class="rotation-calendar-block" style="width: {{width}}px; margin-right: 2px; background-color: {{backgroundColor}}" title="{{start}} - {{oncall}}">{{oncall}}</div>', {
+                        return Mustache.render('<div class="rotation-calendar-block" style="width: {{width}}px; margin-right: 2px; background-color: {{backgroundColor}}" title="{{start}} to {{end}} - {{oncall}}">{{oncall}}</div>', {
                             width: width,
                             start: segmentStartDate.format(),
                             end: segmentEndDate.format(),
-                            oncall: scheduleItem.oncall,
+                            oncall: width > 10 ? scheduleItem.oncall : '',
                             backgroundColor: teamColourMap[teamClass] || '#ddd'
                         });
                     }).join('');

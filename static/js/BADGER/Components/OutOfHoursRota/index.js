@@ -60,14 +60,33 @@
                 }).max().value();
 
                 var seconds = moment(maxDate).diff(currentDate, 's');
-                var calendarWidth = rotas.width() - 570;
+                var calendarWidth = rotas.width() - 600;
                 var blockSize = calendarWidth / seconds;
 
                 if(rotas.children().length) {
                     return;
                 }
 
-                rotas.html('<li class="header"><div class="team-title">Team</div><div class="team-current-oncall">Current</div><div class=""></div></li>' + _.map(rota, function(detail, team) {
+                var days = _.range(0, moment(maxDate).diff(currentDate, 'days'));
+                var months = [currentDate.format('MMM')];
+
+                if (moment(maxDate).month() !== currentDate.month()) {
+
+                };
+
+                console.log(days);
+
+                var calendarHeader = '<div class="calendar-header"><div class="calendar-header-months">' 
+                        + _.map(months, function(month) {
+                            return Mustache.render('<div class="calendar-header-month">{{month}}</div>', { month: month });
+                        }).join('')
+                        + '</div><div class="calendar-header-days">'
+                        + _.map(days, function(day) {
+                            return Mustache.render('<div class="calendar-header-day">{{day}}</div>', { day: moment(currentDate).add('days', day).format('DD') });
+                        }).join('')
+                    + '</div></div>';
+
+                rotas.html('<li class="header"><div class="team-title">Team</div><div class="team-current-oncall">Current</div>' + calendarHeader + '</li>' + _.map(rota, function(detail, team) {
                     if(!detail.schedule.length) {
                         return;
                     }
@@ -101,8 +120,14 @@
                     }).join('');
 
                     return Mustache.render('<li>' 
-                            + '<div class="team-title" style="color: {{teamColour}}"><div class="team-icon" style="border-color: {{teamColour}}"><span class="{{teamIconClass}}"></span></div>{{team}}</div>' 
-                            + '<div class="team-current-oncall" style="color: {{teamColour}}"><div class="user-icon" style="border-color: {{teamColour}}"><span class="{{userIconClass}}"></span></div>{{current}}</div>' 
+                            + '<div class="team-title" style="color: {{teamColour}}">' 
+                                + '<div class="team-icon" style="border-color: {{teamColour}}"><span class="{{teamIconClass}}"></span></div>' 
+                                + '<div class="team-title-text">{{team}}</div>'
+                            + '</div>' 
+                            + '<div class="team-current-oncall" style="color: {{teamColour}}">' 
+                                + '<div class="user-icon" style="border-color: {{teamColour}}"><span class="{{userIconClass}}"></span></div>'
+                                + '<div class="user-title-text">{{current}}</div>'
+                            + '</div>' 
                             + '<div class="rotation-calendar-row" style="width: {{calendarWidth}}px">{{{blocks}}}</div>'
                             + '</li>', { 
                         team: team, 

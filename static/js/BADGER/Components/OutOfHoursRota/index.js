@@ -70,7 +70,7 @@
                     return;
                 }
 
-                var days = _.range(0, moment(maxDate).diff(currentDate, 'days') + 2);
+                var days = _.range(0, moment(maxDate).diff(currentDate, 'days') + 1);
                 var months = [currentDate.format('MMM')];
 
                 if (moment(maxDate).month() !== currentDate.month()) {
@@ -95,6 +95,10 @@
                         + _.map(days, function(day) {
                             var dayMoment = moment(currentDate).add('days', day);
                             var width = blockSize * 24 * 60 * 60;
+
+                            console.log(moment(dayMoment).format());
+                            console.log(moment(maxDate).format());
+                            console.log(moment(dayMoment).startOf('day').isSame(moment(maxDate).startOf('day')));
 
                             if(dayMoment.isSame(currentDate)) {
                                 width = ((24 * 60 * 60) - (dayMoment.unix() - moment(dayMoment).startOf('day').unix())) * blockSize;

@@ -206,6 +206,10 @@
                 "Live": {
                     "id": "Live",
                     "name": "Live"
+                },
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Reservations Build Status"
                 }
             }
         },

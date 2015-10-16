@@ -147,11 +147,12 @@
 
                         var width = (segmentEndDate.diff(segmentStartDate, 's') * blockSize) - 12;
 
-                        return Mustache.render('<div class="rotation-calendar-block" style="width: {{width}}px; margin-right: 2px; background-color: {{backgroundColor}}" title="{{start}} to {{end}} - {{oncall}}">{{oncall}}</div>', {
-                            width: width,
+                        return Mustache.render('<div class="rotation-calendar-block" style="{{padding}}width: {{width}}px; margin-right: 2px; background-color: {{backgroundColor}}" title="{{start}} to {{end}} - {{oncall}}">{{oncall}}</div>', {
+                            width: width > 10 ? width : (width + 10),
                             start: segmentStartDate.format(),
                             end: segmentEndDate.format(),
                             oncall: width > 10 ? scheduleItem.oncall : '',
+                            padding: width > 10 ? '' : 'padding-left: 0; padding-right: 0;',
                             backgroundColor: teamColourMap[teamClass] || '#ddd'
                         });
                     }).join('');

@@ -31,8 +31,8 @@
                           }
                         },
                         {
-                          "term" : {
-                            "team.raw" : "Reservations"
+                          "terms" : {
+                            "team.raw" : ["Reservations","CallCentre","SecureCardPortal","Finance"]
                           }
                         }
                       ]

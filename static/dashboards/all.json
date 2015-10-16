@@ -220,6 +220,10 @@
                 "Live": {
                     "id": "Live",
                     "name": "Live"
+                },
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Rates Build Status"
                 }
             }
         },

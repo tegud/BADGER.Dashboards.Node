@@ -220,6 +220,14 @@
                 "Live": {
                     "id": "Live",
                     "name": "Live"
+                },
+                "CI": {
+                    "id": "CI",
+                    "name": "CI"
+                },
+                "UAT": {
+                    "id": "UAT",
+                    "name": "UAT"
                 }
             }
         },

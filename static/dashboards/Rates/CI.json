@@ -1,0 +1,62 @@
+{
+    "name": "Rates CI",
+    "components": [
+    {
+          "type": "SharedDataStore",
+          "title": "Rates CI Data",
+          "storeId": "RatesCIData",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "index": "releases-${YYYY}.${MM}",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "group.raw" : "Rates-CI"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 1000
+            }
+          },
+          "mappings": []
+        },
+        {
+            "title": "In Progress",
+            "type": "InProgressReleases",
+            "span":"9",
+            "storeId": "RatesCIData",
+            "defaultSortOrder": "Descending"
+        },
+        {
+            "title": "Completed",
+            "type": "CompletedReleases",
+            "span":"3",
+            "storeId": "RatesCIData"
+        }
+    ]
+}

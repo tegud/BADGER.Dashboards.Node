@@ -1,10 +1,10 @@
 {
-    "name": "Rates CI",
+    "name": "Rates Build Status",
     "components": [
     {
           "type": "SharedDataStore",
-          "title": "Rates CI Data",
-          "storeId": "RatesCIData",
+          "title": "Rates Build Data",
+          "storeId": "RatesBuildData",
           "dataSource": "elasticsearch",
           "host": "http://badger.laterooms.com:9200",
           "index": "releases-${YYYY}.${MM}",
@@ -31,8 +31,8 @@
                           }
                         },
                         {
-                          "term" : {
-                            "group.raw" : "Rates-CI"
+                          "terms" : {
+                            "group.raw" : ["Rates-CI", "Rates-UAT"]
                           }
                         }
                       ]
@@ -49,14 +49,14 @@
             "title": "In Progress",
             "type": "InProgressReleases",
             "span":"9",
-            "storeId": "RatesCIData",
+            "storeId": "RatesBuildData",
             "defaultSortOrder": "Descending"
         },
         {
             "title": "Completed",
             "type": "CompletedReleases",
             "span":"3",
-            "storeId": "RatesCIData"
+            "storeId": "RatesBuildData"
         }
     ]
 }

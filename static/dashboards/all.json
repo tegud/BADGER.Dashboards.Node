@@ -221,13 +221,9 @@
                     "id": "Live",
                     "name": "Live"
                 },
-                "CI": {
-                    "id": "CI",
-                    "name": "CI"
-                },
-                "UAT": {
-                    "id": "UAT",
-                    "name": "UAT"
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Rates Build Status"
                 }
             }
         },

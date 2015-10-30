@@ -68,7 +68,7 @@
                     "name": "Overview"
                 }
             }
-        },
+        }, 
         {
             "id": "Distribution",
             "name": "Distribution",
@@ -80,6 +80,10 @@
                 "Live": {
                     "id": "Live",
                     "name": "Live"
+                },
+                "BuildStatus": {
+                    "id": "BuildStatus",
+                    "name": "Distribution Build Status"
                 }
             }
         },

@@ -19,7 +19,7 @@ var server = function() {
     app.set('views', applicationRoot + 'views');
     app.engine('html', hbs.__express);
     app.use("/static", express.static(applicationRoot + 'static'));
-    app.use(favicon(applicationRoot + 'static' + '/favicon.ico'));
+    app.use(favicon(applicationRoot + 'static' + '/images/favicon.ico'));
 
     app.get('/admin', function(req, res) {
         res.render('admin.hbs');

@@ -5,8 +5,8 @@ var async = require('async');
 var _ = require('lodash');
 var AppServer = require('./lib/AppServer');
 var SyncServer = require('./lib/SyncServer');
+var favicon = require('serve-favicon');
 var redis = require('redis');
-
 
 var server = function() {
     var app = express();
@@ -19,6 +19,7 @@ var server = function() {
     app.set('views', applicationRoot + 'views');
     app.engine('html', hbs.__express);
     app.use("/static", express.static(applicationRoot + 'static'));
+    app.use(favicon(applicationRoot + 'static' + '/favicon.ico'));
 
     app.get('/admin', function(req, res) {
         res.render('admin.hbs');

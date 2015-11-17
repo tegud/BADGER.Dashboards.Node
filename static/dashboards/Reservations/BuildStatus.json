@@ -1,0 +1,62 @@
+{
+    "name": "Reservations Build Status",
+    "components": [
+    {
+          "type": "SharedDataStore",
+          "title": "Reservations Build Data",
+          "storeId": "ReservationsBuildData",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "index": "releases-${YYYY}.${MM}",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "terms" : {
+                            "team.raw" : ["Reservations","CallCentre","SecureCardPortal","Finance"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 1000
+            }
+          },
+          "mappings": []
+        },
+        {
+            "title": "In Progress",
+            "type": "InProgressReleases",
+            "span":"9",
+            "storeId": "ReservationsBuildData",
+            "defaultSortOrder": "Descending"
+        },
+        {
+            "title": "Completed",
+            "type": "CompletedReleases",
+            "span":"3",
+            "storeId": "ReservationsBuildData"
+        }
+    ]
+}

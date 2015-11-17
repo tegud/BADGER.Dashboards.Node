@@ -6,12 +6,14 @@ var _ = require('lodash');
 var AppServer = require('./lib/AppServer');
 var SyncServer = require('./lib/SyncServer');
 var favicon = require('serve-favicon');
+var redis = require('redis');
 
 var server = function() {
     var app = express();
     var httpServer;
     var sync;
     var applicationRoot = __dirname + (process.env.NODE_ENV === 'dev' ? '/' : '/dist/');
+    var client = redis.createClient(6379, "10.44.72.53");
 
     app.set('view engine', 'html');
     app.set('views', applicationRoot + 'views');
@@ -47,6 +49,13 @@ var server = function() {
     app.get('/admin/command/messageAll', function(req, res) {
         sync.messageAll(req.query.message);
         res.send();
+    });
+
+
+    app.get('/redis/hash/:key', function(req, res) {
+        client.hgetall(req.params.key, function (err, obj) {
+            res.send(JSON.stringify(JSON.parse(obj.teams)));
+        });
     });
 
     app.get(/^(.*)$/, function(req, res, next){

@@ -8,6 +8,22 @@
             "host": "10.44.35.62",
             "port": 1234,
             "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Search.api_HTTP",
+            "title": "Search V1 API LB",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "Searchv2.api_HTTP",
+            "title": "Search V2 API LB",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 3
         }
     ]
 }

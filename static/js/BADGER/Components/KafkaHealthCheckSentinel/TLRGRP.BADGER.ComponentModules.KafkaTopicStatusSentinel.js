@@ -31,6 +31,7 @@
         var topicData = kafkaData['kafka-check.' + environment + '.topics'];
         var topicLeaderData = kafkaData['kafka-check.' + environment + '.topicsWithNoLeaders'];
         var consumerData = kafkaData['kafka-check.' + environment + '.consumers'];
+        var noLeaderMessage = "NO LEADER";
 
         var topics = [];
 
@@ -43,16 +44,20 @@
                 "consumers" : []
             }
 
-            //check if the topic has no leader
+            //check if the topic partitions have no leader
             if(topicLeaderData) {
-                _(topicLeaderData.topicsWithNoLeader).forEach(function(topicWithNoLeader){
-                    var noLeader = _.find(topic.partitions, { "partitionId" : topicWithNoLeader.partitionId });
-                    if(noLeader) {
-                        noLeader.leader = "NO LEADER";
-                        topicHealthData.healthState = "breach";
-                        noLeader.leaderHealthState = "critical";
-                    }
-                });
+                var topicHasIssues = _.filter(topicLeaderData.topicsWithNoLeader, { "topicName" : topic.topicName });
+                if(topicHasIssues) {
+                    _(topicHasIssues).forEach(function(partition){ 
+                        var partitionWithIssues = _.find(topic.partitions, { "partitionId" : partition.partitionId });
+                        if(partitionWithIssues) {
+                            partitionWithIssues.leader = noLeaderMessage;
+                            topicHealthData.healthState = "breach";
+                            partitionWithIssues.leaderHealthState = "critical";
+                            partitionWithIssues.alert = true;
+                        }
+                    });
+                }
             }
 
             //find any consumers of the topic
@@ -65,8 +70,32 @@
 
             topicHealthData.partitions = topic.partitions;
 
+            //check if the topic has no leaders at all
+            var somePartitionsHaveNoLeader = _.filter(topicHealthData.partitions, { "leader" : noLeaderMessage });
+            if(somePartitionsHaveNoLeader) {
+                if(somePartitionsHaveNoLeader.length == topicHealthData.partitions.length) {
+                    topicHealthData.healthState = "critical";
+                }
+            }
+
             topics.push(topicHealthData);
         });
+
+        topics.sort(function(a, b){
+            var topicA=a.topicName.toLowerCase();
+            var topicB=b.topicName.toLowerCase();
+
+            if(a.healthState === "critical") return -1;
+            if(a.healthState === "breach" && b.healthState === "critical") return 1;
+            if(a.healthState === "breach") return -1;
+
+            if(a.healthState === "info" && b.healthState === "critical") return 1;
+            if(a.healthState === "info" && b.healthState === "breach") return 1;
+
+            if(topicA < topicB) return -1;
+            if(topicA > topicB) return 1;
+            return 0;
+        })
 
         return {
             "topics" : topics
@@ -98,15 +127,30 @@
                     '<div class="dashboard-component conversion-status" style="width: 1815px; margin-right: ">' +
                         '<ul class="cluster-state-panels server-health-node-list">' +
                             '{{#topics}}'+
-                                '<li class="node-info {{healthState}}" style="width: auto">' +
-                                    '<span class="fa fa-tag"></span><div class="item-text"><h2>{{topicName}}</h2></div><br />'+  
+                                '<li class="node-info {{healthState}}" style="width: 300px; min-height: 200px !important">' +
+                                    '<span class="fa fa-tag" style="vertical-align: top;"></span>' +
+                                    '<div class="item-text" style="font-weight:bold; word-wrap: break-word; width:275px">{{topicName}}</div><br />'+  
                                     '<span class="fa fa-list-alt"></span><div class="item-text" style="font-weight:bold; margin:10px">Partitions</div>'+ 
                                     '{{#partitions}}'+
-                                        '<div class="node-item {{leaderHealthState}}"><span class="fa fa-dot-circle-o"></span><div class="item-text">ID : {{partitionId}} Leader : {{leader}}</div></div>' +
+                                        '<div class="node-item {{leaderHealthState}}">' + 
+                                            '<div style="display:inline-block;width:50px">' +
+                                            '<span class="fa fa-slack"></span><div class="item-text">{{partitionId}}</div>' + 
+                                            '</div>' + 
+                                            '{{#alert}}' +
+                                                '<div style="display:inline-block">' +
+                                                '<span class="fa fa-exclamation-triangle"></span><div class="item-text" style="font-weight:bold">{{leader}}</div>' + 
+                                                '</div>' + 
+                                            '{{/alert}}' +
+                                            '{{^alert}}' +
+                                                '<div style="display:inline-block">' +
+                                                '<span class="fa fa-smile-o"></span><div class="item-text">Leader: {{leader}}</div>' + 
+                                                '</div>' + 
+                                            '{{/alert}}' +
+                                        '</div>' +
                                     '{{/partitions}}' +
-                                    '<span class="fa fa-users"></span><div class="item-text" style="font-weight:bold; margin:10px">Consumers</div>'+
+                                    '<br /><span class="fa fa-users"></span><div class="item-text" style="font-weight:bold; margin:10px;">Consumers</div>'+
                                     '{{#consumers}}'+
-                                        '<div class="node-item info"><span class="fa fa-dot-circle-o"></span><div class="item-text">{{.}}</div></div>' +
+                                        '<div class="node-item info"><span class="fa fa-user"></span><div class="item-text">{{.}}</div></div>' +
                                     '{{/consumers}}' +
                                 '</li>' +                                
                             '{{/topics}}' +

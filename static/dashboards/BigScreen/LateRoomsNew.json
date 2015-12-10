@@ -36,9 +36,23 @@
                           }
                         },
                         {
-                            "terms": {
-                                "type": ["lr_errors", "ms_errors", "bookingweb_errors"]
+                          "terms": {
+                              "type": ["lr_errors", "ms_errors", "bookingweb_errors"]
+                          }
+                        },
+                        {
+                          "or": [
+                            {
+                              "terms": {
+                                "type": ["lr_errors", "ms_errors"]
+                              }
+                            },
+                            {
+                              "term": {
+                                "tags": "prod"
+                              }
                             }
+                          ]
                         }
                       ]
                     }

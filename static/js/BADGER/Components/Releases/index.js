@@ -171,7 +171,7 @@
                 + '<span class="release-order-selector-label-asc">Order By Oldest First</span>' 
                 + '<span class="release-order-selector-label-desc">Order By Latest First</span>' 
                 + '</div>', {
-                    directionClass: releaseState === 'completed' ? ' desc': ''
+                    directionClass: (releaseState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc': ''
                 })).on('click', function() { 
                     orderElement.toggleClass('desc'); 
                     lastData = lastData.reverse();

@@ -1,0 +1,9 @@
+{
+    "name": "Rota",
+    "components": [
+        {
+            "title": "On Call Rota",
+            "type": "OutOfHoursRota"
+        }
+    ]
+}

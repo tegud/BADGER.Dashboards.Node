@@ -1,0 +1,62 @@
+{
+    "name": "Search CI",
+    "components": [
+    {
+          "type": "SharedDataStore",
+          "title": "Search CI Data",
+          "storeId": "SearchCIData",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "index": "releases-${YYYY}.${MM}",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "group.raw" : "Product-Team-Search"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 1000
+            }
+          },
+          "mappings": []
+        },
+        {
+            "title": "In Progress",
+            "type": "InProgressReleases",
+            "span":"9",
+            "storeId": "SearchCIData",
+            "defaultSortOrder": "Descending"
+        },
+        {
+            "title": "Completed",
+            "type": "CompletedReleases",
+            "span":"3",
+            "storeId": "SearchCIData"
+        }
+    ]
+}

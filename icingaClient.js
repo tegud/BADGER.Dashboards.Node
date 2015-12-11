@@ -33,7 +33,7 @@ module.exports = function createIcingaClient() {
     return {
         checkHealth: function (req, res) {
             var options = {
-                url: 'https://pentlrgmonitor01.ad.laterooms.com:5665/v1/objects/services', //?service=' + encodeURIComponent('TELWEB001P!TELWEB001P Legacy Frontend Check'),
+                url: 'https://pentlrgmonitor01.ad.laterooms.com:5665/v1/objects/services',
                 ca: fs.readFileSync(caFile),
                 auth: config.icingaAuth,
                 body: JSON.stringify({

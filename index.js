@@ -7,7 +7,7 @@ var AppServer = require('./lib/AppServer');
 var SyncServer = require('./lib/SyncServer');
 var favicon = require('serve-favicon');
 var redis = require('redis');
-var icingaClient = require('./icingaClient')()
+var icingaClient = require('./icingaClient')();
 
 var server = function () {
     var app = express();
@@ -52,7 +52,7 @@ var server = function () {
         res.send();
     });
 
-    app.get('/icinga/health', icingaClient.checkHealth)
+    app.get('/icinga/health', icingaClient.checkHealth);
 
     app.get('/redis/hash/:key', function (req, res) {
         client.hgetall(req.params.key, function (err, obj) {

@@ -1,0 +1,274 @@
+{
+    "name": "Late Rooms (WIP)",
+    "components": [{
+        "type": "HealthCheckIcinga",
+        "alertName": "healthCheck.serviceHealth-live",
+        "groups": ["Web", "SSL", "AU"],
+        "title": "LateRooms Front End Server Status",
+        "host": "localhost",
+        "port": 1235,
+        "span": 10
+    }, {
+        "type": "LineGraphAndCounter",
+        "title": "Errors",
+        "dataSource": "elasticsearch",
+        "host": "http://badger.laterooms.com:9200",
+        "className": "tall-graph",
+        "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.errorsbytime.date_histogram.extended_bounds"
+        ],
+        "intervalProperties": [
+            "aggs.errorsbytime.date_histogram.interval"
+        ],
+        "query": {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "range": {
+                                    "@timestamp": {
+                                        "from": "now-60m"
+                                    }
+                                }
+                            }, {
+                                "terms": {
+                                    "type": ["lr_errors", "ms_errors", "bookingweb_errors"]
+                                }
+                            }, {
+                                "or": [{
+                                    "terms": {
+                                        "type": ["lr_errors", "ms_errors"]
+                                    }
+                                }, {
+                                    "term": {
+                                        "tags": "prod"
+                                    }
+                                }]
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "errorsbytime": {
+                    "date_histogram": {
+                        "min_doc_count": 0,
+                        "extended_bounds": {
+                            "min": "now-60m",
+                            "max": "now"
+                        },
+                        "field": "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "types": {
+                            "terms": {
+                                "field": "type"
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        },
+        "mappings": [{
+            "type": "extractFromDateHistogram",
+            "aggregateName": "errorsbytime",
+            "fields": {
+                "total": "doc_count",
+                "legacy": "types.buckets.:find(key=lr_errors).doc_count",
+                "moonstick": "types.buckets.:find(key=ms_errors).doc_count",
+                "bookingForm": "types.buckets.:find(key=bookingweb_errors).doc_count"
+            }
+        }],
+        "counterV2": {
+            "expandedView": true,
+            "values": [{
+                "id": "bf_errors",
+                "color": "red",
+                "value": "query.bookingForm",
+                "text": "New Bkg",
+                "thresholds": {
+                    "warning": 1,
+                    "critical": 10
+                },
+                "link": {
+                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/BookingWeb%20Errors",
+                    "newTab": true
+                }
+            }, {
+                "id": "ms_errors",
+                "color": "orange",
+                "value": "query.moonstick",
+                "text": "Moonstick",
+                "link": {
+                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/Moonstick%20Server%20Errors",
+                    "newTab": true
+                }
+            }, {
+                "id": "lr_errors",
+                "color": "#411485",
+                "value": "query.legacy",
+                "text": "Legacy",
+                "link": {
+                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/LateRooms.com%20Errors",
+                    "newTab": true
+                }
+            }]
+        },
+        "graph": {
+            "type": "bar",
+            "lines": [{
+                "id": "lr_errors",
+                "color": "#411485",
+                "value": "query.legacy"
+            }, {
+                "id": "ms_errors",
+                "color": "orange",
+                "value": "query.moonstick"
+            }, {
+                "id": "bf_errors",
+                "color": "red",
+                "value": "query.bookingForm"
+            }]
+        }
+    }, {
+        "type": "LineGraphAndCounter",
+        "title": "Commission",
+        "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
+        "dataSource": "elasticsearch",
+        "host": "http://badger.laterooms.com:9200",
+        "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
+        "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.bookingsbytime.date_histogram.extended_bounds"
+        ],
+        "intervalProperties": [
+            "aggs.bookingsbytime.date_histogram.interval"
+        ],
+        "query": {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "range": {
+                                    "@timestamp": {
+                                        "from": "now-60m"
+                                    }
+                                }
+                            }, {
+                                "term": {
+                                    "type": "domain_events"
+                                }
+                            }, {
+                                "term": {
+                                    "domainEventType.raw": "booking made"
+                                }
+                            }, {
+                                "term": {
+                                    "isTestBooking": false
+                                }
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "bookingsbytime": {
+                    "date_histogram": {
+                        "min_doc_count": 0,
+                        "extended_bounds": {
+                            "min": "now-60m",
+                            "max": "now"
+                        },
+                        "field": "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "totalCommission": {
+                            "sum": {
+                                "field": "commissionValue"
+                            }
+                        },
+                        "platform": {
+                            "filters": {
+                                "filters": {
+                                    "resApi": {
+                                        "term": {
+                                            "resAPI": true
+                                        }
+                                    },
+                                    "legacy": {
+                                        "not": {
+                                            "term": {
+                                                "resAPI": true
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "aggs": {
+                                "totalCommission": {
+                                    "sum": {
+                                        "field": "commissionValue"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        },
+        "mappings": [{
+            "type": "extractFromDateHistogram",
+            "aggregateName": "bookingsbytime",
+            "fields": {
+                "total": "totalCommission.value",
+                "res": "platform.buckets.resApi.totalCommission.value",
+                "legacy": "platform.buckets.legacy.totalCommission.value"
+            }
+        }],
+        "counterV2": {
+            "showTotal": true,
+            "prefix": "£",
+            "values": [{
+                "id": "legacy_commission",
+                "color": "orange",
+                "value": "query.legacy",
+                "text": "LG",
+                "threshold": false
+            }, {
+                "id": "bookingweb_commission",
+                "color": "green",
+                "value": "query.res",
+                "text": "Res",
+                "threshold": false
+            }, {
+                "id": "total_commission",
+                "value": "query.total",
+                "color": "#411485",
+                "text": "All"
+            }]
+        },
+        "graph": {
+            "className": "commission-graph",
+            "lines": [{
+                "color": "orange",
+                "value": "query.legacy",
+                "id": "legacy-commission"
+            }, {
+                "color": "green",
+                "value": "query.res",
+                "id": "resapi-commission"
+            }, {
+                "color": "#411485",
+                "value": "query.total",
+                "id": "total-commission"
+            }]
+        }
+    }]
+}

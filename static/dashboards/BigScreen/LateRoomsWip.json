@@ -6,7 +6,7 @@
         "groups": ["Web", "SSL", "AU"],
         "title": "LateRooms Front End Server Status",
         "host": "badger.laterooms.com",
-        "port": 1235,
+        "port": 3000,
         "span": 10
     }, {
         "type": "LineGraphAndCounter",

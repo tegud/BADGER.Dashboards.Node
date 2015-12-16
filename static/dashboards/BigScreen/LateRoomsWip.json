@@ -5,7 +5,7 @@
         "alertName": "healthCheck.serviceHealth-live",
         "groups": ["Web", "SSL", "AU"],
         "title": "LateRooms Front End Server Status",
-        "host": "localhost",
+        "host": "badger.laterooms.com",
         "port": 1235,
         "span": 10
     }, {

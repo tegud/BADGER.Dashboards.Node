@@ -54,6 +54,8 @@ var server = function () {
 
     app.get('/icinga/health', icingaClient.checkHealth);
 
+    app.get('/icinga/byFilter', icingaClient.checkFilter);
+
     app.get('/redis/hash/:key', function (req, res) {
         client.hgetall(req.params.key, function (err, obj) {
             res.send(JSON.stringify(JSON.parse(obj.teams)));

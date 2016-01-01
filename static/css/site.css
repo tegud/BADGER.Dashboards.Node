@@ -780,6 +780,7 @@ h3 {margin: 0;padding: 0 }
 
 .cluster-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 
+.cluster-status-indicator > span { font-size: 1em; }
 
 .cluster-status-indicator.unknown { color: #aaa; border-color: #aaa; }
 
@@ -1021,3 +1022,47 @@ h3 {margin: 0;padding: 0 }
 .calendar-header-days  { clear: both; }
 
 .calendar-header-day { float: left; }
+
+.connectivity-service-summary { padding: 0; list-style: none }
+
+.connectivity-service-summary > li { display: inline-block; vertical-align: middle; }
+
+.state-checks { list-style: none; margin: 0 0 0 10px; padding: 0; min-width: 100px; }
+
+.state-checks-item { font-size: 32px; }
+
+.state-checks-item.ok { color: green; }
+
+.state-checks-item.warn { color: #ffa500; }
+
+.state-checks-item.critical { color: #f00; }
+
+.state-checks-item.unknown { color: #a4f; }
+
+.state-checks-icon { width: 32px; text-align: center; display: inline-block; margin-right: 5px; }
+
+.state-checks-counter { display: inline-block; }
+
+.connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
+
+.connectivity-service-status-indicator > span { font-size: 1em; }
+
+.connectivity-service-status-indicator.pending { color: #aaa; border-color: #aaa; }
+
+.connectivity-service-status-indicator.warning { color: #ffa500; border-color: #ffa500; }
+
+.connectivity-service-status-indicator.critical { color: #f00; border-color: #f00; }
+
+.connectivity-service-status-indicator.unknown { color: #a4f; border-color: #a4f; }
+
+.connectivity-service-summary-status-indicator.ok,
+.connectivity-service-summary-status-indicator.warning,
+.connectivity-service-summary-status-indicator.unknown,
+.connectivity-service-summary-status-indicator.pending,
+.connectivity-service-summary-status-indicator.critical { display: none; }
+
+.connectivity-service-status-indicator.pending .connectivity-service-summary-status-indicator.pending  { display: block; margin-right: 2px; margin-top: 2px; }
+.connectivity-service-status-indicator.unknown .connectivity-service-summary-status-indicator.unknown  { display: block; margin-right: 2px; margin-top: 2px; }
+.connectivity-service-status-indicator.ok .connectivity-service-summary-status-indicator.ok { display: block; }
+.connectivity-service-status-indicator.warning .connectivity-service-summary-status-indicator.warning { display: block; margin-top: 4px; }
+.connectivity-service-status-indicator.critical .connectivity-service-summary-status-indicator.critical { display: block; margin-top: 6px; }

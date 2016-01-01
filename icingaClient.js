@@ -26,6 +26,8 @@ module.exports = function createIcingaClient() {
             return "warning"
         case 2:
             return "error"
+        case 3:
+            return "unknown"
         default:
             return "ok"
         }

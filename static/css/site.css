@@ -1066,3 +1066,42 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-status-indicator.ok .connectivity-service-summary-status-indicator.ok { display: block; }
 .connectivity-service-status-indicator.warning .connectivity-service-summary-status-indicator.warning { display: block; margin-top: 4px; }
 .connectivity-service-status-indicator.critical .connectivity-service-summary-status-indicator.critical { display: block; margin-top: 6px; }
+
+.connectivity-service-breakdown { margin-right: 10px; }
+
+.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; }
+
+.connectivity-service-description  h2 { margin-top: 0; }
+
+.connectivity-service-summary-tier-list { list-style: none; margin: 0; }
+
+.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 5px #000; margin-right: 10px; border-radius: 30px; position: relative }
+
+.connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; }
+
+.connectivity-service-summary-tier-emblem.platinum    { background-color: #ddd; border-color: #999;  }
+.connectivity-service-summary-tier-emblem.gold        { background-color: gold; border-color: #BFA100; }
+.connectivity-service-summary-tier-emblem.silver      { background-color: #777; border-color: #333; }
+.connectivity-service-summary-tier-emblem.bronze      { background-color: #CD7F32; border-color: #B36F2C; }
+
+.connectivity-service-status-tier-status {  }
+
+.connectivity-service-status-tier-big-ok-indicator { color: green; font-size: 5em; padding-top: 25px; width: 100%; text-align: center }
+
+.connectivity-service-status-tier-big-ok-text { color: green; font-size: 2em; text-align: center; font-weight: bold; }
+
+.connectivity-service-status-tier-big-ok-indicators { list-style: none; margin: 45px 10px 5px 10px; padding: 0; }
+
+.connectivity-service-status-tier-big-ok-indicator-item { display: inline-block }
+
+.connectivity-service-status-tier-big-ok-indicator-item.ok { color: green; }
+
+.connectivity-service-status-tier-big-ok-indicator-item.warn { color: #ffa500; }
+
+.connectivity-service-status-tier-big-ok-indicator-item.critical { color: #f00; }
+
+.connectivity-service-status-tier-big-ok-indicator-item.unknown { color: #a4f; }
+
+.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 40px; width: 40px; text-align: center; display: inline-block; }
+
+.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 40px; display: inline-block; }

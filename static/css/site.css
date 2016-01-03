@@ -1075,9 +1075,9 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-summary-tier-list { list-style: none; margin: 0; }
 
-.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 5px #000; margin-right: 10px; border-radius: 30px; position: relative }
+.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative }
 
-.connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; }
+.connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; color: #000; }
 
 .connectivity-service-summary-tier-emblem.platinum    { background-color: #ddd; border-color: #999;  }
 .connectivity-service-summary-tier-emblem.gold        { background-color: gold; border-color: #BFA100; }
@@ -1086,22 +1086,30 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-status {  }
 
-.connectivity-service-status-tier-big-ok-indicator { color: green; font-size: 5em; padding-top: 25px; width: 100%; text-align: center }
+.connectivity-service-status-tier-big-indicator { font-size: 5em; padding-top: 25px; width: 100%; text-align: center }
 
-.connectivity-service-status-tier-big-ok-text { color: green; font-size: 2em; text-align: center; font-weight: bold; }
+.connectivity-service-status-tier-big-text { font-size: 2em; text-align: center; font-weight: bold; }
 
-.connectivity-service-status-tier-big-ok-indicators { list-style: none; margin: 45px 8px 5px 8px; padding: 0; }
+.connectivity-service-status-tier-big-ok-indicators { list-style: none; margin: 50px 10px 5px 12px; padding: 0; }
 
 .connectivity-service-status-tier-big-ok-indicator-item { display: inline-block }
 
-.connectivity-service-status-tier-big-ok-indicator-item.ok { color: green; }
+.connectivity-service-status-tier-big-ok-indicator-item.ok,
+.connectivity-service-summary-tier-item.ok { color: green; }
+.connectivity-service-summary-tier-item.ok { border-color: green; }
 
-.connectivity-service-status-tier-big-ok-indicator-item.warn { color: #ffa500; }
+.connectivity-service-status-tier-big-ok-indicator-item.warn,
+.connectivity-service-summary-tier-item.warn { color: #ffa500; }
+.connectivity-service-summary-tier-item.warn { border-color: #ffa500; }
 
-.connectivity-service-status-tier-big-ok-indicator-item.critical { color: #f00; }
+.connectivity-service-status-tier-big-ok-indicator-item.critical,
+.connectivity-service-summary-tier-item.critical { color: #f00; }
+.connectivity-service-summary-tier-item.critical { border-color: #f00; }
 
-.connectivity-service-status-tier-big-ok-indicator-item.unknown { color: #a4f; }
+.connectivity-service-status-tier-big-ok-indicator-item.unknown,
+.connectivity-service-summary-tier-item.unknown { color: #a4f; }
+.connectivity-service-summary-tier-item.unknown { border-color: #a4f; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 42px; width: 42px; text-align: center; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 32px; width: 32px; text-align: center; display: inline-block; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 42px; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 32px; width: 32px; display: inline-block; }

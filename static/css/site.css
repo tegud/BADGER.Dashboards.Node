@@ -1090,7 +1090,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-big-ok-text { color: green; font-size: 2em; text-align: center; font-weight: bold; }
 
-.connectivity-service-status-tier-big-ok-indicators { list-style: none; margin: 45px 10px 5px 10px; padding: 0; }
+.connectivity-service-status-tier-big-ok-indicators { list-style: none; margin: 45px 8px 5px 8px; padding: 0; }
 
 .connectivity-service-status-tier-big-ok-indicator-item { display: inline-block }
 
@@ -1102,6 +1102,6 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-big-ok-indicator-item.unknown { color: #a4f; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 40px; width: 40px; text-align: center; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 42px; width: 42px; text-align: center; display: inline-block; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 40px; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 42px; display: inline-block; }

@@ -6,6 +6,9 @@
 	var idIncrementor = 0;
 
 	TLRGRP.BADGER.Dashboard.Components.ProviderTierSummary = function (configuration) {
+		if(!configuration.title) {
+			configuration.title = configuration.tier;
+		}
 
 		var emblemClass = configuration.tier.split(' ')[0].toLowerCase();
 		var emblemLetter = configuration.tier[0].toUpperCase();
@@ -49,7 +52,40 @@
 							+ '</div><div class="connectivity-service-tier-status-text"><div class="connectivity-service-tier-status-big-text">All Good</div><div class="connectivity-service-tier-status-detail-text">No known issues!</div></div>', {}));
 						}
 						else {
-							
+							summary.html(Mustache.render('<ul class="provider-tier-provider-list">'
+									+ '{{#providers}}'
+									+ '<li class="provider-tier-provider-list-item">'
+										+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
+										+ '<ul class="provider-tier-provider-list-item-check-list">'
+										+ '{{#services}}'
+											+ '<li class="">{{name}}</li>'
+										+ '{{/services}}'
+										+ '</ul>'
+									+ '</li>'
+									+ '{{/providers}}'
+								+ '</ul>', {
+									providers: _.chain(tierData.providers)
+										.filter(function(provider) {
+											return provider.worstCheckState != 0;
+										})
+										.map(function(provider) {
+											var titleSizeClass = '';
+
+											if(provider.displayName.length > 10 && provider.displayName.indexOf(' ') < 0) {
+												titleSizeClass = ' small-text';
+											}
+
+											return {
+												displayName: provider.displayName,
+												titleSizeClass: titleSizeClass,
+												services: _.map(provider.services, function(service) {
+													return {
+														name: service.attrs.name
+													}
+												})
+											};
+										}).value()
+								}));
 						}
 					});
             },

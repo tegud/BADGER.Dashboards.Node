@@ -1114,16 +1114,26 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 32px; width: 32px; display: inline-block; }
 
-.provider-tier-summary { position: relative; }
+.provider-tier-summary { position: relative; border-top-left-radius: 50px; }
 
 .provider-tier-summary > h3 { margin-left: 150px; margin-top: 7px }
 
 .provider-tier-summary-container { clear: both; padding-top: 25px; }
 
-.provider-tier-summary-emblem { left: 0; top: -10px; }
+.provider-tier-summary-emblem { left: 0; top: 0; }
 
 .connectivity-service-tier-status-indicator { font-size: 90px; border: solid 8px #777; border-radius: 180px; padding: 10px; width: 100px; height: 100px; text-align: center; display: inline-block; margin-right: 10px; color: green; border-color: green; }
 
 .connectivity-service-tier-status-text { display: inline-block; font-size: 1.8em; color: green; }
 
 .connectivity-service-tier-status-big-text { font-size: 1.5em; font-weight: bold; }
+
+.provider-tier-provider-list { list-style: none; padding: 0; margin: 0 }
+
+.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 200px; height: 180px; padding-top: 25px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 200px; }
+
+.provider-tier-provider-list-item-title { padding: 0 20px; font-weight: bold; }
+
+.small-text { font-size: 0.7em; padding-top: 7px; }
+
+.provider-tier-provider-list-item-check-list {  }

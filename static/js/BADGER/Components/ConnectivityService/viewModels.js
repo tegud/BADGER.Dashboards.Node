@@ -39,6 +39,7 @@
 
 						return {
 							provider: provider,
+							displayName: _.first(services).joins.host.display_name,
 							worstCheckState: _.chain(ordererdStates).map(function(check) {
 								return check.attrs.last_check_result.state;
 							}).last().value(),

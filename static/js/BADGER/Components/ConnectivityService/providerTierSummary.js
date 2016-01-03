@@ -6,25 +6,31 @@
 	var idIncrementor = 0;
 
 	TLRGRP.BADGER.Dashboard.Components.ProviderTierSummary = function (configuration) {
-		if(!configuration.title && configuration.tier) {
-			configuration.title = configuration.tier;
-		}
+
+		var emblemClass = configuration.tier.split(' ')[0].toLowerCase();
+		var emblemLetter = configuration.tier[0].toUpperCase();
 
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
-        var summary = $('<div />');
+        var summary = $('<div class="provider-tier-summary-container" />');
+        var emblem = $(Mustache.render('<div class="provider-tier-summary-emblem connectivity-service-summary-tier-emblem {{class}}">{{letter}}</div>', {
+        	class: emblemClass,
+        	letter: emblemLetter
+        }));
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
-				container.append(summary);
+				container
+					.append(emblem)
+					.append(summary);
 			}
 		}];
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
-			componentClass: 'conversion-status',
+			componentClass: 'provider-tier-summary',
 			modules: modules
 		});
 
@@ -39,9 +45,12 @@
 
 						if(tierData.worstCheckState == "0") {
 							summary.html(Mustache.render('<div class="connectivity-service-tier-status-indicator">'
-							+ '<span class="fa fa-thumbs-o-up connectivity-service-tier-status-indicator"></span>'
-						+ '</div>', {}));
-						} 
+								+ '<span class="fa fa-thumbs-o-up"></span>'
+							+ '</div><div class="connectivity-service-tier-status-text"><div class="connectivity-service-tier-status-big-text">All Good</div><div class="connectivity-service-tier-status-detail-text">No known issues!</div></div>', {}));
+						}
+						else {
+							
+						}
 					});
             },
             error: function (errorInfo) {

@@ -5,6 +5,26 @@
 
 	var idIncrementor = 0;
 
+	var checkStates = {
+		'0': { name: 'OK', iconClass: 'fa fa-check', priority: 0, summaryClass: 'ok' },
+		'1': { name: 'Warn', iconClass: 'fa fa-exclamation', priority: 1, summaryClass: 'warning' },
+		'2': { name: 'Critical', iconClass: 'mega-octicon octicon-flame', priority: 3, summaryClass: 'critical' },
+		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
+	};
+
+	function serviceAcronym(serviceName) {
+		if(serviceName.indexOf('Provider ') === 0) {
+			serviceName = serviceName.substring(8);
+		}
+
+		var splitName = serviceName.split(' ');
+		var acronym = _.map(splitName, function(nameSection) {
+			return nameSection[0];
+		}).join('');
+
+		return acronym;
+	}
+
 	TLRGRP.BADGER.Dashboard.Components.ProviderTierSummary = function (configuration) {
 		if(!configuration.title) {
 			configuration.title = configuration.tier;
@@ -49,16 +69,16 @@
 						if(tierData.worstCheckState == "0") {
 							summary.html(Mustache.render('<div class="connectivity-service-tier-status-indicator">'
 								+ '<span class="fa fa-thumbs-o-up"></span>'
-							+ '</div><div class="connectivity-service-tier-status-text"><div class="connectivity-service-tier-status-big-text">All Good</div><div class="connectivity-service-tier-status-detail-text">No known issues!</div></div>', {}));
+							+ '</div><div class="connectivity-service-tier-status-text"><div class="connectivity-service-tier-status-big-text">All Good!</div><div class="connectivity-service-tier-status-detail-text">No known issues.</div></div>', {}));
 						}
 						else {
 							summary.html(Mustache.render('<ul class="provider-tier-provider-list">'
 									+ '{{#providers}}'
-									+ '<li class="provider-tier-provider-list-item">'
+									+ '<li class="provider-tier-provider-list-item {{stateClass}}">'
 										+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
 										+ '<ul class="provider-tier-provider-list-item-check-list">'
 										+ '{{#services}}'
-											+ '<li class="">{{name}}</li>'
+											+ '<li class="provider-tier-provider-list-item-check-list-item {{stateClass}}">{{name}}</li>'
 										+ '{{/services}}'
 										+ '</ul>'
 									+ '</li>'
@@ -68,6 +88,10 @@
 										.filter(function(provider) {
 											return provider.worstCheckState != 0;
 										})
+										.sortBy(function(provider) {
+											return checkStates[provider.worstCheckState].priority;
+										})
+										.reverse()
 										.map(function(provider) {
 											var titleSizeClass = '';
 
@@ -78,9 +102,11 @@
 											return {
 												displayName: provider.displayName,
 												titleSizeClass: titleSizeClass,
+												stateClass: checkStates[provider.worstCheckState].name.toLowerCase(),
 												services: _.map(provider.services, function(service) {
 													return {
-														name: service.attrs.name
+														name: serviceAcronym(service.attrs.name),
+														stateClass: checkStates[service.attrs.last_check_result.state].name.toLowerCase()
 													}
 												})
 											};

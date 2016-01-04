@@ -1099,8 +1099,8 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-summary-tier-item.ok { border-color: green; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.warn,
-.connectivity-service-summary-tier-item.warn { color: #ffa500; }
-.connectivity-service-summary-tier-item.warn { border-color: #ffa500; }
+.connectivity-service-summary-tier-item.warning { color: #ffa500; }
+.connectivity-service-summary-tier-item.warning { border-color: #ffa500; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.critical,
 .connectivity-service-summary-tier-item.critical { color: #f00; }
@@ -1116,7 +1116,7 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-summary { position: relative; border-top-left-radius: 50px; }
 
-.provider-tier-summary > h3 { margin-left: 150px; margin-top: 7px }
+.provider-tier-summary > h3 { margin-left: 70px; margin-top: 12px }
 
 .provider-tier-summary-container { clear: both; padding-top: 25px; }
 
@@ -1130,10 +1130,21 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list { list-style: none; padding: 0; margin: 0 }
 
-.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 200px; height: 180px; padding-top: 25px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 200px; }
+.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 200px; height: 180px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; }
 
-.provider-tier-provider-list-item-title { padding: 0 20px; font-weight: bold; }
+.provider-tier-provider-list-item-title { padding: 0 5px; font-weight: bold; height: 64px; }
 
-.small-text { font-size: 0.7em; padding-top: 7px; }
+.small-text { font-size: 0.8em; }
 
-.provider-tier-provider-list-item-check-list {  }
+.provider-tier-provider-list-item-check-list { list-style: none; margin: 0; padding: 0 }
+
+.provider-tier-provider-list-item-check-list-item { font-weight: bold; width: 37px; height: 34px; padding: 7px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 8px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
+
+.provider-tier-provider-list-item-check-list-item.warn,
+.provider-tier-provider-list-item.warn { border-color: #FF8C00; background-color: #FFB862; }
+
+.provider-tier-provider-list-item-check-list-item.critical,
+.provider-tier-provider-list-item.critical { border-color: #f00; background-color: #FF8F8F; }
+
+.provider-tier-provider-list-item-check-list-item.unknown,
+.provider-tier-provider-list-item.unknown { border-color: #a4f; background-color: #D6A6FF; }

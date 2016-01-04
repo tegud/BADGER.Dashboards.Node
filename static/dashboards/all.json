@@ -59,8 +59,8 @@
             }
         }
     }, {
-        "id": "RatesAndAvailability",
-        "name": "Rates and Availability",
+        "id": "ConnectivityService",
+        "name": "Connectivity Service",
         "views": {
             "Overview": {
                 "id": "Overview",

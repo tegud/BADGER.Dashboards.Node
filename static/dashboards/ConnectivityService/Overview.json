@@ -4,7 +4,7 @@
         {
             "type": "SharedDataStore",
             "storeId": "IcingaProviderStatus",
-            "url": "http://badger.laterooms.com/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates"
+            "url": "http://localhost:1235/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name)"
         },
         {
             "type": "ProviderSummary",

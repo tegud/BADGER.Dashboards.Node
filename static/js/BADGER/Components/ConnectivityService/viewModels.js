@@ -11,10 +11,10 @@
 	};
 
 	var checkStates = {
-		'0': { name: 'OK', iconClass: 'fa fa-check', priority: 0, summaryClass: 'ok' },
-		'1': { name: 'Warn', iconClass: 'fa fa-exclamation', priority: 2, summaryClass: 'warning' },
-		'2': { name: 'Critical', iconClass: 'mega-octicon octicon-flame', priority: 3, summaryClass: 'critical' },
-		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 1, summaryClass: 'unknown' }
+		'0': { name: 'OK', iconClass: 'fa fa-check', priority: 3, summaryClass: 'ok' },
+		'1': { name: 'Warn', iconClass: 'fa fa-exclamation', priority: 1, summaryClass: 'warning' },
+		'2': { name: 'Critical', iconClass: 'mega-octicon octicon-flame', priority: 0, summaryClass: 'critical' },
+		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
 	};
 	
 	function serviceAcronym(serviceName) {
@@ -50,17 +50,24 @@
 				.map(function(services, key) {
 					var providers = _.chain(services).groupBy(function(service) {
 	        			return service.joins.host.name;
-					}).map(function(services, provider) {
+					}).map(function(services, provider, i) {
 						var ordererdStates = _.sortBy(services, function(check) {
 							return checkStates[check.attrs.last_check_result.state].priority;
 						});
 
+						var order = i;
+
+						if(_.first(services).joins.host.vars && typeof _.first(services).joins.host.vars.providerOrder !== 'undefined') {
+							order = _.first(services).joins.host.vars.providerOrder;
+						}
+
 						return {
 							provider: provider,
+							order: order,
 							displayName: _.first(services).joins.host.display_name,
 							worstCheckState: _.chain(ordererdStates).map(function(check) {
 								return check.attrs.last_check_result.state;
-							}).last().value(),
+							}).first().value(),
 							services: services
 						};
 					}).value();
@@ -73,7 +80,7 @@
 						tier: key,
 						worstCheckState: _.chain(ordererdStates).map(function(provider) {
 							return provider.worstCheckState;
-						}).last().value(),
+						}).first().value(),
 						providers: providers
 					};
 				})
@@ -123,7 +130,7 @@
 
 			var worstState = _.chain(ordererdStates).map(function(tier) {
 				return tier.worstCheckState;
-			}).last().value();
+			}).first().value();
 
 			resolve({
 				overallSummaryClass: (typeof worstState !== 'undefined' ? checkStates[worstState].summaryClass : 'unknown'),
@@ -147,7 +154,7 @@
 
 					var worstState = _.chain(ordererdStates).map(function(provider) {
 						return provider.worstCheckState;
-					}).last().value();
+					}).first().value();
 
 					if(presentChecks.length === 1) {
 						status = Mustache.render('<div class="connectivity-service-status-tier-big-indicator-holder {{itemClass}}"><div class="{{iconClass}} connectivity-service-status-tier-big-indicator"></div><div class="connectivity-service-status-tier-big-text">{{count}} {{text}}</div></div>', {
@@ -175,33 +182,58 @@
 		});
 	}
 
-	function buildTierStatusViewModel(tiers, groupedData) {
+	function buildTierStatusViewModel(configuration, groupedData) {
+		var tiers = configuration.tier;
+
 		return new Promise(function(resolve) {
-			var tierData = _.chain(groupedData).filter(function(tier) {
-				return tier.tier === tiers;
-			}).first().value();
+			var tierData = _.filter(groupedData, function(tier) {
+				if(typeof tiers === 'string') {
+					return tier.tier === tiers;
+				}
+
+				return _.contains(tiers, tier.tier);
+			});
 
 			resolve({
 				worstCheckState: tierData.worstCheckState,
-				providers: _.chain(tierData.providers)
+				providers: _.chain(tierData)
+					.reduce(function(allProviders, tier) {
+						return allProviders.concat(_.map(tier.providers, function(provider) {
+							provider.tier = tier.tier;
+
+							return provider;
+						}));
+					}, [])
 					.filter(function(provider) {
-						return provider.worstCheckState != 0;
+						return configuration.showAllStates || provider.worstCheckState != 0;
 					})
 					.sortBy(function(provider) {
-						return checkStates[provider.worstCheckState].priority;
+						if(configuration.orderBy === 'provider') {
+							console.log(provider);
+							return tierOrder[provider.tier] + ':';
+						}
+						return tierOrder[provider.tier] + ':' + checkStates[provider.worstCheckState].priority;
 					})
-					.reverse()
 					.map(function(provider) {
 						var titleSizeClass = '';
 
-						if(provider.displayName.length > 10 && provider.displayName.indexOf(' ') < 0) {
+						if((provider.displayName.length > 10 && provider.displayName.indexOf(' ') < 0) || provider.displayName.length > 17) {
 							titleSizeClass = ' small-text';
+						}
+
+						var liClass = "provider-tier-provider-list-item " + checkStates[provider.worstCheckState].name.toLowerCase();
+						var divClass = '';
+
+						if(typeof tiers !== 'string') {
+							liClass += ' with-inner ' + provider.tier.split(' ')[0].toLowerCase();
+							divClass = 'provider-tier-provider-list-inner ' + checkStates[provider.worstCheckState].name.toLowerCase();
 						}
 
 						return {
 							displayName: provider.displayName,
 							titleSizeClass: titleSizeClass,
-							stateClass: checkStates[provider.worstCheckState].name.toLowerCase(),
+							liClass: liClass,
+							innerDivClass: divClass,
 							services: _.map(provider.services, function(service) {
 								return {
 									name: serviceAcronym(service.attrs.name),

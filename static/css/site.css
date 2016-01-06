@@ -1084,6 +1084,7 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-summary-tier-emblem.silver      { background-color: #777; border-color: #333; }
 .connectivity-service-summary-tier-emblem.bronze      { background-color: #CD7F32; border-color: #B36F2C; }
 
+
 .connectivity-service-status-tier-status {  }
 
 .connectivity-service-status-tier-big-indicator { font-size: 5em; padding-top: 25px; width: 100%; text-align: center }
@@ -1132,19 +1133,32 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 160px; height: 140px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; }
 
+.provider-tier-provider-list-item.with-inner { padding-top: 0 ;height: 165px; width: 180px; border-width: 10px; border-radius: 50px; font-size: 1.6em; }
+
+.provider-tier-provider-list-inner { vertical-align: top; width: 160px; height: 140px; padding-top: 5px;background-color: #9ACD32; text-align: center; border: solid 10px green; border-radius: 40px; }
+
 .provider-tier-provider-list-item-title { padding: 0 5px; font-weight: bold; height: 64px; }
 
 .small-text { font-size: 0.7em; padding-top: 9px; height: 56px; }
 
 .provider-tier-provider-list-item-check-list { list-style: none; margin: 0; padding: 0 }
 
-.provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 27px; padding: 7px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
+.provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 29px; padding: 5px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
 
 .provider-tier-provider-list-item-check-list-item.warn,
-.provider-tier-provider-list-item.warn { border-color: #FF8C00; background-color: #FFB862; }
+.provider-tier-provider-list-item.warn,
+.provider-tier-provider-list-inner.warn { border-color: #FF8C00; background-color: #FFB862; }
 
 .provider-tier-provider-list-item-check-list-item.critical,
-.provider-tier-provider-list-item.critical { border-color: #f00; background-color: #FF8F8F; }
+.provider-tier-provider-list-item.critical,
+.provider-tier-provider-list-inner.critical { border-color: #f00; background-color: #FF8F8F; }
 
 .provider-tier-provider-list-item-check-list-item.unknown,
-.provider-tier-provider-list-item.unknown { border-color: #a4f; background-color: #D6A6FF; }
+.provider-tier-provider-list-item.unknown,
+.provider-tier-provider-list-inner.unknown { border-color: #a4f; background-color: #D6A6FF; }
+
+
+.provider-tier-provider-list-item.platinum { border-color: #999; }
+.provider-tier-provider-list-item.gold { border-color: #BFA100; }
+.provider-tier-provider-list-item.silver { border-color: #333; }
+.provider-tier-provider-list-item.bronze { border-color: #B36F2C; }

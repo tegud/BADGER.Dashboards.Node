@@ -18,40 +18,47 @@
 			configuration.title = configuration.tier;
 		}
 
-		var emblemClass = configuration.tier.split(' ')[0].toLowerCase();
-		var emblemLetter = configuration.tier[0].toUpperCase();
+		var emblem;
+		if(typeof configuration.tier === 'string') {
+			var emblemClass = configuration.tier.split(' ')[0].toLowerCase();
+			var emblemLetter = configuration.tier[0].toUpperCase();
+
+	        emblem = $(Mustache.render('<div class="provider-tier-summary-emblem connectivity-service-summary-tier-emblem {{class}}">{{letter}}</div>', {
+	        	class: emblemClass,
+	        	letter: emblemLetter
+	        }));
+		}
 
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
         var summary = $('<div class="provider-tier-summary-container" />');
-        var emblem = $(Mustache.render('<div class="provider-tier-summary-emblem connectivity-service-summary-tier-emblem {{class}}">{{letter}}</div>', {
-        	class: emblemClass,
-        	letter: emblemLetter
-        }));
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
-				container
-					.append(emblem)
-					.append(summary);
+				container.append(summary);
+
+				if(emblem) {
+					container.append(emblem);
+				}
 			}
 		}];
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
-			componentClass: 'provider-tier-summary',
+			componentClass: emblem ? 'provider-tier-summary' : '',
 			modules: modules
 		});
+
 
 		var callbacks = {
 			success: function (data) {
 				var viewModels = TLRGRP.BADGER.Dashboard.Components.ProviderSummaryViewModels;
 				viewModels.groupData(data)
-					.then(viewModels.buildTierStatusViewModel.bind(undefined, configuration.tier))
+					.then(viewModels.buildTierStatusViewModel.bind(undefined, configuration))
 					.then(function(tierData) {
-						if(tierData.worstCheckState == "0") {
+						if(!configuration.showAllStates && tierData.worstCheckState == "0") {
 							summary.html(Mustache.render('<div class="connectivity-service-tier-status-indicator">'
 								+ '<span class="fa fa-thumbs-o-up"></span>'
 							+ '</div><div class="connectivity-service-tier-status-text"><div class="connectivity-service-tier-status-big-text">All Good!</div><div class="connectivity-service-tier-status-detail-text">No known issues.</div></div>', {}));
@@ -59,13 +66,15 @@
 						else {
 							summary.html(Mustache.render('<ul class="provider-tier-provider-list">'
 									+ '{{#providers}}'
-									+ '<li class="provider-tier-provider-list-item {{stateClass}}">'
-										+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
-										+ '<ul class="provider-tier-provider-list-item-check-list">'
-										+ '{{#services}}'
-											+ '<li class="provider-tier-provider-list-item-check-list-item {{stateClass}}">{{name}}</li>'
-										+ '{{/services}}'
-										+ '</ul>'
+									+ '<li class="{{liClass}}">'
+										+ '<div class="{{innerDivClass}}">'
+											+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
+											+ '<ul class="provider-tier-provider-list-item-check-list">'
+											+ '{{#services}}'
+												+ '<li class="provider-tier-provider-list-item-check-list-item {{stateClass}}">{{name}}</li>'
+											+ '{{/services}}'
+											+ '</ul>'
+										+ '</div>'
 									+ '</li>'
 									+ '{{/providers}}'
 								+ '</ul>', tierData));

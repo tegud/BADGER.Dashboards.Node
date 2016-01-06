@@ -66,6 +66,10 @@
                 "id": "Overview",
                 "name": "Overview"
             },
+            "AllProviders": {
+                "id": "AllProviders",
+                "name": "All Providers"
+            },
             "OverviewElasticsearch": {
                 "id": "OverviewElasticsearch",
                 "name": "Overview (Elasticsearch)"

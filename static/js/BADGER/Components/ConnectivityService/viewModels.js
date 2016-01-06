@@ -215,8 +215,7 @@
 					})
 					.sortBy(function(provider) {
 						if(configuration.orderBy === 'provider') {
-							console.log(provider);
-							return tierOrder[provider.tier] + ':';
+							return tierOrder[provider.tier] + ':' + provider.order;
 						}
 						return tierOrder[provider.tier] + ':' + checkStates[provider.worstCheckState].priority;
 					})

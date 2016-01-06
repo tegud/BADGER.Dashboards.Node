@@ -1145,6 +1145,9 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 29px; padding: 5px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
 
+
+.with-inner .provider-tier-provider-list-item-check-list-item { padding-top: 6px; height: 28px; }
+
 .provider-tier-provider-list-item-check-list-item.warn,
 .provider-tier-provider-list-item.warn,
 .provider-tier-provider-list-inner.warn { border-color: #FF8C00; background-color: #FFB862; }

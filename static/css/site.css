@@ -1069,7 +1069,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-breakdown { margin-right: 10px; }
 
-.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; }
+.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
 
 .connectivity-service-description  h2 { margin-top: 0; }
 

@@ -93,7 +93,35 @@
 		});
 	}
 
-	function buildSummaryViewModel(groupedData) {
+	function summaryDescription(configuration, viewModel) {
+		if(viewModel.worstCheckState == 0) {
+			return {
+				title: 'Everything ok',
+				text: 'No known issues with any provider.'
+			};
+		}
+
+		if(viewModel.worstCheckState == 1) {
+			return {
+				title: 'Warning',
+				text: 'Some providers are warning that they have an issue, but is not critical, suggest these providers are monitored'
+			};
+		}
+
+		if(viewModel.worstCheckState == 1) {
+			return {
+				title: 'Critical',
+				text: 'Some providers are in a critical state.'
+			};
+		}
+
+		return {
+			title: 'Providers',
+			text: '<b>Hello</b>'
+		};
+	}
+
+	function buildSummaryViewModel(configuration, groupedData) {
 		return new Promise(function(resolve) {
 			var providerCheckCounts = _.reduce(groupedData, function(allCheckCounts, tier) {
 				var tierCounts = _.reduce(tier.providers, function(allCounts, provider) {
@@ -132,7 +160,7 @@
 				return tier.worstCheckState;
 			}).first().value();
 
-			resolve({
+			var viewModel = {
 				overallSummaryClass: (typeof worstState !== 'undefined' ? checkStates[worstState].summaryClass : 'unknown'),
 				checkSummaries: checkSummaries,
 				tiers: _.map(groupedData, function(tier) {
@@ -178,7 +206,14 @@
 						status: status
 					};
 				})
+			};
+
+			viewModel.description = summaryDescription(configuration, {
+				tiers: groupedData,
+				worstCheckState: worstState
 			});
+
+			resolve(viewModel);
 		});
 	}
 

@@ -38,23 +38,26 @@
 		var callbacks = {
 			success: function (data) {
 				var viewModels = TLRGRP.BADGER.Dashboard.Components.ProviderSummaryViewModels;
+
 				viewModels.groupData(data)
-					.then(viewModels.buildSummaryViewModel)
+					.then(viewModels.buildSummaryViewModel.bind(undefined, configuration))
 					.then(function(summaryViewModel) {
-					overallSummary[0].className = 'connectivity-service-status-indicator ' + summaryViewModel.overallSummaryClass;
+						overallSummary[0].className = 'connectivity-service-status-indicator ' + summaryViewModel.overallSummaryClass;
 
-					overallBreakdown.html(Mustache.render('<ul class="state-checks">' 
-						+ '{{#checkSummaries}}<li class="state-checks-item {{itemClass}}"><div class="state-checks-icon {{iconClass}}"></div><div class="state-checks-counter">{{count}} {{name}}</div></li>{{/checkSummaries}}'
-					+ '</ul>', summaryViewModel));
+						overallBreakdown.html(Mustache.render('<ul class="state-checks">' 
+							+ '{{#checkSummaries}}<li class="state-checks-item {{itemClass}}"><div class="state-checks-icon {{iconClass}}"></div><div class="state-checks-counter">{{count}} {{name}}</div></li>{{/checkSummaries}}'
+						+ '</ul>', summaryViewModel));
 
-					overallDescription.html(Mustache.render('<h2>Providers</h2>Description of status goes here.', summaryViewModel));
+						overallDescription.html(Mustache.render('<h2>{{title}}</h2>{{{text}}}', summaryViewModel.description));
 
-					providerSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
-						+ '{{#tiers}}'
-							+ '<li class="connectivity-service-summary-tier-item {{itemClass}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{emblemTitle}}</div>{{{status}}}</li>'
-						+ '{{/tiers}}'
-					+ '</ul>', summaryViewModel));
-				});
+						providerSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
+							+ '{{#tiers}}'
+								+ '<li class="connectivity-service-summary-tier-item {{itemClass}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{emblemTitle}}</div>{{{status}}}</li>'
+							+ '{{/tiers}}'
+						+ '</ul>', summaryViewModel));
+
+						overallDescription.width(summary.innerWidth() - (13 + overallSummary.outerWidth() + overallBreakdown.outerWidth() + providerSummary.outerWidth()));
+					});
             },
             error: function (errorInfo) {
             }

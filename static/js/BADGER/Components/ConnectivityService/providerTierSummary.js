@@ -12,18 +12,6 @@
 		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
 	};
 
-	function serviceAcronym(serviceName) {
-		if(serviceName.indexOf('Provider ') === 0) {
-			serviceName = serviceName.substring(8);
-		}
-
-		var splitName = serviceName.split(' ');
-		var acronym = _.map(splitName, function(nameSection) {
-			return nameSection[0];
-		}).join('');
-
-		return acronym;
-	}
 
 	TLRGRP.BADGER.Dashboard.Components.ProviderTierSummary = function (configuration) {
 		if(!configuration.title) {
@@ -61,11 +49,8 @@
 			success: function (data) {
 				var viewModels = TLRGRP.BADGER.Dashboard.Components.ProviderSummaryViewModels;
 				viewModels.groupData(data)
-					.then(function(groupedData) {
-						var tierData = _.chain(groupedData).filter(function(tier) {
-							return tier.tier === configuration.tier;
-						}).first().value();
-
+					.then(viewModels.buildTierStatusViewModel.bind(undefined, configuration.tier))
+					.then(function(tierData) {
 						if(tierData.worstCheckState == "0") {
 							summary.html(Mustache.render('<div class="connectivity-service-tier-status-indicator">'
 								+ '<span class="fa fa-thumbs-o-up"></span>'
@@ -83,35 +68,7 @@
 										+ '</ul>'
 									+ '</li>'
 									+ '{{/providers}}'
-								+ '</ul>', {
-									providers: _.chain(tierData.providers)
-										.filter(function(provider) {
-											return provider.worstCheckState != 0;
-										})
-										.sortBy(function(provider) {
-											return checkStates[provider.worstCheckState].priority;
-										})
-										.reverse()
-										.map(function(provider) {
-											var titleSizeClass = '';
-
-											if(provider.displayName.length > 10 && provider.displayName.indexOf(' ') < 0) {
-												titleSizeClass = ' small-text';
-											}
-
-											return {
-												displayName: provider.displayName,
-												titleSizeClass: titleSizeClass,
-												stateClass: checkStates[provider.worstCheckState].name.toLowerCase(),
-												services: _.map(provider.services, function(service) {
-													return {
-														name: serviceAcronym(service.attrs.name),
-														stateClass: checkStates[service.attrs.last_check_result.state].name.toLowerCase()
-													}
-												})
-											};
-										}).value()
-								}));
+								+ '</ul>', tierData));
 						}
 					});
             },

@@ -65,6 +65,10 @@
             "Overview": {
                 "id": "Overview",
                 "name": "Overview"
+            },
+            "OverviewElasticsearch": {
+                "id": "OverviewElasticsearch",
+                "name": "Overview (Elasticsearch)"
             }
         }
     }, {

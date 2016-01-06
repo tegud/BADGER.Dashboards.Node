@@ -12,10 +12,28 @@
 
 	var checkStates = {
 		'0': { name: 'OK', iconClass: 'fa fa-check', priority: 0, summaryClass: 'ok' },
-		'1': { name: 'Warn', iconClass: 'fa fa-exclamation', priority: 1, summaryClass: 'warning' },
+		'1': { name: 'Warn', iconClass: 'fa fa-exclamation', priority: 2, summaryClass: 'warning' },
 		'2': { name: 'Critical', iconClass: 'mega-octicon octicon-flame', priority: 3, summaryClass: 'critical' },
-		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
+		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 1, summaryClass: 'unknown' }
 	};
+	
+	function serviceAcronym(serviceName) {
+		if(serviceName.indexOf('Provider ') === 0) {
+			serviceName = serviceName.substring(8);
+		}
+
+		var splitName = serviceName.split(' ');
+		var acronym = _.map(splitName, function(nameSection) {
+			var lowerCasedName = nameSection.toLowerCase();
+			if(lowerCasedName === 'elasticsearch' || lowerCasedName === 'es') {
+				return;
+			}
+
+			return nameSection[0];
+		}).join('');
+
+		return acronym;
+	}
 
 	function groupData(data) {
 		return new Promise(function(resolve) {
@@ -157,8 +175,49 @@
 		});
 	}
 
+	function buildTierStatusViewModel(tiers, groupedData) {
+		return new Promise(function(resolve) {
+			var tierData = _.chain(groupedData).filter(function(tier) {
+				return tier.tier === tiers;
+			}).first().value();
+
+			resolve({
+				worstCheckState: tierData.worstCheckState,
+				providers: _.chain(tierData.providers)
+					.filter(function(provider) {
+						return provider.worstCheckState != 0;
+					})
+					.sortBy(function(provider) {
+						return checkStates[provider.worstCheckState].priority;
+					})
+					.reverse()
+					.map(function(provider) {
+						var titleSizeClass = '';
+
+						if(provider.displayName.length > 10 && provider.displayName.indexOf(' ') < 0) {
+							titleSizeClass = ' small-text';
+						}
+
+						return {
+							displayName: provider.displayName,
+							titleSizeClass: titleSizeClass,
+							stateClass: checkStates[provider.worstCheckState].name.toLowerCase(),
+							services: _.map(provider.services, function(service) {
+								return {
+									name: serviceAcronym(service.attrs.name),
+									stateClass: checkStates[service.attrs.last_check_result.state].name.toLowerCase()
+								}
+							})
+						};
+					}).value()
+			});
+		});
+	}
+
+
 	TLRGRP.BADGER.Dashboard.Components.ProviderSummaryViewModels = {
 		groupData: groupData,
-		buildSummaryViewModel: buildSummaryViewModel
+		buildSummaryViewModel: buildSummaryViewModel,
+		buildTierStatusViewModel: buildTierStatusViewModel
 	};
 })();

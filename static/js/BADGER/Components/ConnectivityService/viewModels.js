@@ -194,8 +194,14 @@
 				return _.contains(tiers, tier.tier);
 			});
 
+			var worstCheckState;
+
+			if(tierData.length === 1) {
+				worstCheckState = _.first(tierData).worstCheckState;
+			}
+
 			resolve({
-				worstCheckState: tierData.worstCheckState,
+				worstCheckState: worstCheckState,
 				providers: _.chain(tierData)
 					.reduce(function(allProviders, tier) {
 						return allProviders.concat(_.map(tier.providers, function(provider) {

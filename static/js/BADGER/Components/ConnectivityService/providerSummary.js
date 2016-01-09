@@ -31,7 +31,7 @@
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
-			componentClass: 'conversion-status',
+			componentClass: 'provider-summary',
 			modules: modules
 		});
 

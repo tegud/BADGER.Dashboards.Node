@@ -100,24 +100,58 @@
 				text: 'No known issues with any provider.'
 			};
 		}
+		var affectedTiers = _.filter(viewModel.tiers, function(tier) {
+			return tier.worstCheckState == viewModel.worstCheckState;
+		});
+
+		var totalProviderCount = 0;
+		var affectedProvidersText = _.map(affectedTiers, function(tier, x) {
+				var providers = _.filter(tier.providers, function(provider) {
+					return viewModel.worstCheckState == provider.worstCheckState;
+				});
+
+				totalProviderCount += providers.length;
+
+				var suffix = ',';
+
+				if(x === (affectedTiers.length - 2)) {
+					suffix = ' and';
+				}
+				else if (x === (affectedTiers.length - 1)) {
+					suffix = ''
+				} 
+
+				return Mustache.render('{{providers}} {{tier}}{{suffix}} ', {
+					tier: tier.tier.split(' ')[0],
+					providers: providers.length,
+					suffix: suffix
+				});
+			})
+			.join('');
 
 		if(viewModel.worstCheckState == 1) {
 			return {
 				title: 'Warning',
-				text: 'Some providers are warning that they have an issue, but is not critical, suggest these providers are monitored'
+				text: Mustache.render('{{affectedProvidersText}} {{providerText}} are warning that they have an issue, but not critical, suggest these providers are monitored', {
+					affectedProvidersText: affectedProvidersText,
+					providerText: totalProviderCount === 1 ? 'provider' : 'providers'
+				})
 			};
 		}
 
-		if(viewModel.worstCheckState == 1) {
+		if(viewModel.worstCheckState == 2) {
 			return {
 				title: 'Critical',
-				text: 'Some providers are in a critical state.'
+				text: Mustache.render('{{affectedProvidersText}} {{providerText}} are indicating that they are <b>critical</b>', {
+					affectedProvidersText: affectedProvidersText,
+					providerText: totalProviderCount === 1 ? 'provider' : 'providers'
+				})
 			};
 		}
 
 		return {
-			title: 'Providers',
-			text: '<b>Hello</b>'
+			title: 'Issue in monitoring, or misconfiguration',
+			text: 'Some checks are in an unknown state, generally this indicates an issue with Icinga 2, <a href="http://badger.laterooms.com/Status/ELK">Elasticsearch</a> or the check configuration, suggest contacting IO or OOH team.'
 		};
 	}
 

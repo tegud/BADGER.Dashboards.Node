@@ -1043,6 +1043,8 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
+.provider-summary { min-height: 232px; }
+
 .connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 
 .connectivity-service-status-indicator > span { font-size: 1em; }
@@ -1115,7 +1117,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 32px; width: 32px; display: inline-block; }
 
-.provider-tier-summary { position: relative; border-top-left-radius: 50px; }
+.provider-tier-summary { position: relative; border-top-left-radius: 50px; min-height: 237px }
 
 .provider-tier-summary > h3 { margin-left: 70px; margin-top: 12px }
 

@@ -93,13 +93,9 @@
 		});
 	}
 
-	function summaryDescription(configuration, viewModel) {
-		if(viewModel.worstCheckState == 0) {
-			return {
-				title: 'Everything ok',
-				text: 'No known issues with any provider.'
-			};
-		}
+	function problemText(viewModel) {
+		var template = '{{affectedProvidersText}} {{providerText}} warning that they have an issue, but not critical, suggest these providers are monitored';
+
 		var affectedTiers = _.filter(viewModel.tiers, function(tier) {
 			return tier.worstCheckState == viewModel.worstCheckState;
 		});
@@ -129,23 +125,37 @@
 			})
 			.join('');
 
+		if(viewModel.worstCheckState == 2) {
+			template = '{{affectedProvidersText}} {{providerText}} indicating that they are <b>critical</b>';
+		}
+
+		var text = Mustache.render(template, {
+			affectedProvidersText: affectedProvidersText,
+			providerText: totalProviderCount === 1 ? 'provider is' : 'providers are'
+		});
+
+		return text;
+	}
+
+	function summaryDescription(configuration, viewModel) {
+		if(viewModel.worstCheckState == 0) {
+			return {
+				title: 'Everything ok',
+				text: 'No known issues with any provider.'
+			};
+		}
+
 		if(viewModel.worstCheckState == 1) {
 			return {
 				title: 'Warning',
-				text: Mustache.render('{{affectedProvidersText}} {{providerText}} are warning that they have an issue, but not critical, suggest these providers are monitored', {
-					affectedProvidersText: affectedProvidersText,
-					providerText: totalProviderCount === 1 ? 'provider' : 'providers'
-				})
+				text: problemText(viewModel)
 			};
 		}
 
 		if(viewModel.worstCheckState == 2) {
 			return {
 				title: 'Critical',
-				text: Mustache.render('{{affectedProvidersText}} {{providerText}} are indicating that they are <b>critical</b>', {
-					affectedProvidersText: affectedProvidersText,
-					providerText: totalProviderCount === 1 ? 'provider' : 'providers'
-				})
+				text: problemText(viewModel)
 			};
 		}
 

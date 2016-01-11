@@ -1077,7 +1077,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-summary-tier-list { list-style: none; margin: 0; }
 
-.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative }
+.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative; }
 
 .connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; color: #000; }
 
@@ -1133,7 +1133,7 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list { list-style: none; padding: 0; margin: 0 }
 
-.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 160px; height: 140px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; }
+.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 160px; height: 140px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; cursor: pointer; }
 
 .provider-tier-provider-list-item.with-inner { padding-top: 0 ;height: 165px; width: 180px; border-width: 10px; border-radius: 50px; font-size: 1.6em; }
 

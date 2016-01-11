@@ -32,7 +32,9 @@
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
-        var summary = $('<div class="provider-tier-summary-container" />');
+        var summary = $('<div class="provider-tier-summary-container" />')
+        	.on('click', '.provider-tier-provider-list-item', function(ele) {
+        	});
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
@@ -66,7 +68,7 @@
 						else {
 							summary.html(Mustache.render('<ul class="provider-tier-provider-list">'
 									+ '{{#providers}}'
-									+ '<li class="{{liClass}}">'
+									+ '<li class="{{liClass}}" data-provider-name="{{name}}">'
 										+ '<div class="{{innerDivClass}}">'
 											+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
 											+ '<ul class="provider-tier-provider-list-item-check-list">'

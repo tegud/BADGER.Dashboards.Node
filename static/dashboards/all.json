@@ -59,12 +59,20 @@
             }
         }
     }, {
-        "id": "RatesAndAvailability",
-        "name": "Rates and Availability",
+        "id": "ConnectivityService",
+        "name": "Connectivity Service",
         "views": {
             "Overview": {
                 "id": "Overview",
                 "name": "Overview"
+            },
+            "AllProviders": {
+                "id": "AllProviders",
+                "name": "All Providers"
+            },
+            "OverviewElasticsearch": {
+                "id": "OverviewElasticsearch",
+                "name": "Overview (Elasticsearch)"
             }
         }
     }, {

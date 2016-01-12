@@ -315,6 +315,7 @@
 
 						return {
 							displayName: provider.displayName,
+							name: provider.provider,
 							titleSizeClass: titleSizeClass,
 							liClass: liClass,
 							innerDivClass: divClass,

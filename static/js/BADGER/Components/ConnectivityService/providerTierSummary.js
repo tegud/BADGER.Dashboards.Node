@@ -33,7 +33,7 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
         var summary = $('<div class="provider-tier-summary-container" />')
-        	.on('click', '.provider-tier-provider-list-item', function(ele) {
+        	.on('click', '.provider-tier-provider-list-item', function(element) {
         	});
 
 		var modules = [lastUpdated, inlineLoading, {

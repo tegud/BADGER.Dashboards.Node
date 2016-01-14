@@ -1071,13 +1071,18 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-breakdown { margin-right: 10px; }
 
-.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
+.connectivity-service-summary > .connectivity-service-description,
+.connectivity-service-summary > .connectivity-provider-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
 
-.connectivity-service-description  h2 { margin-top: 0; }
+.connectivity-provider-description { padding-left: 10px; }
+
+.connectivity-service-description h2 { margin-top: 0; }
 
 .connectivity-service-summary-tier-list { list-style: none; margin: 0; }
 
 .connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative; }
+
+.provider-summary-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative;background-color: #9ACD32; cursor: pointer; }
 
 .connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; color: #000; }
 
@@ -1098,20 +1103,28 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-status-tier-big-ok-indicator-item { display: inline-block }
 
 .connectivity-service-status-tier-big-ok-indicator-item.ok,
-.connectivity-service-summary-tier-item.ok { color: green; }
-.connectivity-service-summary-tier-item.ok { border-color: green; }
+.connectivity-service-summary-tier-item.ok,
+.provider-summary-item.ok { color: green; }
+.connectivity-service-summary-tier-item.ok,
+.provider-summary-item.ok { border-color: green; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.warn,
-.connectivity-service-summary-tier-item.warning { color: #ffa500; }
-.connectivity-service-summary-tier-item.warning { border-color: #ffa500; }
+.connectivity-service-summary-tier-item.warning,
+.provider-summary-item.warning { color: #ffa500; }
+.connectivity-service-summary-tier-item.warning,
+.provider-summary-item.warning { border-color: #ffa500; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.critical,
-.connectivity-service-summary-tier-item.critical { color: #f00; }
-.connectivity-service-summary-tier-item.critical { border-color: #f00; }
+.connectivity-service-summary-tier-item.critical,
+.provider-summary-item.critical { color: #f00; }
+.connectivity-service-summary-tier-item.critical,
+.provider-summary-item.critical { border-color: #f00; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.unknown,
-.connectivity-service-summary-tier-item.unknown { color: #a4f; }
-.connectivity-service-summary-tier-item.unknown { border-color: #a4f; }
+.connectivity-service-summary-tier-item.unknown,
+.provider-summary-item.unknown { color: #a4f; }
+.connectivity-service-summary-tier-item.unknown,
+.provider-summary-item.unknown { border-color: #a4f; }
 
 .connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 32px; width: 32px; text-align: center; display: inline-block; }
 
@@ -1147,23 +1160,28 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 29px; padding: 5px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
 
-
 .with-inner .provider-tier-provider-list-item-check-list-item { padding-top: 6px; height: 28px; }
 
 .provider-tier-provider-list-item-check-list-item.warn,
 .provider-tier-provider-list-item.warn,
-.provider-tier-provider-list-inner.warn { border-color: #FF8C00; background-color: #FFB862; }
+.provider-tier-provider-list-inner.warn,
+.provider-summary-item.warning { border-color: #FF8C00; background-color: #FFB862; }
 
 .provider-tier-provider-list-item-check-list-item.critical,
 .provider-tier-provider-list-item.critical,
-.provider-tier-provider-list-inner.critical { border-color: #f00; background-color: #FF8F8F; }
+.provider-tier-provider-list-inner.critical,
+.provider-summary-item.critical { border-color: #f00; background-color: #FF8F8F; }
 
 .provider-tier-provider-list-item-check-list-item.unknown,
 .provider-tier-provider-list-item.unknown,
-.provider-tier-provider-list-inner.unknown { border-color: #a4f; background-color: #D6A6FF; }
-
+.provider-tier-provider-list-inner.unknown,
+.provider-summary-item.unknown { border-color: #a4f; background-color: #D6A6FF; }
 
 .provider-tier-provider-list-item.platinum { border-color: #999; }
 .provider-tier-provider-list-item.gold { border-color: #BFA100; }
 .provider-tier-provider-list-item.silver { border-color: #333; }
 .provider-tier-provider-list-item.bronze { border-color: #B36F2C; }
+
+.provider-summary-check-item-title { padding-top: 40px; color: #000; text-align: center; font-weight: bold; font-size: 1.2em }
+
+.provider-summary-item .connectivity-service-summary-tier-emblem .mega-octicon { font-size: 50px; }

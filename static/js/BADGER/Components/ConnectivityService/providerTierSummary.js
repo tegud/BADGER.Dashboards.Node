@@ -34,6 +34,22 @@
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
         var summary = $('<div class="provider-tier-summary-container" />')
         	.on('click', '.provider-tier-provider-list-item', function(element) {
+        		var clickedElement = $(element.target);
+        		var provider = clickedElement.closest('.provider-tier-provider-list-item').data('providerName');
+        		var isCheck = clickedElement.hasClass('provider-tier-provider-list-item-check-list-item');
+        		var params = {
+					provider: provider
+				};
+
+				if(isCheck) {
+					params.showCheck = clickedElement.data('checkName')
+				}
+
+				TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+					dashboard: 'ConnectivityService',
+					view: 'ProviderDetail',
+					queryParameters: params
+				});
         	});
 
 		var modules = [lastUpdated, inlineLoading, {
@@ -73,7 +89,7 @@
 											+ '<div class="provider-tier-provider-list-item-title{{titleSizeClass}}">{{displayName}}</div>'
 											+ '<ul class="provider-tier-provider-list-item-check-list">'
 											+ '{{#services}}'
-												+ '<li class="provider-tier-provider-list-item-check-list-item {{stateClass}}">{{name}}</li>'
+												+ '<li class="provider-tier-provider-list-item-check-list-item {{stateClass}}" data-check-name="{{fullName}}">{{name}}</li>'
 											+ '{{/services}}'
 											+ '</ul>'
 										+ '</div>'

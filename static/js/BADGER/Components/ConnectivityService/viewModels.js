@@ -322,6 +322,7 @@
 							services: _.map(provider.services, function(service) {
 								return {
 									name: serviceAcronym(service.attrs.name),
+									fullName: service.attrs.name,
 									stateClass: checkStates[service.attrs.last_check_result.state].name.toLowerCase()
 								}
 							})

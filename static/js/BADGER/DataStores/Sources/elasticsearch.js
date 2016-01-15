@@ -226,6 +226,7 @@
 			 		queries = expandedQueries;
 			 	}
 
+
 			 	applyFilters(queries, filters);
 
 			 	if(!timeFrame.userSet && configuration.defaultTimeFrame) {

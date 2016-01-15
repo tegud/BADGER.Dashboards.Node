@@ -60,13 +60,15 @@
 					.then(function(groupedChecks) {
 						var provider = groupedChecks[0].providers[0];
 
-						// overallSummary[0].className = 'connectivity-service-status-indicator ' + summaryViewModel.overallSummaryClass;
+						overallSummary[0].className = 'connectivity-service-status-indicator ' + checkStates[provider.worstCheckState].summaryClass;
 
-						// overallDescription.html(Mustache.render('<h2>{{title}}</h2>{{{text}}}', summaryViewModel.description));
+						overallDescription.html(Mustache.render('<h2>{{title}}</h2>{{{text}}}', {
+							title: provider.displayName
+						}));
 
 						checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
 							+ '{{#services}}'
-								+ '<li class="provider-summary-item {{itemClass}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-title">{{displayName}}</div></li>'
+								+ '<li class="provider-summary-item {{itemClass}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value"></div><div class="provider-summary-check-item-title">{{displayName}}</div></li>'
 							+ '{{/services}}'
 						+ '</ul>', {
 							services: _.map(provider.services, function(service) {
@@ -96,6 +98,24 @@
             }
         };
 
+        configuration.query = {
+        	
+        };
+
+        var metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            request:  new TLRGRP.BADGER.Dashboard.DataSource['elasticsearch'](configuration),
+            refresh: 5000,
+            mappings: configuration.mappings,
+            callbacks: {
+                success: function(data) {
+                	console.log(data);
+                }
+            },
+            components: {
+                loading: inlineLoading
+            }
+        });
+
         var dataStore = {
             start: function () {
                 TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
@@ -122,6 +142,7 @@
                 initialising: {
                     _onEnter: function () {
                         dataStore.start(true);
+                        metricDataStore.start(true);
                     }
                 }
             },

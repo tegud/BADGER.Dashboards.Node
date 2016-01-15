@@ -108,7 +108,7 @@
 
                             return true;
                         }).map(function(queryOptions) {
-                            var url = currentOptions.url;
+                            var url = queryOptions && queryOptions.url ? queryOptions.url : currentOptions.url;
                             var fillpoints = url.match(fillpointRegex);
 
                             if(fillpoints) {

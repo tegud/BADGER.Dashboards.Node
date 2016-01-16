@@ -5,6 +5,86 @@
 
 	var idIncrementor = 0;
 
+	function buildQuery(providerName) {
+		return {
+		   "query":{
+		      "filtered":{
+		         "filter":{
+		            "bool":{
+		               "must":[
+		                  {
+		                     "range":{
+		                        "@timestamp":{
+		                           "from":"now-1h"
+		                        }
+		                     }
+		                  },
+		                  {
+		                     "terms":{
+		                        "service":[
+		                           "bookingsByProvider",
+		                           "connectivity"
+		                        ]
+		                     }
+		                  },
+		                  {
+		                     "term":{
+		                        "provider": providerName
+		                     }
+		                  },
+		                  {
+		                     "or":[
+		                        {
+		                           "terms":{
+		                              "metric":[
+		                                 "providerErrors",
+		                                 "providerBookingErrors"
+		                              ]
+		                           }
+		                        },
+		                        {
+		                           "term":{
+		                              "service":"bookingsByProvider"
+		                           }
+		                        }
+		                     ]
+		                  }
+		               ]
+		            }
+		         }
+		      }
+		   },
+		   "aggs":{
+		      "bytime":{
+		         "date_histogram":{
+		            "min_doc_count":0,
+		            "extended_bounds":{
+		               "min":"now-1h",
+		               "max":"now"
+		            },
+		            "field":"@timestamp",
+		            "interval":"1m"
+		         },
+		         "aggs":{
+		            "types":{
+		               "terms":{
+		                  "field":"metric"
+		               },
+		                "aggs": {
+		                    "total": {
+		                        "sum": {
+		                            "field": "value"
+		                        }
+		                    }
+		                }
+		            }
+		         }
+		      }
+		   },
+		   "size":0
+		};
+	}
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -19,9 +99,33 @@
 		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
 	};
 
+	var checks = {
+		'Provider Errors': { order: 1 },
+		'Provider Bookings': { order: 0 },
+		'Provider Booking Errors': { order: 2 }
+	};
+
+	function parseOutput(output) {
+		if(!/Current value: (-?[0-9]+(\.[0-9]+)?), warn threshold: (-?[0-9]+(\.[0-9]+)?), crit threshold: (-?[0-9]+(\.[0-9]+)?)/.exec(output)) {
+			return;
+		}
+
+		var value = /Current value: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+		var warn = /warn threshold: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+		var crit = /crit threshold: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+
+		return {
+			value: value,
+			warn: warn,
+			crit: crit
+		};
+	}
+
 	TLRGRP.BADGER.Dashboard.Components.ProviderDetailSummary = function (configuration) {
+		var providerName = getParameterByName('provider');
+
 		if(!configuration.title) {
-			configuration.title = getParameterByName('provider') + ' Summary';
+			configuration.title = providerName + ' Summary';
 		}
 
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
@@ -38,6 +142,25 @@
 		+ '</div>').appendTo($('<li />').appendTo(summary));
     	var overallDescription = $('<li class="connectivity-provider-description"><h2>Connecting...</h2>Contacting Icinga2...</li>').appendTo(summary);
     	var checkSummary = $('<li />').appendTo(summary);
+    	var selectedCheck = getParameterByName('showCheck');
+
+    	checkSummary.on('click', '.provider-summary-item', function(e) {
+    		var clickedCheck = $(e.target).closest('.provider-summary-item');
+    		var selectedCheck = clickedCheck.data('checkName');
+
+            TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderSummary.CheckSelected', {
+            	check: selectedCheck
+            });
+    	});
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', function(data) {
+        	selectedCheck = data.check;
+
+        	$('#provider-summary-check-item-' + data.check.replace(/ /g, ''))
+        		.addClass('selected')
+        		.siblings()
+        			.removeClass('selected');
+        });
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
@@ -66,12 +189,23 @@
 							title: provider.displayName
 						}));
 
+						if(!selectedCheck) {
+							selectedCheck = _.chain(provider.services)
+								.sortBy(function(service) {
+									return checkStates[service.attrs.last_check_result.state].priority + ':' + checks[service.attrs.name];
+								})
+								.first()
+								.value().attrs.name;
+						}
+
 						checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
 							+ '{{#services}}'
-								+ '<li class="provider-summary-item {{itemClass}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value"></div><div class="provider-summary-check-item-title">{{displayName}}</div></li>'
+								+ '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>'
 							+ '{{/services}}'
 						+ '</ul>', {
-							services: _.map(provider.services, function(service) {
+							services: _.chain(provider.services).sortBy(function(service) {
+								return checks[service.attrs.name].order;
+							}).map(function(service) {
 								var checkIcons = {
 									'Provider Bookings': '£',
 									'Provider Booking Errors': '<span class="mega-octicon octicon-flame"></span>',
@@ -79,17 +213,18 @@
 								};
 
 								var displayName = service.attrs.display_name.substring(9);
+								var id = 'provider-summary-check-item-' + service.attrs.name.replace(/ /g, '');
 
 								return {
+									id: id,
 									name: service.attrs.display_name,
 									displayName: displayName,
+									value: parseInt(parseOutput(service.attrs.last_check_result.output).value, 10),
 									checkIcon: checkIcons[service.attrs.name],
-									itemClass: checkStates[service.attrs.last_check_result.state].summaryClass
+									itemClass: checkStates[service.attrs.last_check_result.state].summaryClass + (selectedCheck === service.attrs.name ? ' selected' : '')
 								};
-							}) 
+							}).value()
 						}));
-
-						console.log(groupedChecks);
 
 						overallDescription.width(summary.innerWidth() - (13 + overallSummary.outerWidth() + checkSummary.outerWidth()));
 					});
@@ -98,17 +233,42 @@
             }
         };
 
-        configuration.query = {
-        	
-        };
+        configuration.query = buildQuery(providerName);
+        configuration.timeProperties = [
+			"query.filtered.filter.bool.must.0.range.@timestamp",
+			"aggs.bytime.date_histogram.extended_bounds"
+		];
+		configuration.intervalProperties = [
+			"aggs.bytime.date_histogram.interval"
+		];
 
         var metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            request:  new TLRGRP.BADGER.Dashboard.DataSource['elasticsearch'](configuration),
+            request:  new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
             refresh: 5000,
             mappings: configuration.mappings,
             callbacks: {
                 success: function(data) {
-                	console.log(data);
+                	var timeBuckets = data.query.aggregations.bytime.buckets;
+
+                	var totals = _.reduce(timeBuckets, function(totals, bucket, index) {
+                		_.forEach(bucket.types.buckets, function(type) {
+                			if(!totals[type.key]) {
+                				totals[type.key] = 0;
+                			}
+
+                			totals[type.key] += type.total.value;
+                		});
+
+                		return totals;
+                	}, {});
+
+                	_.forEach({
+                		'count': 'ProviderBookings',
+                		'providerBookingErrors': 'ProviderBookingErrors',
+                		'providerErrors': 'ProviderErrors'
+                	}, function(checkName, totalKey) {
+//                		$('.provider-summary-check-item-value', '#provider-summary-check-item-' + checkName).html(totals[totalKey] || 0);
+                	});
                 }
             },
             components: {

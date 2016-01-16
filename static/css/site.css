@@ -1184,6 +1184,10 @@ h3 {margin: 0;padding: 0 }
 
 .provider-summary-check-item-title { padding-top: 10px; color: #000; text-align: center; font-weight: bold; font-size: 1.2em }
 
-.provider-summary-check-item-value { padding-top: 40px; font-size: 50px; font-weight: bold; text-align: center; color: #000; min-height: 50px  }
+.provider-summary-check-item-value { padding-top: 40px; font-size: 50px; font-weight: bold; text-align: center; color: #000; min-height: 60px  }
 
 .provider-summary-item .connectivity-service-summary-tier-emblem .mega-octicon { font-size: 50px; }
+
+.provider-summary-selected-indicator { position: absolute; bottom: -30px; left: 65px; display: none; }
+
+.selected .provider-summary-selected-indicator { display: block; }

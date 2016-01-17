@@ -198,11 +198,7 @@
 								.value().attrs.name;
 						}
 
-						checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
-							+ '{{#services}}'
-								+ '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>'
-							+ '{{/services}}'
-						+ '</ul>', {
+						var viewModel = {
 							services: _.chain(provider.services).sortBy(function(service) {
 								return checks[service.attrs.name].order;
 							}).map(function(service) {
@@ -224,7 +220,13 @@
 									itemClass: checkStates[service.attrs.last_check_result.state].summaryClass + (selectedCheck === service.attrs.name ? ' selected' : '')
 								};
 							}).value()
-						}));
+						};
+
+						checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
+							+ '{{#services}}'
+								+ '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>'
+							+ '{{/services}}'
+						+ '</ul>', viewModel));
 
 						overallDescription.width(summary.innerWidth() - (13 + overallSummary.outerWidth() + checkSummary.outerWidth()));
 					});

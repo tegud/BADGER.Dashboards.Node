@@ -9,8 +9,10 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
-		var modules = [lastUpdated, inlineLoading, {
+        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
+		var modules = [lastUpdated, inlineLoading, lineGraph, {
 			appendTo: function (container) {
+				
 			}
 		}];
 
@@ -21,7 +23,6 @@
 			modules: modules
 		});
 
-        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
 
 		var callbacks = {
 			success: function (data) {

@@ -23,7 +23,7 @@
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
-			componentClass: 'provider-detail-graph  tall-graph',
+			componentClass: 'provider-detail-graph tall-graph',
 			modules: modules
 		});
 

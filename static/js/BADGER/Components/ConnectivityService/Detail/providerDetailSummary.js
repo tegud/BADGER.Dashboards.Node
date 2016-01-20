@@ -243,6 +243,17 @@
 		configuration.intervalProperties = [
 			"aggs.bytime.date_histogram.interval"
 		];
+		configuration.mappings = [
+          { 
+            "type": "extractFromDateHistogram",
+            "aggregateName": "bytime",
+            "fields": {
+              "bookings": "types.buckets.:find(key=count).total.value",
+              "bookingErrors": "types.buckets.:find(key=providerBookingErrors).total.value",
+              "errors": "types.buckets.:find(key=providerErrors).total.value"
+            }
+          }
+        ];
 
         var metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
             request:  new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
@@ -250,6 +261,7 @@
             mappings: configuration.mappings,
             callbacks: {
                 success: function(data) {
+                	console.log(data);
                 	var timeBuckets = data.query.aggregations.bytime.buckets;
 
                 	var totals = _.reduce(timeBuckets, function(totals, bucket, index) {

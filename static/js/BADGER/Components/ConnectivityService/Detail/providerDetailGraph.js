@@ -34,6 +34,10 @@
             }
         };
 
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', function(data) {
+        	lineGraph.setData(data.data);
+        });
+
         var dataStore = {
             start: function () {
                 // TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {

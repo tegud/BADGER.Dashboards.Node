@@ -261,28 +261,9 @@
             mappings: configuration.mappings,
             callbacks: {
                 success: function(data) {
-                	console.log(data);
-                	var timeBuckets = data.query.aggregations.bytime.buckets;
-
-                	var totals = _.reduce(timeBuckets, function(totals, bucket, index) {
-                		_.forEach(bucket.types.buckets, function(type) {
-                			if(!totals[type.key]) {
-                				totals[type.key] = 0;
-                			}
-
-                			totals[type.key] += type.total.value;
-                		});
-
-                		return totals;
-                	}, {});
-
-                	_.forEach({
-                		'count': 'ProviderBookings',
-                		'providerBookingErrors': 'ProviderBookingErrors',
-                		'providerErrors': 'ProviderErrors'
-                	}, function(checkName, totalKey) {
-//                		$('.provider-summary-check-item-value', '#provider-summary-check-item-' + checkName).html(totals[totalKey] || 0);
-                	});
+			        TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
+			        	data: data
+			        });
                 }
             },
             components: {

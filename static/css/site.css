@@ -1191,3 +1191,5 @@ h3 {margin: 0;padding: 0 }
 .provider-summary-selected-indicator { position: absolute; bottom: -30px; left: 65px; display: none; }
 
 .selected .provider-summary-selected-indicator { display: block; }
+
+.provider-detail-graph .v2-graph-container { margin-right: 0; }

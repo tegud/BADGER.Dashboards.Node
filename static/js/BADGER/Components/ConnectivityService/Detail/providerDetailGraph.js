@@ -9,7 +9,11 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
-        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph(configuration.graph);
+        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph({
+            "lines": [
+            ]
+        });
+
 		var modules = [lastUpdated, inlineLoading, lineGraph, {
 			appendTo: function (container) {
 				
@@ -19,10 +23,9 @@
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
 			layout: configuration.layout,
-			componentClass: 'provider-detail-graph',
+			componentClass: 'provider-detail-graph  tall-graph',
 			modules: modules
 		});
-
 
 		var callbacks = {
 			success: function (data) {

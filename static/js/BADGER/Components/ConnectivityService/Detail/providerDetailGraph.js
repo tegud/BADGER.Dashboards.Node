@@ -9,8 +9,9 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
-        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.LineGraph({
+        var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.BarGraph({
             "lines": [
+              { "id": "errors", "color": "red", "value": "query.errors" }
             ]
         });
 
@@ -27,15 +28,18 @@
 			modules: modules
 		});
 
-		var callbacks = {
-			success: function (data) {
-            },
-            error: function (errorInfo) {
-            }
-        };
+		var lastData;
+		var title;
 
         TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', function(data) {
+    		lastData = data.data;
         	lineGraph.setData(data.data);
+        });
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', function(data) {
+        	var selectedCheck = data.check.substring(9);
+
+        	title.text(selectedCheck);
         });
 
         var dataStore = {
@@ -58,6 +62,8 @@
                     initialise: function (container) {
                         componentLayout.appendTo(container);
 
+                        title = $('h3', container);
+
                         return this.transitionToState('initialising');
                     }
                 },
@@ -72,7 +78,6 @@
 
 		return {
 			render: function (container) {
-				inlineLoading.loading();
 				return stateMachine.handle('initialise', container);
 			},
 			unload: function () {

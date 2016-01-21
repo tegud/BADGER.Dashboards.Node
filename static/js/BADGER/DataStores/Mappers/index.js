@@ -55,7 +55,7 @@
              obj[prop[0]] = value;
     }
 
-    function extractFromDateHistogram(config, aggregate, name) {
+    function extractFromDateHistogram(config, aggregate, name, defaultValue) {
         var dates = aggregate.buckets;
 
         return _.map(dates, function(dateBucket) {
@@ -64,7 +64,7 @@
             };
 
             parsedObject[name] = _.reduce(config.fields, function(memo, field, key) {
-                memo[key] = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(dateBucket, field)
+                memo[key] = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(dateBucket, field, defaultValue)
                 return memo;
             }, {});
 
@@ -135,11 +135,11 @@
         },
         'extractFromDateHistogram': function(mapping, data) {
             if(data.aggregations) {
-                return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName]);
+                return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName], mapping.defaultValue);
             }
 
             return _.reduce(data, function(memo, response, key) {
-                var processedBucket = extractFromDateHistogram(mapping, response.aggregations[mapping.aggregateName], key);
+                var processedBucket = extractFromDateHistogram(mapping, response.aggregations[mapping.aggregateName], key, mapping.defaultValue);
 
                 if(!memo.length) {
                     return processedBucket;

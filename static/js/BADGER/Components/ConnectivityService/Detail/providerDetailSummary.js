@@ -247,6 +247,7 @@
           { 
             "type": "extractFromDateHistogram",
             "aggregateName": "bytime",
+            "defaultValue": 0,
             "fields": {
               "bookings": "types.buckets.:find(key=count).total.value",
               "bookingErrors": "types.buckets.:find(key=providerBookingErrors).total.value",

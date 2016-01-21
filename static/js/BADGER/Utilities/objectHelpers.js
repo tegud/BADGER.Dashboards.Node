@@ -15,7 +15,7 @@
 		}
 	};
 
-	TLRGRP.BADGER.Utilities.object.getValueFromSubProperty = function(obj, property) {
+	TLRGRP.BADGER.Utilities.object.getValueFromSubProperty = function(obj, property, defaultValue) {
 		var valuePropertySegments = property.split('.');
         var segmentEscaper = /\|/ig;
 
@@ -25,10 +25,10 @@
         	if(typeof obj === 'undefined') {
         	}
         	else if(functionMatches){
-        		obj = fn[functionMatches[1]](obj, functionMatches[2], functionMatches[3]);
+        		obj = fn[functionMatches[1]](obj, functionMatches[2], functionMatches[3]) || defaultValue;
         	}
         	else {
-            	obj = obj[segment.replace(segmentEscaper, ".")];
+            	obj = obj[segment.replace(segmentEscaper, ".")] || defaultValue;
         	}
         });
 

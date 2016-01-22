@@ -100,9 +100,9 @@
 	};
 
 	var checks = {
-		'Provider Errors': { order: 1 },
-		'Provider Bookings': { order: 0 },
-		'Provider Booking Errors': { order: 2 }
+		'Provider Errors': { order: 1, metric: 'providerErrors' },
+		'Provider Bookings': { order: 0, metric: 'bookings' },
+		'Provider Booking Errors': { order: 2, metric: 'bookingErrors' }
 	};
 
 	function parseOutput(output) {
@@ -149,7 +149,8 @@
     		var selectedCheck = clickedCheck.data('checkName');
 
             TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderSummary.CheckSelected', {
-            	check: selectedCheck
+            	check: selectedCheck,
+            	metric: checks[selectedCheck].metric
             });
     	});
 
@@ -263,7 +264,9 @@
             callbacks: {
                 success: function(data) {
 			        TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
-			        	data: data
+			        	data: data,
+		            	check: selectedCheck,
+		            	metric: checks[selectedCheck].metric
 			        });
                 }
             },

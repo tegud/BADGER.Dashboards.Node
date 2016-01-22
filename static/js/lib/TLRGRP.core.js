@@ -58,7 +58,8 @@ TLRGRP.messageBus = (function() {
                     position = i;
                 }
             }
-            messages[name].splice(position, 1);
+            
+            messages[name] = messages[name].slice(0, position).concat(messages[name].slice(position + 1))
         }
 
     }

@@ -11,7 +11,9 @@
 
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.BarGraph({
             "lines": [
-              { "id": "errors", "color": "red", "value": "query.errors" }
+            	{ "id": "bookingErrors", "color": "orange", "value": "query.bookingErrors" },
+            	{ "id": "providerErrors", "color": "red", "value": "query.errors" },
+            	{ "id": "bookings", "color": "green", "value": "query.bookings" }
             ]
         });
 
@@ -30,31 +32,23 @@
 
 		var lastData;
 		var title;
+		var metric = 'providerErrors';
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', function(data) {
-    		lastData = data.data;
-        	lineGraph.setData(data.data);
-        });
-
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', function(data) {
+        function checkSelected(data) {
         	var selectedCheck = data.check.substring(9);
+        	metric = data.metric;
 
         	title.text(selectedCheck);
-        });
+        	lineGraph.setData(lastData, [metric]);
+        }
 
-        var dataStore = {
-            start: function () {
-                // TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
-                //     id: 'ProviderSummary-' + (idIncrementor++),
-                //     refreshComplete: callbacks.success,
-                //     loading: inlineLoading,
-                //     lastUpdated: lastUpdated
-                // });
-            },
-            stop: function () {
-                // TLRGRP.messageBus.publish(dataStoreId);
-            }
-        };
+        function refreshData(data) {
+    		lastData = data.data;
+    		checkSelected(data);
+        }
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', refreshData);
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', checkSelected);
 
         var stateMachine = nano.Machine({
             states: {
@@ -68,9 +62,6 @@
                     }
                 },
                 initialising: {
-                    _onEnter: function () {
-                        dataStore.start(true);
-                    }
                 }
             },
             initialState: 'uninitialised'
@@ -83,6 +74,9 @@
 			unload: function () {
 				stateMachine.handle('stop');
 				stateMachine.handle('remove');
+
+        		TLRGRP.messageBus.unsubscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', refreshData);
+        		TLRGRP.messageBus.unsubscribe('TLRGRP.BADGER.ProviderDetailSummary.CheckSelected', checkSelected);
 			}
 		};
 	}

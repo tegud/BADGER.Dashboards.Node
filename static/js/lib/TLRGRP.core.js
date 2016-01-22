@@ -61,13 +61,17 @@ TLRGRP.messageBus = (function() {
             
             messages[name] = messages[name].slice(0, position).concat(messages[name].slice(position + 1))
         }
+    }
 
+    function unsubscribeAll(name) {
+        delete messages[name];
     }
 
     return {
         publish:publish,
         subscribe:subscribe,
         unsubscribe:unsubscribe,
+        unsubscribeAll:unsubscribeAll,
         reset: function() {
             messages = {};
         }

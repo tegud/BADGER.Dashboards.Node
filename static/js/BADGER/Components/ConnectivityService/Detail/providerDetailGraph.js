@@ -75,8 +75,8 @@
 				stateMachine.handle('stop');
 				stateMachine.handle('remove');
 
-        		TLRGRP.messageBus.unsubscribe('TLRGRP.BADGER.ProviderDetailSummary.MetricData', refreshData);
-        		TLRGRP.messageBus.unsubscribe('TLRGRP.BADGER.ProviderDetailSummary.CheckSelected', checkSelected);
+        		TLRGRP.messageBus.unsubscribeAll('TLRGRP.BADGER.ProviderDetailSummary.MetricData');
+        		TLRGRP.messageBus.unsubscribeAll('TLRGRP.BADGER.ProviderDetailSummary.CheckSelected');
 			}
 		};
 	}

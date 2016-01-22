@@ -154,14 +154,16 @@
             });
     	});
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', function(data) {
+    	function checkSelected(data) {
         	selectedCheck = data.check;
 
         	$('#provider-summary-check-item-' + data.check.replace(/ /g, ''))
         		.addClass('selected')
         		.siblings()
         			.removeClass('selected');
-        });
+    	}
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', checkSelected);
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
@@ -285,7 +287,7 @@
                 });
             },
             stop: function () {
-                TLRGRP.messageBus.publish(dataStoreId);
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId);
             }
         };
 
@@ -316,6 +318,12 @@
 			unload: function () {
 				stateMachine.handle('stop');
 				stateMachine.handle('remove');
+        	
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId);
+            	TLRGRP.messageBus.unsubscribeAll('TLRGRP.BADGER.ProviderSummary.CheckSelected');
+
+            	dataStore.stop();
+            	metricDataStore.stop();
 			}
 		};
 	}

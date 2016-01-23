@@ -213,11 +213,17 @@
 
 								var displayName = service.attrs.display_name.substring(9);
 								var id = 'provider-summary-check-item-' + service.attrs.name.replace(/ /g, '');
+								var subText;
+
+								if(service.attrs.name === 'Provider Bookings') {
+									subText = 'in last ' + service.attrs.vars.bookings_in_last_hours + 'hrs';
+								}
 
 								return {
 									id: id,
 									name: service.attrs.display_name,
 									displayName: displayName,
+									subText: subText,
 									value: parseInt(parseOutput(service.attrs.last_check_result.output).value, 10),
 									checkIcon: checkIcons[service.attrs.name],
 									itemClass: checkStates[service.attrs.last_check_result.state].summaryClass + (selectedCheck === service.attrs.name ? ' selected' : '')
@@ -227,7 +233,7 @@
 
 						checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
 							+ '{{#services}}'
-								+ '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>'
+								+ '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-check-item-subtext">{{subText}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>'
 							+ '{{/services}}'
 						+ '</ul>', viewModel));
 

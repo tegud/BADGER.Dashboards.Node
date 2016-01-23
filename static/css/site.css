@@ -1182,7 +1182,9 @@ h3 {margin: 0;padding: 0 }
 .provider-tier-provider-list-item.silver { border-color: #333; }
 .provider-tier-provider-list-item.bronze { border-color: #B36F2C; }
 
-.provider-summary-check-item-title { padding-top: 10px; color: #000; text-align: center; font-weight: bold; font-size: 1.2em }
+.provider-summary-check-item-title { padding-top: 5px; color: #000; text-align: center; font-weight: bold; font-size: 1.2em }
+
+.provider-summary-check-item-subtext { padding-top: 2px; color: #000; text-align: center; font-weight: bold; font-size: 0.9em }
 
 .provider-summary-check-item-value { padding-top: 40px; font-size: 50px; font-weight: bold; text-align: center; color: #000; min-height: 60px  }
 

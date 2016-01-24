@@ -206,9 +206,9 @@
 								return checks[service.attrs.name].order;
 							}).map(function(service) {
 								var checkIcons = {
-									'Provider Bookings': '£',
-									'Provider Booking Errors': '<span class="mega-octicon octicon-flame"></span>',
-									'Provider Errors': '<span class="fa fa-exclamation"></span>',
+									'Provider Bookings': { icon: '£', cssClass: 'bookings' },
+									'Provider Booking Errors': { icon: '<span class="mega-octicon octicon-flame"></span>', cssClass: 'booking-errors' },
+									'Provider Errors': { icon: '<span class="fa fa-exclamation"></span>', cssClass: 'errors' },
 								};
 
 								var displayName = service.attrs.display_name.substring(9);
@@ -248,7 +248,8 @@
 									displayName: displayName,
 									subText: subText,
 									value: parseInt(parseOutput(service.attrs.last_check_result.output).value, 10),
-									checkIcon: checkIcons[service.attrs.name],
+									checkIcon: checkIcons[service.attrs.name].icon,
+									emblemClass: checkIcons[service.attrs.name].cssClass,
 									itemClass: checkStates[service.attrs.last_check_result.state].summaryClass + (selectedCheck === service.attrs.name ? ' selected' : '')
 								};
 							}).value()

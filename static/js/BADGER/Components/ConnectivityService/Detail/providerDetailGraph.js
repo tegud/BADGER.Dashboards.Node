@@ -11,8 +11,8 @@
 
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.BarGraph({
             "lines": [
-            	{ "id": "bookingErrors", "color": "orange", "value": "query.bookingErrors" },
-            	{ "id": "providerErrors", "color": "red", "value": "query.errors" },
+            	{ "id": "bookingErrors", "color": "red", "value": "query.bookingErrors" },
+            	{ "id": "providerErrors", "color": "orange", "value": "query.errors" },
             	{ "id": "bookings", "color": "green", "value": "query.bookings" }
             ]
         });

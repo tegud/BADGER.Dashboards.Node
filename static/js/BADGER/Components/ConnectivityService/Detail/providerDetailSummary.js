@@ -142,7 +142,7 @@
 		+ '</div>').appendTo($('<li />').appendTo(summary));
     	var overallDescription = $('<li class="connectivity-provider-description"><h2>Connecting...</h2>Contacting Icinga2...</li>').appendTo(summary);
     	var checkSummary = $('<li />').appendTo(summary);
-    	var selectedCheck = getParameterByName('showCheck');
+    	var selectedCheck = getParameterByName('showCheck') || 'Provider Errors';
 
     	checkSummary.on('click', '.provider-summary-item', function(e) {
     		var clickedCheck = $(e.target).closest('.provider-summary-item');

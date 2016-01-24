@@ -218,6 +218,29 @@
 								if(service.attrs.name === 'Provider Bookings') {
 									subText = 'in last ' + service.attrs.vars.bookings_in_last_hours + 'hrs';
 								}
+								else if (service.attrs.vars.graphite_url) {
+									var graphiteTimeSegment = /from=-(([0-9]+)(h|m|s))/ig;
+
+									var graphiteTimeMatches = graphiteTimeSegment.exec(service.attrs.vars.graphite_url);
+
+									var time = parseInt(graphiteTimeMatches[2], 10);
+									var timeUnits = graphiteTimeMatches[3];
+
+									var units = {
+										'h': { singular: 'hour', plural: 'hrs' },
+										'm': { singular: 'minute', plural: 'mins' },
+										's': { singular: 'second', plural: 'secs' }
+									};
+
+									subText = 'in last ';
+
+									if(time === 1) {
+										subText += units[timeUnits].singular;
+									}
+									else {
+										subText += time + units[timeUnits].plural;
+									}
+								}
 
 								return {
 									id: id,

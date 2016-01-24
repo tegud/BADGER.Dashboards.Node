@@ -8,7 +8,9 @@
         },
         {
             "type": "ProviderDetailSummary",
-            "storeId": "IcingaProviderStatus"
+            "storeId": "IcingaProviderStatus",
+            "host": "http://10.44.72.61:9200",
+            "index": "metrics-${YYYY}.${MM}"
         },
         {
             "type": "ProviderDetailGraph",

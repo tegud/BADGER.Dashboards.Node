@@ -134,12 +134,22 @@
             return matchedValues;
         },
         'extractFromDateHistogram': function(mapping, data) {
+            if(mapping.aggregates) {
+                return _.reduce(mapping.aggregates, function(outputData, fields, key) {
+                    var extractedData = extractFromDateHistogram({
+                        fields: fields
+                    }, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.query.aggregations, key), 'values', mapping.defaultValue);
+
+                    return outputData;
+                }, []);
+            }
+
             if(data.aggregations) {
-                return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName], mapping.defaultValue);
+                return extractFromDateHistogram(mapping, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.aggregations, mapping.aggregateName), mapping.defaultValue);
             }
 
             return _.reduce(data, function(memo, response, key) {
-                var processedBucket = extractFromDateHistogram(mapping, response.aggregations[mapping.aggregateName], key, mapping.defaultValue);
+                var processedBucket = extractFromDateHistogram(mapping, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(response.aggregations, mapping.aggregateName), key, mapping.defaultValue);
 
                 if(!memo.length) {
                     return processedBucket;

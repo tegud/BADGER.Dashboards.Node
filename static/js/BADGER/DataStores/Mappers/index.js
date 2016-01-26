@@ -140,6 +140,8 @@
                         fields: fields
                     }, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.query.aggregations, key), 'values', mapping.defaultValue);
 
+                    console.log(extractedData);
+
                     return outputData;
                 }, []);
             }

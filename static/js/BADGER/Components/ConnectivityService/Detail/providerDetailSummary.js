@@ -348,15 +348,23 @@
         configuration.mappings = [{
             "type": "extractFromDateHistogram",
             "defaultValue": 0,
-            "aggregates": {
-                "errors.bytime": {
-                    "bookingErrors": "types.buckets.:find(key=providerBookingErrors).total.value",
-                    "errors": "types.buckets.:find(key=providerErrors).total.value"
+            "dataSets": [
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "bookingErrors",
+                    "value": "types.buckets.:find(key=providerBookingErrors).total.value"
                 },
-                "bookings.bytime": {
-                    "bookings": "types.buckets.:find(key=count).total.value",
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "errors",
+                    "value": "types.buckets.:find(key=providerErrors).total.value"
+                },
+                {
+                    "aggregate": "bookings.bytime",
+                    "field": "bookings",
+                    "value": "types.buckets.:find(key=count).total.value"
                 }
-            }
+            ]
         }];
 
         var metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
@@ -365,8 +373,6 @@
             mappings: configuration.mappings,
             callbacks: {
                 success: function(data) {
-                    console.log(JSON.stringify(data));
-
                     TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
                         data: data,
                         check: selectedCheck,

@@ -134,16 +134,18 @@
             return matchedValues;
         },
         'extractFromDateHistogram': function(mapping, data) {
-            if(mapping.aggregates) {
-                return _.reduce(mapping.aggregates, function(outputData, fields, key) {
-                    var extractedData = extractFromDateHistogram({
-                        fields: fields
-                    }, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.query.aggregations, key), 'values', mapping.defaultValue);
+            if(mapping.dataSets) {
+                return _.reduce(mapping.dataSets, function(outputData, set) {
+                    var fields = {};
 
-                    console.log(extractedData);
+                    fields[set.field] = set.value;
+
+                    outputData[set.field] = extractFromDateHistogram({
+                        fields: fields
+                    }, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.query.aggregations, set.aggregate), 'values', mapping.defaultValue);
 
                     return outputData;
-                }, []);
+                }, {});
             }
 
             if(data.aggregations) {

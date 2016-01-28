@@ -5,15 +5,21 @@
 
 	var idIncrementor = 0;
 
+    var mappings = {
+        "bookingErrors": "bookingErrors",
+        "providerErrors": "errors",
+        "bookings": "bookings"
+    };
+
 	TLRGRP.BADGER.Dashboard.Components.ProviderDetailGraph = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
         var lineGraph = TLRGRP.BADGER.Dashboard.ComponentModules.BarGraph({
             "lines": [
-            	{ "id": "bookingErrors", "color": "red", "value": "query.bookingErrors" },
-            	{ "id": "providerErrors", "color": "orange", "value": "query.errors" },
-            	{ "id": "bookings", "color": "green", "value": "query.bookings" }
+            	{ "id": "bookingErrors", "color": "red", "value": "values.bookingErrors" },
+            	{ "id": "providerErrors", "color": "orange", "value": "values.errors" },
+            	{ "id": "bookings", "color": "green", "value": "values.bookings" }
             ]
         });
 
@@ -39,11 +45,12 @@
         	metric = data.metric;
 
         	title.text(selectedCheck);
-        	lineGraph.setData(lastData, [metric]);
+        	lineGraph.setData(lastData[mappings[metric]], [metric]);
         }
 
         function refreshData(data) {
     		lastData = data.data;
+
     		checkSelected(data);
         }
 

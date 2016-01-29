@@ -45,7 +45,7 @@
         	metric = data.metric;
 
         	title.text(selectedCheck);
-        	lineGraph.setData(lastData[mappings[metric]], [metric]);
+        	lineGraph.setData(JSON.parse(JSON.stringify(lastData[mappings[metric]])), [metric]);
         }
 
         function refreshData(data) {

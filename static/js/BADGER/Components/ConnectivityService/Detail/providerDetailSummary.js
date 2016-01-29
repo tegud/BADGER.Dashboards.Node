@@ -99,7 +99,7 @@
                                     "max": "now"
                                 },
                                 "field": "@timestamp",
-                                "interval": "1m"
+                                "interval": "1h"
                             },
                             "aggs": {
                                 "types": {

@@ -1043,7 +1043,9 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
-.provider-summary { min-height: 232px; }
+.provider-summary { min-height: 232px; position: relative; }
+
+.provider-summary h3 { margin-left: 50px; font-size: 1.9em }
 
 .connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 
@@ -1201,3 +1203,11 @@ h3 {margin: 0;padding: 0 }
 .selected .provider-summary-selected-indicator { display: block; }
 
 .provider-detail-graph .v2-graph-container { margin-right: 0; }
+
+.back-to-main { font-size: 50px; top: 0 ;left: 10px; position: absolute; cursor: pointer; }
+
+.connectivity-provider-description .provider-tier-summary-emblem.connectivity-service-summary-tier-emblem { display: inline-block; position: static; width: 26px; height: 24px; vertical-align: middle; margin-left: 15px }
+
+.provider-summary-tier-emblem-text { vertical-align: middle; display: inline-block; margin-left: 5px; font-size: 0.7em; font-style: italic; }
+
+.provider-summary-provider-title-text {vertical-align: middle; display: inline-block;}

@@ -48,7 +48,7 @@
 							+ '{{#checkSummaries}}<li class="state-checks-item {{itemClass}}"><div class="state-checks-icon {{iconClass}}"></div><div class="state-checks-counter">{{count}} {{name}}</div></li>{{/checkSummaries}}'
 						+ '</ul>', summaryViewModel));
 
-						overallDescription.html(Mustache.render('<h2>{{title}}</h2>{{{text}}}', summaryViewModel.description));
+						overallDescription.html(Mustache.render('<h2>{{title}} {{{tier}}}</h2>{{{text}}}', summaryViewModel.description));
 
 						providerSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">'
 							+ '{{#tiers}}'

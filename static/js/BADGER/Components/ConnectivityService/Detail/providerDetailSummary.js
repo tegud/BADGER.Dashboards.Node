@@ -208,7 +208,7 @@
         var overallDescription = $('<li class="connectivity-provider-description"><h2>Connecting...</h2>Contacting Icinga2...</li>').appendTo(summary);
         var checkSummary = $('<li />').appendTo(summary);
         var selectedCheck = getParameterByName('showCheck') || 'Provider Errors';
-        var backButton = $('<div class="back-to-main">Back</div>')
+        var backButton = $('<div class="back-to-main"><i class="fa fa-arrow-circle-o-left"></i></div>')
 
         backButton.on('click', function(e) {
             TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
@@ -263,8 +263,12 @@
 
                         overallSummary[0].className = 'connectivity-service-status-indicator ' + checkStates[provider.worstCheckState].summaryClass;
 
-                        overallDescription.html(Mustache.render('<h2>{{title}}</h2>{{{text}}}', {
-                            title: provider.displayName
+                        var tier = groupedChecks[0].tier;
+
+                        overallDescription.html(Mustache.render('<h2><div class="provider-summary-provider-title-text">{{title}}</div><div class="provider-tier-summary-emblem connectivity-service-summary-tier-emblem {{tierClass}}"></div><div class="provider-summary-tier-emblem-text">{{tier}}</div></h2>{{{text}}}', {
+                            title: provider.displayName,
+                            tierClass: tier.split(' ')[0].toLowerCase(),
+                            tier: tier.substring(0, tier.length - 1)
                         }));
 
                         if (!selectedCheck) {

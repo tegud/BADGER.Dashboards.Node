@@ -63,7 +63,7 @@
                     initialise: function (container) {
                         componentLayout.appendTo(container);
 
-                        title = $('h3', container);
+                        title = $('.provider-detail-graph h3', container);
 
                         return this.transitionToState('initialising');
                     }

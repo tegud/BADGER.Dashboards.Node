@@ -29,6 +29,11 @@
 	        }));
 		}
 
+		var splitPath = location.pathname.split('/');
+
+		var backTo = splitPath.length > 2 ? splitPath[2] : '';
+
+		console.log(backTo);
         var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
@@ -38,6 +43,7 @@
         		var provider = clickedElement.closest('.provider-tier-provider-list-item').data('providerName');
         		var isCheck = clickedElement.hasClass('provider-tier-provider-list-item-check-list-item');
         		var params = {
+        			backTo: backTo,
 					provider: provider
 				};
 

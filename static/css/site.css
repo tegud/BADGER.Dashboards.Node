@@ -1181,6 +1181,8 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-summary-tier-emblem.errors { color: #FF8C00;border-color: #FF8C00; background-color: #FFB862; }
 .connectivity-service-summary-tier-emblem.booking-errors { color: #f00; border-color: #f00; background-color: #FF8F8F; }
 
+.warning .provider-summary-selected-indicator { color: #FF8C00; }
+
 .provider-tier-provider-list-item.platinum { border-color: #999; }
 .provider-tier-provider-list-item.gold { border-color: #BFA100; }
 .provider-tier-provider-list-item.silver { border-color: #333; }

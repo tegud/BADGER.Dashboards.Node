@@ -208,6 +208,14 @@
         var overallDescription = $('<li class="connectivity-provider-description"><h2>Connecting...</h2>Contacting Icinga2...</li>').appendTo(summary);
         var checkSummary = $('<li />').appendTo(summary);
         var selectedCheck = getParameterByName('showCheck') || 'Provider Errors';
+        var backButton = $('<div class="back-to-main">Back</div>')
+
+        backButton.on('click', function(e) {
+            TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
+                dashboard: 'ConnectivityService',
+                view: getParameterByName('backTo')
+            });
+        });
 
         checkSummary.on('click', '.provider-summary-item', function(e) {
             var clickedCheck = $(e.target).closest('.provider-summary-item');
@@ -232,7 +240,9 @@
 
         var modules = [lastUpdated, inlineLoading, {
             appendTo: function(container) {
-                container.append(summary);
+                container
+                    .append(backButton)
+                    .append(summary);
             }
         }];
 

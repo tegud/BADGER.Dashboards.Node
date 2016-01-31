@@ -1043,9 +1043,9 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
-.provider-summary, .provider-detail { min-height: 232px; position: relative; }
+.provider-summary { min-height: 232px; position: relative; }
 
-.provider-detail h3 { margin-left: 50px; font-size: 1.9em }
+.provider-summary h3 { margin-left: 50px; font-size: 1.9em }
 
 .connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 

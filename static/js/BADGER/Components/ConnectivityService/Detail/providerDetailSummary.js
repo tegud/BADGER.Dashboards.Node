@@ -249,7 +249,7 @@
         var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
             title: configuration.title,
             layout: configuration.layout,
-            componentClass: 'provider-detail',
+            componentClass: 'provider-summary',
             modules: modules
         });
 
@@ -353,14 +353,52 @@
                         checkSummary.html(Mustache.render('<ul class="connectivity-service-summary-tier-list">' + '{{#services}}' + '<li id="{{id}}" class="provider-summary-item {{itemClass}}" data-check-name="{{name}}"><div class="connectivity-service-summary-tier-emblem {{emblemClass}}">{{{checkIcon}}}</div><div class="provider-summary-check-item-value">{{value}}</div><div class="provider-summary-check-item-title">{{displayName}}</div><div class="provider-summary-check-item-subtext">{{subText}}</div><div class="provider-summary-selected-indicator"><i class="mega-octicon octicon-triangle-down"></i></div></li>' + '{{/services}}' + '</ul>', viewModel));
 
                         overallDescription.width(summary.innerWidth() - (13 + overallSummary.outerWidth() + checkSummary.outerWidth()));
-
-                        stateMachine.handle('alertUpdate', groupedChecks);
                     });
             },
             error: function(errorInfo) {}
         };
 
-        var metricDataStore;
+        configuration.query = buildQuery(providerName);
+        configuration.mappings = [{
+            "type": "extractFromDateHistogram",
+            "defaultValue": 0,
+            "dataSets": [
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "bookingErrors",
+                    "value": "types.buckets.:find(key=providerBookingErrors).total.value"
+                },
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "errors",
+                    "value": "types.buckets.:find(key=providerErrors).total.value"
+                },
+                {
+                    "aggregate": "bookings.bytime",
+                    "field": "bookings",
+                    "value": "types.buckets.:find(key=count).total.value"
+                }
+            ]
+        }];
+
+        var metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
+            refresh: 5000,
+            mappings: configuration.mappings,
+            callbacks: {
+                success: function(data) {
+                    TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
+                        data: data,
+                        check: selectedCheck,
+                        metric: checks[selectedCheck].metric
+                    });
+                }
+            },
+            components: {
+                loading: inlineLoading
+            }
+        });
+
         var dataStore = {
             start: function() {
                 TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
@@ -387,61 +425,8 @@
                 initialising: {
                     _onEnter: function() {
                         dataStore.start(true);
-                    },
-                    alertUpdate: function(data) {
-                        return this.transitionToState('initialised', data);
-                    }
-                },
-                initialised: {
-                    _onEnter: function(data) {
-                        var checks = data.tiers[0].providers[0].services;
-                        
-                        
-                        configuration.query = buildQuery(providerName);
-                        configuration.mappings = [{
-                            "type": "extractFromDateHistogram",
-                            "defaultValue": 0,
-                            "dataSets": [
-                                {
-                                    "aggregate": "errors.bytime",
-                                    "field": "bookingErrors",
-                                    "value": "types.buckets.:find(key=providerBookingErrors).total.value"
-                                },
-                                {
-                                    "aggregate": "errors.bytime",
-                                    "field": "errors",
-                                    "value": "types.buckets.:find(key=providerErrors).total.value"
-                                },
-                                {
-                                    "aggregate": "bookings.bytime",
-                                    "field": "bookings",
-                                    "value": "types.buckets.:find(key=count).total.value"
-                                }
-                            ]
-                        }];
-
-                        metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-                            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
-                            refresh: 5000,
-                            mappings: configuration.mappings,
-                            callbacks: {
-                                success: function(data) {
-                                    TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
-                                        data: data,
-                                        check: selectedCheck,
-                                        metric: checks[selectedCheck].metric
-                                    });
-                                }
-                            },
-                            components: {
-                                loading: inlineLoading
-                            }
-                        });
                         metricDataStore.start(true);
-                    },
-                    alertUpdate: function() {},
-                    metricUpdate: function() {},
-                    logUpdate: function() {}
+                    }
                 }
             },
             initialState: 'uninitialised'

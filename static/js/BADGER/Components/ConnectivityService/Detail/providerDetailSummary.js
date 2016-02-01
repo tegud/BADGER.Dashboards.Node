@@ -393,10 +393,9 @@
                     }
                 },
                 initialised: {
-                    _onEnter: function(data) {
-                        var checks = data.tiers[0].providers[0].services;
-                        
-                        
+                    _onEnter: function(alertData) {
+                        var alertChecks = alertData[0].providers[0].services;
+
                         configuration.query = buildQuery(providerName);
                         configuration.mappings = [{
                             "type": "extractFromDateHistogram",

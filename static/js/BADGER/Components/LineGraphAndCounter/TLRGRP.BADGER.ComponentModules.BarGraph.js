@@ -176,7 +176,7 @@
                 var specificData = _.map(data, function(item) {
                     var y0 = 0;
                     var values = _.chain(lines).filter(function(currentLine) {
-                        return _.contains(showData , currentLine.id);
+                        return !showData || _.contains(showData , currentLine.id);
                     }).map(function(currentLine) {
                         var valueForLine = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(item, currentLine.value) || 0;
 

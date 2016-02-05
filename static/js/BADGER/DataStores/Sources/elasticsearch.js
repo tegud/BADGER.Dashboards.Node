@@ -208,6 +208,7 @@
 
 			 	var timeFrame = options.timeFrame;
 
+
 			 	if(queries.modifiers) {
 			 		var baseQuery = JSON.parse(JSON.stringify(queries.query));
 			 		var expandedQueries = {};
@@ -226,10 +227,9 @@
 			 		queries = expandedQueries;
 			 	}
 
-
 			 	applyFilters(queries, filters);
 
-			 	if(!timeFrame.userSet && configuration.defaultTimeFrame) {
+			 	if((!timeFrame.uiOnly || !timeFrame.userSet) && configuration.defaultTimeFrame) {
 			 		timeFrame = configuration.defaultTimeFrame;
 
                 	TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', configuration.defaultTimeFrame);

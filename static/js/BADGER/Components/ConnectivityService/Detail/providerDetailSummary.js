@@ -3,6 +3,7 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
+    var checkTimeFrames;
     var idIncrementor = 0;
 
     function buildQuery(providerName) {
@@ -123,6 +124,212 @@
         };
     }
 
+    function buildLogQuery(providerName) {
+        return {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "or": [{
+                                    "and": [{
+                                        "range": {
+                                            "@timestamp": {
+                                                "from": "now-1h"
+                                            }
+                                        }
+                                    }, {
+                                        "terms": {
+                                            "metric": [
+                                                "providerErrors",
+                                                "providerBookingErrors"
+                                            ]
+                                        }
+                                    }]
+                                }, {
+                                    "and": [{
+                                        "range": {
+                                            "@timestamp": {
+                                                "from": "now-48h"
+                                            }
+                                        }
+                                    }, {
+                                        "term": {
+                                            "service": "bookingsByProvider"
+                                        }
+                                    }]
+                                }]
+                            }, {
+                                "term": {
+                                    "provider": providerName
+                                }
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "errors": {
+                    "filter": {
+                        "term": {
+                            "service": "connectivity"
+                        }
+                    },
+                    "aggs": {
+                        "bytime": {
+                            "date_histogram": {
+                                "min_doc_count": 0,
+                                "extended_bounds": {
+                                    "min": "now-1h",
+                                    "max": "now"
+                                },
+                                "field": "@timestamp",
+                                "interval": "1m"
+                            },
+                            "aggs": {
+                                "types": {
+                                    "terms": {
+                                        "field": "metric"
+                                    },
+                                    "aggs": {
+                                        "total": {
+                                            "sum": {
+                                                "field": "value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "bookings": {
+                    "filter": {
+                        "term": {
+                            "service": "bookingsByProvider"
+                        }
+                    },
+                    "aggs": {
+                        "bytime": {
+                            "date_histogram": {
+                                "min_doc_count": 0,
+                                "extended_bounds": {
+                                    "min": "now-48h",
+                                    "max": "now"
+                                },
+                                "field": "@timestamp",
+                                "interval": "1h"
+                            },
+                            "aggs": {
+                                "types": {
+                                    "terms": {
+                                        "field": "metric"
+                                    },
+                                    "aggs": {
+                                        "total": {
+                                            "sum": {
+                                                "field": "value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        };
+    }
+
+    function createMetricStore(providerName, inlineLoading, callbacks, configuration, alertData) {
+        var unitMultipliers = {
+            'hours': 60,
+            'minutes': 60,
+            'seconds': 1
+        }
+
+        checkTimeFrames = _.chain(alertData[0].providers[0].services)
+            .map(function(service) {
+                return {
+                    check: service.attrs.display_name,
+                    timeFrame: getTimeFrameFromCheck(service)
+                };
+            })
+            .sortBy(function(serviceAndTimeFrame) {
+                return serviceAndTimeFrame.timeFrame * unitMultipliers[serviceAndTimeFrame.units];
+            })
+            .value();
+
+        configuration.defaultTimeFrame = _.last(checkTimeFrames).timeFrame || { timeFrame: "1", units: 'hours' };
+        configuration.query = buildQuery(providerName);
+        configuration.mappings = [{
+            "type": "extractFromDateHistogram",
+            "defaultValue": 0,
+            "dataSets": [
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "bookingErrors",
+                    "value": "types.buckets.:find(key=providerBookingErrors).total.value"
+                },
+                {
+                    "aggregate": "errors.bytime",
+                    "field": "errors",
+                    "value": "types.buckets.:find(key=providerErrors).total.value"
+                },
+                {
+                    "aggregate": "bookings.bytime",
+                    "field": "bookings",
+                    "value": "types.buckets.:find(key=count).total.value"
+                }
+            ]
+        }];
+
+        return new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
+            refresh: 5000,
+            mappings: configuration.mappings,
+            callbacks: callbacks,
+            components: {
+                loading: inlineLoading
+            }
+        });
+    }
+
+    function createLogStore(providerName, inlineLoading, callbacks, configuration, alertData) {
+        var unitMultipliers = {
+            'hours': 60,
+            'minutes': 60,
+            'seconds': 1
+        }
+
+        checkTimeFrames = _.chain(alertData[0].providers[0].services)
+            .map(function(service) {
+                return {
+                    check: service.attrs.display_name,
+                    timeFrame: getTimeFrameFromCheck(service)
+                };
+            })
+            .sortBy(function(serviceAndTimeFrame) {
+                return serviceAndTimeFrame.timeFrame * unitMultipliers[serviceAndTimeFrame.units];
+            })
+            .value();
+
+        configuration.defaultTimeFrame = _.last(checkTimeFrames).timeFrame || { timeFrame: "1", units: 'hours' };
+        configuration.query = buildLogQuery(providerName);
+        configuration.mappings = [];
+
+        return new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
+            refresh: 5000,
+            mappings: configuration.mappings,
+            callbacks: callbacks,
+            components: {
+                loading: inlineLoading
+            }
+        });
+    }
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -172,6 +379,28 @@
         }
     };
 
+    var timeCharToUnits = {
+        's': 'seconds',
+        'm': 'minutes',
+        'h': 'hours',
+        'd': 'days'
+    };
+
+    function getTimeFrameFromCheck(service) {
+        if (service.attrs.name === 'Provider Bookings') {
+            return { timeFrame: service.attrs.vars.bookings_in_last_hours, units: 'hours' };
+        } else if (service.attrs.vars.graphite_url) {
+            var graphiteTimeSegment = /from=-(([0-9]+)(h|m|s))/ig;
+
+            var graphiteTimeMatches = graphiteTimeSegment.exec(service.attrs.vars.graphite_url);
+
+            var time = parseInt(graphiteTimeMatches[2], 10);
+            var timeUnits = graphiteTimeMatches[3];
+
+            return { timeFrame: time, units: timeCharToUnits[timeUnits] }
+        }
+    }
+
     function parseOutput(output) {
         if (!/Current value: (-?[0-9]+(\.[0-9]+)?), warn threshold: (-?[0-9]+(\.[0-9]+)?), crit threshold: (-?[0-9]+(\.[0-9]+)?)/.exec(output)) {
             return;
@@ -208,7 +437,7 @@
         var overallDescription = $('<li class="connectivity-provider-description"><h2>Connecting...</h2>Contacting Icinga2...</li>').appendTo(summary);
         var checkSummary = $('<li />').appendTo(summary);
         var selectedCheck = getParameterByName('showCheck') || 'Provider Errors';
-        var backButton = $('<div class="back-to-main"><i class="fa fa-arrow-circle-o-left"></i></div>')
+        var backButton = $('<div class="back-to-main"><i class="fa fa-arrow-circle-o-left"></i></div>');
 
         backButton.on('click', function(e) {
             TLRGRP.messageBus.publish('TLRGRP.BADGER.DashboardAndView.Selected', {
@@ -220,15 +449,26 @@
         checkSummary.on('click', '.provider-summary-item', function(e) {
             var clickedCheck = $(e.target).closest('.provider-summary-item');
             var selectedCheck = clickedCheck.data('checkName');
+            var selectedCheckTimeFrame = _.chain(checkTimeFrames).filter(function(checkTimeFrame) {
+                return checkTimeFrame.check === selectedCheck;
+            }).pluck('timeFrame').first().value();
 
             TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderSummary.CheckSelected', {
                 check: selectedCheck,
-                metric: checks[selectedCheck].metric
+                metric: checks[selectedCheck].metric,
+                timeFrame: selectedCheckTimeFrame
             });
         });
 
         function checkSelected(data) {
             selectedCheck = data.check;
+
+            if(data.timeFrame) {
+                TLRGRP.messageBus.publish('TLRGRP.BADGER.TimePeriod.Set', {
+                    timeFrame: data.timeFrame.timeFrame,
+                    units: data.timeFrame.units
+                });
+            }
 
             $('#provider-summary-check-item-' + data.check.replace(/ /g, ''))
                 .addClass('selected')
@@ -303,26 +543,26 @@
                                 var id = 'provider-summary-check-item-' + service.attrs.name.replace(/ /g, '');
                                 var subText;
 
-                                if (service.attrs.name === 'Provider Bookings') {
-                                    subText = 'in last ' + service.attrs.vars.bookings_in_last_hours + 'hrs';
-                                } else if (service.attrs.vars.graphite_url) {
-                                    var graphiteTimeSegment = /from=-(([0-9]+)(h|m|s))/ig;
+                                var timeFrame = getTimeFrameFromCheck(service);
 
-                                    var graphiteTimeMatches = graphiteTimeSegment.exec(service.attrs.vars.graphite_url);
-
-                                    var time = parseInt(graphiteTimeMatches[2], 10);
-                                    var timeUnits = graphiteTimeMatches[3];
+                                if (timeFrame) {
+                                    var time = timeFrame.timeFrame;
+                                    var timeUnits = timeFrame.units;
 
                                     var units = {
-                                        'h': {
+                                        'days': {
+                                            singular: 'day',
+                                            plural: 'days'
+                                        },
+                                        'hours': {
                                             singular: 'hour',
                                             plural: 'hrs'
                                         },
-                                        'm': {
+                                        'minutes': {
                                             singular: 'minute',
                                             plural: 'mins'
                                         },
-                                        's': {
+                                        'seconds': {
                                             singular: 'second',
                                             plural: 'secs'
                                         }
@@ -361,6 +601,7 @@
         };
 
         var metricDataStore;
+        var logDataStore;
         var dataStore = {
             start: function() {
                 TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Subscribe.' + configuration.storeId, {
@@ -394,49 +635,19 @@
                 },
                 initialised: {
                     _onEnter: function(alertData) {
-                        var alertChecks = alertData[0].providers[0].services;
-
-                        configuration.query = buildQuery(providerName);
-                        configuration.mappings = [{
-                            "type": "extractFromDateHistogram",
-                            "defaultValue": 0,
-                            "dataSets": [
-                                {
-                                    "aggregate": "errors.bytime",
-                                    "field": "bookingErrors",
-                                    "value": "types.buckets.:find(key=providerBookingErrors).total.value"
-                                },
-                                {
-                                    "aggregate": "errors.bytime",
-                                    "field": "errors",
-                                    "value": "types.buckets.:find(key=providerErrors).total.value"
-                                },
-                                {
-                                    "aggregate": "bookings.bytime",
-                                    "field": "bookings",
-                                    "value": "types.buckets.:find(key=count).total.value"
-                                }
-                            ]
-                        }];
-
-                        metricDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-                            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
-                            refresh: 5000,
-                            mappings: configuration.mappings,
-                            callbacks: {
-                                success: function(data) {
-                                    TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
-                                        data: data,
-                                        check: selectedCheck,
-                                        metric: checks[selectedCheck].metric
-                                    });
-                                }
-                            },
-                            components: {
-                                loading: inlineLoading
+                        metricDataStore = createMetricStore(providerName, inlineLoading, {
+                            success: function(data) {
+                                TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.MetricData', {
+                                    data: data,
+                                    check: selectedCheck,
+                                    metric: checks[selectedCheck].metric
+                                });
                             }
-                        });
+                        }, configuration.metricsStore, alertData);
+
                         metricDataStore.start(true);
+
+
                     },
                     alertUpdate: function() {},
                     metricUpdate: function() {},

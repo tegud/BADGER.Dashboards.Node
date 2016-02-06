@@ -4,7 +4,7 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
     var checkTimeFrames;
-    var idIncrementor = 0;
+    var idIncrementor = 0; 
 
     function buildQuery(providerName) {
         return {

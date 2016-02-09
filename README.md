@@ -26,6 +26,7 @@ Minified, combined, optimised. grunt build required to see changes made in /stat
 3. grunt build
 4. npm start
 
+
 ## Tests
 
 Those tests which exist can be executed via: grunt test

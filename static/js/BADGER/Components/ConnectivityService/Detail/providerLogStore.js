@@ -25,6 +25,10 @@
         }
     }
 
+// if [type] == "hotel_acquisitions_errors" and !("noterror" in [tags]) and [Provider] and [loglevel] != "info" and ![ProviderReservationException][Provider] {
+//     if [type] == "hotel_acquisitions_errors" and [ProviderReservationException][Provider] and [loglevel] != "info" {
+    
+
     function buildQuery(providerName) {
         return {
             "query": {
@@ -40,11 +44,24 @@
                                             }
                                         }
                                     }, {
-                                        "terms": {
-                                            "metric": [
-                                                "providerErrors",
-                                                "providerBookingErrors"
-                                            ]
+                                        "term": {
+                                            "type": "hotel_acquisitions_errors"
+                                        }
+                                    }, {
+                                        "not": {
+                                            "term": {
+                                                "tags": "noterror"
+                                            }
+                                        }
+                                    }, {
+                                        "not": {
+                                            "term": {
+                                                "loglevel": "info"
+                                            }
+                                        }
+                                    }, {
+                                        "term": {
+                                            "Provider": "ean"
                                         }
                                     }]
                                 }, {
@@ -56,14 +73,18 @@
                                         }
                                     }, {
                                         "term": {
-                                            "service": "bookingsByProvider"
+                                            "type": "domain_events"
+                                        }
+                                    }, {
+                                        "term": {
+                                            "isTestBooking": false
+                                        }
+                                    }, {
+                                        "term": {
+                                            "hotelProvider": "ean"
                                         }
                                     }]
                                 }]
-                            }, {
-                                "term": {
-                                    "provider": providerName
-                                }
                             }]
                         }
                     }

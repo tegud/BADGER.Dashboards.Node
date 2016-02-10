@@ -25,10 +25,6 @@
         }
     }
 
-// if [type] == "hotel_acquisitions_errors" and !("noterror" in [tags]) and [Provider] and [loglevel] != "info" and ![ProviderReservationException][Provider] {
-//     if [type] == "hotel_acquisitions_errors" and [ProviderReservationException][Provider] and [loglevel] != "info" {
-    
-
     function buildQuery(providerName) {
         return {
             "query": {
@@ -60,9 +56,15 @@
                                             }
                                         }
                                     }, {
-                                        "term": {
-                                            "Provider": "ean"
-                                        }
+                                        "or": [{
+                                            "term": {
+                                                "Provider": providerName
+                                            }
+                                        }, {
+                                            "term": {
+                                                "ProviderReservationException.Provider": providerName
+                                            }
+                                        }]
                                     }]
                                 }, {
                                     "and": [{
@@ -81,11 +83,26 @@
                                         }
                                     }, {
                                         "term": {
-                                            "hotelProvider": "ean"
+                                            "hotelProvider": providerName
                                         }
                                     }]
                                 }]
                             }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "connectivity_errors": {
+                    "filter": { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "not": { "exists": { "field": "ProviderReservationException.Provider" } } }] } }
+                },
+                "booking_errors": {
+                    "filter":  { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "term": { "ProviderReservationException.Provider": providerName } }] } }
+                },
+                "bookings": {
+                    "filter": {
+                        "term": {
+                            "type": "domain_events"
                         }
                     }
                 }

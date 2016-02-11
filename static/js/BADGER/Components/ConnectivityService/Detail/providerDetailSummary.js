@@ -213,6 +213,19 @@
     }
 
     function parseOutput(output) {
+        if (/Exited with: [0-9], Current Value: (-?[0-9]+(\.[0-9]+)?), Critical: (-?[0-9]+(\.[0-9]+)?), Warning: (-?[0-9]+(\.[0-9]+)?)/.exec(output)) {
+            var value = /Current Value: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+            var warn = /Warning: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+            var crit = /Critical: (-?[0-9]+(\.[0-9]+)?)/.exec(output)[1];
+
+            return {
+                value: value,
+                warn: warn,
+                crit: crit
+            };
+        }
+
+
         if (!/Current value: (-?[0-9]+(\.[0-9]+)?), warn threshold: (-?[0-9]+(\.[0-9]+)?), crit threshold: (-?[0-9]+(\.[0-9]+)?)/.exec(output)) {
             return;
         }

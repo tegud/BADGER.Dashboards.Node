@@ -94,15 +94,88 @@
             },
             "aggs": {
                 "connectivity_errors": {
-                    "filter": { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "not": { "exists": { "field": "ProviderReservationException.Provider" } } }] } }
+                    "filter": { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "not": { "exists": { "field": "ProviderReservationException.Provider" } } }] } },
+                    "aggs": {
+                        "top_error_messages": {
+                            "terms": {
+                                "field": "Exception.Message.raw"
+                            }
+                        },
+                        "top_errors": {
+                            "top_hits": {
+                                "size": 50,
+                                "sort": [{ "@timestamp": { "order": "desc" } }],
+                                "_source": {
+                                    "include": [
+                                        "@timestamp",
+                                        "Provider",
+                                        "loglevel",
+                                        "terminating_request_id",
+                                        "ProviderAvailabilityException",
+                                        "Exception.Message",
+                                        "Exception.StackTraceString",
+                                        "Exception.ExceptionMethod",
+                                        "Exception.ClassName",
+                                        "Exception.Source",
+                                        "Exception.InnerException.Message",
+                                        "Exception.InnerException.ClassName",
+                                        "Exception.InnerException.ExceptionMethod",
+                                        "Exception.InnerException.StackTraceString",
+                                        "Exception.InnerException.Source",
+                                        "Exception.InnerException.InnerException.Message",
+                                        "Exception.InnerException.InnerException.ClassName",
+                                        "Exception.InnerException.InnerException.ExceptionMethod",
+                                        "Exception.InnerException.InnerException.StackTraceString",
+                                        "Exception.InnerException.InnerException.Source",
+                                        "Exception.InnerException.InnerException.InnerException.Message",
+                                        "Exception.InnerException.InnerException.InnerException.ClassName",
+                                        "Exception.InnerException.InnerException.InnerException.ExceptionMethod",
+                                        "Exception.InnerException.InnerException.InnerException.StackTraceString",
+                                        "Exception.InnerException.InnerException.InnerException.Source"
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 },
                 "booking_errors": {
-                    "filter":  { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "term": { "ProviderReservationException.Provider": providerName } }] } }
+                    "filter":  { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "term": { "ProviderReservationException.Provider":providerName } }] } },
+                    "aggs": {
+                        
+                    }
                 },
                 "bookings": {
                     "filter": {
                         "term": {
                             "type": "domain_events"
+                        }
+                    },
+                    "aggs": {
+                        "bookings": {
+                            "top_hits": {
+                                "size": 50,
+                                "sort": [ { "@timestamp": { "order": "desc" } } ],
+                                "_source": {
+                                    "include": [
+                                        "bookingId",
+                                        "hotelId",
+                                        "totalAmountGbp",
+                                        "commission",
+                                        "commissionValue",
+                                        "rooms",
+                                        "nights",
+                                        "hotelProvider",
+                                        "affiliateId",
+                                        "affiliateName",
+                                        "bookingCountry",
+                                        "channelId",
+                                        "sessionId",
+                                        "requestId",
+                                        "resAPI",
+                                        "isTestBooking"
+                                    ]
+                                }
+                            }
                         }
                     }
                 }

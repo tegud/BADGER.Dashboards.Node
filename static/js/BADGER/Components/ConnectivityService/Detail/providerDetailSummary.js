@@ -6,141 +6,6 @@
     var checkTimeFrames;
     var idIncrementor = 0; 
 
-
-    function buildLogQuery(providerName) {
-        return {
-            "query": {
-                "filtered": {
-                    "filter": {
-                        "bool": {
-                            "must": [{
-                                "or": [{
-                                    "and": [{
-                                        "range": {
-                                            "@timestamp": {
-                                                "from": "now-1h"
-                                            }
-                                        }
-                                    }, {
-                                        "terms": {
-                                            "metric": [
-                                                "providerErrors",
-                                                "providerBookingErrors"
-                                            ]
-                                        }
-                                    }]
-                                }, {
-                                    "and": [{
-                                        "range": {
-                                            "@timestamp": {
-                                                "from": "now-48h"
-                                            }
-                                        }
-                                    }, {
-                                        "term": {
-                                            "service": "bookingsByProvider"
-                                        }
-                                    }]
-                                }]
-                            }, {
-                                "term": {
-                                    "provider": providerName
-                                }
-                            }]
-                        }
-                    }
-                }
-            },
-            "aggs": {
-                "errors": {
-                    "filter": {
-                        "term": {
-                            "service": "connectivity"
-                        }
-                    },
-                    "aggs": {
-                        "bytime": {
-                            "date_histogram": {
-                                "min_doc_count": 0,
-                                "extended_bounds": {
-                                    "min": "now-1h",
-                                    "max": "now"
-                                },
-                                "field": "@timestamp",
-                                "interval": "1m"
-                            },
-                            "aggs": {
-                                "types": {
-                                    "terms": {
-                                        "field": "metric"
-                                    },
-                                    "aggs": {
-                                        "total": {
-                                            "sum": {
-                                                "field": "value"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "bookings": {
-                    "filter": {
-                        "term": {
-                            "service": "bookingsByProvider"
-                        }
-                    },
-                    "aggs": {
-                        "bytime": {
-                            "date_histogram": {
-                                "min_doc_count": 0,
-                                "extended_bounds": {
-                                    "min": "now-48h",
-                                    "max": "now"
-                                },
-                                "field": "@timestamp",
-                                "interval": "1h"
-                            },
-                            "aggs": {
-                                "types": {
-                                    "terms": {
-                                        "field": "metric"
-                                    },
-                                    "aggs": {
-                                        "total": {
-                                            "sum": {
-                                                "field": "value"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "size": 0
-        };
-    }
-
-    function createLogStore(providerName, inlineLoading, callbacks, configuration, alertData, checkTimeFrames) {
-        configuration.defaultTimeFrame = _.last(checkTimeFrames).timeFrame || { timeFrame: "1", units: 'hours' };
-        configuration.query = buildLogQuery(providerName);
-        configuration.mappings = [];
-
-        return new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            request: new TLRGRP.BADGER.Dashboard.DataSource.elasticsearch(configuration),
-            refresh: 5000,
-            mappings: configuration.mappings,
-            callbacks: callbacks,
-            components: {
-                loading: inlineLoading
-            }
-        });
-    }
-
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -489,7 +354,11 @@
 
                         logDataStore = TLRGRP.BADGER.Dashboard.ComponentModules.ProviderSummary.Logs.logStore(providerName, inlineLoading, {
                             success: function(data) {
-                                console.log(data);
+                                TLRGRP.messageBus.publish('TLRGRP.BADGER.ProviderDetailSummary.LogData', {
+                                    data: data.query.aggregations,
+                                    check: selectedCheck,
+                                    metric: checks[selectedCheck].metric
+                                });
                             }
                         }, configuration.logStore, alertData, checkTimeFrames);
 

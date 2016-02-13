@@ -1211,3 +1211,5 @@ h3 {margin: 0;padding: 0 }
 .provider-summary-tier-emblem-text { vertical-align: middle; display: inline-block; margin-left: 5px; font-size: 0.7em; font-style: italic; }
 
 .provider-summary-provider-title-text {vertical-align: middle; display: inline-block;}
+
+.provider-detail-detail { min-height: 400px; }

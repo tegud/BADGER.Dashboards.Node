@@ -1213,3 +1213,5 @@ h3 {margin: 0;padding: 0 }
 .provider-summary-provider-title-text {vertical-align: middle; display: inline-block;}
 
 .provider-detail-detail { min-height: 400px; }
+
+.provider-detail-detail-grid-container { list-style: none; margin: 0; padding: 0; }

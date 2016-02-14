@@ -14,10 +14,11 @@
 	TLRGRP.BADGER.Dashboard.Components.ProviderDetailDetail = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
-        var gridContainer = $('<ul class="provider-detail-detail-grid-container />');
+        var gridContainer = $('<ul class="provider-detail-detail-grid-container"></ul>');
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
+				console.log(gridContainer);
 				container.append(gridContainer);				
 			}
 		}];

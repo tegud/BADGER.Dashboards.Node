@@ -1215,3 +1215,27 @@ h3 {margin: 0;padding: 0 }
 .provider-detail-detail { min-height: 400px; }
 
 .provider-detail-detail-grid-container { list-style: none; margin: 0; padding: 0; }
+
+.provider-detail-detail-booking-table {  width: 100%; }
+
+.provider-detail-detail-booking-table-bookingid { width: 120px; }
+.provider-detail-detail-booking-table-booked { }
+.provider-detail-detail-booking-table-channel { width: 140px; }
+.provider-detail-detail-booking-table-country { width: 100px; }
+.provider-detail-detail-booking-table-hoteldetails { width: 200px; }
+.provider-detail-detail-booking-table-hoteldetails a { text-decoration: underline; }
+.provider-detail-detail-booking-table-roomnights { width: 100px; }
+.provider-detail-detail-booking-table-ttv { width: 100px; }
+.provider-detail-detail-booking-table-commission { width: 140px; }
+.provider-detail-detail-booking-table-affiliate { width: 250px; }
+.provider-detail-detail-booking-table-viewsession { width: 50px; }
+
+.provider-detail-detail-booking-table td { padding: 5px; }
+
+.provider-detail-error-messages { width: 33%; display: inline-block; padding: 5px; vertical-align: top; }
+
+.provider-detail-error-messages-table { width: 100%; margin-bottom: 10px; }
+
+.provider-detail-error-messages-table td { padding: 5px; }
+
+.provider-detail-errors { display: inline-block; vertical-align: top; width: 66%; }

@@ -58,11 +58,11 @@
                                     }, {
                                         "or": [{
                                             "term": {
-                                                "Provider": providerName
+                                                "Provider.raw": providerName
                                             }
                                         }, {
                                             "term": {
-                                                "ProviderReservationException.Provider": providerName
+                                                "ProviderReservationException.Provider.raw": providerName
                                             }
                                         }]
                                     }]
@@ -83,7 +83,7 @@
                                         }
                                     }, {
                                         "term": {
-                                            "hotelProvider": providerName
+                                            "hotelProvider.raw": providerName
                                         }
                                     }]
                                 }]
@@ -139,7 +139,7 @@
                     }
                 },
                 "booking_errors": {
-                    "filter":  { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "term": { "ProviderReservationException.Provider":providerName } }] } },
+                    "filter":  { "bool": { "must": [{ "term": { "type": "hotel_acquisitions_errors" } }, { "term": { "ProviderReservationException.Provider.raw":providerName } }] } },
                     "aggs": {
                         
                     }
@@ -157,6 +157,7 @@
                                 "sort": [ { "@timestamp": { "order": "desc" } } ],
                                 "_source": {
                                     "include": [
+                                        "@timestamp",
                                         "bookingId",
                                         "hotelId",
                                         "totalAmountGbp",
@@ -172,7 +173,8 @@
                                         "sessionId",
                                         "requestId",
                                         "resAPI",
-                                        "isTestBooking"
+                                        "isTestBooking",
+                                        "bookerCountry"
                                     ]
                                 }
                             }

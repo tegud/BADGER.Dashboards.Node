@@ -1214,7 +1214,7 @@ h3 {margin: 0;padding: 0 }
 
 .provider-detail-detail { min-height: 400px; }
 
-.provider-detail-detail-grid-container { list-style: none; margin: 0; padding: 0; }
+.provider-detail-detail-grid-container { list-style: none; margin: 0; padding: 0; clear: both; }
 
 .provider-detail-detail-booking-table {  width: 100%; }
 
@@ -1232,10 +1232,10 @@ h3 {margin: 0;padding: 0 }
 
 .provider-detail-detail-booking-table td { padding: 5px; }
 
-.provider-detail-error-messages { width: 33%; display: inline-block; padding: 5px; vertical-align: top; }
+.provider-detail-error-messages { width: 32%; display: inline-block; padding: 5px; vertical-align: top; }
 
 .provider-detail-error-messages-table { width: 100%; margin-bottom: 10px; }
 
 .provider-detail-error-messages-table td { padding: 5px; }
 
-.provider-detail-errors { display: inline-block; vertical-align: top; width: 66%; }
+.provider-detail-errors { display: inline-block; vertical-align: top; width: 65%; padding: 5px; }

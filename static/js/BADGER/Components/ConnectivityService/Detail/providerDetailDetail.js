@@ -11,6 +11,14 @@
         "bookings": "bookings"
     };
 
+	var channelMap = {
+		1: { text: 'iOS App' },
+		2: { text: 'Android App' },
+		9: { text: 'Desktop Web' },
+		25: { text: 'Call Centre' },
+		27: { text: 'XML Booking' },
+	};
+
     var renderers = {
 		'bookings': function(data) {
 			return Mustache.render('<li>'
@@ -44,7 +52,6 @@
 				+ '</table>'
 				+ '</li>', {
 					rows: _.map(data.bookings.hits.hits, function(booking) {
-						console.log(booking);
 						return {
 							bookingId: booking._source.bookingId,
 							bookedDate: moment(booking._source['@timestamp']).format('HH:mm:ss, DD MMMM YYYY'),
@@ -77,7 +84,6 @@
 
 			var totalMessages = _.reduce(messages, function(total, message) { total+= message.count; return total; }, 0);
 			var totalErrors = data.doc_count;
-			console.log(data);
 
 			return Mustache.render('<li class="provider-detail-error-messages">' 
 					+ '<h3>Top Error Messages</h3>'
@@ -156,28 +162,30 @@
 			modules: modules
 		});
 
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.LogData', function(data) {
+		var lastData;
+
+		function checkSelect(data) {
         	var checkToLogProperties = {
         		'Provider Errors': 'connectivity_errors',
         		'Provider Bookings': 'bookings',
-        		'Provider Bookings Errors': 'booking_errors'
+        		'Provider Booking Errors': 'booking_errors'
         	};
+
+			if(!lastData) {
+				return;
+			}
 
         	var logField = checkToLogProperties[data.check];
-        	var logData = data.data[logField];
-        	var channelMap = {
-        		1: { text: 'iOS App' },
-        		2: { text: 'Android App' },
-        		9: { text: 'Desktop Web' },
-        		25: { text: 'Call Centre' },
-        		27: { text: 'XML Booking' },
-        	};
-
-        	
+        	var logData = lastData[logField];
 
         	gridContainer.html(renderers[logField](logData));
+		}
+
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderDetailSummary.LogData', function(data) {
+        	lastData = data.data;
+			checkSelect(data);
         });
-        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', function() {});
+        TLRGRP.messageBus.subscribe('TLRGRP.BADGER.ProviderSummary.CheckSelected', checkSelect);
 
         var stateMachine = nano.Machine({
             states: {

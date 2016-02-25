@@ -2,12 +2,12 @@
     "name": "Late Rooms (Main)",
     "components": [
         {
-            "type": "HealthCheckSentinel",
+            "type": "HealthCheckIcinga",
             "alertName": "healthCheck.serviceHealth-live",
-            "group": "LateRooms",
+            "groups": ["Web", "SSL", "AU"],
             "title": "LateRooms Front End Server Status",
             "host": "badger.laterooms.com",
-            "port": 3000,
+            "port": 80,
             "span": 10
         },
         {

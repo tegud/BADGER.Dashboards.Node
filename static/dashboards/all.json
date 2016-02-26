@@ -23,10 +23,6 @@
                 "id": "LateRoomsWip",
                 "name": "Late Rooms (WIP)"
             },
-            "Legacy": {
-                "id": "LateRooms",
-                "name": "Legacy (Main)"
-            },
             "Requests": {
                 "id": "LateRoomsRequests",
                 "name": "Late Rooms (Requests)"

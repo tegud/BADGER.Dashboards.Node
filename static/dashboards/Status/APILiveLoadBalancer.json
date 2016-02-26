@@ -97,6 +97,30 @@
             "host": "10.44.35.62",
             "port": 1234,
             "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbookinginternal.laterooms.com_SSL",
+            "title": "XML Booking Internal API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbooking.laterooms.com_SSL",
+            "title": "XML Booking API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbookingservice.laterooms.com_SSL",
+            "title": "XML Booking Service API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
         }
     ]
 }

@@ -23,8 +23,9 @@
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{createdAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Created By: <img src="{{triggeredByAvatar}}" height="28"> {{triggeredBy}}</li>'
                     + '{{#assignedTo}}<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Assigned To: <img src="{{assignedToAvatar}}" height="28"> {{assignedTo}}</li>{{/assignedTo}}'
-                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-merge"></span>Merge state: {{mergeState}}</li>'
-                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-comment"></span>{{comments}} comments</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-merge pullrequest-mergestate-{{mergeState}}"></span>Merge state: {{mergeState}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-commit"></span>{{commits}} commits <span class="pullrequest-additions-text">+{{additions}}</span> <span class="pullrequest-changes-text">~{{changes}}</span> <span class="pullrequest-deletions-text">-{{deletions}}</span></li>'
+                    + '{{#comments}}<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-comment"></span>{{comments}} comments</li>{{/comments}}'
                 + '</ul>'
             + '</li>', {
                 name: pullRequest.title,
@@ -37,7 +38,11 @@
                 assignedTo: assignedTo, 
                 assignedToAvatar: assignedToAvatar,
                 mergeState: pullRequest.mergeable_state,
-                comments: pullRequest.comments + pullRequest.review_comments
+                comments: pullRequest.comments + pullRequest.review_comments,
+                commits: pullRequest.commits,
+                additions: pullRequest.additions,
+                changes: pullRequest.changed_files,
+                deletions: pullRequest.deletions
             });
         }
     };

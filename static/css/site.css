@@ -956,7 +956,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-completed .release-complete-failed { color: red; border-color: red; } 
 
-.releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08;font-size: 56px; }
+.releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08; font-size: 56px; }
 
 .completed-releases-container { margin-left: 95px; }
 
@@ -982,6 +982,8 @@ h3 {margin: 0;padding: 0 }
 .pullrequest-additions-text { color: darkgreen; }
 .pullrequest-deletions-text { color: darkred; }
 .pullrequest-changes-text { color: darkorange; }
+
+.github-user-avatar { border-radius: 50%; vertical-align: middle; border: solid 3px #000; }
 
 .pipeline-name-counter { font-size: 0.8em; color: #bbb; font-style: italic; }
 

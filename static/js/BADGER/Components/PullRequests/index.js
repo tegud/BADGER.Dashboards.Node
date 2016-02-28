@@ -18,7 +18,7 @@
 
             return Mustache.render('<li class="release-item">' 
                 + '<div class="team-icon"><span class="release-status-icon no-logo mega-octicon octicon-git-pull-request"></span><div class="team-label">{{team}}</div></div>' 
-                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span></h3>'
+                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span> <a href="{{prUrl}}"><span class="fa fa-external-link"></span></a></h3>'
                 + '<ul class="release-info">' 
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{startedAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Created By: <img src="{{triggeredByAvatar}}" height="28"> {{triggeredBy}}</li>'
@@ -27,6 +27,7 @@
             + '</li>', {
                 name: pullRequest.title,
                 team: pullRequest.base.repo.name,
+                prUrl: pullRequest.html_url,
                 counter: pullRequest.number,
                 startedAt: startedAt.format('HH:mm:ss') + ' (' + startedAt.fromNow(true) + ')',
                 triggeredBy: pullRequest.user.login,

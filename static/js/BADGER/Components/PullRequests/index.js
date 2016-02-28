@@ -18,7 +18,7 @@
 
             return Mustache.render('<li class="release-item">' 
                 + '<div class="team-icon"><span class="release-status-icon no-logo mega-octicon octicon-git-pull-request"></span><div class="team-label">{{team}}</div></div>' 
-                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span> <a href="{{prUrl}}"><span class="fa fa-external-link"></span></a></h3>'
+                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span> <a href="{{prUrl}}" target="_blank"><span class="fa fa-external-link"></span></a></h3>'
                 + '<ul class="release-info">' 
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{createdAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Created By: <img src="{{triggeredByAvatar}}" height="28"> {{triggeredBy}}</li>'

@@ -175,6 +175,10 @@
             "KafkaLive": {
                 "id": "KafkaLive",
                 "name": "Kafka Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Build Status"
             }
         }
     }, {

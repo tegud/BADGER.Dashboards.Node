@@ -7,7 +7,7 @@
 
     var template = {
         'inprogress': function(pullRequest) {
-            var startedAt = moment(pullRequest.created_at);
+            var createdAt = moment(pullRequest.created_at);
             var assignedTo = undefined;
             var assignedToAvatar = undefined;
 
@@ -18,61 +18,50 @@
 
             return Mustache.render('<li class="release-item">' 
                 + '<div class="team-icon"><span class="release-status-icon no-logo mega-octicon octicon-git-pull-request"></span><div class="team-label">{{team}}</div></div>' 
-                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span></h3>'
+                + '<h3>{{name}} <span class="pipeline-name-counter">(#{{counter}})</span> <a href="{{prUrl}}"><span class="fa fa-external-link"></span></a></h3>'
                 + '<ul class="release-info">' 
-                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{startedAt}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{createdAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Created By: <img src="{{triggeredByAvatar}}" height="28"> {{triggeredBy}}</li>'
                     + '{{#assignedTo}}<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Assigned To: <img src="{{assignedToAvatar}}" height="28"> {{assignedTo}}</li>{{/assignedTo}}'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-merge"></span>Merge state: {{mergeState}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-comment"></span>{{comments}} comments</li>'
                 + '</ul>'
             + '</li>', {
                 name: pullRequest.title,
                 team: pullRequest.base.repo.name,
+                prUrl: pullRequest.html_url,
                 counter: pullRequest.number,
-                startedAt: startedAt.format('HH:mm:ss') + ' (' + startedAt.fromNow(true) + ')',
+                createdAt: createdAt.format('HH:mm:ss') + ' (' + createdAt.fromNow(true) + ')',
                 triggeredBy: pullRequest.user.login,
                 triggeredByAvatar: pullRequest.user.avatar_url,
                 assignedTo: assignedTo, 
-                assignedToAvatar: assignedToAvatar
+                assignedToAvatar: assignedToAvatar,
+                mergeState: pullRequest.mergeable_state,
+                comments: pullRequest.comments + pullRequest.review_comments
             });
         }
     };
 
-    function render(releaseState, data) {
+    function render(prState, data) {
         if(!data.length) {
-            var nothingHtml = $('<div class="no-releases"><div class="fa fa-frown-o"></div> Nothing ' 
-                + (releaseState === 'completed' ? 'Shipped' : '<span class="nothing-shipped-counter">Shipping</span>') + '</div>');
+            var nothingHtml = $('<div class="no-releases"><div class="fa fa-smile-o"></div> Nothing Pending </div>');
 
             this.html(nothingHtml);
         }
         else {
             this.html(_.map(data, function(pullRequest) {
-                if(!template[releaseState]) { return; }
+                if(!template[prState]) { return; }
 
-                return template[releaseState](pullRequest);
+                return template[prState](pullRequest);
             }).join(''));
-        }
-
-        if(releaseState === 'completed') {
-            if(!data.length) {
-                $('.nothing-shipped-counter').text('Shipped Today!');
-            }
-            else {
-                $('.nothing-shipped-counter').text('Shipped for ' + _.chain(data)
-                    .map(function(item) { return moment(item.completedAt); })
-                    .sortBy(function(item) { return item.valueOf(); })
-                    .reverse()
-                    .first()
-                    .value()
-                    .fromNow(true));
-            }
         }
     }
 
-    function releasePanelFactory(releaseState) {
-        return function releasesPanel(configuration) {
+    function prPanelFactory(prState) {
+        return function prPanel(configuration) {
             var lastData;
-            var containerElement = $('<ul class="releases-list releases-' + releaseState + '"></ul>');
-            var setUpRender = render.bind(containerElement, releaseState);
+            var containerElement = $('<ul class="releases-list releases-' + prState + '"></ul>');
+            var setUpRender = render.bind(containerElement, prState);
 
             var orderElement = $(Mustache.render('<div class="release-order-selector{{directionClass}}">' 
                 + '<span class="release-order-selector-icon-asc fa fa-sort-numeric-asc"></span>' 
@@ -80,7 +69,7 @@
                 + '<span class="release-order-selector-label-asc">Order By Oldest First</span>' 
                 + '<span class="release-order-selector-label-desc">Order By Latest First</span>' 
                 + '</div>', {
-                    directionClass: (releaseState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc': ''
+                    directionClass: (prState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc': ''
                 })).on('click', function() { 
                     orderElement.toggleClass('desc'); 
                     lastData = lastData.reverse();
@@ -96,9 +85,6 @@
                     inlineLoading,
                     {
                         appendTo: function(componentElement) {
-                            if(releaseState !== 'scheduled') {
-                                componentElement.append(orderElement);
-                            }
                             componentElement.append(containerElement);
                         },
                         appendToLocation: function() {
@@ -202,5 +188,5 @@
         }
     }
 
-	TLRGRP.BADGER.Dashboard.Components.PullRequests = releasePanelFactory('inprogress');
+	TLRGRP.BADGER.Dashboard.Components.PullRequests = prPanelFactory('inprogress');
 })();

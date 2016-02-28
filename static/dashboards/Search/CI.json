@@ -46,16 +46,22 @@
           "mappings": []
         },
         {
+            "title": "Pending PRs",
+            "type": "PullRequests",
+            "span": "3",
+            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/search-"
+        },
+        {
             "title": "In Progress",
             "type": "InProgressReleases",
-            "span":"9",
+            "span": "6",
             "storeId": "SearchCIData",
             "defaultSortOrder": "Descending"
         },
         {
             "title": "Completed",
             "type": "CompletedReleases",
-            "span":"3",
+            "span": "3",
             "storeId": "SearchCIData"
         }
     ]

@@ -43,13 +43,13 @@
         {
             "title": "Pending PRs",
             "type": "PullRequests",
-            "span": "3",
+            "span": "4",
             "sourceUrl": "http://162.243.65.207/pullRequests"
         },
         {
             "title": "In Progress",
             "type": "InProgressReleases",
-            "span": "6",
+            "span": "5",
             "storeId": "AllCIData",
             "defaultSortOrder": "Descending"
         },

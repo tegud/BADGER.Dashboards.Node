@@ -35,9 +35,14 @@
         }
 
         function buildViewModel(views) {
-            return _(views).map(function(view) {
-                return view;
-            });
+            return _.chain(views)
+                .filter(function(view) {
+                    return typeof view.menu === 'undefined' || view.menu;
+                })
+                .map(function(view) {
+                    return view;
+                })
+                .value();
         }
 
         function hideSelector() {

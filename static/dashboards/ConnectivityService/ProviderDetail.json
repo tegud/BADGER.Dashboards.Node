@@ -1,0 +1,31 @@
+{
+    "name": "ProviderDetail",
+    "components": [
+        {
+            "type": "SharedDataStore",
+            "storeId": "IcingaProviderStatus",
+            "url": "http://badger.laterooms.com/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name) %26%26 host.name %3D%3D \"${qs:provider}\"",
+            "refresh": 60000
+        },
+        {
+            "type": "ProviderDetailSummary",
+            "storeId": "IcingaProviderStatus",
+            "metricsStore": {
+                "host": "http://10.44.72.61:9200",
+                "index": "metrics-${YYYY}.${MM}"
+            },
+            "logStore": {
+                "host": "http://logs.laterooms.com:9200",
+                "index": "logstash-${YYYY}.${MM}.${DD}"
+            }
+        },
+        {
+            "type": "ProviderDetailGraph",
+            "storeId": "IcingaProviderStatus"
+        },
+        {
+            "type": "ProviderDetailDetail",
+            "storeId": "IcingaProviderStatus"
+        }
+    ]
+}

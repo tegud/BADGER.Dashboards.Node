@@ -44,7 +44,7 @@
 	 				latestIndexRequired = moment(day);
 	 			}
 	 			else {
-	 				oldestIndexRequired = day.subtract(timeFrame.timeFrame, timeFrame.units);
+	 				oldestIndexRequired = day.subtract(timeFrame.units, timeFrame.timeFrame);
 	 			}
 
 				if(timeZone < 0) {

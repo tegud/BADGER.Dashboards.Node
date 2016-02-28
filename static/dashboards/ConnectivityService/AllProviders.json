@@ -1,0 +1,18 @@
+{
+    "name": "ProviderChecks",
+    "components": [
+        {
+            "type": "SharedDataStore",
+            "storeId": "IcingaProviderStatus",
+            "url": "http://badger.laterooms.com/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name)"
+        },
+        {
+            "type": "ProviderTierSummary",
+            "title": "All Providers",
+            "showAllStates": true,
+            "orderBy": "provider",
+            "tier": ["Platinum Providers", "Gold Providers", "Silver Providers", "Bronze Providers"],
+            "storeId": "IcingaProviderStatus"
+        }
+    ]
+}

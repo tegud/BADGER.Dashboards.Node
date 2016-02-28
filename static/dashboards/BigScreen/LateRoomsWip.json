@@ -1,14 +1,14 @@
 {
-    "name": "Late Rooms (Main)",
+    "name": "Late Rooms (WIP)",
     "components": [{
-            "type": "HealthCheckIcinga",
-            "alertName": "healthCheck.serviceHealth-live",
-            "groups": ["Web", "SSL", "AU"],
-            "title": "LateRooms Front End Server Status",
-            "host": "badger.laterooms.com",
-            "port": 80,
-            "span": 10
-        }, {
+        "type": "HealthCheckIcinga",
+        "alertName": "healthCheck.serviceHealth-live",
+        "groups": ["Web", "SSL", "AU"],
+        "title": "LateRooms Front End Server Status",
+        "host": "badger.laterooms.com",
+        "port": 80,
+        "span": 10
+    }, {
         "type": "LineGraphAndCounter",
         "title": "Errors",
         "dataSource": "elasticsearch",

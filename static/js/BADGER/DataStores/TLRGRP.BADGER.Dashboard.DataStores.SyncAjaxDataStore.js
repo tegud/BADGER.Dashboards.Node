@@ -14,6 +14,20 @@
         units: 'hours'
     };
 
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    var fillpointRegex = /\$\{([^:]+:[^\}]+)\}/g;
+
+    function getKeyFromStore(store, key) {
+        if(store === 'qs') {
+            return getParameterByName(key);
+        }
+    }
+
     TLRGRP.messageBus.subscribe('TLRGRP.BADGER.TimePeriod.Set', function(timeFrameData) {
         currentTimeFrame = timeFrameData;
     });
@@ -94,8 +108,19 @@
 
                             return true;
                         }).map(function(queryOptions) {
+                            var url = queryOptions && queryOptions.url ? queryOptions.url : currentOptions.url;
+                            var fillpoints = url.match(fillpointRegex);
+
+                            if(fillpoints) {
+                              for(var y = 0; y < fillpoints.length; y++) {
+                                var splitFillpoint = fillpoints[y].substring(2, fillpoints[y].length - 1).split(':');
+                                
+                                url = url.replace(fillpoints[y], getKeyFromStore(splitFillpoint[0], splitFillpoint[1]));
+                              }
+                            }
+
                             var ajaxOptions = {
-                                url: currentOptions.url,
+                                url: url,
                                 data: currentOptions.data,
                                 success: function(data) {
                                     if(queryOptions && queryOptions.id) {

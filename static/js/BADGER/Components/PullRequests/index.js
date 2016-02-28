@@ -69,7 +69,7 @@
                 + '<span class="release-order-selector-label-asc">Order By Oldest First</span>' 
                 + '<span class="release-order-selector-label-desc">Order By Latest First</span>' 
                 + '</div>', {
-                    directionClass: (prState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc': ''
+                    directionClass: (prState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc' : ''
                 })).on('click', function() { 
                     orderElement.toggleClass('desc'); 
                     lastData = lastData.reverse();
@@ -85,6 +85,7 @@
                     inlineLoading,
                     {
                         appendTo: function(componentElement) {
+                            componentElement.append(orderElement);
                             componentElement.append(containerElement);
                         },
                         appendToLocation: function() {

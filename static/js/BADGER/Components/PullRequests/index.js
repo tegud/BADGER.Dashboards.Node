@@ -23,6 +23,8 @@
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-clock"></span>Opened at: {{createdAt}}</li>'
                     + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Created By: <img src="{{triggeredByAvatar}}" height="28"> {{triggeredBy}}</li>'
                     + '{{#assignedTo}}<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-person"></span>Assigned To: <img src="{{assignedToAvatar}}" height="28"> {{assignedTo}}</li>{{/assignedTo}}'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-git-merge"></span>Merge state: {{mergeState}}</li>'
+                    + '<li class="release-info-item"><span class="release-info-icon mega-octicon octicon-comment"></span>{{comments}} comments</li>'
                 + '</ul>'
             + '</li>', {
                 name: pullRequest.title,
@@ -33,7 +35,9 @@
                 triggeredBy: pullRequest.user.login,
                 triggeredByAvatar: pullRequest.user.avatar_url,
                 assignedTo: assignedTo, 
-                assignedToAvatar: assignedToAvatar
+                assignedToAvatar: assignedToAvatar,
+                mergeState: pullRequest.mergeable_state,
+                comments: pullRequest.comments + pullRequest.review_comments
             });
         }
     };

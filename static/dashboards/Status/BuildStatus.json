@@ -1,0 +1,63 @@
+{
+    "name": "Build Status",
+    "components": [
+    {
+          "type": "SharedDataStore",
+          "title": "All CI Data",
+          "storeId": "AllCIData",
+          "dataSource": "elasticsearch",
+          "host": "http://badger.laterooms.com:9200",
+          "index": "releases-${YYYY}.${MM}",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 0,
+            "units": "daysAgo"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 1000
+            }
+          },
+          "mappings": []
+        },
+        {
+            "title": "Pending PRs",
+            "type": "PullRequests",
+            "span": "3",
+            "sourceUrl": "http://162.243.65.207/pullRequests"
+        },
+        {
+            "title": "In Progress",
+            "type": "InProgressReleases",
+            "span": "6",
+            "storeId": "AllCIData",
+            "defaultSortOrder": "Descending"
+        },
+        {
+            "title": "Completed",
+            "type": "CompletedReleases",
+            "span": "3",
+            "storeId": "AllCIData"
+        }
+    ]
+}

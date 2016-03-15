@@ -43,6 +43,8 @@
                     var windowOffset = $(window).height() < $(document).height() ? 25 : 5;
                     windowOffset = 25;
 
+                    document.title = data.name || "Live Status";
+
                     var componentFactoryDeferred = $.Deferred();
                     componentFactoryDeferred.resolve(data.components);
 

@@ -7,8 +7,9 @@ var AppServer = require('./lib/AppServer');
 var SyncServer = require('./lib/SyncServer');
 var favicon = require('serve-favicon');
 var redis = require('redis');
+var icingaClient = require('./icingaClient')();
 
-var server = function() {
+var server = function () {
     var app = express();
     var httpServer;
     var sync;
@@ -21,45 +22,48 @@ var server = function() {
     app.use("/static", express.static(applicationRoot + 'static'));
     app.use(favicon(applicationRoot + 'static' + '/favicon.ico'));
 
-    app.get('/admin', function(req, res) {
+    app.get('/admin', function (req, res) {
         res.render('admin.hbs');
     });
 
-    app.get('/admin/connections', function(req, res) {
+    app.get('/admin/connections', function (req, res) {
         res.send({
             connections: sync.getListOfConnections()
         });
     });
 
-    app.get('/admin/command/setName/:session/:name', function(req, res) {
+    app.get('/admin/command/setName/:session/:name', function (req, res) {
         sync.setSessionName(req.params.session, req.params.name);
         res.send();
     });
 
-    app.get('/admin/command/reload/:session', function(req, res) {
+    app.get('/admin/command/reload/:session', function (req, res) {
         sync.reloadScreen(req.params.session);
         res.send();
     });
 
-    app.get('/admin/command/identify', function(req, res) {
+    app.get('/admin/command/identify', function (req, res) {
         sync.identify();
         res.send();
     });
 
-    app.get('/admin/command/messageAll', function(req, res) {
+    app.get('/admin/command/messageAll', function (req, res) {
         sync.messageAll(req.query.message);
         res.send();
     });
 
+    app.get('/icinga/health', icingaClient.checkHealth);
 
-    app.get('/redis/hash/:key', function(req, res) {
+    app.get('/icinga/byFilter', icingaClient.checkFilter);
+
+    app.get('/redis/hash/:key', function (req, res) {
         client.hgetall(req.params.key, function (err, obj) {
             res.send(JSON.stringify(JSON.parse(obj.teams)));
         });
     });
 
-    app.get(/^(.*)$/, function(req, res, next){
-        if(req.originalUrl.indexOf('.') === -1) {
+    app.get(/^(.*)$/, function (req, res, next) {
+        if (req.originalUrl.indexOf('.') === -1) {
             return res.render('index.hbs');
         }
 
@@ -67,27 +71,27 @@ var server = function() {
     });
 
     return {
-        start: function(options, callback) {
+        start: function (options, callback) {
             httpServer = new AppServer(app, options);
 
             async.waterfall([
                     httpServer.start,
-                    function(http, socket, callback) {
+                    function (http, socket, callback) {
                         sync = new SyncServer();
                         sync.start(socket, callback);
                     }
                 ],
-                function(err, http, socket) {
-                    (callback || function() {})(err);
+                function (err, http, socket) {
+                    (callback || function () {})(err);
                 });
         },
-        stop: function(callback) {
+        stop: function (callback) {
             httpServer.stop(callback);
         }
     };
 };
 
-if(require.main === module) {
+if (require.main === module) {
     new server().start({
         port: 1234
     });

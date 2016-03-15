@@ -1,277 +1,272 @@
 {
-    "dashboards": [
-        {
-            "id": "Overview",
-            "views": {
-                "Summary": {
-                    "id": "Summary",
-                    "name": "Summary"
-                },
-                "Traffic": {
-                    "id": "DetailedErrors",
-                    "name": "Detailed (Errors)"
-                }
-            }
-        },
-        {
-            "id": "BigScreen",
-            "name": "Big Screen",
-            "views": {
-                "Summary": {
-                    "id": "LateRoomsNew",
-                    "name": "Late Rooms (Main)"
-                },
-                "Legacy": {
-                    "id": "LateRooms",
-                    "name": "Legacy (Main)"
-                },
-                "Requests": {
-                    "id": "LateRoomsRequests",
-                    "name": "Late Rooms (Requests)"
-                },
-                "MoonstickSummary": {
-                    "id": "Moonstick",
-                    "name": "Moonstick (Main)"
-                }
-            }
-        },
-        {
-            "id": "Releases",
-            "name": "Releases",
-            "views": {
-                "Overview": {
-                    "id": "Overview",
-                    "name": "Overview"
-                },
-                "Monitoring": {
-                    "id": "Monitoring",
-                    "name": "Monitoring"
-                }
-            }
-        },
-        {
-            "id": "OutOfHours",
-            "name": "Out of Hours",
-            "views": {
-                "Rota": {
-                    "id": "Rota",
-                    "name": "Rota"
-                }
-            }
-        },
-        {
-            "id": "RatesAndAvailability",
-            "name": "Rates and Availability",
-            "views": {
-                "Overview": {
-                    "id": "Overview",
-                    "name": "Overview"
-                }
-            }
-        }, 
-        {
-            "id": "Distribution",
-            "name": "Distribution",
-            "views": {
-                "Beta": {
-                    "id": "LookToBook",
-                    "name": "Look To Book"
-                },
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                },
-                "BuildStatus": {
-                    "id": "BuildStatus",
-                    "name": "Distribution Build Status"
-                }
-            }
-        },
-        {
-            "id": "MultiChannel",
-            "name": "Multi Channel",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                }
-            }
-        },
-        {
-            "id": "CustomerManagement",
-            "name": "Customer Management",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                }
-            }
-        },
-        {
-            "id": "LateRooms",
-            "name": "LateRooms",
-            "views": {
-                "CoversionStatus": {
-                    "id": "ConversionStatus",
-                    "name": "Conversion (In Progress)"
-                },
-                "LateRoomsConversion": {
-                    "id": "LateRoomsConversion",
-                    "name": "Conversion Graph"
-                },
-                "ProviderConversion": {
-                    "id": "ProviderConversion",
-                    "name": "Provider Conversion"
-                },
-                "ProviderConversionGraph": {
-                    "id": "ProviderConversionGraph",
-                    "name": "Provider Conversion Graph"
-                }
-            }
-        },
-        {
-            "id": "Status",
-            "name": "Status",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                },
-                "DevTools": {
-                    "id": "DevTools",
-                    "name": "Dev Tools"
-                },
-                "ELK": {
-                    "id": "ELK",
-                    "name": "ELK"
-                },
-                "APILiveLoadBalancer": {
-                    "id": "APILiveLoadBalancer",
-                    "name": "Live API Load Balancer"
-                },
-                "AllPoolsLiveLoadBalancer": {
-                    "id": "AllLiveLoadBalancer",
-                    "name": "All Pools Live Load Balancer"
-                },
-                "DevTestPoolsLiveLoadBalancer": {
-                    "id": "DevTestLiveLoadBalancer",
-                    "name": "Dev/Test Pools Live Load Balancer"
-                },
-                "Sandbox": {
-                    "id": "Sandbox",
-                    "name": "Sandbox"
-                },
-                "Test": {
-                    "id": "Test",
-                    "name": "Test"
-                },
-                "Blogs": {
-                    "id": "Blogs",
-                    "name": "Blogs"
-                },
-                "KafkaQA": {
-                    "id": "KafkaQA",
-                    "name": "Kafka QA"
-                },
-                "KafkaLive": {
-                    "id": "KafkaLive",
-                    "name": "Kafka Live"
-                }
-            }
-        },
-        {
-            "id": "Search",
-            "name": "Search",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                },
-                "CI": {
-                    "id": "CI",
-                    "name": "CI"
-                }
-            }
-        },
-        {
-            "id": "SWP",
-            "name": "SWP",
-            "views": {
-                "BuildStatus": {
-                    "id": "BuildStatus",
-                    "name": "Moonstick Build Status"
-                }
-            }
-        },
-        {
-            "id": "Reservations",
-            "name": "Reservations",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                },
-                "BuildStatus": {
-                    "id": "BuildStatus",
-                    "name": "Reservations Build Status"
-                }
-            }
-        },
-        {
-            "id": "Rates",
-            "name": "Rates",
-            "views": {
-                "Live": {
-                    "id": "Live",
-                    "name": "Live"
-                },
-                "BuildStatus": {
-                    "id": "BuildStatus",
-                    "name": "Rates Build Status"
-                }
-            }
-        },
-        {
-            "id": "Bookings",
-            "name": "Bookings",
-            "views": {
-                "LateRooms": {
-                    "id": "LateRooms",
-                    "name": "LateRooms.com Bookings"
-                },
-                "LateRoomsConversion": {
-                    "id": "LateRoomsConversion",
-                    "name": "LateRooms.com Conversion"
-                }
-            }
-        },
-        {
-            "id": "LateRoomsErrors",
-            "name": "LateRooms.com Errors",
-            "views": {
-                "LRAllErrors": {
-                    "id": "LRAllErrors",
-                    "name": "All"
-                },
-                "LRSearchErrors": {
-                    "id": "LRSearchErrors",
-                    "name": "Search"
-                },
-                "LRBookingErrors": {
-                    "id": "LRBookingErrors",
-                    "name": "Booking"
-                }
-            }
-        },
-        {
-            "id": "Alerts",
-            "name": "Alerts",
-            "views": {
-                "Alerts": {
-                    "id": "Alerts",
-                    "name": "All"
-                }
+    "dashboards": [{
+        "id": "Overview",
+        "views": {
+            "Summary": {
+                "id": "Summary",
+                "name": "Summary"
+            },
+            "Traffic": {
+                "id": "DetailedErrors",
+                "name": "Detailed (Errors)"
             }
         }
-    ]
+    }, {
+        "id": "BigScreen",
+        "name": "Big Screen",
+        "views": {
+            "Summary": {
+                "id": "LateRoomsNew",
+                "name": "Late Rooms (Main)"
+            },
+            "Summary (WIP)": {
+                "id": "LateRoomsWip",
+                "name": "Late Rooms (WIP)"
+            },
+            "Requests": {
+                "id": "LateRoomsRequests",
+                "name": "Late Rooms (Requests)"
+            },
+            "MoonstickSummary": {
+                "id": "Moonstick",
+                "name": "Moonstick (Main)"
+            }
+        }
+    }, {
+        "id": "Releases",
+        "name": "Releases",
+        "views": {
+            "Overview": {
+                "id": "Overview",
+                "name": "Overview"
+            },
+            "Monitoring": {
+                "id": "Monitoring",
+                "name": "Monitoring"
+            }
+        }
+    }, {
+        "id": "OutOfHours",
+        "name": "Out of Hours",
+        "views": {
+            "Rota": {
+                "id": "Rota",
+                "name": "Rota"
+            }
+        }
+    }, {
+        "id": "ConnectivityService",
+        "name": "Connectivity Service",
+        "views": {
+            "Overview": {
+                "id": "Overview",
+                "name": "Overview"
+            },
+            "AllProviders": {
+                "id": "AllProviders",
+                "name": "All Providers"
+            },
+            "ProviderDetail": {
+                "id": "ProviderDetail",
+                "name": "Provider",
+                "menu": false
+            }
+        }
+    }, {
+        "id": "Distribution",
+        "name": "Distribution",
+        "views": {
+            "Beta": {
+                "id": "LookToBook",
+                "name": "Look To Book"
+            },
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Distribution Build Status"
+            }
+        }
+    }, {
+        "id": "MultiChannel",
+        "name": "Multi Channel",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            }
+        }
+    }, {
+        "id": "CustomerManagement",
+        "name": "Customer Management",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            }
+        }
+    }, {
+        "id": "LateRooms",
+        "name": "LateRooms",
+        "views": {
+            "CoversionStatus": {
+                "id": "ConversionStatus",
+                "name": "Conversion (In Progress)"
+            },
+            "LateRoomsConversion": {
+                "id": "LateRoomsConversion",
+                "name": "Conversion Graph"
+            },
+            "ProviderConversion": {
+                "id": "ProviderConversion",
+                "name": "Provider Conversion"
+            },
+            "ProviderConversionGraph": {
+                "id": "ProviderConversionGraph",
+                "name": "Provider Conversion Graph"
+            }
+        }
+    }, {
+        "id": "Status",
+        "name": "Status",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            },
+            "DevTools": {
+                "id": "DevTools",
+                "name": "Dev Tools"
+            },
+            "ELK": {
+                "id": "ELK",
+                "name": "ELK"
+            },
+            "APILiveLoadBalancer": {
+                "id": "APILiveLoadBalancer",
+                "name": "Live API Load Balancer"
+            },
+            "AllPoolsLiveLoadBalancer": {
+                "id": "AllLiveLoadBalancer",
+                "name": "All Pools Live Load Balancer"
+            },
+            "DevTestPoolsLiveLoadBalancer": {
+                "id": "DevTestLiveLoadBalancer",
+                "name": "Dev/Test Pools Live Load Balancer"
+            },
+            "Sandbox": {
+                "id": "Sandbox",
+                "name": "Sandbox"
+            },
+            "Test": {
+                "id": "Test",
+                "name": "Test"
+            },
+            "Blogs": {
+                "id": "Blogs",
+                "name": "Blogs"
+            },
+            "KafkaQA": {
+                "id": "KafkaQA",
+                "name": "Kafka QA"
+            },
+            "KafkaLive": {
+                "id": "KafkaLive",
+                "name": "Kafka Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Build Status"
+            }
+        }
+    }, {
+        "id": "Search",
+        "name": "Search",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            },
+            "CI": {
+                "id": "CI",
+                "name": "CI"
+            }
+        }
+    }, {
+        "id": "SWP",
+        "name": "SWP",
+        "views": {
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Moonstick Build Status"
+            }
+        }
+    }, {
+        "id": "Reservations",
+        "name": "Reservations",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Reservations Build Status"
+            }
+        }
+    }, {
+        "id": "Rates",
+        "name": "Rates",
+        "views": {
+            "Live": {
+                "id": "Live",
+                "name": "Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Rates Build Status"
+            }
+        }
+    }, {
+        "id": "Bookings",
+        "name": "Bookings",
+        "views": {
+            "LateRooms": {
+                "id": "LateRooms",
+                "name": "LateRooms.com Bookings"
+            },
+            "LateRoomsConversion": {
+                "id": "LateRoomsConversion",
+                "name": "LateRooms.com Conversion"
+            }
+        }
+    }, {
+        "id": "LateRoomsErrors",
+        "name": "LateRooms.com Errors",
+        "views": {
+            "LRAllErrors": {
+                "id": "LRAllErrors",
+                "name": "All"
+            },
+            "LRSearchErrors": {
+                "id": "LRSearchErrors",
+                "name": "Search"
+            },
+            "LRBookingErrors": {
+                "id": "LRBookingErrors",
+                "name": "Booking"
+            }
+        }
+    }, {
+        "id": "Alerts",
+        "name": "Alerts",
+        "views": {
+            "Alerts": {
+                "id": "Alerts",
+                "name": "All"
+            }
+        }
+    }]
 }

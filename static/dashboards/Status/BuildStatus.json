@@ -1,10 +1,10 @@
 {
-    "name": "Search CI",
+    "name": "Build Status",
     "components": [
     {
           "type": "SharedDataStore",
-          "title": "Search CI Data",
-          "storeId": "SearchCIData",
+          "title": "All CI Data",
+          "storeId": "AllCIData",
           "dataSource": "elasticsearch",
           "host": "http://badger.laterooms.com:9200",
           "index": "releases-${YYYY}.${MM}",
@@ -29,11 +29,6 @@
                           "range" : {
                             "@timestamp" : { }
                           }
-                        },
-                        {
-                          "term" : {
-                            "group.raw" : "Product-Team-Search"
-                          }
                         }
                       ]
                     }
@@ -49,20 +44,20 @@
             "title": "Pending PRs",
             "type": "PullRequests",
             "span": "4",
-            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/search-"
+            "sourceUrl": "http://162.243.65.207/pullRequests"
         },
         {
             "title": "In Progress",
             "type": "InProgressReleases",
             "span": "5",
-            "storeId": "SearchCIData",
+            "storeId": "AllCIData",
             "defaultSortOrder": "Descending"
         },
         {
             "title": "Completed",
             "type": "CompletedReleases",
             "span": "3",
-            "storeId": "SearchCIData"
+            "storeId": "AllCIData"
         }
     ]
 }

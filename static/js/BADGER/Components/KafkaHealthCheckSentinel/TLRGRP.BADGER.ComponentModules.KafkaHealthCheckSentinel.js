@@ -45,7 +45,7 @@
         };
     }
     
-    TLRGRP.BADGER.Dashboard.ComponentModules.KafkaHealthCheckSentinel = function () {
+    TLRGRP.BADGER.Dashboard.ComponentModules.KafkaConsumersSentinel = function () {
         var containerElement = $('<div class="health-check-server-groups-container"></div>');
 
         return {

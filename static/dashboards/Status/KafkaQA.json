@@ -49,6 +49,16 @@
             "title": "Kafka Topics",
             "host": "127.0.0.1",
             "port": 3000,
+            "span": 3
+        },
+        {
+            "type": "KafkaConsumersSentinel",
+            "environment": "qa",
+            "alertName": "",
+            "group": "Kafka",
+            "title": "Kafka consumer status",
+            "host": "localhost",
+            "port": 3000,
             "span": 12
         }
     ]

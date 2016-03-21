@@ -40,6 +40,10 @@
                 "id": "Overview",
                 "name": "Overview"
             },
+            "OverviewRot": {
+                "id": "OverviewRot",
+                "name": "Overview With Rot"
+            },
             "Monitoring": {
                 "id": "Monitoring",
                 "name": "Monitoring"

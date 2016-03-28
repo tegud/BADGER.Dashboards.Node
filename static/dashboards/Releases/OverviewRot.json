@@ -48,7 +48,8 @@
         {
             "title": "Release order Telegraph",
             "type": "ReleaseOrderTelegraph",
-            "span":"3"
+            "span":"3",
+            "url": "http://dashboard-lb.dashboards.logging.laterooms.work:1234/currentState"
         },
         {
             "title": "Shipping",

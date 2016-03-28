@@ -3,37 +3,93 @@
 
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
+    var signalPriority = {
+        'green': 2,
+        'amber': 1,
+        'red': 0
+    };
+
+    var bigIndicatorStates = {
+        'green': { text: 'Board is green<br/>Clear to release', icon: '<span class="fa fa-thumbs-up"></span>' },
+        'amber': { text: 'Proceed with caution, check before starting', icon: '<span class="release-signal-indicator-icon">!</span>' },
+        'red': { text: 'Do not start new releases', icon: '<span class="release-signal-indicator-icon">X</span>' },
+    };
+
+    var checkTypeExtendedInfoTemplates = {
+        concurrentReleases: function(check) {
+            var signalThresholdTemplates = {
+                'amber': {
+                    'under': '{{remaining}} more allowed until caution required',
+                    'equal': 'At caution limit',
+                    'over': '{{remaining}} over caution limit'
+                },
+                'red': {
+                    'under': '{{remaining}} more allowed until pause',
+                    'equal': 'At pause limit',
+                    'over': '{{remaining}} over pause limit'
+                }
+            };
+
+            check.concurrentReleases = 11;
+
+            return Mustache.render('<div class="release-signal-check-list-item-releases-ongoing">{{concurrentReleases}} Ongoing Releases</div>'
+                + '{{#allowedText}}<div class="release-signal-check-list-item-releases-limits">{{text}}</div>{{/allowedText}}', {
+                concurrentReleases: check.concurrentReleases,
+                allowedText: _.map(check.thresholds, function(threshold) {
+                    var underOver = check.concurrentReleases === threshold.limit ? 'equal' : check.concurrentReleases >= threshold.limit ? 'over': 'under';
+
+                    return { text:  Mustache.render(signalThresholdTemplates[threshold.signal][underOver], {
+                        remaining: Math.abs(threshold.limit - check.concurrentReleases)
+                    }) }
+                })
+            });
+        }
+    };
+
+    var defaultExtendedInfoTemplate = function(check) {
+        return Mustache.render('{{#reason}}<div class="release-signal-check-list-item-reason">{{reason}}</div>{{/reason}}', check);
+    }
+
     TLRGRP.BADGER.Dashboard.Components.ReleaseOrderTelegraph = function (configuration) {
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
-        var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
             query: {
-                url: "http://localhost:1240",
+                url: configuration.url,
             },
             refresh: 2500,
             callbacks: {
                 success: function (data) {
-                    var signalState = JSON.parse(data.query).signal;
+                    var rotData = JSON.parse(data.query);
+                    var signalState = rotData.signal;
 
-                    var textDescriptions = {
-                        'green': 'Board is green<br/>Clear to release',
-                        'amber': 'Proceed with caution, check before starting',
-                        'red': 'Do not start new releases'
-                    };
+                    var checkList = Mustache.render('<ul class="release-signal-check-list">{{#checks}}'
+                            + '<li class="release-signal-check-list-item">'
+                                + '<div class="release-signal-check-list-item-indicator {{signal}}">{{{icon}}}</div>'
+                                + '<div class="release-signal-check-list-item-text {{signal}}">{{name}}</div>'
+                                + '{{{extended}}}'
+                            +'</li>'
+                        +'{{/checks}}</ul>', {
+                        checks: _.chain(rotData.checks).sortBy(function(check) { return signalPriority[check.signal]; }).map(function(check) {
+                            return {
+                                signal: check.signal,
+                                icon: bigIndicatorStates[check.signal].icon,
+                                name: check.name || check.type,
+                                extended: (checkTypeExtendedInfoTemplates[check.type] || defaultExtendedInfoTemplate)(check)
+                            };
+                        }).value()
+                    });
 
-                    var icons = {
-                        'green': '<span class="fa fa-thumbs-up"></span>',
-                        'amber': '<span class="release-signal-indicator-icon">!</span>',
-                        'red': '<span class="release-signal-indicator-icon">X</span>'
-                    };
-
-                    signal.html('<div class="release-signal-indicator ' + signalState + '">' + icons[signalState] + '</div><div class="release-signal-text ' + signalState + '">' + textDescriptions[signalState] + '</div>');
+                    signal.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{text}}</div>{{{checkList}}}', {
+                        signalState: signalState,
+                        text: bigIndicatorStates[signalState].text,
+                        icon: bigIndicatorStates[signalState].icon,
+                        checkList: checkList
+                    }));
                 }
             },
             components: {
-                loading: inlineLoading,
-                lastUpdated: lastUpdated
+                loading: inlineLoading
             }
         });
 
@@ -44,7 +100,6 @@
 			layout: configuration.layout,
 			componentClass: 'conversion-status',
 			modules: [
-                lastUpdated,
                 inlineLoading,
                 {
                     appendTo: function (container) {

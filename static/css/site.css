@@ -1250,10 +1250,31 @@ h3 {margin: 0;padding: 0 }
 
 .release-signal-indicator { width: 200px; height: 200px; border: solid 20px #000; border-radius: 150px; margin: 0 auto; margin-bottom: 10px; font-size: 150px; text-align: center; }
 
-.release-signal-indicator.green, .release-signal-text.green { border-color: green; color: green }
-.release-signal-indicator.amber, .release-signal-text.amber { border-color: orange; color: orange }
-.release-signal-indicator.red, .release-signal-text.red { border-color: #f00; color: #f00 }
+.release-signal-indicator.green, .release-signal-text.green,
+.release-signal-check-list-item-indicator.green,
+.release-signal-check-list-item-text.green { border-color: green; color: green }
+.release-signal-indicator.amber, .release-signal-text.amber,
+.release-signal-check-list-item-indicator.amber,
+.release-signal-check-list-item-text.amber { border-color: orange; color: orange }
+.release-signal-indicator.red, .release-signal-text.red,
+.release-signal-check-list-item-indicator.red,
+.release-signal-check-list-item-text.red { border-color: #f00; color: #f00 }
 
 .release-signal-text { font-size: 3em; text-align: center; font-weight: bold; }
 
 .release-signal-indicator-icon { display: block; font-weight: bold; margin-top: 15px; }
+
+.release-signal-check-list { list-style: none; margin: 10px 0 0 0; padding: 0 }
+
+.release-signal-check-list-item { padding: 5px }
+
+.release-signal-check-list-item-indicator { vertical-align: middle;display: inline-block; border: solid 6px #999; border-radius: 40px; width: 30px; height: 30px; text-align: center; font-size: 23px; }
+
+.release-signal-check-list-item-indicator .release-signal-indicator-icon { margin-top: 3px; }
+
+.release-signal-check-list-item-text { vertical-align: middle; display: inline-block; margin-left: 10px; font-size: 1.5em; font-weight: bold; }
+
+.release-signal-check-list-item-reason { margin-left: 52px; font-style: italic; }
+
+.release-signal-check-list-item-releases-ongoing { margin-left: 52px; font-weight: bold; }
+.release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }

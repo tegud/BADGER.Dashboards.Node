@@ -2,7 +2,7 @@
 
 body { font-family: Helvetica, arial, freesans, clean, sans-serif;background-color: #eaeaea; margin: 0; padding: 0; }
 
-.main-body { margin: 0 14px !important; } 
+.main-body { margin: 0 14px !important; }
 
 .top-level-item.v2-label { display: none; }
 
@@ -233,9 +233,9 @@ h3 {margin: 0;padding: 0 }
 .connection-indicator-icon span { font-size: 22px; color: #fff; }
 
 .connection-indicator.connected,
-.connection-indicator.connected .connection-indicator-icon { background-color: green; } 
+.connection-indicator.connected .connection-indicator-icon { background-color: green; }
 .connection-indicator.disconnected,
-.connection-indicator.disconnected .connection-indicator-icon { background-color: red; } 
+.connection-indicator.disconnected .connection-indicator-icon { background-color: red; }
 
 .connection-indicator.connected span.connected      { display: block; }
 .connection-indicator span.connected,
@@ -275,12 +275,12 @@ h3 {margin: 0;padding: 0 }
     float: left;
     margin: 0;
     list-style: none;
-    padding: 12px 10px 0 15px; 
+    padding: 12px 10px 0 15px;
 }
 
 .settings-menu {
     list-style: none;
-    padding: 0; 
+    padding: 0;
     margin: 0;
 }
 
@@ -653,7 +653,7 @@ h3 {margin: 0;padding: 0 }
 
 .radio .filter-option-checkbox-inner { border-radius: 6px; }
 
-.open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px } 
+.open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px }
 
 .tier-indicator { width: 50px; height: 42px; background-color: #000; float: right; border-radius: 30px; padding-top: 8px; text-align: center; border: #000 5px solid; }
 
@@ -954,7 +954,7 @@ h3 {margin: 0;padding: 0 }
 
 .releases-completed .release-complete-ok { color: green; border-color: green; }
 
-.releases-completed .release-complete-failed { color: red; border-color: red; } 
+.releases-completed .release-complete-failed { color: red; border-color: red; }
 
 .releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08; font-size: 56px; }
 
@@ -962,7 +962,7 @@ h3 {margin: 0;padding: 0 }
 
 .completed-release-name { font-size: 1.3em; font-weight: bold; word-break: break-all; }
 
-.releases-completed .release-info { margin: 0 } 
+.releases-completed .release-info { margin: 0 }
 
 .release-order-selector { position: absolute; top: -40px; right: 5px; cursor: pointer; font-size: 1.2em; }
 
@@ -1247,3 +1247,34 @@ h3 {margin: 0;padding: 0 }
 .provider-detail-error-messages-table td { padding: 5px; }
 
 .provider-detail-errors { display: inline-block; vertical-align: top; width: 65%; padding: 5px; }
+
+.release-signal-indicator { width: 200px; height: 200px; border: solid 20px #000; border-radius: 150px; margin: 0 auto; margin-bottom: 10px; font-size: 150px; text-align: center; }
+
+.release-signal-indicator.green, .release-signal-text.green,
+.release-signal-check-list-item-indicator.green,
+.release-signal-check-list-item-text.green { border-color: green; color: green }
+.release-signal-indicator.amber, .release-signal-text.amber,
+.release-signal-check-list-item-indicator.amber,
+.release-signal-check-list-item-text.amber { border-color: orange; color: orange }
+.release-signal-indicator.red, .release-signal-text.red,
+.release-signal-check-list-item-indicator.red,
+.release-signal-check-list-item-text.red { border-color: #f00; color: #f00 }
+
+.release-signal-text { font-size: 3em; text-align: center; font-weight: bold; }
+
+.release-signal-indicator-icon { display: block; font-weight: bold; margin-top: 15px; }
+
+.release-signal-check-list { list-style: none; margin: 10px 0 0 0; padding: 0 }
+
+.release-signal-check-list-item { padding: 5px }
+
+.release-signal-check-list-item-indicator { vertical-align: middle;display: inline-block; border: solid 6px #999; border-radius: 40px; width: 30px; height: 30px; text-align: center; font-size: 23px; }
+
+.release-signal-check-list-item-indicator .release-signal-indicator-icon { margin-top: 3px; }
+
+.release-signal-check-list-item-text { vertical-align: middle; display: inline-block; margin-left: 10px; font-size: 1.5em; font-weight: bold; }
+
+.release-signal-check-list-item-reason { margin-left: 52px; font-style: italic; }
+
+.release-signal-check-list-item-releases-ongoing { margin-left: 52px; font-weight: bold; }
+.release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }

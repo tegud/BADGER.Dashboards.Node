@@ -76,9 +76,8 @@
                 + '</div>', {
                     directionClass: (prState === 'completed' || configuration.defaultSortOrder === 'Descending') ? ' desc' : ''
                 })).on('click', function() { 
-                    orderElement.toggleClass('desc'); 
-                    lastData = lastData.reverse();
-                    setUpRender(lastData);
+                    orderElement.toggleClass('desc');
+                    setUpRender(sortPRs(lastData));
                 });
 
             var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
@@ -102,17 +101,27 @@
 
             function refreshComplete(data) {
                 var allPRs = _.flatten(_.values(data));
-                var sortedPRs = _.sortBy(allPRs, function(release) {
-                    return moment(release['created_at']).valueOf();
-                });
 
-                if(orderElement.hasClass('desc')) {
-                    sortedPRs = sortedPRs.reverse();
+                lastData = allPRs;
+
+                setUpRender(sortPRs(lastData));
+            }
+
+            function sortPRs(data) {
+                var sortedPRs = [];
+                if (orderElement.hasClass('desc')) {
+                    sortedPRs = _.sortBy(data, function(release) {
+                        return -moment(release['created_at']).valueOf();
+                    });
+                } else {
+                    sortedPRs = _.sortBy(data, function(release) {
+                        return moment(release['created_at']).valueOf();
+                    });
                 }
 
-                lastData = sortedPRs;
-
-                setUpRender(sortedPRs);
+                return _.sortBy(sortedPRs, function(release) {
+                    return release['title'].indexOf("[WIP]") > -1;
+                });
             }
 
             function calculateNextRefresh(nextServerSideRefresh) {

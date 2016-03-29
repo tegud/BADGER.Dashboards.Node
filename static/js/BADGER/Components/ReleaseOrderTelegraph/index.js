@@ -30,8 +30,6 @@
                 }
             };
 
-            check.concurrentReleases = 11;
-
             return Mustache.render('<div class="release-signal-check-list-item-releases-ongoing">{{concurrentReleases}} Ongoing Releases</div>'
                 + '{{#allowedText}}<div class="release-signal-check-list-item-releases-limits">{{text}}</div>{{/allowedText}}', {
                 concurrentReleases: check.concurrentReleases,

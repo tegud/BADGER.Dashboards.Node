@@ -1278,3 +1278,5 @@ h3 {margin: 0;padding: 0 }
 
 .release-signal-check-list-item-releases-ongoing { margin-left: 52px; font-weight: bold; }
 .release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }
+
+.release-signal-check-list-item-can-release-at { margin-top: 5px; }

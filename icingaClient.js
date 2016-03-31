@@ -7,12 +7,14 @@ var Promise = require('bluebird');
 
 module.exports = function createIcingaClient() {
     var cert;
+    var certError;
 
     try {
         cert = fs.readFileSync(caFile);
     }
     catch(ex) {
         console.log('Failed to load Icinga2 certificate: ' + ex);
+        certError = ex;
     }
 
     function map(data) {
@@ -43,6 +45,10 @@ module.exports = function createIcingaClient() {
 
     function icingaQuery(filter, attributes, joins) {
         return new Promise(function(resolve, reject) {
+            if(certError) {
+                return reject('Could not load certificate ' + certError);
+            }
+
             var options = {
                 url: 'https://pentlrgmonitor01.ad.laterooms.com:5665/v1/objects/services',
                 ca: cert,

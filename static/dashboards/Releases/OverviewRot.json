@@ -49,6 +49,7 @@
             "title": "Release order Telegraph",
             "type": "ReleaseOrderTelegraph",
             "span":"3",
+            "url": "http://releaseordertelegraph.laterooms.com/currentState"
         },
         {
             "title": "Shipping",

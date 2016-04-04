@@ -6,7 +6,7 @@
           "title": "Release Data",
           "storeId": "ReleaseData",
           "dataSource": "elasticsearch",
-          "host": "http://badger.laterooms.com:9200",
+          "host": "http://logs.laterooms.com:9200",
           "index": "releases-${YYYY}.${MM}",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp"

@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-engineering-blog",
             "group": "Blogs",
             "title": "Blogs Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 4
         }

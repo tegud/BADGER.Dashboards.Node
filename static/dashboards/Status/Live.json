@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 6
         },
@@ -15,7 +15,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "AsiaRooms",
             "title": "AsiaRooms Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 3
         },
@@ -24,7 +24,7 @@
             "alertName": "healthCheck.serviceHealth-loadbalancerapi",
             "group": "TestAPIs",
             "title": "LB API Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 3
         },
@@ -32,7 +32,7 @@
             "type": "ElasticsearchStatus",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "ELK Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 4,
             "profile": "small"
@@ -42,7 +42,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "Moonstick",
             "title": "Moonstick Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 4
         },
@@ -51,7 +51,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 4
         },
@@ -60,7 +60,7 @@
             "alertName": "healthCheck.serviceHealth-apis-live",
             "group": "APIServers",
             "title": "API Server Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 12
         }

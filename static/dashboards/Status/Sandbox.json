@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-sandbox",
             "group": "SandboxAPIs",
             "title": "Sandbox API Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 4
         }

@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "AsiaRooms",
             "title": "AsiaRooms Front End Server Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 10
         },
@@ -14,7 +14,7 @@
             "type": "AlertsSentinel",
             "alertName": "elasticsearch-simple-query.asiarooms-errors",
             "title": "Errors Alert",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 2
         },

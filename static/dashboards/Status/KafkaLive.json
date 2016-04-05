@@ -7,7 +7,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Kafka Broker Status (Check TCP Connection)",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 6
         },
@@ -17,7 +17,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Zookeeper Node Status (Check TCP Connection)",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 6
         },   
@@ -27,7 +27,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Kafka Broker IDs Registered with Zookeeper",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 6
         },        
@@ -37,7 +37,7 @@
             "alertName": "",
             "group": "Kafka",
             "title": "KAFCON Level",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 3
         }      

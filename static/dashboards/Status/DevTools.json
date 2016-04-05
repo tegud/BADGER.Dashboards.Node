@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-tools-dev",
             "group": "Tools",
             "title": "Tools Status",
-            "host": "badger.laterooms.com",
+            "host": "logs.laterooms.com",
             "port": 3000,
             "span": 12
         }

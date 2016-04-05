@@ -4,7 +4,7 @@
         {
             "type": "SharedDataStore",
             "storeId": "ELKStatus",
-            "url": "http://badger.laterooms.com:3000/currentStatus/elasticsearch-health.elasticsearch-health",
+            "url": "http://logs.laterooms.com:3000/currentStatus/elasticsearch-health.elasticsearch-health",
             "mappings": [
                 { "type": "pickValue", "value": "query" }
             ]

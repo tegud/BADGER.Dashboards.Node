@@ -16,6 +16,60 @@
     };
 
     var checkTypeExtendedInfoTemplates = {
+        manualSignal: function(check) {
+            var signalReleasesAt;
+
+            if(check.setUntil) {
+                signalReleasesAt = moment(check.setUntil);
+
+                if(signalReleasesAt.isAfter(moment().add(1, 'days').startOf('day'))) {
+                    signalReleasesAt = 'Midnight';
+                }
+                else {
+                    signalReleasesAt = signalReleasesAt.format('HH:mm') + ' (' + signalReleasesAt.from(moment()) + ')';
+                }
+            }
+
+            return Mustache.render('<div class="release-signal-check-list-item-reason">{{#reason}}<b>{{reason}}</b>{{/reason}}'
+             + '{{#showReleaseTime}}<div class="release-signal-check-list-item-can-release-at">Signal Released at: {{releasedAt}}</div>{{/showReleaseTime}}</div>', {
+                 reason: check.reason,
+                 showReleaseTime: check.setUntil ? true : false,
+                 releasedAt: signalReleasesAt
+             });
+        },
+        schedule: function(check) {
+            var nextReleaseChangeText;
+
+            if(check.nextChange) {
+                var changesAt = moment(check.nextChange.changeAt);
+                var daysDifference = moment(check.nextChange.changeAt).startOf('day').diff(moment().startOf('day'), 'days');
+
+                var changeText = {
+                    'green': 'Releases allowed from',
+                    'amber': 'Releases restricted from',
+                    'red': 'Releases stop at'
+                };
+
+                nextReleaseChangeText = changeText[check.nextChange.toSignal] + ' ';
+
+                if(daysDifference < 2) {
+                    nextReleaseChangeText += changesAt.format('HH:mm') + ' ' + (daysDifference ? 'tomorrow' : 'today');
+                }
+                else if (daysDifference < 7) {
+                    nextReleaseChangeText += changesAt.format('HH:mm dddd');
+                }
+                else {
+                    nextReleaseChangeText += changesAt.format('DD/MM/YYYY HH:mm');
+                }
+            }
+
+            return Mustache.render('<div class="release-signal-check-list-item-reason">{{#reason}}{{reason}}{{/reason}}'
+            + '{{#showReleaseTime}}<div class="release-signal-check-list-item-can-release-at">{{nextReleaseChangeText}}</div>{{/showReleaseTime}}</div>', {
+                reason: check.reason,
+                showReleaseTime: check.nextChange ? true : false,
+                nextReleaseChangeText: nextReleaseChangeText
+            });
+        },
         concurrentReleases: function(check) {
             var signalThresholdTemplates = {
                 'amber': {
@@ -29,8 +83,6 @@
                     'over': '{{remaining}} over pause limit'
                 }
             };
-
-            check.concurrentReleases = 11;
 
             return Mustache.render('<div class="release-signal-check-list-item-releases-ongoing">{{concurrentReleases}} Ongoing Releases</div>'
                 + '{{#allowedText}}<div class="release-signal-check-list-item-releases-limits">{{text}}</div>{{/allowedText}}', {
@@ -80,7 +132,7 @@
                         }).value()
                     });
 
-                    signal.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{text}}</div>{{{checkList}}}', {
+                    signal.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{{text}}}</div>{{{checkList}}}', {
                         signalState: signalState,
                         text: bigIndicatorStates[signalState].text,
                         icon: bigIndicatorStates[signalState].icon,

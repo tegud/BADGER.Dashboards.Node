@@ -69,11 +69,18 @@
                     }
 
 					var mainItems = '';
+					var breachedStats = {};
+					function getThresholdStatusForStat(stat) {
+						if(!breachedStats[stat]) {
+							return 'info';
+						}
+
+						return breachedStats[stat].breach.level;
+					}
 
 					if(node.stats) {
 						var fs = node.stats.fs;
 						var nodeStatusClass = 'info';
-						var breachedStats = {};
 
 						if(nodeThresholdBreaches[name]) {
 							nodeStatusClass = nodeThresholdBreaches[name].level;
@@ -85,13 +92,6 @@
 							}, {});
 						}
 
-						function getThresholdStatusForStat(stat) {
-							if(!breachedStats[stat]) {
-								return 'info';
-							}
-
-							return breachedStats[stat].breach.level;
-						}
 
 						mainItems = '<div class="node-item big-item ' + getThresholdStatusForStat('cpu') + '">'
 							   + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-dashboard"></div><div class="item-text">CPU</div></div>'

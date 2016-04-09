@@ -37,8 +37,8 @@
 	+ '</ul>';
 
 	var unknownState = {
-		className: 'unknown', 
-		text: 'Could not retrieve cluster state', 
+		className: 'unknown',
+		text: 'Could not retrieve cluster state',
 		description: 'Cluster state is unknown, check Sentinel is <a href="badger.laterooms.com:3000/currentStatus?pretty" target="_blank">returning valid data</a>.'
 	};
 
@@ -75,7 +75,7 @@
 		if(_.every(data.info.nodes, function(node) { return node.status === 'OK'; })) {
 			return shardStatus + ', which may include primaries (POTENTIAL DATA LOSS).';
 		}
-			
+
 		return shardStatus + ', cannot determine if this includes primary indicies due to presence of sick node.' ;
 	}
 
@@ -126,22 +126,22 @@
 	}
 
 	var stateMap = {
-		green: { 
-			className: 'ok', 
+		green: {
+			className: 'ok',
 			text: 'All Good',
 			description: function(data) {
 				return nodesStatus(data.info.nodes) + ', all indicies and replicas are assigned.';
 			}
 		},
-		yellow: { 
-			className: 'recovering', 
+		yellow: {
+			className: 'recovering',
 			text: 'In Recovery',
 			description: function(data) {
 				return nodesStatus(data.info.nodes) + ', all primary shards assigned, however ' + data.info.shards.unassigned + ' replica shard' + (data.info.shards.unassigned === 1 ? ' is ' : 's are ') + 'unassigned.';
 			}
 		},
-		red: { 
-			className: 'critical', 
+		red: {
+			className: 'critical',
 			text: 'CRITICAL',
 			description: function(data) {
 				return nodesStatus(data.info.nodes) + '. ' + shardStateForCritical(data);
@@ -227,7 +227,14 @@
 				descriptionText.html((typeof currentState.description === 'function' ? currentState.description(data) : currentState.description) + '<br/></br>' + suggestedAction(data));
 
 				$('.node-list', clusterStatusElement).html(_.map(data.info.nodes, function(node) {
-					var name = node.name.replace(/pentlrges/, '')
+					var name = node.name;
+
+					if(typeof name === 'object') {
+						name = name.name || name.host;
+					}
+
+					name = name.replace(/pentlrges/, '');
+
 					return '<li class="' + node.status + '">' + (node.isMaster ? '<div class="master"></div>' : '') + '<div class="node-container">' + name + '</div>' + '</li>';
 				}));
 
@@ -258,7 +265,7 @@
 	                TLRGRP.messageBus.publish(dataStoreId);
 	            }
 	        };
-        } 
+        }
         else {
 	        dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
 	            query: {

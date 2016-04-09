@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
-            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "host": "badger.dashboards.logging.laterooms.work.",
             "port": 1237,
             "span": 6
         },
@@ -15,7 +15,7 @@
             "alertName": "healthCheck.serviceHealth-loadbalancerapi",
             "group": "TestAPIs",
             "title": "LB API Status",
-            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "host": "badger.dashboards.logging.laterooms.work.",
             "port": 1237,
             "span": 3
         },

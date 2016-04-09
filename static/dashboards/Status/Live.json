@@ -6,34 +6,25 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "LateRooms",
             "title": "LateRooms Front End Server Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 6
-        },
-        {
-            "type": "HealthCheckSentinel",
-            "alertName": "healthCheck.serviceHealth-live",
-            "group": "AsiaRooms",
-            "title": "AsiaRooms Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
-            "span": 3
         },
         {
             "type": "HealthCheckSentinel",
             "alertName": "healthCheck.serviceHealth-loadbalancerapi",
             "group": "TestAPIs",
             "title": "LB API Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 3
         },
         {
             "type": "ElasticsearchStatus",
             "alertName": "elasticsearch-health.elasticsearch-health",
             "title": "ELK Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 4,
             "profile": "small"
         },
@@ -42,8 +33,8 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "Moonstick",
             "title": "Moonstick Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 4
         },
         {
@@ -51,8 +42,8 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 4
         },
         {
@@ -60,8 +51,8 @@
             "alertName": "healthCheck.serviceHealth-apis-live",
             "group": "APIServers",
             "title": "API Server Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.:1237",
+            "port": 1237,
             "span": 12
         }
     ]

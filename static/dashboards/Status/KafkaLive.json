@@ -7,8 +7,8 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Kafka Broker Status (Check TCP Connection)",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.",
+            "port": 1237,
             "span": 6
         },
         {
@@ -17,29 +17,29 @@
             "alertName": "",
             "group": "Kafka",
             "title": "Zookeeper Node Status (Check TCP Connection)",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.",
+            "port": 1237,
             "span": 6
-        },   
+        },
         {
             "type": "KafkaBrokerStatusSentinel",
             "environment": "aws-production",
             "alertName": "",
             "group": "Kafka",
             "title": "Kafka Broker IDs Registered with Zookeeper",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.",
+            "port": 1237,
             "span": 6
-        },        
+        },
         {
             "type": "KafkaTopicCheckSentinel",
             "environment": "aws-production",
             "alertName": "",
             "group": "Kafka",
             "title": "KAFCON Level",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "badger.dashboards.logging.laterooms.work.",
+            "port": 1237,
             "span": 3
-        }      
+        }
     ]
 }

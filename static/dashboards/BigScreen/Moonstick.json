@@ -6,7 +6,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "Moonstick",
             "title": "Status",
-            "host": "badger.dashboards.logging.laterooms.work.",
+            "host": "sentinel.laterooms.com",
             "port": 1237,
             "span": 3
         },
@@ -15,7 +15,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "badger.dashboards.logging.laterooms.work.",
+            "host": "sentinel.laterooms.com",
             "port": 1237,
             "span": 3
         },
@@ -39,7 +39,7 @@
             "type": "SharedDataStore",
             "storeId": "LRRequestsData",
             "dataSource": "elasticsearch",
-            "host": "http://badger.dashboards.logging.laterooms.work.:9200",
+            "host": "http://logs.laterooms.com:9200",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
                 "aggs.requests.date_histogram.extended_bounds"
@@ -272,7 +272,7 @@
             "span": 6,
             "summaryText": "Server Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
-            "host": "http://badger.dashboards.logging.laterooms.work.:9200",
+            "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
@@ -405,7 +405,7 @@
             "span": 6,
             "summaryText": "Client Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
-            "host": "http://badger.dashboards.logging.laterooms.work.:9200",
+            "host": "http://logs.laterooms.com:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",

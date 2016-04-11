@@ -6,8 +6,7 @@
             "alertName": "healthCheck.serviceHealth-apis-test",
             "group": "TestAPIs",
             "title": "Test API Status",
-            "host": "badger.dashboards.logging.laterooms.work.",
-            "port": 1237,
+            "host": "sentinel.laterooms.com",
             "span": 9
         },
         {

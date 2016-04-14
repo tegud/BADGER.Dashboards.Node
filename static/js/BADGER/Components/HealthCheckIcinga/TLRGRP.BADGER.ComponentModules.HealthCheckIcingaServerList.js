@@ -6,7 +6,7 @@
     function buildViewModel(groupName, results) {
         return {
             name: groupName,
-            servers: results.map(function (result) {
+            servers: _.map(results, function (result) {
                 return {
                     state: result.last_check_state,
                     name: result.name,

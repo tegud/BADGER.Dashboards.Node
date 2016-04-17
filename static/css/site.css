@@ -1299,6 +1299,8 @@ h3 {margin: 0;padding: 0 }
 
 .incidents-incident-item-title { margin-left: 80px; font-size: 1.5em; }
 
+.incidents-incident-item-detail { font-weight: bold; margin: 10px 0 10px 80px; }
+
 .incident-incident-item-details { list-style: none; margin-left: 80px; clear: both; padding: 0; font-size: 1.2em; }
 
 .incident-incident-item-details > li { display: inline-block; margin-right: 10px; margin-top: 5px; }

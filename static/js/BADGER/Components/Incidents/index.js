@@ -13,7 +13,8 @@
 			return new Promise(function(resolve) {
 				resolve({
 					host: incident.hostName,
-					service: incident.serviceDesc
+					service: incident.serviceDesc,
+					detail: incident.serviceOutput
 				});
 			});
 		},
@@ -137,10 +138,8 @@
 				+ '<ul class="incident-incident-item-details">'
 					+ '<li><div class="fa fa-clock-o"></div> Raised at {{raised}}{{raisedMinutesAgo}}</li>'
 					+ '{{#acknowledgedText}}<li><div class="fa fa-phone"></div> {{acknowledgedText}}</li>{{/acknowledgedText}}'
-					+ '<li></li>'
-					+ '<li></li>'
-					+ '<li></li>'
 				+ '</ul>'
+				+ '<div class="incidents-incident-item-detail">{{detail}}</div>'
 			+ '</li>', _.defaults({
 				itemClass: 'open',
 				indicatorClass: incident.acknowledgedText ? 'fa fa-fire' : 'fa fa-bullhorn'

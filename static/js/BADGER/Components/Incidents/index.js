@@ -203,7 +203,13 @@
 				return incident.acknowledgedText ? 'Acknowledged' : 'Not Acknowledged';
 			});
 
-            this.html(_.map(groupedByAck, function(incidents, key) {
+            this.html(_.map(['Not Acknowledged', 'Acknowledged'], function(key) {
+				var incidents = groupedByAck[key];
+
+				if(!incidents || !incidents.length) {
+					return;
+				}
+
 				return '<li class="incidents-inprogress-headers">' + key+ '</li>'
 				 + _.map(incidents, function(incident) {
 	                 if(!template[incidentState]) { return; }

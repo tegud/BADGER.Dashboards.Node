@@ -1280,3 +1280,33 @@ h3 {margin: 0;padding: 0 }
 .release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }
 
 .release-signal-check-list-item-can-release-at { margin-top: 5px; }
+
+.no-incidents { border-color: green; color: green;  }
+
+.incidents-no-incidents-indicator { width: 150px; height: 135px; padding-top: 15px; font-size: 110px; border: solid 10px; border-radius: 200px; text-align: center; display: inline-block; vertical-align: middle; }
+
+.incidents-no-incidents-header { font-size: 3.5em; font-weight: bold; display: inline-block; vertical-align: middle; padding-left: 20px; }
+
+.incidents-no-incidents-header { font-size: 2em; }
+
+.no-incidents.resolved .incidents-no-incidents-indicator { display: block; float: left; }
+
+.no-incidents.resolved .incidents-no-incidents-header { display: block; margin-left: 160px; padding-top: 40px; }
+
+.incidents-incident-item { border: solid 5px #000; margin: 5px 0 15px 0; padding: 5px; border-radius: 20px; min-height: 80px; position: relative; }
+
+.incidents-incident-item-indicator { width: 70px; height: 65px; border: solid 10px #000; border-radius: 80px; font-size: 50px; text-align: center; padding-top: 5px; position: absolute; background-color: #fff; top: -15px; left: -15px; }
+
+.incidents-incident-item-title { margin-left: 80px; font-size: 1.5em; }
+
+.incident-incident-item-details { list-style: none; margin-left: 80px; clear: both; padding: 0; font-size: 1.2em; }
+
+.incident-incident-item-details > li { display: inline-block; margin-right: 10px; margin-top: 5px; }
+
+.incident-incident-item-details > li .fa { font-size: 22px; }
+
+.incidents-inprogress-headers { font-size: 1.5em; font-weight: bold; margin-bottom: 20px;}
+
+.incidents-incident-item.open { border-color: red }
+
+.incidents-incident-item.open .incidents-incident-item-indicator { color: red; border-color: red }

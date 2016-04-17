@@ -1,0 +1,61 @@
+{
+    "name": "Ongoing Incidents",
+    "components": [
+        {
+          "type": "SharedDataStore",
+          "title": "Open Incidents",
+          "storeId": "IncidentData",
+          "dataSource": "elasticsearch",
+          "host": "http://logs.laterooms.com:9200",
+          "index": "releases-${YYYY}.${MM}",
+          "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp"
+          ],
+          "defaultTimeFrame": {
+            "timeFrame": 3,
+            "units": "days"
+          },
+          "queries": {
+            "modifiers": {
+              "today": { }
+            },
+            "query": {
+              "query": {
+                "filtered": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "range" : {
+                            "@timestamp" : { }
+                          }
+                        },
+                        {
+                          "term" : {
+                            "_type" : "victoropsAlert"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 1000
+            }
+          },
+          "mappings": []
+        },
+        {
+            "title": "In Progress",
+            "type": "OpenIncidents",
+            "span":"8",
+            "storeId": "IncidentData"
+        },
+        {
+            "title": "Resolved",
+            "type": "ResolvedIncidents",
+            "span":"4",
+            "storeId": "IncidentData"
+        }
+    ]
+}

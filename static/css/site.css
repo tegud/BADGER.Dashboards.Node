@@ -1293,9 +1293,9 @@ h3 {margin: 0;padding: 0 }
 
 .no-incidents.resolved .incidents-no-incidents-header { display: block; margin-left: 160px; padding-top: 40px; }
 
-.incidents-incident-item { border: solid 5px #000; margin: 5px 0 15px 0; padding: 5px; border-radius: 20px; min-height: 80px; position: relative; }
+.incidents-incident-item { border: solid 5px #000; margin: 5px 0 20px 0; padding: 5px; border-radius: 20px; min-height: 50px; position: relative; }
 
-.incidents-incident-item-indicator { width: 70px; height: 65px; border: solid 10px #000; border-radius: 80px; font-size: 50px; text-align: center; padding-top: 5px; position: absolute; background-color: #fff; top: -15px; left: -15px; }
+.incidents-incident-item-indicator { width: 70px; height: 65px; border: solid 10px #000; border-radius: 80px; font-size: 50px; text-align: center; padding-top: 5px; position: absolute; background-color: #fff; top: -10px; left: -15px; }
 
 .incidents-incident-item-title { margin-left: 80px; font-size: 1.5em; }
 
@@ -1305,10 +1305,28 @@ h3 {margin: 0;padding: 0 }
 
 .incident-incident-item-details > li { display: inline-block; margin-right: 10px; margin-top: 5px; }
 
-.incident-incident-item-details > li .fa { font-size: 22px; }
+.incident-incident-item-details > li .fa,
+.incident-incident-item-details > li .mega-octicon { font-size: 22px; }
 
 .incidents-inprogress-headers { font-size: 1.5em; font-weight: bold; margin-bottom: 20px;}
 
 .incidents-incident-item.open { border-color: red }
 
 .incidents-incident-item.open .incidents-incident-item-indicator { color: red; border-color: red }
+
+.incidents-incident-item.resolved { color: #555; border-color: #555 }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li { display: block; }
+
+.incidents-incident-item.resolved .incidents-incident-item-indicator { width: 40px; height: 39px; font-size: 35px; padding-top: 1px; border-color: #555; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title { font-size: 1.2em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details { font-size: 1em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li .fa,
+.incidents-incident-item.resolved .incident-incident-item-details > li .mega-octicon { font-size: 18px; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title,
+.incidents-incident-item.resolved .incidents-incident-item-detail,
+.incidents-incident-item.resolved .incident-incident-item-details { margin-left: 45px; }

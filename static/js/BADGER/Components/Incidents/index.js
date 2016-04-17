@@ -95,32 +95,49 @@
 		var raised = receivedTime.format('HH:mm');
 
 		var acknowledgedText;
+		var resolvedText;
+		var raisedMinutesAgo;
 
 		if(incident.acknowledged) {
 			var acknowedgedAtTime = moment(incident.acknowledgedAt);
 			var acknowledgedAt = acknowedgedAtTime.format('HH:mm');
 
-			if(today.isSame(moment(acknowedgedAtTime).startOf('day'))) {
-				acknowledgedAt += ', today';
-			}
-			else {
-				acknowledgedAt += receivedTime.format(', dddd');
+			if(!today.isSame(moment(acknowedgedAtTime).startOf('day'))) {
+				acknowledgedAt += receivedTime.format(' ddd');
 			}
 
-			acknowledgedText = 'Acknowledged at ' + acknowledgedAt + (incident.acknowledgedBy ? (' by ' + incident.acknowledgedBy) : '');
+			acknowledgedAt += ' after ' + acknowedgedAtTime.from(receivedTime, true);
+
+			acknowledgedText = 'Ack\'ed at ' + acknowledgedAt + (incident.acknowledgedBy ? (' by ' + incident.acknowledgedBy) : '');
 		}
 
-		if(today.isSame(moment(receivedTime).startOf('day'))) {
-			raised += ', today';
+		if(incident.resolved) {
+			var resolvedAtTime = moment(incident.resolvedAt);
+			var resolvedAt = resolvedAtTime.format('HH:mm');
+
+			if(!today.isSame(moment(acknowedgedAtTime).startOf('day'))) {
+				resolvedAt += receivedTime.format(' ddd');
+			}
+
+			resolvedAt += ', after ' + resolvedAtTime.from(receivedTime, true);
+
+			resolvedText = 'Resolved at ' + resolvedAt + (incident.resolvedBy ? (' by ' + incident.resolvedBy) : '');
 		}
 		else {
-			raised += receivedTime.format(', dddd');
+			raisedMinutesAgo = ', ' + receivedTime.from(now);
+		}
+
+		if(!today.isSame(moment(receivedTime).startOf('day'))) {
+			raised += receivedTime.format(' ddd');
 		}
 
 		return {
 			incidentNumber: incident.incidentName,
 			raised: raised,
-			acknowledgedText: acknowledgedText
+			raisedMinutesAgo: raisedMinutesAgo,
+			acknowledgedText: acknowledgedText,
+			resolvedText: resolvedText,
+			team: incident.team
 		};
 	}
 
@@ -136,20 +153,32 @@
 					+ '<div><b>#{{incidentNumber}}, {{host}}</b> - {{service}}</div>'
 				+ '</div>'
 				+ '<ul class="incident-incident-item-details">'
-					+ '<li><div class="fa fa-clock-o"></div> Raised at {{raised}}{{raisedMinutesAgo}}</li>'
+					+ '<li><b><div class="mega-octicon octicon-organization"></div> {{team}}</b></li>'
+					+ '<li><div class="fa fa-clock-o"></div> Started {{raised}}{{raisedMinutesAgo}}</li>'
 					+ '{{#acknowledgedText}}<li><div class="fa fa-phone"></div> {{acknowledgedText}}</li>{{/acknowledgedText}}'
 				+ '</ul>'
-				+ '<div class="incidents-incident-item-detail">{{detail}}</div>'
+				+ '{{#detail}}<div class="incidents-incident-item-detail">{{detail}}</div>{{/detail}}'
 			+ '</li>', _.defaults({
 				itemClass: 'open',
 				indicatorClass: incident.acknowledgedText ? 'fa fa-fire' : 'fa fa-bullhorn'
 			}, incident));
         },
-        'resolved': function(incident) {
-			return Mustache.render('<li class="incidents-incident-item">'
-				+ '<div>{{host}}</div>'
-				+ '<div>{{service}}</div>'
-			+ '</li>', incident);
+        'resolved':function(incident) {
+			return Mustache.render('<li class="incidents-incident-item {{itemClass}}">'
+				+ '<div class="incidents-incident-item-indicator"><div class="{{indicatorClass}}"></div></div>'
+				+ '<div class="incidents-incident-item-title">'
+					+ '<div><b>#{{incidentNumber}}, {{host}}</b><br />{{service}}</div>'
+				+ '</div>'
+				+ '<ul class="incident-incident-item-details">'
+					+ '<li><b><div class="mega-octicon octicon-organization"></div> {{team}}</b></li>'
+					+ '<li><div class="fa fa-clock-o"></div> Started {{raised}}{{raisedMinutesAgo}}</li>'
+					+ '{{#resolvedText}}<li><div class="fa fa-check"></div> {{resolvedText}}</li>{{/resolvedText}}'
+					+ '{{#acknowledgedText}}<li><div class="fa fa-phone"></div> {{acknowledgedText}}</li>{{/acknowledgedText}}'
+				+ '</ul>'
+			+ '</li>', _.defaults({
+				itemClass: 'resolved',
+				indicatorClass: 'fa fa-check'
+			}, incident));
         }
     };
 

@@ -1330,3 +1330,7 @@ h3 {margin: 0;padding: 0 }
 .incidents-incident-item.resolved .incidents-incident-item-title,
 .incidents-incident-item.resolved .incidents-incident-item-detail,
 .incidents-incident-item.resolved .incident-incident-item-details { margin-left: 45px; }
+
+.incident-summary-modules { min-height: 100px; list-style: none; padding: 0; margin: 0 }
+
+.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 23%; display: inline-block; margin-right: 5px; }

@@ -46,6 +46,10 @@
           "mappings": []
         },
         {
+            "type": "IncidentSummary",
+            "storeId": "IncidentData"
+        },
+        {
             "title": "In Progress",
             "type": "OpenIncidents",
             "span":"8",

@@ -184,16 +184,20 @@
         }
     };
 
-    function render(incidentState, data) {
+    function render(incidentState, data, descOrder) {
         if(!data.length) {
             var nothingHtml = $(Mustache.render('<div class="no-incidents {{incidentState}}"><div class="incidents-no-incidents-indicator"><div class="fa fa-thumbs-o-up"></div></div><div class="incidents-no-incidents-header"> No {{text}}</div></div>', {
 					incidentState: incidentState,
-					text: (incidentState === 'resolved' ? 'Incidents Resolved Recently' : 'Open Incidents')
+					text: (incidentState === 'resolved' ? 'Incidents Resolved Today' : 'Open Incidents')
 				}));
 
             this.html(nothingHtml);
         }
         else if(incidentState === 'resolved') {
+			if(descOrder) {
+				data = _.clone(data).reverse();
+			}
+
 			this.html(_.map(data, function(incident) {
                 if(!template[incidentState]) { return; }
 
@@ -210,6 +214,10 @@
 
 				if(!incidents || !incidents.length) {
 					return;
+				}
+
+				if(descOrder) {
+					incidents = incidents.reverse();
 				}
 
 				return '<li class="incidents-inprogress-headers">' + key+ '</li>'
@@ -249,11 +257,10 @@
                 + '<span class="release-order-selector-label-asc">Order By Oldest First</span>'
                 + '<span class="release-order-selector-label-desc">Order By Latest First</span>'
                 + '</div>', {
-                    directionClass: (configuration.defaultSortOrder === 'Descending') ? ' desc': ''
+                    directionClass: ' desc'
                 })).on('click', function() {
                     orderElement.toggleClass('desc');
-                    lastData = lastData.reverse();
-                    setUpRender(lastData);
+                    setUpRender(lastData, orderElement.hasClass('desc'));
                 });
 
             var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
@@ -281,7 +288,13 @@
 				var alertBuilders = [baseAlertFromIncident, serviceInfoFromIncident];
                 var incidents = _.pluck(data.today.hits.hits, '_source');
                 var relaventIncidents = _.filter(incidents, function(release) {
-                    return (release.resolved || false) === (incidentState === 'resolved');
+					if(release.resolved && incidentState === 'resolved' && moment(release.resolvedAt).isAfter(moment().startOf('day'))) {
+						return true;
+					}
+
+					if(!release.resolved && incidentState !== 'resolved') {
+						return true;
+					}
                 });
 				var sortedIncidents = _.sortBy(relaventIncidents, function(incident) {
 					if(incident.resolved) {
@@ -293,6 +306,9 @@
 
 				Promise.all(_.map(sortedIncidents, function(incident) {
 					var alertBuilderPromises = _.map(alertBuilders, function(fn) {
+						if(!incident.resolved) {
+							console.log(incident.voUuid);
+						}
 						return fn(incident);
 					});
 
@@ -303,7 +319,7 @@
 					});
 				})).then(function(data) {
 					lastData = data;
-					setUpRender(data);
+					setUpRender(data, orderElement.hasClass('desc'));
 				});
             }
 

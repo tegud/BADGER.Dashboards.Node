@@ -174,10 +174,12 @@
 					+ '<li><div class="fa fa-clock-o"></div> Started {{raised}}{{raisedMinutesAgo}}</li>'
 					+ '{{#resolvedText}}<li><div class="fa fa-check"></div> {{resolvedText}}</li>{{/resolvedText}}'
 					+ '{{#acknowledgedText}}<li><div class="fa fa-phone"></div> {{acknowledgedText}}</li>{{/acknowledgedText}}'
+					+ '{{#notAcknowledged}}<li><div class="mega-octicon octicon-thumbsdown"></div> Not acknowledged</li>{{/notAcknowledged}}'
 				+ '</ul>'
 			+ '</li>', _.defaults({
 				itemClass: 'resolved',
-				indicatorClass: 'fa fa-check'
+				indicatorClass: 'fa fa-check',
+				notAcknowledged: incident.acknowledgedText ? false : true
 			}, incident));
         }
     };

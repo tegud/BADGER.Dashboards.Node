@@ -55,7 +55,7 @@
  				resolvedSummary
 					[resolvedIncidents.length ? 'removeClass' : 'addClass']('none')
  					.html('<div class="incident-summary-module-indicator"><div class="fa fa-check"></div></div>'
- 					 + '<div class="incident-summary-module-label">SOLVED<div class="incident-summary-module-label-small">This Week</div></div>'
+ 					 + '<div class="incident-summary-module-label">SOLVED<div class="incident-summary-module-label-small">Last 24hrs</div></div>'
  					 + '<div class="incident-summary-module-value">' + resolvedIncidents.length + '</div>');
             },
             error: function (errorInfo) {

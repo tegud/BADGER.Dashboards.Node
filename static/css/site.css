@@ -1333,11 +1333,11 @@ h3 {margin: 0;padding: 0 }
 
 .incident-summary-modules { min-height: 100px; list-style: none; padding: 0; margin: 0 }
 
-.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 350px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 310px; display: inline-block; margin-right: 5px; vertical-align: middle; }
 
 .incident-summary-module-indicator { width: 70px; height: 60px; margin: 5px; border: solid 5px #000; border-radius: 50px; font-size: 45px; text-align: center; padding-top: 10px; display: inline-block; vertical-align: middle; }
 
-.incident-summary-module-label { display: inline-block;vertical-align: middle; font-size: 40px; }
+.incident-summary-module-label { display: inline-block;vertical-align: middle; font-size: 30px; }
 
 .incident-summary-module-value { float: right; font-size: 50px; margin: 15px 20px 0 0 }
 
@@ -1357,3 +1357,16 @@ h3 {margin: 0;padding: 0 }
 .incident-summary-module-notacked.none .incident-summary-module-indicator,
 .incident-summary-module-open.none,
 .incident-summary-module-open.none .incident-summary-module-indicator  { color: #999; border-color: #999; }
+
+.outofhours-small { min-height: 100px; }
+
+.small-oncall-list { list-style: none; padding: 0; margin: 0; }
+
+.small-oncall-list-team { display: inline-block; width: 45%; }
+
+.small-oncall-list-team-logo { width: 35px; height: 30px; padding-top: 5px; border: solid 5px #000; border-radius: 50px; display: inline-block; vertical-align: middle; margin-bottom: 5px; text-align: center; }
+.small-oncall-list-team-logo .mega-octicon { font-size: 26px; }
+
+.small-oncall-list-team-name { display: inline-block;vertical-align: middle; padding: 0 5px; font-weight: bold; }
+
+.small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic  }

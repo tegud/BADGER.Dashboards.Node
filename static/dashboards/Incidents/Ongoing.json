@@ -47,7 +47,13 @@
         },
         {
             "type": "IncidentSummary",
-            "storeId": "IncidentData"
+            "storeId": "IncidentData",
+            "span": 8
+        },
+        {
+            "type": "OutOfHoursRota",
+            "size": "small",
+            "span": 4
         },
         {
             "title": "In Progress",

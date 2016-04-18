@@ -113,7 +113,7 @@
             configuration.title = providerName + ' Summary';
         }
 
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({
             cssClass: 'loading-clear-bottom'
         });

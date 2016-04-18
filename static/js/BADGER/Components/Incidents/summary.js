@@ -6,7 +6,7 @@
 	var idIncrementor = 0;
 
 	TLRGRP.BADGER.Dashboard.Components.IncidentSummary = function (configuration) {
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
 
         var summary = $('<ul class="incident-summary-modules"></ul>');
 		var noAckSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
@@ -29,7 +29,14 @@
 
 		var callbacks = {
 			success: function (data) {
+				var incidents = _.pluck(data.today.hits.hits, '_source');
+				var unAckedIncidents = _.filter(incidents, function(incident) {
+					return !incident.acknowledged;
+				});
 
+				noAckSummary.html(unAckedIncidents.length + ' Unacknowledged Alerts');
+
+				console.log(unAckedIncidents.length);
             },
             error: function (errorInfo) {
             }

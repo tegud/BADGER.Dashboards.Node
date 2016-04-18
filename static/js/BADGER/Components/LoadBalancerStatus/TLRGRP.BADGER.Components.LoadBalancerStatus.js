@@ -16,7 +16,7 @@
     }
     
     TLRGRP.BADGER.Dashboard.Components.LoadBalancerStatus = function (configuration) {
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated();
         var inlineError = new TLRGRP.BADGER.Dashboard.ComponentModules.Error();

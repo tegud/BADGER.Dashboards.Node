@@ -9,10 +9,10 @@
         var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
 
         var summary = $('<ul class="incident-summary-modules"></ul>');
-		var noAckSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
-		var noResSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
-		var resolvedSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
-		var averageAckSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
+		var noAckSummary = $('<li class="incident-summary-module incident-summary-module-notacked none"></li>').appendTo(summary);
+		var noResSummary = $('<li class="incident-summary-module incident-summary-module-open none"></li>').appendTo(summary);
+		var resolvedSummary = $('<li class="incident-summary-module incident-summary-module-resolved none"></li>').appendTo(summary);
+		// var averageAckSummary = $('<li class="incident-summary-module"></li>').appendTo(summary);
 
 		var modules = [{
 			appendTo: function (container) {
@@ -31,12 +31,32 @@
 			success: function (data) {
 				var incidents = _.pluck(data.today.hits.hits, '_source');
 				var unAckedIncidents = _.filter(incidents, function(incident) {
-					return !incident.acknowledged;
+					return !incident.acknowledged && !incident.resolved;
+				});
+				var unResolvedIncidents = _.filter(incidents, function(incident) {
+					return !incident.resolved;
+				});
+				var resolvedIncidents = _.filter(incidents, function(incident) {
+					return incident.resolved;
 				});
 
-				noAckSummary.html(unAckedIncidents.length + ' Unacknowledged Alerts');
+				noAckSummary
+					[unAckedIncidents.length ? 'removeClass' : 'addClass']('none')
+					.html('<div class="incident-summary-module-indicator"><div class="fa fa-bullhorn"></div></div>'
+					 + '<div class="incident-summary-module-label">NO ACK<div class="incident-summary-module-label-small">Now</div></div>'
+					 + '<div class="incident-summary-module-value">' + unAckedIncidents.length + '</div>');
 
-				console.log(unAckedIncidents.length);
+ 				noResSummary
+					[unResolvedIncidents.length ? 'removeClass' : 'addClass']('none')
+ 					.html('<div class="incident-summary-module-indicator"><div class="fa fa-fire"></div></div>'
+ 					 + '<div class="incident-summary-module-label">OPEN<div class="incident-summary-module-label-small">Now</div></div>'
+ 					 + '<div class="incident-summary-module-value">' + unResolvedIncidents.length + '</div>');
+
+ 				resolvedSummary
+					[resolvedIncidents.length ? 'removeClass' : 'addClass']('none')
+ 					.html('<div class="incident-summary-module-indicator"><div class="fa fa-check"></div></div>'
+ 					 + '<div class="incident-summary-module-label">SOLVED<div class="incident-summary-module-label-small">This Week</div></div>'
+ 					 + '<div class="incident-summary-module-value">' + resolvedIncidents.length + '</div>');
             },
             error: function (errorInfo) {
             }

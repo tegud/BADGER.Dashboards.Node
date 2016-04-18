@@ -1333,4 +1333,27 @@ h3 {margin: 0;padding: 0 }
 
 .incident-summary-modules { min-height: 100px; list-style: none; padding: 0; margin: 0 }
 
-.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 23%; display: inline-block; margin-right: 5px; }
+.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 350px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+.incident-summary-module-indicator { width: 70px; height: 60px; margin: 5px; border: solid 5px #000; border-radius: 50px; font-size: 45px; text-align: center; padding-top: 10px; display: inline-block; vertical-align: middle; }
+
+.incident-summary-module-label { display: inline-block;vertical-align: middle; font-size: 40px; }
+
+.incident-summary-module-value { float: right; font-size: 50px; margin: 15px 20px 0 0 }
+
+.incident-summary-module-label-small { font-size: 19px; }
+
+.incident-summary-module-resolved,
+.incident-summary-module-resolved .incident-summary-module-indicator  { color: green; border-color: green; }
+
+.incident-summary-module-notacked,
+.incident-summary-module-notacked .incident-summary-module-indicator,
+.incident-summary-module-open,
+.incident-summary-module-open .incident-summary-module-indicator  { color: red; border-color: red; }
+
+.incident-summary-module-resolved.none,
+.incident-summary-module-resolved.none .incident-summary-module-indicator,
+.incident-summary-module-notacked.none,
+.incident-summary-module-notacked.none .incident-summary-module-indicator,
+.incident-summary-module-open.none,
+.incident-summary-module-open.none .incident-summary-module-indicator  { color: #999; border-color: #999; }

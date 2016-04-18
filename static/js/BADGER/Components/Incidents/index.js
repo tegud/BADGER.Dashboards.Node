@@ -266,7 +266,7 @@
             var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading();
             var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
                 title: configuration.title,
-                componentClass: 'release-list',
+                componentClass: 'incident-list',
                 layout: configuration.layout,
                 modules: [
                     inlineLoading,

@@ -1281,6 +1281,8 @@ h3 {margin: 0;padding: 0 }
 
 .release-signal-check-list-item-can-release-at { margin-top: 5px; }
 
+.incident-list { min-height: 242px; }
+
 .no-incidents { border-color: green; color: green;  }
 
 .incidents-no-incidents-indicator { width: 150px; height: 135px; padding-top: 15px; font-size: 110px; border: solid 10px; border-radius: 200px; text-align: center; display: inline-block; vertical-align: middle; }
@@ -1369,4 +1371,4 @@ h3 {margin: 0;padding: 0 }
 
 .small-oncall-list-team-name { display: inline-block;vertical-align: middle; padding: 0 5px; font-weight: bold; }
 
-.small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic  }
+.small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic; }

@@ -30,6 +30,7 @@
 		var callbacks = {
 			success: function (data) {
 				var incidents = _.pluck(data.today.hits.hits, '_source');
+				var yesterday = moment().add(-1, 'days');
 				var unAckedIncidents = _.filter(incidents, function(incident) {
 					return !incident.acknowledged && !incident.resolved;
 				});
@@ -37,7 +38,7 @@
 					return !incident.resolved;
 				});
 				var resolvedIncidents = _.filter(incidents, function(incident) {
-					return incident.resolved;
+					return incident.resolved && incident.resolvedAt && moment(incident.resolvedAt).isAfter(yesterday);
 				});
 
 				noAckSummary

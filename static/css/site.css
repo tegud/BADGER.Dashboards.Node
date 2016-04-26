@@ -1043,6 +1043,8 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
+.provider-summary { min-height: 232px; }
+
 .connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 
 .connectivity-service-status-indicator > span { font-size: 1em; }
@@ -1069,7 +1071,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-breakdown { margin-right: 10px; }
 
-.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; }
+.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
 
 .connectivity-service-description  h2 { margin-top: 0; }
 
@@ -1115,7 +1117,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 32px; width: 32px; display: inline-block; }
 
-.provider-tier-summary { position: relative; border-top-left-radius: 50px; }
+.provider-tier-summary { position: relative; border-top-left-radius: 50px; min-height: 237px }
 
 .provider-tier-summary > h3 { margin-left: 70px; margin-top: 12px }
 
@@ -1144,6 +1146,9 @@ h3 {margin: 0;padding: 0 }
 .provider-tier-provider-list-item-check-list { list-style: none; margin: 0; padding: 0 }
 
 .provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 29px; padding: 5px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
+
+
+.with-inner .provider-tier-provider-list-item-check-list-item { padding-top: 6px; height: 28px; }
 
 .provider-tier-provider-list-item-check-list-item.warn,
 .provider-tier-provider-list-item.warn,

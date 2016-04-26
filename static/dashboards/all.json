@@ -70,6 +70,11 @@
                 "id": "AllProviders",
                 "name": "All Providers"
             },
+            "ProviderDetail": {
+                "id": "ProviderDetail",
+                "name": "Provider",
+                "menu": false
+            },
             "OverviewElasticsearch": {
                 "id": "OverviewElasticsearch",
                 "name": "Overview (Elasticsearch)"

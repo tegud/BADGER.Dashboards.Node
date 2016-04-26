@@ -93,7 +93,79 @@
 		});
 	}
 
-	function buildSummaryViewModel(groupedData) {
+	function problemText(viewModel) {
+		var template = '{{affectedProvidersText}} {{providerText}} warning that they have an issue, but not critical, suggest these providers are monitored';
+
+		var affectedTiers = _.filter(viewModel.tiers, function(tier) {
+			return tier.worstCheckState == viewModel.worstCheckState;
+		});
+
+		var totalProviderCount = 0;
+		var affectedProvidersText = _.map(affectedTiers, function(tier, x) {
+				var providers = _.filter(tier.providers, function(provider) {
+					return viewModel.worstCheckState == provider.worstCheckState;
+				});
+
+				totalProviderCount += providers.length;
+
+				var suffix = ',';
+
+				if(x === (affectedTiers.length - 2)) {
+					suffix = ' and';
+				}
+				else if (x === (affectedTiers.length - 1)) {
+					suffix = ''
+				} 
+
+				return Mustache.render('{{providers}} {{tier}}{{suffix}} ', {
+					tier: tier.tier.split(' ')[0],
+					providers: providers.length,
+					suffix: suffix
+				});
+			})
+			.join('');
+
+		if(viewModel.worstCheckState == 2) {
+			template = '{{affectedProvidersText}} {{providerText}} indicating that they are <b>critical</b>';
+		}
+
+		var text = Mustache.render(template, {
+			affectedProvidersText: affectedProvidersText,
+			providerText: totalProviderCount === 1 ? 'provider is' : 'providers are'
+		});
+
+		return text;
+	}
+
+	function summaryDescription(configuration, viewModel) {
+		if(viewModel.worstCheckState == 0) {
+			return {
+				title: 'Everything ok',
+				text: 'No known issues with any provider.'
+			};
+		}
+
+		if(viewModel.worstCheckState == 1) {
+			return {
+				title: 'Warning',
+				text: problemText(viewModel)
+			};
+		}
+
+		if(viewModel.worstCheckState == 2) {
+			return {
+				title: 'Critical',
+				text: problemText(viewModel)
+			};
+		}
+
+		return {
+			title: 'Issue in monitoring, or misconfiguration',
+			text: 'Some checks are in an unknown state, generally this indicates an issue with Icinga 2, <a href="http://badger.laterooms.com/Status/ELK">Elasticsearch</a> or the check configuration, suggest contacting IO or OOH team.'
+		};
+	}
+
+	function buildSummaryViewModel(configuration, groupedData) {
 		return new Promise(function(resolve) {
 			var providerCheckCounts = _.reduce(groupedData, function(allCheckCounts, tier) {
 				var tierCounts = _.reduce(tier.providers, function(allCounts, provider) {
@@ -132,7 +204,7 @@
 				return tier.worstCheckState;
 			}).first().value();
 
-			resolve({
+			var viewModel = {
 				overallSummaryClass: (typeof worstState !== 'undefined' ? checkStates[worstState].summaryClass : 'unknown'),
 				checkSummaries: checkSummaries,
 				tiers: _.map(groupedData, function(tier) {
@@ -178,7 +250,14 @@
 						status: status
 					};
 				})
+			};
+
+			viewModel.description = summaryDescription(configuration, {
+				tiers: groupedData,
+				worstCheckState: worstState
 			});
+
+			resolve(viewModel);
 		});
 	}
 
@@ -194,8 +273,14 @@
 				return _.contains(tiers, tier.tier);
 			});
 
+			var worstCheckState;
+
+			if(tierData.length === 1) {
+				worstCheckState = _.first(tierData).worstCheckState;
+			}
+
 			resolve({
-				worstCheckState: tierData.worstCheckState,
+				worstCheckState: worstCheckState,
 				providers: _.chain(tierData)
 					.reduce(function(allProviders, tier) {
 						return allProviders.concat(_.map(tier.providers, function(provider) {
@@ -209,8 +294,7 @@
 					})
 					.sortBy(function(provider) {
 						if(configuration.orderBy === 'provider') {
-							console.log(provider);
-							return tierOrder[provider.tier] + ':';
+							return tierOrder[provider.tier] + ':' + provider.order;
 						}
 						return tierOrder[provider.tier] + ':' + checkStates[provider.worstCheckState].priority;
 					})

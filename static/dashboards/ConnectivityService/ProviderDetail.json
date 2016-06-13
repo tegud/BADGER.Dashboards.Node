@@ -12,7 +12,7 @@
             "storeId": "IcingaProviderStatus",
             "metricsStore": {
                 "host": "http://10.44.72.61:9200",
-                "index": "metrics-${YYYY}.${MM}"
+                "index": "metrics-${YYYY}.${MM}.${DD}"
             },
             "logStore": {
                 "host": "http://logs.laterooms.com:9200",

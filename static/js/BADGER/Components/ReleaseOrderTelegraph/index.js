@@ -106,9 +106,7 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
 
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            query: {
-                url: configuration.url,
-            },
+            query: { url: configuration.url },
             refresh: 2500,
             callbacks: {
                 success: function (data) {
@@ -132,7 +130,7 @@
                         }).value()
                     });
 
-                    signal.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{{text}}}</div>{{{checkList}}}', {
+                    signalContainer.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{{text}}}</div>{{{checkList}}}', {
                         signalState: signalState,
                         text: bigIndicatorStates[signalState].text,
                         icon: bigIndicatorStates[signalState].icon,
@@ -145,7 +143,50 @@
             }
         });
 
+        var plannedReleasesDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            query: { url: configuration.zendeskApiUrl + '/releases/' + moment().format('YYYY-MM-DD') },
+            refresh: 2500,
+            callbacks: {
+                success: function (data) {
+                    plannedList.html(_.map(JSON.parse(data.query).releases, function(release) {
+                        var start;
+
+                        if(release.status === 'successful' || release.status === 'failed') {
+                            return '';
+                        }
+
+                        if(release.isScheduled) {
+                            start = moment(release.start).format('HH:mm');
+                        }
+                        else {
+                            start = '--';
+                        }
+
+                        var productTeam;
+
+                        if(release.productTeam) {
+                            productTeam = release.productTeam[0].toUpperCase() + release.productTeam.substring(1);
+                        }
+
+                        return '<li class="planned-releases-list-item">'
+                            + '<div class="planned-releases-list-item-icon"><i class="fa fa-clock-o"></i></div>'
+                            + '<div class="planned-releases-list-item-subject">' + release.subject + '<br/>' + productTeam + '</div>'
+                        + '</li>';
+                    }).join('') || '<li class="planned-releases-list-none">No Pending Releases</li>');
+                }
+            },
+            components: {
+                loading: inlineLoading
+            }
+        });
+
         var signal = $('<div></div>');
+        var signalContainer = $('<div></div>').appendTo(signal);
+        var plannedContainer = $('<div class="planned-releases">'
+            + '<div><div class="planned-releases-title-icon"><span class="fa fa-pied-piper-alt"></span></div><div class="planned-releases-title-text">Pending Releases</div></div>'
+        + '</div>').appendTo(signal);
+
+        var plannedList = $('<ul class="planned-releases-list"></ul>').appendTo(plannedContainer);
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
@@ -173,9 +214,11 @@
                 initialising: {
                     _onEnter: function () {
                         dataStore.start(true);
+                        plannedReleasesDataStore.start(true);
                     },
                     stop: function() {
                         dataStore.stop();
+                        plannedReleasesDataStore.stop();
                     }
                 }
             },

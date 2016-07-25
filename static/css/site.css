@@ -1281,6 +1281,26 @@ h3 {margin: 0;padding: 0 }
 
 .release-signal-check-list-item-can-release-at { margin-top: 5px; }
 
+.planned-releases { margin: 5px 10px; }
+
+.planned-releases-title-icon { display: inline-block; margin-right: 10px; font-size: 30px; }
+
+.planned-releases-title-text { display: inline-block; font-size:24px; font-weight: bold; }
+
+.planned-releases-list { margin: 0; padding:0; list-style: none; clear: left; }
+
+.planned-releases-list-item { padding: 5px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
+
+.planned-releases-list-none { padding: 5px; font-style: italic }
+
+.planned-releases-list-item-icon,
+.planned-releases-list-item-time,
+.planned-releases-list-item-subject { vertical-align: middle; }
+
+.planned-releases-list-item-icon { width: 20px; height: 20px; font-size: 20px;margin-right: 5px; float: left; }
+
+.planned-releases-list-item-subject { margin-left: 25px; }
+
 .incident-list { min-height: 242px; }
 
 .no-incidents { border-color: green; color: green;  }

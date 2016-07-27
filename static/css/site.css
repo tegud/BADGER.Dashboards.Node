@@ -1291,7 +1291,7 @@ h3 {margin: 0;padding: 0 }
 
 .planned-releases-list-header { font-size: 1.2em; font-weight: bold; padding: 5px 0; }
 
-.planned-releases-list-item { padding: 5px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
+.planned-releases-list-item { padding: 10px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
 
 .planned-releases-list-none { padding: 5px; font-style: italic }
 
@@ -1299,9 +1299,11 @@ h3 {margin: 0;padding: 0 }
 .planned-releases-list-item-time,
 .planned-releases-list-item-subject { vertical-align: middle; }
 
-.planned-releases-list-item-icon { width: 20px; height: 20px; font-size: 20px;margin-right: 5px; float: left; }
+.planned-releases-list-item-subject { font-weight: bold; margin-bottom: 5px; }
 
-.planned-releases-list-item-subject { margin-left: 25px; }
+.planned-releases-list-item-team-icon { font-size:1.3em; }
+
+.planned-releases-list-item-link { text-decoration: underline }
 
 .incident-list { min-height: 242px; }
 

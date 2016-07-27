@@ -198,8 +198,11 @@
                                 }
 
                                 return '<li class="planned-releases-list-item">'
-                                    + '<div class="planned-releases-list-item-icon"><i class="fa fa-clock-o"></i></div>'
-                                    + '<div class="planned-releases-list-item-subject">' + release.id + ' - ' + release.subject + '<br/>(' + release.status + ')' + productTeam + '</div>'
+                                    + '<div class="planned-releases-list-item-subject"><a class="planned-releases-list-item-link" href="https://tlrg-servicehub.zendesk.com/agent/tickets/' + release.id + '" target="_blank">' + release.id + '</a> - ' + release.subject + '</div>'
+                                    + '<div class="planned-releases-list-item-team">'
+                                        + '<span class="planned-releases-list-item-team-icon mega-octicon octicon-organization"></span>&nbsp;' + productTeam
+                                        + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name
+                                    + '</div>'
                                 + '</li>';
                             }).join('')
                         }));

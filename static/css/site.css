@@ -1289,6 +1289,8 @@ h3 {margin: 0;padding: 0 }
 
 .planned-releases-list { margin: 0; padding:0; list-style: none; clear: left; }
 
+.planned-releases-list-header { font-size: 1.2em; font-weight: bold; padding: 5px 0; }
+
 .planned-releases-list-item { padding: 5px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
 
 .planned-releases-list-none { padding: 5px; font-style: italic }

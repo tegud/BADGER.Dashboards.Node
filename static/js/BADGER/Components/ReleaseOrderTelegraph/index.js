@@ -148,31 +148,66 @@
             refresh: 2500,
             callbacks: {
                 success: function (data) {
-                    plannedList.html(_.map(JSON.parse(data.query).releases, function(release) {
-                        var start;
-
-                        if(release.status === 'successful' || release.status === 'failed') {
-                            return '';
+                    var releaseGroupOrder = {
+                        'requested': 0,
+                        'pending': 1,
+                        'in-progress': 2,
+                        'approved': 3,
+                        'successful': 4,
+                        'failed': 5
+                    };
+                    var releases = _.reduce(JSON.parse(data.query).releases,function(filteredReleases, release) {
+                        if(release.status === 'successful' || release.status === 'failed' || release.status === 'in-progress') {
+                            return filteredReleases;
                         }
 
-                        if(release.isScheduled) {
-                            start = moment(release.start).format('HH:mm');
-                        }
-                        else {
-                            start = '--';
-                        }
+                        filteredReleases.push(release);
 
-                        var productTeam;
+                        return filteredReleases;
+                    }, []);
+                    var groupedReleases = _.groupBy(releases, function(release) {
+                        return release.status;
+                    });
+                    var groups = _.chain(Object.keys(groupedReleases)).reduce(function(all, key) {
+                        all.push(key);
 
-                        if(release.productTeam) {
-                            productTeam = release.productTeam[0].toUpperCase() + release.productTeam.substring(1);
-                        }
+                        return all;
+                    }, []).sortBy(function(groupName) {
+                        return releaseGroupOrder[groupName];
+                    }).value();
 
-                        return '<li class="planned-releases-list-item">'
-                            + '<div class="planned-releases-list-item-icon"><i class="fa fa-clock-o"></i></div>'
-                            + '<div class="planned-releases-list-item-subject">' + release.subject + '<br/>' + productTeam + '</div>'
-                        + '</li>';
-                    }).join('') || '<li class="planned-releases-list-none">No Pending Releases</li>');
+                    if(groups.length) {
+                        plannedList.html(_.map(groups, function(group) {
+                            var groupName = group[0].toUpperCase() + group.substring(1);
+
+                            return '<li class="planned-releases-list-header">' + groupName + '</li>' + _.map(groupedReleases[group], function(release) {
+                                var start;
+
+
+                                if(release.isScheduled) {
+                                    start = moment(release.start).format('HH:mm');
+                                }
+                                else {
+                                    start = '--';
+                                }
+
+                                var productTeam;
+
+                                if(release.productTeam) {
+                                    productTeam = release.productTeam[0].toUpperCase() + release.productTeam.substring(1);
+                                }
+
+                                return '<li class="planned-releases-list-item">'
+                                    + '<div class="planned-releases-list-item-icon"><i class="fa fa-clock-o"></i></div>'
+                                    + '<div class="planned-releases-list-item-subject">' + release.id + ' - ' + release.subject + '<br/>(' + release.status + ')' + productTeam + '</div>'
+                                + '</li>';
+                            }).join('')
+                        }));
+                    }
+                    else {
+                        plannedList.html('<li class="planned-releases-list-none">No Pending Releases</li>');
+                    }
+
                 }
             },
             components: {

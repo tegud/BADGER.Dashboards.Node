@@ -5,7 +5,7 @@
             "type": "LineGraphAndCounter",
             "title": "Front End",
             "dataSource": "elasticsearch",
-            "host": "http://badger.laterooms.com:9200",
+            "host": "http://logs.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -80,7 +80,7 @@
             "type": "LineGraphAndCounter",
             "title": "Booking",
             "dataSource": "elasticsearch",
-            "host": "http://badger.laterooms.com:9200",
+            "host": "http://logs.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -160,7 +160,7 @@
             "type": "LineGraphAndCounter",
             "title": "APIs",
             "dataSource": "elasticsearch",
-            "host": "http://badger.laterooms.com:9200",
+            "host": "http://logs.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"
@@ -243,7 +243,7 @@
             "type": "LineGraphAndCounter",
             "title": "Connectivity",
             "dataSource": "elasticsearch",
-            "host": "http://badger.laterooms.com:9200",
+            "host": "http://logs.laterooms.com:9200",
             "timeProperties": [
               "query.filtered.filter.bool.must.0.range.@timestamp",
               "aggs.errorsbytime.date_histogram.extended_bounds"

@@ -29,11 +29,11 @@
             }
         };
     })();
-    
+
 
     function setValueOnSubProperty(obj, prop, value) {
         if(typeof value === 'undefined') return;
-        
+
         if (typeof prop === "string")
              prop = prop.split(".");
 
@@ -45,8 +45,8 @@
              }
 
              setValueOnSubProperty(obj[e] =
-                       Object.prototype.toString.call(obj[e]) === "[object Object]" || 
-                       Object.prototype.toString.call(obj[e]) === "[object Array]" 
+                       Object.prototype.toString.call(obj[e]) === "[object Object]" ||
+                       Object.prototype.toString.call(obj[e]) === "[object Array]"
                        ? obj[e]
                        : {},
                      prop,
@@ -55,7 +55,7 @@
              obj[prop[0]] = value;
     }
 
-    function extractFromDateHistogram(config, aggregate, name) {
+    function extractFromDateHistogram(config, aggregate, name, defaultValue) {
         var dates = aggregate.buckets;
 
         return _.map(dates, function(dateBucket) {
@@ -64,7 +64,7 @@
             };
 
             parsedObject[name] = _.reduce(config.fields, function(memo, field, key) {
-                memo[key] = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(dateBucket, field)
+                memo[key] = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(dateBucket, field, defaultValue)
                 return memo;
             }, {});
 
@@ -134,12 +134,26 @@
             return matchedValues;
         },
         'extractFromDateHistogram': function(mapping, data) {
+            if(mapping.dataSets) {
+                return _.reduce(mapping.dataSets, function(outputData, set) {
+                    var fields = {};
+
+                    fields[set.field] = set.value;
+
+                    outputData[set.field] = extractFromDateHistogram({
+                        fields: fields
+                    }, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.query.aggregations, set.aggregate), 'values', mapping.defaultValue);
+
+                    return outputData;
+                }, {});
+            }
+
             if(data.aggregations) {
-                return extractFromDateHistogram(mapping, data.aggregations[mapping.aggregateName]);
+                return extractFromDateHistogram(mapping, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(data.aggregations, mapping.aggregateName), mapping.defaultValue);
             }
 
             return _.reduce(data, function(memo, response, key) {
-                var processedBucket = extractFromDateHistogram(mapping, response.aggregations[mapping.aggregateName], key);
+                var processedBucket = extractFromDateHistogram(mapping, TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(response.aggregations, mapping.aggregateName), key, mapping.defaultValue);
 
                 if(!memo.length) {
                     return processedBucket;
@@ -157,7 +171,7 @@
         },
         'calculation': function(mapping, data) {
             if(!calculations[mapping.calculation]) {
-                return; 
+                return;
             }
 
             _.each(data, function(dateBucket) {
@@ -173,6 +187,24 @@
                         setValueOnSubProperty(property, mapping.toField, calculations[mapping.calculation](mapping.by, property));
                     });
                 }
+            });
+            return data;
+        },
+        'convertMillisecondsTo': function(mapping, data) {
+            _.each(data, function(dateBucket) {
+                _.each(dateBucket, function(property, key) {
+                    if(key === 'time') {
+                        return;
+                    }
+
+                    _.each(mapping.fields, function(field) {
+                        if(mapping.ignoreNegatives && property[field] < 0) {
+                            property[field] = 0;
+                        }
+
+                        property[field] = property[field] / 1000;
+                    });
+                });
             });
             return data;
         },
@@ -228,7 +260,7 @@
                         stats.standardDeviations = [];
                     }
                     stats.standardDeviations[numberOfStds] = {
-                        minus: stats.mean - (stats.deviation * numberOfStds),  
+                        minus: stats.mean - (stats.deviation * numberOfStds),
                         plus: stats.mean + (stats.deviation * numberOfStds)
                     };
                 });

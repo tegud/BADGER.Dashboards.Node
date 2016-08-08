@@ -15,7 +15,7 @@
 	+ '</ul>';
 
 	TLRGRP.BADGER.Dashboard.Components.ElasticsearchServerHealth = function (configuration) {
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 
@@ -53,6 +53,12 @@
                 }, {}) : {};
 
                 clusterStatusElement.html(_.map(data.info.nodes, function(node) {
+					var name = node.name;
+
+					if(typeof name === 'object') {
+						name = name.name || name.host;
+					}
+
                     var nodeTypeClass = 'fa-question-circle';
 
                     if(node.tags && node.tags.indexOf('archive') > -1) {
@@ -62,47 +68,54 @@
                         nodeTypeClass = 'fa-line-chart';
                     }
 
-                    var fs = node.stats.fs;
-                    var nodeStatusClass = 'info';
-                    var breachedStats = {};
+					var mainItems = '';
+					var breachedStats = {};
+					function getThresholdStatusForStat(stat) {
+						if(!breachedStats[stat]) {
+							return 'info';
+						}
 
-                    if(nodeThresholdBreaches[node.name]) {
-                        nodeStatusClass = nodeThresholdBreaches[node.name].level;
+						return breachedStats[stat].breach.level;
+					}
 
-                        breachedStats = _.reduce(nodeThresholdBreaches[node.name].breaches, function(result, current) {
-                            result[current.stat] = current;
+					if(node.stats) {
+						var fs = node.stats.fs;
+						var nodeStatusClass = 'info';
 
-                            return result;
-                        }, {});
-                    }
+						if(nodeThresholdBreaches[name]) {
+							nodeStatusClass = nodeThresholdBreaches[name].level;
 
-                    function getThresholdStatusForStat(stat) {
-                        if(!breachedStats[stat]) {
-                            return 'info';
-                        }
+							breachedStats = _.reduce(nodeThresholdBreaches[name].breaches, function(result, current) {
+								result[current.stat] = current;
 
-                        return breachedStats[stat].breach.level;
-                    }
+								return result;
+							}, {});
+						}
+
+
+						mainItems = '<div class="node-item big-item ' + getThresholdStatusForStat('cpu') + '">'
+							   + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-dashboard"></div><div class="item-text">CPU</div></div>'
+							   + '<div><span class="big-item-value">' + node.stats.cpu + '</span>%</div>'
+							+ '</div>'
+							+ '<div class="node-item big-item ' + getThresholdStatusForStat('memory.heap.used.percent') + '">'
+							   + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-circuit-board"></div><div class="item-text">HEAP</div></div>'
+							   + '<div><span class="big-item-value">' + node.stats.memory.heap.used.percent + '</span>%</div>'
+							+ '</div>'
+							+ '<div class="node-item big-item ' + getThresholdStatusForStat('fs.available_in_bytes') + '">'
+							   + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-database"></div><div class="item-text">DISK</div></div>'
+							   + '<div><span class="big-item-value">' + (((fs.total_in_bytes - fs.available_in_bytes) / fs.total_in_bytes) * 100).toFixed(0) + '</span>%</div>'
+							   + '<div>' + (fs.available_in_bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB Free</div>'
+							+ '</div>';
+					}
+
 
                     return '<li class="node-info ' + nodeStatusClass + '">'
                          + '<div class="node-type"><span class="fa ' + nodeTypeClass + '"></span></div>'
-                         + '<h3>' + node.name + '</h3>'
-                         + '<div class="node-item"><span class="fa fa-plug"></span><div class="item-text">' + node.ip + '</div></div>'
-                         + '<div class="node-item"><span class="fa fa-tags"></span><div class="item-text">' + node.tags + '</div></div>'
+                         + '<h3>' + name + '</h3>'
+                         + '<div class="node-item"><span class="fa fa-plug"></span><div class="item-text">' + (node.ip || 'Unknown') + '</div></div>'
+                         + '<div class="node-item"><span class="fa fa-tags"></span><div class="item-text">' + (node.tags || 'Unknown') + '</div></div>'
                          + '<div class="main-items">'
-                             + '<div class="node-item big-item ' + getThresholdStatusForStat('cpu') + '">'
-                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-dashboard"></div><div class="item-text">CPU</div></div>'
-                                + '<div><span class="big-item-value">' + node.stats.cpu + '</span>%</div>'
-                             + '</div>'
-                             + '<div class="node-item big-item ' + getThresholdStatusForStat('memory.heap.used.percent') + '">'
-                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-circuit-board"></div><div class="item-text">HEAP</div></div>'
-                                + '<div><span class="big-item-value">' + node.stats.memory.heap.used.percent + '</span>%</div>'
-                             + '</div>'
-                             + '<div class="node-item big-item ' + getThresholdStatusForStat('fs.available_in_bytes') + '">'
-                                + '<div class="big-item-side"><div class="big-item-icon mega-octicon octicon-database"></div><div class="item-text">DISK</div></div>'
-                                + '<div><span class="big-item-value">' + (((fs.total_in_bytes - fs.available_in_bytes) / fs.total_in_bytes) * 100).toFixed(0) + '</span>%</div>'
-                                + '<div>' + (fs.available_in_bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB Free</div>'
-                             + '</div>'
+                             + mainItems
                          + '</div>'
                     + '</li>';
                 }).join(''));
@@ -131,7 +144,7 @@
                     TLRGRP.messageBus.publish('TLRGRP.BADGER.SharedDataStore.Unsubscribe.' + configuration.storeId, 'ServerHealth');
                 }
             };
-        } 
+        }
         else {
             dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
                 query: {

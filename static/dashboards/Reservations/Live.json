@@ -6,8 +6,7 @@
             "alertName": "healthCheck.serviceHealth-reservations-live",
             "group": "Reservations",
             "title": "Server Status",
-            "host": "badger.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
             "span": 12
         },
         {

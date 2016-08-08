@@ -6,7 +6,7 @@
           "title": "Search CI Data",
           "storeId": "SearchCIData",
           "dataSource": "elasticsearch",
-          "host": "http://badger.laterooms.com:9200",
+          "host": "http://logs.laterooms.com:9200",
           "index": "releases-${YYYY}.${MM}",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp"
@@ -46,16 +46,22 @@
           "mappings": []
         },
         {
+            "title": "Pending PRs",
+            "type": "PullRequests",
+            "span": "4",
+            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/search-"
+        },
+        {
             "title": "In Progress",
             "type": "InProgressReleases",
-            "span":"9",
+            "span": "5",
             "storeId": "SearchCIData",
             "defaultSortOrder": "Descending"
         },
         {
             "title": "Completed",
             "type": "CompletedReleases",
-            "span":"3",
+            "span": "3",
             "storeId": "SearchCIData"
         }
     ]

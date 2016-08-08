@@ -6,8 +6,7 @@
             "alertName": "healthCheck.serviceHealth-apis-live",
             "group": "APIServers",
             "title": "API Server Status",
-            "host": "badger.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
             "span": 12
         },
         {
@@ -15,8 +14,7 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "badger.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
             "span": 4
         },
         {

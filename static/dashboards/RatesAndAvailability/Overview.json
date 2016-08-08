@@ -7,7 +7,7 @@
           "title": "LateRooms Conversion",
           "storeId": "AllOutComes",
           "dataSource": "elasticsearch",
-          "host": "http://badger.laterooms.com:9200",
+          "host": "http://logs.laterooms.com:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
             "aggs.bookingsbytime.date_histogram.extended_bounds"
@@ -177,7 +177,7 @@
           "title": "LateRooms Conversion",
           "storeId": "LastOutcome",
           "dataSource": "elasticsearch",
-          "host": "http://badger.laterooms.com:9200",
+          "host": "http://logs.laterooms.com:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
             "aggs.bookingsbytime.date_histogram.extended_bounds"

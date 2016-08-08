@@ -6,8 +6,7 @@
             "alertName": "healthCheck.serviceHealth-loadbalancerapi",
             "group": "TestAPIs",
             "title": "Load Balancer API Status",
-            "host": "badger.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
             "span": 4
         },
         {
@@ -94,6 +93,30 @@
             "type": "LoadBalancerStatus",
             "poolId": "seocontent.api_HTTP",
             "title": "SEOContent API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbookinginternal.laterooms.com_SSL",
+            "title": "XML Booking Internal API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbooking.laterooms.com_SSL",
+            "title": "XML Booking API Status",
+            "host": "10.44.35.62",
+            "port": 1234,
+            "span": 4
+        },
+        {
+            "type": "LoadBalancerStatus",
+            "poolId": "xmlbookingservice.laterooms.com_SSL",
+            "title": "XML Booking Service API Status",
             "host": "10.44.35.62",
             "port": 1234,
             "span": 4

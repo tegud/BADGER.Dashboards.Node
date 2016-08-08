@@ -168,14 +168,16 @@
             appendToLocation: function () {
                 return 'content';
             },
-            setData: function (data) {
+            setData: function (data, showData) {
                 if(currentOptions.window) {
                     data = data.reverse().slice(currentOptions.window.skip, currentOptions.window.take + currentOptions.window.skip).reverse();
                 }
 
                 var specificData = _.map(data, function(item) {
                     var y0 = 0;
-                    var values = _.map(lines, function(currentLine) {
+                    var values = _.chain(lines).filter(function(currentLine) {
+                        return !showData || _.contains(showData , currentLine.id);
+                    }).map(function(currentLine) {
                         var valueForLine = TLRGRP.BADGER.Utilities.object.getValueFromSubProperty(item, currentLine.value) || 0;
 
                         return {
@@ -185,7 +187,7 @@
                             y0: y0,
                             y1: y0 += valueForLine
                         };
-                    });
+                    }).value();
 
                     item.values = values;
                     item.total = values[values.length - 1].y1;

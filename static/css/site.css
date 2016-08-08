@@ -2,7 +2,7 @@
 
 body { font-family: Helvetica, arial, freesans, clean, sans-serif;background-color: #eaeaea; margin: 0; padding: 0; }
 
-.main-body { margin: 0 14px !important; } 
+.main-body { margin: 0 14px !important; }
 
 .top-level-item.v2-label { display: none; }
 
@@ -233,9 +233,9 @@ h3 {margin: 0;padding: 0 }
 .connection-indicator-icon span { font-size: 22px; color: #fff; }
 
 .connection-indicator.connected,
-.connection-indicator.connected .connection-indicator-icon { background-color: green; } 
+.connection-indicator.connected .connection-indicator-icon { background-color: green; }
 .connection-indicator.disconnected,
-.connection-indicator.disconnected .connection-indicator-icon { background-color: red; } 
+.connection-indicator.disconnected .connection-indicator-icon { background-color: red; }
 
 .connection-indicator.connected span.connected      { display: block; }
 .connection-indicator span.connected,
@@ -275,12 +275,12 @@ h3 {margin: 0;padding: 0 }
     float: left;
     margin: 0;
     list-style: none;
-    padding: 12px 10px 0 15px; 
+    padding: 12px 10px 0 15px;
 }
 
 .settings-menu {
     list-style: none;
-    padding: 0; 
+    padding: 0;
     margin: 0;
 }
 
@@ -653,7 +653,7 @@ h3 {margin: 0;padding: 0 }
 
 .radio .filter-option-checkbox-inner { border-radius: 6px; }
 
-.open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px } 
+.open-in-kibana { display: block;float: left; height: 30px; margin: 0 10px 0 20px; padding-left: 33px; cursor: pointer; background-image: url('../images/kibana-small.png'); background-repeat: no-repeat; font-size: 1.1em; background-position: 0 4px }
 
 .tier-indicator { width: 50px; height: 42px; background-color: #000; float: right; border-radius: 30px; padding-top: 8px; text-align: center; border: #000 5px solid; }
 
@@ -954,15 +954,15 @@ h3 {margin: 0;padding: 0 }
 
 .releases-completed .release-complete-ok { color: green; border-color: green; }
 
-.releases-completed .release-complete-failed { color: red; border-color: red; } 
+.releases-completed .release-complete-failed { color: red; border-color: red; }
 
-.releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08;font-size: 56px; }
+.releases-completed .release-complete-cancelled { color: #886A08; border-color: #886A08; font-size: 56px; }
 
 .completed-releases-container { margin-left: 95px; }
 
 .completed-release-name { font-size: 1.3em; font-weight: bold; word-break: break-all; }
 
-.releases-completed .release-info { margin: 0 } 
+.releases-completed .release-info { margin: 0 }
 
 .release-order-selector { position: absolute; top: -40px; right: 5px; cursor: pointer; font-size: 1.2em; }
 
@@ -976,6 +976,14 @@ h3 {margin: 0;padding: 0 }
 .desc .release-order-selector-label-asc { display: none; }
 
 .no-releases { font-size: 3em; }
+
+.pullrequest-mergestate-dirty { color: red; }
+
+.pullrequest-additions-text { color: darkgreen; }
+.pullrequest-deletions-text { color: darkred; }
+.pullrequest-changes-text { color: darkorange; }
+
+.github-user-avatar { border-radius: 50%; vertical-align: middle; border: solid 3px #000; }
 
 .pipeline-name-counter { font-size: 0.8em; color: #bbb; font-style: italic; }
 
@@ -1043,7 +1051,9 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
-.provider-summary { min-height: 232px; }
+.provider-summary, .provider-detail { min-height: 212px; position: relative; }
+
+.provider-detail h3 { margin-left: 50px; font-size: 1.9em }
 
 .connectivity-service-status-indicator { font-size: 6em; border: 10px solid #008000; border-radius: 100px; padding: 10px; color: #008000; width: 100px; height: 100px; text-align: center }
 
@@ -1071,15 +1081,20 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-breakdown { margin-right: 10px; }
 
-.connectivity-service-summary > .connectivity-service-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
+.connectivity-service-summary > .connectivity-service-description,
+.connectivity-service-summary > .connectivity-provider-description { vertical-align: top; min-width: 400px; font-size: 1.4em; }
 
-.connectivity-service-description  h2 { margin-top: 0; }
+.connectivity-provider-description { padding-left: 10px; }
+
+.connectivity-service-description h2 { margin-top: 0; }
 
 .connectivity-service-summary-tier-list { list-style: none; margin: 0; }
 
-.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 150px; height: 150px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative }
+.connectivity-service-summary-tier-item { vertical-align: top;display: inline-block; width: 130px; height: 130px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative; }
 
-.connectivity-service-summary-tier-emblem { position: absolute; width: 60px; height: 58px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 40px; font-size: 3em; font-weight: bold; color: #000; }
+.provider-summary-item { vertical-align: top;display: inline-block; width: 130px; height: 130px; border: solid 10px #000; margin-right: 10px; border-radius: 30px; position: relative;background-color: #9ACD32; cursor: pointer; }
+
+.connectivity-service-summary-tier-emblem { position: absolute; width: 50px; height: 48px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 35px; font-size: 2.7em; font-weight: bold; color: #000; }
 
 .connectivity-service-summary-tier-emblem.platinum    { background-color: #ddd; border-color: #999;  }
 .connectivity-service-summary-tier-emblem.gold        { background-color: gold; border-color: #BFA100; }
@@ -1089,7 +1104,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-status-tier-status {  }
 
-.connectivity-service-status-tier-big-indicator { font-size: 5em; padding-top: 25px; width: 100%; text-align: center }
+.connectivity-service-status-tier-big-indicator { font-size: 5em; padding-top: 10px; width: 100%; text-align: center }
 
 .connectivity-service-status-tier-big-text { font-size: 2em; text-align: center; font-weight: bold; }
 
@@ -1098,24 +1113,32 @@ h3 {margin: 0;padding: 0 }
 .connectivity-service-status-tier-big-ok-indicator-item { display: inline-block }
 
 .connectivity-service-status-tier-big-ok-indicator-item.ok,
-.connectivity-service-summary-tier-item.ok { color: green; }
-.connectivity-service-summary-tier-item.ok { border-color: green; }
+.connectivity-service-summary-tier-item.ok,
+.provider-summary-item.ok { color: green; }
+.connectivity-service-summary-tier-item.ok,
+.provider-summary-item.ok { border-color: green; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.warn,
-.connectivity-service-summary-tier-item.warning { color: #ffa500; }
-.connectivity-service-summary-tier-item.warning { border-color: #ffa500; }
+.connectivity-service-summary-tier-item.warning,
+.provider-summary-item.warning { color: #ffa500; }
+.connectivity-service-summary-tier-item.warning,
+.provider-summary-item.warning { border-color: #ffa500; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.critical,
-.connectivity-service-summary-tier-item.critical { color: #f00; }
-.connectivity-service-summary-tier-item.critical { border-color: #f00; }
+.connectivity-service-summary-tier-item.critical,
+.provider-summary-item.critical { color: #f00; }
+.connectivity-service-summary-tier-item.critical,
+.provider-summary-item.critical { border-color: #f00; }
 
 .connectivity-service-status-tier-big-ok-indicator-item.unknown,
-.connectivity-service-summary-tier-item.unknown { color: #a4f; }
-.connectivity-service-summary-tier-item.unknown { border-color: #a4f; }
+.connectivity-service-summary-tier-item.unknown,
+.provider-summary-item.unknown { color: #a4f; }
+.connectivity-service-summary-tier-item.unknown,
+.provider-summary-item.unknown { border-color: #a4f; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 32px; width: 32px; text-align: center; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-icon { font-size: 27px; width: 27px; text-align: center; display: inline-block; }
 
-.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 32px; width: 32px; display: inline-block; }
+.connectivity-service-status-tier-big-ok-indicator-item-counter { font-size: 27px; width: 27px; display: inline-block; }
 
 .provider-tier-summary { position: relative; border-top-left-radius: 50px; min-height: 237px }
 
@@ -1133,7 +1156,7 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list { list-style: none; padding: 0; margin: 0 }
 
-.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 160px; height: 140px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; }
+.provider-tier-provider-list-item { display: inline-block; vertical-align: top; width: 160px; height: 140px; padding-top: 5px;font-size: 1.7em; background-color: #9ACD32; text-align: center; border: solid 10px green; margin: 5px 5px 0 0; border-radius: 40px; cursor: pointer; }
 
 .provider-tier-provider-list-item.with-inner { padding-top: 0 ;height: 165px; width: 180px; border-width: 10px; border-radius: 50px; font-size: 1.6em; }
 
@@ -1147,23 +1170,229 @@ h3 {margin: 0;padding: 0 }
 
 .provider-tier-provider-list-item-check-list-item { font-size: 0.85em; font-weight: bold; width: 30px; height: 29px; padding: 5px 4px 4px 4px; border-radius: 37px; margin-right: 3px; border: solid 5px #777; border-color: green;background-color: #9ACD32; display: inline-block; }
 
-
 .with-inner .provider-tier-provider-list-item-check-list-item { padding-top: 6px; height: 28px; }
 
 .provider-tier-provider-list-item-check-list-item.warn,
 .provider-tier-provider-list-item.warn,
-.provider-tier-provider-list-inner.warn { border-color: #FF8C00; background-color: #FFB862; }
+.provider-tier-provider-list-inner.warn,
+.provider-summary-item.warning { border-color: #FF8C00; background-color: #FFB862; }
 
 .provider-tier-provider-list-item-check-list-item.critical,
 .provider-tier-provider-list-item.critical,
-.provider-tier-provider-list-inner.critical { border-color: #f00; background-color: #FF8F8F; }
+.provider-tier-provider-list-inner.critical,
+.provider-summary-item.critical { border-color: #f00; background-color: #FF8F8F; }
 
 .provider-tier-provider-list-item-check-list-item.unknown,
 .provider-tier-provider-list-item.unknown,
-.provider-tier-provider-list-inner.unknown { border-color: #a4f; background-color: #D6A6FF; }
+.provider-tier-provider-list-inner.unknown,
+.provider-summary-item.unknown { border-color: #a4f; background-color: #D6A6FF; }
 
+.connectivity-service-summary-tier-emblem.bookings { color: green; border-color: green; background-color: #9ACD32; }
+.connectivity-service-summary-tier-emblem.errors { color: #FF8C00;border-color: #FF8C00; background-color: #FFB862; }
+.connectivity-service-summary-tier-emblem.booking-errors { color: #f00; border-color: #f00; background-color: #FF8F8F; }
+
+.warning .provider-summary-selected-indicator { color: #FF8C00; }
 
 .provider-tier-provider-list-item.platinum { border-color: #999; }
 .provider-tier-provider-list-item.gold { border-color: #BFA100; }
 .provider-tier-provider-list-item.silver { border-color: #333; }
 .provider-tier-provider-list-item.bronze { border-color: #B36F2C; }
+
+.provider-summary-check-item-title { padding-top: 5px; color: #000; text-align: center; font-weight: bold; font-size: 1.2em }
+
+.provider-summary-check-item-subtext { padding-top: 2px; color: #000; text-align: center; font-weight: bold; font-size: 0.9em }
+
+.provider-summary-check-item-value { padding-top: 30px; font-size: 43px; font-weight: bold; text-align: center; color: #000; min-height: 45px  }
+
+.provider-summary-item .connectivity-service-summary-tier-emblem .mega-octicon { font-size: 50px; }
+
+.provider-summary-selected-indicator { position: absolute; bottom: -29px; left: 55px; display: none; }
+
+.selected .provider-summary-selected-indicator { display: block; }
+
+.provider-detail-graph .v2-graph-container { margin-right: 0; }
+
+.back-to-main { font-size: 50px; top: 0 ;left: 10px; position: absolute; cursor: pointer; }
+
+.connectivity-provider-description .provider-tier-summary-emblem.connectivity-service-summary-tier-emblem { display: inline-block; position: static; width: 26px; height: 24px; vertical-align: middle; margin-left: 15px }
+
+.provider-summary-tier-emblem-text { vertical-align: middle; display: inline-block; margin-left: 5px; font-size: 0.7em; font-style: italic; }
+
+.provider-summary-provider-title-text {vertical-align: middle; display: inline-block;}
+
+.provider-detail-detail { min-height: 400px; }
+
+.provider-detail-detail-grid-container { list-style: none; margin: 0; padding: 0; clear: both; }
+
+.provider-detail-detail-booking-table {  width: 100%; }
+
+.provider-detail-detail-booking-table-bookingid { width: 120px; }
+.provider-detail-detail-booking-table-booked { }
+.provider-detail-detail-booking-table-channel { width: 140px; }
+.provider-detail-detail-booking-table-country { width: 100px; }
+.provider-detail-detail-booking-table-hoteldetails { width: 200px; }
+.provider-detail-detail-booking-table-hoteldetails a { text-decoration: underline; }
+.provider-detail-detail-booking-table-roomnights { width: 100px; }
+.provider-detail-detail-booking-table-ttv { width: 100px; }
+.provider-detail-detail-booking-table-commission { width: 140px; }
+.provider-detail-detail-booking-table-affiliate { width: 250px; }
+.provider-detail-detail-booking-table-viewsession { width: 50px; }
+
+.provider-detail-detail-booking-table td { padding: 5px; }
+
+.provider-detail-error-messages { width: 32%; display: inline-block; padding: 5px; vertical-align: top; }
+
+.provider-detail-error-messages-table { width: 100%; margin-bottom: 10px; }
+
+.provider-detail-error-messages-table td { padding: 5px; }
+
+.provider-detail-errors { display: inline-block; vertical-align: top; width: 65%; padding: 5px; }
+
+.release-signal-indicator { width: 200px; height: 200px; border: solid 20px #000; border-radius: 150px; margin: 0 auto; margin-bottom: 10px; font-size: 150px; text-align: center; }
+
+.release-signal-indicator.green, .release-signal-text.green,
+.release-signal-check-list-item-indicator.green,
+.release-signal-check-list-item-text.green { border-color: green; color: green }
+.release-signal-indicator.amber, .release-signal-text.amber,
+.release-signal-check-list-item-indicator.amber,
+.release-signal-check-list-item-text.amber { border-color: orange; color: orange }
+.release-signal-indicator.red, .release-signal-text.red,
+.release-signal-check-list-item-indicator.red,
+.release-signal-check-list-item-text.red { border-color: #f00; color: #f00 }
+
+.release-signal-text { font-size: 3em; text-align: center; font-weight: bold; }
+
+.release-signal-indicator-icon { display: block; font-weight: bold; margin-top: 15px; }
+
+.release-signal-check-list { list-style: none; margin: 10px 0 0 0; padding: 0 }
+
+.release-signal-check-list-item { padding: 5px }
+
+.release-signal-check-list-item-indicator { vertical-align: middle;display: inline-block; border: solid 6px #999; border-radius: 40px; width: 30px; height: 30px; text-align: center; font-size: 23px; }
+
+.release-signal-check-list-item-indicator .release-signal-indicator-icon { margin-top: 3px; }
+
+.release-signal-check-list-item-text { vertical-align: middle; display: inline-block; margin-left: 10px; font-size: 1.5em; font-weight: bold; }
+
+.release-signal-check-list-item-reason { margin-left: 52px; font-style: italic; }
+
+.release-signal-check-list-item-releases-ongoing { margin-left: 52px; font-weight: bold; }
+.release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }
+
+.release-signal-check-list-item-can-release-at { margin-top: 5px; }
+
+.planned-releases { margin: 5px 10px; }
+
+.planned-releases-title-icon { display: inline-block; margin-right: 10px; font-size: 30px; }
+
+.planned-releases-title-text { display: inline-block; font-size:24px; font-weight: bold; }
+
+.planned-releases-list { margin: 0; padding:0; list-style: none; clear: left; }
+
+.planned-releases-list-header { font-size: 1.2em; font-weight: bold; padding: 5px 0; }
+
+.planned-releases-list-item { padding: 10px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
+
+.planned-releases-list-none { padding: 5px; font-style: italic }
+
+.planned-releases-list-item-icon,
+.planned-releases-list-item-time,
+.planned-releases-list-item-subject { vertical-align: middle; }
+
+.planned-releases-list-item-subject { font-weight: bold; margin-bottom: 5px; }
+
+.planned-releases-list-item-team-icon { font-size:1.3em; }
+
+.planned-releases-list-item-link { text-decoration: underline }
+
+.incident-list { min-height: 242px; }
+
+.no-incidents { border-color: green; color: green;  }
+
+.incidents-no-incidents-indicator { width: 150px; height: 135px; padding-top: 15px; font-size: 110px; border: solid 10px; border-radius: 200px; text-align: center; display: inline-block; vertical-align: middle; }
+
+.incidents-no-incidents-header { font-size: 3.5em; font-weight: bold; display: inline-block; vertical-align: middle; padding-left: 20px; }
+
+.incidents-no-incidents-header { font-size: 2em; }
+
+.no-incidents.resolved .incidents-no-incidents-indicator { display: block; float: left; }
+
+.no-incidents.resolved .incidents-no-incidents-header { display: block; margin-left: 160px; padding-top: 40px; }
+
+.incidents-incident-item { border: solid 5px #000; margin: 5px 0 20px 0; padding: 5px; border-radius: 20px; min-height: 50px; position: relative; }
+
+.incidents-incident-item-indicator { width: 70px; height: 65px; border: solid 10px #000; border-radius: 80px; font-size: 50px; text-align: center; padding-top: 5px; position: absolute; background-color: #fff; top: -10px; left: -15px; }
+
+.incidents-incident-item-title { margin-left: 80px; font-size: 1.5em; }
+
+.incidents-incident-item-detail { font-weight: bold; margin: 10px 0 10px 80px; }
+
+.incident-incident-item-details { list-style: none; margin-left: 80px; clear: both; padding: 0; font-size: 1.2em; }
+
+.incident-incident-item-details > li { display: inline-block; margin-right: 10px; margin-top: 5px; }
+
+.incident-incident-item-details > li .fa,
+.incident-incident-item-details > li .mega-octicon { font-size: 22px; }
+
+.incidents-inprogress-headers { font-size: 1.5em; font-weight: bold; margin-bottom: 20px;}
+
+.incidents-incident-item.open { border-color: red }
+
+.incidents-incident-item.open .incidents-incident-item-indicator { color: red; border-color: red }
+
+.incidents-incident-item.resolved { color: #555; border-color: #555 }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li { display: block; }
+
+.incidents-incident-item.resolved .incidents-incident-item-indicator { width: 40px; height: 39px; font-size: 35px; padding-top: 1px; border-color: #555; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title { font-size: 1.2em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details { font-size: 1em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li .fa,
+.incidents-incident-item.resolved .incident-incident-item-details > li .mega-octicon { font-size: 18px; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title,
+.incidents-incident-item.resolved .incidents-incident-item-detail,
+.incidents-incident-item.resolved .incident-incident-item-details { margin-left: 45px; }
+
+.incident-summary-modules { min-height: 100px; list-style: none; padding: 0; margin: 0 }
+
+.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 310px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+.incident-summary-module-indicator { width: 70px; height: 60px; margin: 5px; border: solid 5px #000; border-radius: 50px; font-size: 45px; text-align: center; padding-top: 10px; display: inline-block; vertical-align: middle; }
+
+.incident-summary-module-label { display: inline-block;vertical-align: middle; font-size: 30px; }
+
+.incident-summary-module-value { float: right; font-size: 50px; margin: 15px 20px 0 0 }
+
+.incident-summary-module-label-small { font-size: 19px; }
+
+.incident-summary-module-resolved,
+.incident-summary-module-resolved .incident-summary-module-indicator  { color: green; border-color: green; }
+
+.incident-summary-module-notacked,
+.incident-summary-module-notacked .incident-summary-module-indicator,
+.incident-summary-module-open,
+.incident-summary-module-open .incident-summary-module-indicator  { color: red; border-color: red; }
+
+.incident-summary-module-resolved.none,
+.incident-summary-module-resolved.none .incident-summary-module-indicator,
+.incident-summary-module-notacked.none,
+.incident-summary-module-notacked.none .incident-summary-module-indicator,
+.incident-summary-module-open.none,
+.incident-summary-module-open.none .incident-summary-module-indicator  { color: #999; border-color: #999; }
+
+.outofhours-small { min-height: 100px; }
+
+.small-oncall-list { list-style: none; padding: 0; margin: 0; }
+
+.small-oncall-list-team { display: inline-block; width: 45%; }
+
+.small-oncall-list-team-logo { width: 35px; height: 30px; padding-top: 5px; border: solid 5px #000; border-radius: 50px; display: inline-block; vertical-align: middle; margin-bottom: 5px; text-align: center; }
+.small-oncall-list-team-logo .mega-octicon { font-size: 26px; }
+
+.small-oncall-list-team-name { display: inline-block;vertical-align: middle; padding: 0 5px; font-weight: bold; }
+
+.small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic; }

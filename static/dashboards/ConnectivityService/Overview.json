@@ -8,7 +8,7 @@
         },
         {
             "type": "ProviderSummary",
-            "title": "Overview",
+            "title": "Provider Overview",
             "storeId": "IcingaProviderStatus"
         },
         {

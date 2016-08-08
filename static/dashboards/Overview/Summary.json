@@ -6,7 +6,7 @@
 	        "title": "Commission",
 	        "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
 	        "dataSource": "elasticsearch",
-	        "host": "http://badger.laterooms.com:9200",
+	        "host": "http://logs.laterooms.com:9200",
 	        "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
 	        "timeProperties": [
 	          "query.filtered.filter.bool.must.0.range.@timestamp",

@@ -246,7 +246,7 @@
             appendToLocation: function () {
                 return 'content';
             },
-            setData: function (data) {
+            setData: function (data, showData) {
                 if(currentOptions.window) {
                     data = data.reverse().slice(currentOptions.window.skip, currentOptions.window.take + currentOptions.window.skip).reverse();
                 }

@@ -1,18 +1,18 @@
 {
     "name": "Late Rooms (Main)",
     "components": [{
-        "type": "HealthCheckIcinga",
-        "alertName": "healthCheck.serviceHealth-live",
-        "groups": ["Web", "SSL", "AU"],
-        "title": "LateRooms Front End Server Status",
-        "host": "badger.laterooms.com",
-        "port": 80,
-        "span": 10
-    }, {
+            "type": "HealthCheckIcinga",
+            "alertName": "healthCheck.serviceHealth-live",
+            "groups": ["Web", "SSL", "AU"],
+            "title": "LateRooms Front End Server Status",
+            "host": "badger.laterooms.com",
+            "port": 80,
+            "span": 10
+        }, {
         "type": "LineGraphAndCounter",
         "title": "Errors",
         "dataSource": "elasticsearch",
-        "host": "http://badger.laterooms.com:9200",
+        "host": "http://logs.laterooms.com:9200",
         "className": "tall-graph",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
@@ -139,7 +139,7 @@
         "title": "Commission",
         "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
         "dataSource": "elasticsearch",
-        "host": "http://badger.laterooms.com:9200",
+        "host": "http://logs.laterooms.com:9200",
         "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",

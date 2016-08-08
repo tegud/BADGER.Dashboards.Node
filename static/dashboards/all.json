@@ -1,17 +1,5 @@
 {
     "dashboards": [{
-        "id": "Overview",
-        "views": {
-            "Summary": {
-                "id": "Summary",
-                "name": "Summary"
-            },
-            "Traffic": {
-                "id": "DetailedErrors",
-                "name": "Detailed (Errors)"
-            }
-        }
-    }, {
         "id": "BigScreen",
         "name": "Big Screen",
         "views": {
@@ -23,10 +11,6 @@
                 "id": "LateRoomsWip",
                 "name": "Late Rooms (WIP)"
             },
-            "Legacy": {
-                "id": "LateRooms",
-                "name": "Legacy (Main)"
-            },
             "Requests": {
                 "id": "LateRoomsRequests",
                 "name": "Late Rooms (Requests)"
@@ -37,12 +21,33 @@
             }
         }
     }, {
+        "id": "Incidents",
+        "name": "Incidents",
+        "views": {
+            "Ongoing": {
+                "id": "Ongoing",
+                "name": "On Going"
+            },
+            "WhatHappened": {
+                "id": "WhatHappened",
+                "name": "What Happened Last..."
+            },
+            "Sentinel": {
+                "id": "Sentinel",
+                "name": "Sentinel"
+            }
+        }
+    }, {
         "id": "Releases",
         "name": "Releases",
         "views": {
             "Overview": {
                 "id": "Overview",
                 "name": "Overview"
+            },
+            "OverviewRot": {
+                "id": "OverviewRot",
+                "name": "Overview With Rot"
             },
             "Monitoring": {
                 "id": "Monitoring",
@@ -74,10 +79,6 @@
                 "id": "ProviderDetail",
                 "name": "Provider",
                 "menu": false
-            },
-            "OverviewElasticsearch": {
-                "id": "OverviewElasticsearch",
-                "name": "Overview (Elasticsearch)"
             }
         }
     }, {
@@ -183,6 +184,10 @@
             "KafkaLive": {
                 "id": "KafkaLive",
                 "name": "Kafka Live"
+            },
+            "BuildStatus": {
+                "id": "BuildStatus",
+                "name": "Build Status"
             }
         }
     }, {
@@ -261,15 +266,6 @@
             "LRBookingErrors": {
                 "id": "LRBookingErrors",
                 "name": "Booking"
-            }
-        }
-    }, {
-        "id": "Alerts",
-        "name": "Alerts",
-        "views": {
-            "Alerts": {
-                "id": "Alerts",
-                "name": "All"
             }
         }
     }]

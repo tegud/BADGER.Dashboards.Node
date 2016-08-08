@@ -38,8 +38,9 @@
                     for (var server in groupData[group]) {
                         var serverId = server.replace(/\./g, '_').toLowerCase();
                         var serverStatusElement = document.getElementById(serverId);
-                        if(serverStatusElement)
+                        if(serverStatusElement) {
                             serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].toLowerCase();
+                        }
                     }
                 }
             }

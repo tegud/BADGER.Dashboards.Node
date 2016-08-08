@@ -14,7 +14,7 @@
                         return {
                             'type': 'LoadBalancerStatus',
                             'poolId': pool.name,
-                            'title': pool.name + 'Status',
+                            'title': pool.name + ' Status',
                             'host': factoryConfig.host,
                             'port': factoryConfig.port,
                             'span': factoryConfig.span

@@ -22,7 +22,7 @@
     var renderers = {
 		'bookings': function(data) {
 			return Mustache.render('<li>'
-				+ '<table class="provider-detail-detail-booking-table">' 
+				+ '<table class="provider-detail-detail-booking-table">'
 					+ '<tr>'
 						+ '<th class="provider-detail-detail-booking-table-bookingid">Booking ID</th>'
 						+ '<th class="provider-detail-detail-booking-table-booked">Booked</th>'
@@ -76,7 +76,7 @@
 					message = cleanedUpMessageMatch[1];
 				}
 
-				return { 
+				return {
 					message: message,
 					count: bucket.doc_count
 				};
@@ -85,7 +85,7 @@
 			var totalMessages = _.reduce(messages, function(total, message) { total+= message.count; return total; }, 0);
 			var totalErrors = data.doc_count;
 
-			return Mustache.render('<li class="provider-detail-error-messages">' 
+			return Mustache.render('<li class="provider-detail-error-messages">'
 					+ '<h3>Top Error Messages</h3>'
 					+ '<table class="provider-detail-error-messages-table">'
 						+ '<tr>'
@@ -99,7 +99,7 @@
 					+ '</table>'
 					+ '{{{unknownMessages}}}'
 				+ '</li>'
-				+ '<li class="provider-detail-errors">' 
+				+ '<li class="provider-detail-errors">'
 					+ '<h3>Top Errors</h3>'
 					+ '<table class="provider-detail-error-messages-table">'
 						+ '<tr>'
@@ -119,13 +119,13 @@
 					errors: _.map(data.top_errors.hits.hits, function(error) {
 						var message = error._source.Exception.Message;
 						var time = new moment(error._source['@timestamp']).format('HH:mm:ss');
-						var soapStart = message.indexOf('&lt;soap:');
+						var soapStart = message ? message.indexOf('&lt;soap:') : -1;
 
 						if(soapStart > -1) {
 							message = message.substring(0, soapStart - 1);
 						}
 						else {
-							soapStart = message.indexOf('<soap:');
+							soapStart = message ? message.indexOf('<soap:') : -1;
 
 							if(soapStart > -1) {
 								message = message.substring(0, soapStart - 1);
@@ -151,7 +151,7 @@
 
 		var modules = [lastUpdated, inlineLoading, {
 			appendTo: function (container) {
-				container.append(gridContainer);				
+				container.append(gridContainer);
 			}
 		}];
 

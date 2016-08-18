@@ -106,9 +106,7 @@
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
 
         var dataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
-            query: {
-                url: configuration.url,
-            },
+            query: { url: configuration.url },
             refresh: 2500,
             callbacks: {
                 success: function (data) {
@@ -132,7 +130,7 @@
                         }).value()
                     });
 
-                    signal.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{{text}}}</div>{{{checkList}}}', {
+                    signalContainer.html(Mustache.render('<div class="release-signal-indicator {{signalState}}">{{{icon}}}</div><div class="release-signal-text {{signalState}}">{{{text}}}</div>{{{checkList}}}', {
                         signalState: signalState,
                         text: bigIndicatorStates[signalState].text,
                         icon: bigIndicatorStates[signalState].icon,
@@ -145,7 +143,88 @@
             }
         });
 
+        var plannedReleasesDataStore = new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
+            query: { url: configuration.zendeskApiUrl + '/releases/' + moment().format('YYYY-MM-DD') },
+            refresh: 2500,
+            callbacks: {
+                success: function (data) {
+                    var releaseGroupOrder = {
+                        'requested': 0,
+                        'pending': 1,
+                        'in-progress': 2,
+                        'approved': 3,
+                        'successful': 4,
+                        'failed': 5
+                    };
+                    var releases = _.reduce(JSON.parse(data.query).releases,function(filteredReleases, release) {
+                        if(release.status === 'successful' || release.status === 'failed' || release.status === 'in-progress') {
+                            return filteredReleases;
+                        }
+
+                        filteredReleases.push(release);
+
+                        return filteredReleases;
+                    }, []);
+                    var groupedReleases = _.groupBy(releases, function(release) {
+                        return release.status;
+                    });
+                    var groups = _.chain(Object.keys(groupedReleases)).reduce(function(all, key) {
+                        all.push(key);
+
+                        return all;
+                    }, []).sortBy(function(groupName) {
+                        return releaseGroupOrder[groupName];
+                    }).value();
+
+                    if(groups.length) {
+                        plannedList.html(_.map(groups, function(group) {
+                            var groupName = group[0].toUpperCase() + group.substring(1);
+
+                            return '<li class="planned-releases-list-header">' + groupName + '</li>' + _.map(groupedReleases[group], function(release) {
+                                var start;
+
+
+                                if(release.isScheduled) {
+                                    start = moment(release.start).format('HH:mm');
+                                }
+                                else {
+                                    start = '--';
+                                }
+
+                                var productTeam;
+
+                                if(release.productTeam) {
+                                    productTeam = release.productTeam[0].toUpperCase() + release.productTeam.substring(1);
+                                }
+
+                                return '<li class="planned-releases-list-item">'
+                                    + '<div class="planned-releases-list-item-subject"><a class="planned-releases-list-item-link" href="https://tlrg-servicehub.zendesk.com/agent/tickets/' + release.id + '" target="_blank">' + release.id + '</a> - ' + release.subject + '</div>'
+                                    + '<div class="planned-releases-list-item-team">'
+                                        + '<span class="planned-releases-list-item-team-icon mega-octicon octicon-organization"></span>&nbsp;' + productTeam
+                                        + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name
+                                    + '</div>'
+                                + '</li>';
+                            }).join('')
+                        }));
+                    }
+                    else {
+                        plannedList.html('<li class="planned-releases-list-none">No Pending Releases</li>');
+                    }
+
+                }
+            },
+            components: {
+                loading: inlineLoading
+            }
+        });
+
         var signal = $('<div></div>');
+        var signalContainer = $('<div></div>').appendTo(signal);
+        var plannedContainer = $('<div class="planned-releases">'
+            + '<div><div class="planned-releases-title-icon"><span class="fa fa-pied-piper-alt"></span></div><div class="planned-releases-title-text">Pending Releases</div></div>'
+        + '</div>').appendTo(signal);
+
+        var plannedList = $('<ul class="planned-releases-list"></ul>').appendTo(plannedContainer);
 
 		var componentLayout = new TLRGRP.BADGER.Dashboard.ComponentModules.ComponentLayout({
 			title: configuration.title,
@@ -173,9 +252,11 @@
                 initialising: {
                     _onEnter: function () {
                         dataStore.start(true);
+                        plannedReleasesDataStore.start(true);
                     },
                     stop: function() {
                         dataStore.stop();
+                        plannedReleasesDataStore.stop();
                     }
                 }
             },

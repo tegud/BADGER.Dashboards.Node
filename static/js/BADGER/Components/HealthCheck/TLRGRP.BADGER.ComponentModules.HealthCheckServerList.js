@@ -17,7 +17,7 @@
             })
         };
     }
-    
+
     TLRGRP.BADGER.Dashboard.ComponentModules.HealthCheckServerList = function () {
         var containerElement = $('<div class="health-check-server-groups-container"></div>');
 
@@ -38,12 +38,12 @@
                     for (var server in groupData[group]) {
                         var serverId = server.replace(/\./g, '_').toLowerCase();
                         var serverStatusElement = document.getElementById(serverId);
-
-                        serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].toLowerCase();
+                        if(serverStatusElement) {
+                            serverStatusElement.className = 'health-check-group-server-item ' + groupData[group][server].toLowerCase();
+                        }
                     }
                 }
             }
         };
     };
 })();
-

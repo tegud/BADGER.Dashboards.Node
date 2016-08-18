@@ -1051,7 +1051,7 @@ h3 {margin: 0;padding: 0 }
 
 .state-checks-counter { display: inline-block; }
 
-.provider-summary, .provider-detail { min-height: 232px; position: relative; }
+.provider-summary, .provider-detail { min-height: 212px; position: relative; }
 
 .provider-detail h3 { margin-left: 50px; font-size: 1.9em }
 
@@ -1202,11 +1202,11 @@ h3 {margin: 0;padding: 0 }
 
 .provider-summary-check-item-subtext { padding-top: 2px; color: #000; text-align: center; font-weight: bold; font-size: 0.9em }
 
-.provider-summary-check-item-value { padding-top: 40px; font-size: 50px; font-weight: bold; text-align: center; color: #000; min-height: 60px  }
+.provider-summary-check-item-value { padding-top: 30px; font-size: 43px; font-weight: bold; text-align: center; color: #000; min-height: 45px  }
 
 .provider-summary-item .connectivity-service-summary-tier-emblem .mega-octicon { font-size: 50px; }
 
-.provider-summary-selected-indicator { position: absolute; bottom: -30px; left: 65px; display: none; }
+.provider-summary-selected-indicator { position: absolute; bottom: -29px; left: 55px; display: none; }
 
 .selected .provider-summary-selected-indicator { display: block; }
 
@@ -1280,3 +1280,119 @@ h3 {margin: 0;padding: 0 }
 .release-signal-check-list-item-releases-limits { margin-left: 52px; font-style: italic; }
 
 .release-signal-check-list-item-can-release-at { margin-top: 5px; }
+
+.planned-releases { margin: 5px 10px; }
+
+.planned-releases-title-icon { display: inline-block; margin-right: 10px; font-size: 30px; }
+
+.planned-releases-title-text { display: inline-block; font-size:24px; font-weight: bold; }
+
+.planned-releases-list { margin: 0; padding:0; list-style: none; clear: left; }
+
+.planned-releases-list-header { font-size: 1.2em; font-weight: bold; padding: 5px 0; }
+
+.planned-releases-list-item { padding: 10px; border: solid 3px #000; border-radius: 20px; margin: 3px 0; }
+
+.planned-releases-list-none { padding: 5px; font-style: italic }
+
+.planned-releases-list-item-icon,
+.planned-releases-list-item-time,
+.planned-releases-list-item-subject { vertical-align: middle; }
+
+.planned-releases-list-item-subject { font-weight: bold; margin-bottom: 5px; }
+
+.planned-releases-list-item-team-icon { font-size:1.3em; }
+
+.planned-releases-list-item-link { text-decoration: underline }
+
+.incident-list { min-height: 242px; }
+
+.no-incidents { border-color: green; color: green;  }
+
+.incidents-no-incidents-indicator { width: 150px; height: 135px; padding-top: 15px; font-size: 110px; border: solid 10px; border-radius: 200px; text-align: center; display: inline-block; vertical-align: middle; }
+
+.incidents-no-incidents-header { font-size: 3.5em; font-weight: bold; display: inline-block; vertical-align: middle; padding-left: 20px; }
+
+.incidents-no-incidents-header { font-size: 2em; }
+
+.no-incidents.resolved .incidents-no-incidents-indicator { display: block; float: left; }
+
+.no-incidents.resolved .incidents-no-incidents-header { display: block; margin-left: 160px; padding-top: 40px; }
+
+.incidents-incident-item { border: solid 5px #000; margin: 5px 0 20px 0; padding: 5px; border-radius: 20px; min-height: 50px; position: relative; }
+
+.incidents-incident-item-indicator { width: 70px; height: 65px; border: solid 10px #000; border-radius: 80px; font-size: 50px; text-align: center; padding-top: 5px; position: absolute; background-color: #fff; top: -10px; left: -15px; }
+
+.incidents-incident-item-title { margin-left: 80px; font-size: 1.5em; }
+
+.incidents-incident-item-detail { font-weight: bold; margin: 10px 0 10px 80px; }
+
+.incident-incident-item-details { list-style: none; margin-left: 80px; clear: both; padding: 0; font-size: 1.2em; }
+
+.incident-incident-item-details > li { display: inline-block; margin-right: 10px; margin-top: 5px; }
+
+.incident-incident-item-details > li .fa,
+.incident-incident-item-details > li .mega-octicon { font-size: 22px; }
+
+.incidents-inprogress-headers { font-size: 1.5em; font-weight: bold; margin-bottom: 20px;}
+
+.incidents-incident-item.open { border-color: red }
+
+.incidents-incident-item.open .incidents-incident-item-indicator { color: red; border-color: red }
+
+.incidents-incident-item.resolved { color: #555; border-color: #555 }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li { display: block; }
+
+.incidents-incident-item.resolved .incidents-incident-item-indicator { width: 40px; height: 39px; font-size: 35px; padding-top: 1px; border-color: #555; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title { font-size: 1.2em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details { font-size: 1em; }
+
+.incidents-incident-item.resolved .incident-incident-item-details > li .fa,
+.incidents-incident-item.resolved .incident-incident-item-details > li .mega-octicon { font-size: 18px; }
+
+.incidents-incident-item.resolved .incidents-incident-item-title,
+.incidents-incident-item.resolved .incidents-incident-item-detail,
+.incidents-incident-item.resolved .incident-incident-item-details { margin-left: 45px; }
+
+.incident-summary-modules { min-height: 100px; list-style: none; padding: 0; margin: 0 }
+
+.incident-summary-module { height:90px; border: solid 5px #000; border-radius: 25px; width: 310px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+.incident-summary-module-indicator { width: 70px; height: 60px; margin: 5px; border: solid 5px #000; border-radius: 50px; font-size: 45px; text-align: center; padding-top: 10px; display: inline-block; vertical-align: middle; }
+
+.incident-summary-module-label { display: inline-block;vertical-align: middle; font-size: 30px; }
+
+.incident-summary-module-value { float: right; font-size: 50px; margin: 15px 20px 0 0 }
+
+.incident-summary-module-label-small { font-size: 19px; }
+
+.incident-summary-module-resolved,
+.incident-summary-module-resolved .incident-summary-module-indicator  { color: green; border-color: green; }
+
+.incident-summary-module-notacked,
+.incident-summary-module-notacked .incident-summary-module-indicator,
+.incident-summary-module-open,
+.incident-summary-module-open .incident-summary-module-indicator  { color: red; border-color: red; }
+
+.incident-summary-module-resolved.none,
+.incident-summary-module-resolved.none .incident-summary-module-indicator,
+.incident-summary-module-notacked.none,
+.incident-summary-module-notacked.none .incident-summary-module-indicator,
+.incident-summary-module-open.none,
+.incident-summary-module-open.none .incident-summary-module-indicator  { color: #999; border-color: #999; }
+
+.outofhours-small { min-height: 100px; }
+
+.small-oncall-list { list-style: none; padding: 0; margin: 0; }
+
+.small-oncall-list-team { display: inline-block; width: 45%; }
+
+.small-oncall-list-team-logo { width: 35px; height: 30px; padding-top: 5px; border: solid 5px #000; border-radius: 50px; display: inline-block; vertical-align: middle; margin-bottom: 5px; text-align: center; }
+.small-oncall-list-team-logo .mega-octicon { font-size: 26px; }
+
+.small-oncall-list-team-name { display: inline-block;vertical-align: middle; padding: 0 5px; font-weight: bold; }
+
+.small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic; }

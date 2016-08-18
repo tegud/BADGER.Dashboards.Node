@@ -1,10 +1,10 @@
 {
-    "name": "Releases (Overview)",
+    "name": "Ongoing Incidents",
     "components": [
-    {
+        {
           "type": "SharedDataStore",
-          "title": "Release Data",
-          "storeId": "ReleaseData",
+          "title": "Open Incidents",
+          "storeId": "IncidentData",
           "dataSource": "elasticsearch",
           "host": "http://logs.laterooms.com:9200",
           "index": "releases-${YYYY}.${MM}",
@@ -12,8 +12,8 @@
             "query.filtered.filter.bool.must.0.range.@timestamp"
           ],
           "defaultTimeFrame": {
-            "timeFrame": 0,
-            "units": "daysAgo"
+            "timeFrame": 3,
+            "units": "days"
           },
           "queries": {
             "modifiers": {
@@ -32,7 +32,7 @@
                         },
                         {
                           "term" : {
-                            "environment.raw" : "live"
+                            "_type" : "victoropsAlert"
                           }
                         }
                       ]
@@ -46,23 +46,26 @@
           "mappings": []
         },
         {
-            "title": "Release order Telegraph",
-            "type": "ReleaseOrderTelegraph",
-            "span":"3",
-            "url": "http://releaseordertelegraph.laterooms.com/currentState",
-            "zendeskApiUrl": "http://badger.dashboards.logging.laterooms.work:1238"
+            "type": "IncidentSummary",
+            "storeId": "IncidentData",
+            "span": 8
         },
         {
-            "title": "Shipping",
-            "type": "InProgressReleases",
-            "span":"6",
-            "storeId": "ReleaseData"
+            "type": "OutOfHoursRota",
+            "size": "small",
+            "span": 4
         },
         {
-            "title": "Shipped",
-            "type": "CompletedReleases",
-            "span":"3",
-            "storeId": "ReleaseData"
+            "title": "In Progress",
+            "type": "OpenIncidents",
+            "span":"8",
+            "storeId": "IncidentData"
+        },
+        {
+            "title": "Resolved",
+            "type": "ResolvedIncidents",
+            "span":"4",
+            "storeId": "IncidentData"
         }
     ]
 }

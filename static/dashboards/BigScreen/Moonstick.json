@@ -6,8 +6,8 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "Moonstick",
             "title": "Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
+            "port": 1237,
             "span": 3
         },
         {
@@ -15,8 +15,8 @@
             "alertName": "healthCheck.serviceHealth-live",
             "group": "APIs",
             "title": "API Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
+            "port": 1237,
             "span": 3
         },
         {

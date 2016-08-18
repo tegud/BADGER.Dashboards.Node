@@ -4,7 +4,7 @@
     TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
     var checkTimeFrames;
-    var idIncrementor = 0; 
+    var idIncrementor = 0;
 
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -113,7 +113,7 @@
             configuration.title = providerName + ' Summary';
         }
 
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({
             cssClass: 'loading-clear-bottom'
         });
@@ -210,7 +210,9 @@
                         }
 
                         var viewModel = {
-                            services: _.chain(provider.services).sortBy(function(service) {
+                            services: _.chain(provider.services).filter(function(service) {
+                                return checks[service.attrs.name];
+                            }).sortBy(function(service) {
                                 return checks[service.attrs.name].order;
                             }).map(function(service) {
                                 var checkIcons = {

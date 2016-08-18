@@ -6,8 +6,7 @@
             "alertName": "healthCheck.serviceHealth-apis-test",
             "group": "TestAPIs",
             "title": "Test API Status",
-            "host": "logs.laterooms.com",
-            "port": 3000,
+            "host": "sentinel.laterooms.com",
             "span": 9
         },
         {

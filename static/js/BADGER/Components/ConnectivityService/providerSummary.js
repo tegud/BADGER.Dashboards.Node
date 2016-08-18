@@ -6,7 +6,7 @@
 	var idIncrementor = 0;
 
 	TLRGRP.BADGER.Dashboard.Components.ProviderSummary = function (configuration) {
-        var refreshServerBaseUrl = 'http://' + configuration.host + ':' + configuration.port + '/';
+        var refreshServerBaseUrl = 'http://' + configuration.host + (configuration.port ? (':' + configuration.port) : '') + '/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
         var lastUpdated = new TLRGRP.BADGER.Dashboard.ComponentModules.LastUpdated({ cssClass: 'last-updated-top-right' });
 

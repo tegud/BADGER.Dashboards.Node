@@ -202,6 +202,8 @@
                                     + '<div class="planned-releases-list-item-team">'
                                         + '<span class="planned-releases-list-item-team-icon mega-octicon octicon-organization"></span>&nbsp;' + productTeam
                                         + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name
+                                        + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-clock"></span>&nbsp;raised ' + moment.duration(moment().diff(moment(release.created_at))).humanize()
+                                        + " ago"
                                     + '</div>'
                                 + '</li>';
                             }).join('')

@@ -46,9 +46,11 @@
           "mappings": []
         },
         {
-            "title": "Scheduled",
-            "type": "ScheduledReleases",
-            "span":"3"
+            "title": "Release order Telegraph",
+            "type": "ReleaseOrderTelegraph",
+            "span":"3",
+            "url": "http://releaseordertelegraph.laterooms.com/currentState",
+            "zendeskApiUrl": "http://badger.dashboards.logging.laterooms.work:1238"
         },
         {
             "title": "Shipping",

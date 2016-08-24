@@ -1,39 +1,284 @@
 {
     "name": "Search Server Status",
     "components": [{
+        "type": "LineGraphAndCounter",
+        "title": "Requests",
+        "dataSource": "elasticsearch",
+        "host": "http://logs.laterooms.com:9200",
+        "className": "tall-graph",
+        "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.requestsbytime.date_histogram.extended_bounds"
+        ],
+        "intervalProperties": [
+            "aggs.requestsbytime.date_histogram.interval"
+        ],
+        "query": {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "range": {
+                                    "@timestamp": {
+                                        "from": "now-60m"
+                                    }
+                                }
+                            }, {
+                                "terms": {
+                                    "type": ["api_varnish"]
+                                }
+                            }, {
+                                "terms": {
+                                    "api_endpoint": ["search"]
+                                }
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "requestsbytime": {
+                    "date_histogram": {
+                        "min_doc_count": 0,
+                        "extended_bounds": {
+                            "min": "now-60m",
+                            "max": "now"
+                        },
+                        "field": "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "version": {
+                            "filters": {
+                                "filters": {
+                                    "v1": {
+                                        "not": {
+                                            "terms": {
+                                                "url_path": ["v2"]
+                                            }
+                                        }
+                                    },
+                                    "v2": {
+                                        "terms": {
+                                            "url_path": ["v2"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        },
+        "mappings": [{
+            "type": "extractFromDateHistogram",
+            "aggregateName": "requestsbytime",
+            "fields": {
+                "total": "doc_count",
+                "v1": "version.buckets.v1.doc_count",
+                "v2": "version.buckets.v2.doc_count"
+            }
+        }],
+        "counterV2": {
+            "expandedView": true,
+            "values": [{
+                "id": "v1_requests",
+                "color": "blue",
+                "value": "query.v1",
+                "text": "V1"
+            }, {
+                "id": "v2_requests",
+                "color": "purple",
+                "value": "query.v2",
+                "text": "V2"
+            }]
+        },
+        "graph": {
+            "type": "bar",
+            "lines": [{
+                "id": "v1_requests",
+                "color": "blue",
+                "value": "query.v1"
+            }, {
+                "id": "v2_requests",
+                "color": "purple",
+                "value": "query.v2"
+            }]
+        }
+    }, {
+        "type": "LineGraphAndCounter",
+        "title": "Errors",
+        "dataSource": "elasticsearch",
+        "host": "http://logs.laterooms.com:9200",
+        "className": "tall-graph",
+        "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.errorsbytime.date_histogram.extended_bounds"
+        ],
+        "intervalProperties": [
+            "aggs.errorsbytime.date_histogram.interval"
+        ],
+        "query": {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "range": {
+                                    "@timestamp": {
+                                        "from": "now-60m",
+                                        "to": "now"
+                                    }
+                                }
+                            }, {
+                                "terms": {
+                                    "type": ["api_varnish", "searchengine", "searchservice"]
+                                }
+                            }, {
+                                "or": [{
+                                    "and": [{
+                                        "terms": {
+                                            "api_endpoint": ["search"]
+                                        }
+                                    }, {
+                                        "range": {
+                                            "api_varnish.status": {
+                                                "gte": 400,
+                                                "lte": 599
+                                            }
+                                        }
+                                    }]
+                                }, {
+                                    "and": [{
+                                        "terms": {
+                                            "tags": ["error"]
+                                        }
+                                    }, {
+                                        "terms": {
+                                            "type": ["searchengine", "searchservice"]
+                                        }
+                                    }]
+                                }]
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "errorsbytime": {
+                    "date_histogram": {
+                        "min_doc_count": 0,
+                        "extended_bounds": {
+                            "min": "now-60m",
+                            "max": "now"
+                        },
+                        "field": "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "errorcode": {
+                            "range": {
+                                "field": "api_varnish.status",
+                                "keyed": true,
+                                "ranges": [
+                                    { "key": "500", "from": 500, "to": 599 },
+                                    { "key": "400", "from": 400, "to": 499 }
+                                ]
+                            }
+                        },
+                        "apperrors": {
+                            "filter": {
+                                "term": {
+                                    "type": ["searchservice", "searchengine"]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        },
+        "mappings": [{
+            "type": "extractFromDateHistogram",
+            "aggregateName": "errorsbytime",
+            "fields": {
+                "total": "doc_count",
+                "500": "errorcode.buckets.500.doc_count",
+                "400": "errorcode.buckets.400.doc_count",
+                "app": "apperrors.doc_count"
+            }
+        }],
+        "counterV2": {
+            "expandedView": true,
+            "values": [{
+                "id": "500_requests",
+                "color": "purple",
+                "value": "query.500",
+                "text": "500"
+            }, {
+                "id": "400_requests",
+                "color": "blue",
+                "value": "query.400",
+                "text": "400"
+            }, {
+                "id": "app_errors",
+                "color": "red",
+                "value": "query.app",
+                "text": "App Errors"
+            }]
+        },
+        "graph": {
+            "type": "bar",
+            "lines": [{
+                "id": "500_requests",
+                "color": "purple",
+                "value": "query.500"
+            }, {
+                "id": "400_requests",
+                "color": "blue",
+                "value": "query.400"
+            }, {
+                "id": "app_errors",
+                "color": "red",
+                "value": "query.app"
+            }]
+        }
+    }, {
         "type": "LoadBalancerStatus",
         "poolId": "rates-query-legacy_HTTP",
         "title": "Rates Query Legacy LB",
         "host": "10.44.35.62",
         "port": 1234,
-        "span": 3
+        "span": 2
     }, {
         "type": "LoadBalancerStatus",
         "poolId": "Search.api_HTTP",
         "title": "Search V1 API LB",
         "host": "10.44.35.62",
         "port": 1234,
-        "span": 3
+        "span": 2
     }, {
         "type": "LoadBalancerStatus",
         "poolId": "Searchv2.api_HTTP",
         "title": "Search V2 API LB",
         "host": "10.44.35.62",
         "port": 1234,
-        "span": 3
+        "span": 2
     }, {
         "type": "LoadBalancerStatus",
         "poolId": "search.services.thelateroomsgroup.com_HTTP",
         "title": "Search Service LB",
         "host": "10.44.35.62",
         "port": 1234,
-        "span": 3
+        "span": 2
     }, {
         "type": "LoadBalancerStatus",
         "poolId": "autocomplete.laterooms.com_HTTP",
         "title": "AutoComplete Service LB",
         "host": "10.44.35.62",
         "port": 1234,
-        "span": 3
+        "span": 2
     }]
 }

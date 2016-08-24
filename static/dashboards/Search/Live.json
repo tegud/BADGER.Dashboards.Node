@@ -1,6 +1,113 @@
 {
     "name": "Search Server Status",
     "components": [{
+        "type": "LineGraphAndCounter",
+        "title": "Requests",
+        "dataSource": "elasticsearch",
+        "host": "http://logs.laterooms.com:9200",
+        "className": "tall-graph",
+        "timeProperties": [
+            "query.filtered.filter.bool.must.0.range.@timestamp",
+            "aggs.requestsbytime.date_histogram.extended_bounds"
+        ],
+        "intervalProperties": [
+            "aggs.requestsbytime.date_histogram.interval"
+        ],
+        "query": {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [{
+                                "range": {
+                                    "@timestamp": {
+                                        "from": "now-60m"
+                                    }
+                                }
+                            }, {
+                                "terms": {
+                                    "type": ["api_varnish"]
+                                }
+                            }, {
+                                "terms": {
+                                    "api_endpoint": ["search"]
+                                }
+                            }]
+                        }
+                    }
+                }
+            },
+            "aggs": {
+                "requestsbytime": {
+                    "date_histogram": {
+                        "min_doc_count": 0,
+                        "extended_bounds": {
+                            "min": "now-60m",
+                            "max": "now"
+                        },
+                        "field": "@timestamp",
+                        "interval": "1m"
+                    },
+                    "aggs": {
+                        "version": {
+                            "filters": {
+                                "filters": {
+                                    "v1": {
+                                        "not": {
+                                             "terms": {
+                                                "url_path": ["v2"]
+                                            }
+                                        }
+                                    },
+                                    "v2": {
+                                         "terms": {
+                                            "url_path": ["v2"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        },
+        "mappings": [{
+            "type": "extractFromDateHistogram",
+            "aggregateName": "requestsbytime",
+            "fields": {
+                "total": "doc_count",
+                "v1": "version.buckets.v1.doc_count",
+                "v2": "version.buckets.v2.doc_count"
+            }
+        }],
+        "counterV2": {
+            "expandedView": true,
+            "values": [{
+                "id": "v1_requests",
+                "color": "blue",
+                "value": "query.v1",
+                "text": "V1"
+            }, {
+                "id": "v2_requests",
+                "color": "purple",
+                "value": "query.v2",
+                "text": "V2"
+            }]
+        },
+        "graph": {
+            "type": "bar",
+            "lines": [{
+                "id": "v1_requests",
+                "color": "blue",
+                "value": "query.v1"
+            }, {
+                "id": "v2_requests",
+                "color": "purple",
+                "value": "query.v2"
+            }]
+        }
+    }, {
         "type": "LoadBalancerStatus",
         "poolId": "rates-query-legacy_HTTP",
         "title": "Rates Query Legacy LB",

@@ -49,7 +49,7 @@
             "title": "Pending PRs",
             "type": "PullRequests",
             "span": "4",
-            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/search-"
+            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/search-|LateRoomsGroup/orchestration-layer"
         },
         {
             "title": "In Progress",

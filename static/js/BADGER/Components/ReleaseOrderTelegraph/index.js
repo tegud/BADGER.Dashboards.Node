@@ -156,7 +156,7 @@
                         'successful': 4,
                         'failed': 5
                     };
-                    var releases = _.reduce(JSON.parse(data.query).releases,function(filteredReleases, release) {
+                    var releases = _.reduce(data.query.releases,function(filteredReleases, release) {
                         if(release.status === 'successful' || release.status === 'failed' || release.status === 'in-progress') {
                             return filteredReleases;
                         }

@@ -32,7 +32,7 @@
                         },
                         {
                           "term" : {
-                            "group.raw" : ["Moonstick.JS","Customer-Management","Moomin","Varnish"]
+                            "team.raw" : ["Moonstick.JS","Customer-Management","Moomin","Varnish","SWP-API-Layer","SWP-Experiences"]
                           }
                         }
                       ]

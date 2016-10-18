@@ -156,7 +156,7 @@
                         'successful': 4,
                         'failed': 5
                     };
-                    var releases = _.reduce(JSON.parse(data.query).releases,function(filteredReleases, release) {
+                    var releases = _.reduce(data.query.releases,function(filteredReleases, release) {
                         if(release.status === 'successful' || release.status === 'failed' || release.status === 'in-progress') {
                             return filteredReleases;
                         }
@@ -192,18 +192,39 @@
                                 }
 
                                 var productTeam;
+                                var raisedSince = moment().diff(moment(release.created_at));
+                                var minutesSinceRaised = raisedSince / 1000 / 60;
+                                var timeSinceRaisedTextColour = 'green';
+
+                                if(release.status !== 'approved') {
+                                    if(minutesSinceRaised >= 10 && minutesSinceRaised < 20) {
+                                        timeSinceRaisedTextColour = 'amber';
+                                    }
+                                    else if (minutesSinceRaised >= 20) {
+                                        timeSinceRaisedTextColour = 'red';
+                                    }
+                                }
+
+                                var riskStyles = {
+                                    'unknown': { icon:'mega-octicon octicon-question', colour: '#000' },
+                                    'low': { icon: 'mega-octicon octicon-squirrel', colour: 'green' },
+                                    'moderate': { icon: 'mega-octicon octicon-thumbsdown', colour: 'amber' },
+                                    'high': { icon: 'mega-octicon octicon-alert', colour: '#red' },
+                                    'very-high': { icon: 'mega-octicon octicon-flame', colour: '#red' }
+                                };
 
                                 if(release.productTeam) {
                                     productTeam = release.productTeam[0].toUpperCase() + release.productTeam.substring(1);
                                 }
+
 
                                 return '<li class="planned-releases-list-item">'
                                     + '<div class="planned-releases-list-item-subject"><a class="planned-releases-list-item-link" href="https://tlrg-servicehub.zendesk.com/agent/tickets/' + release.id + '" target="_blank">' + release.id + '</a> - ' + release.subject + '</div>'
                                     + '<div class="planned-releases-list-item-team">'
                                         + '<span class="planned-releases-list-item-team-icon mega-octicon octicon-organization"></span>&nbsp;' + productTeam
                                         + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name
-                                        + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-clock"></span>&nbsp;raised ' + moment.duration(moment().diff(moment(release.created_at))).humanize()
-                                        + " ago"
+                                        + '&nbsp;<span style="color: ' + timeSinceRaisedTextColour + '"><span class="planned-releases-list-item-team-icon mega-octicon octicon-clock"></span>&nbsp;raised ' + moment.duration(raisedSince).humanize() + ' ago</span>'
+                                        + '&nbsp;<span style="color: ' + riskStyles[(release.risk || 'unknown')].colour + '"><span class="planned-releases-list-item-team-icon ' + riskStyles[(release.risk || 'unknown')].icon + '"></span>&nbsp;' + (release.risk || 'unknown') + ' risk</span>'
                                     + '</div>'
                                 + '</li>';
                             }).join('')

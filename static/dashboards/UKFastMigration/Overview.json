@@ -4,7 +4,8 @@
         {
             "title": "Overview",
             "type": "JiraOverview",
-            "jiraDashboardApiHost": "jira-dashboard.river-styx.development01.laterooms.work.:3004"
+            "jiraDashboardApiHost": "jira-dashboard.river-styx.development01.laterooms.work.:3004",
+            "refresh": 30000
         }
     ]
 }

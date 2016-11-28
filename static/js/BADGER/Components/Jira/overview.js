@@ -52,7 +52,7 @@
 			(function(x) {
 				dataStores.push(new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
 					query: { url: refreshServerBaseUrl + boards[x].key },
-					refresh: 5000,
+					refresh: configuration.refresh || 5000,
 					callbacks: {
 						success: function (data) {
 							var totalIssues = data.query.totalIssues;

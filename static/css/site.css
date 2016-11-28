@@ -1396,3 +1396,25 @@ h3 {margin: 0;padding: 0 }
 .small-oncall-list-team-name { display: inline-block;vertical-align: middle; padding: 0 5px; font-weight: bold; }
 
 .small-oncall-list-team-oncall { display: inline-block;vertical-align: middle; font-style: italic; }
+
+.jira-boards-summary { list-style: none; padding: 0 }
+
+.jira-boards-summary-item {display: inline-block; padding-right: 10px; }
+
+.jira-boards-summary-item h4 { padding-left: 30px; font-size: 2em; }
+
+.jira-boards-summary-item-container { width: 380px; height: 150px; border: 10px solid #000; margin-top: 10px; border-radius: 50px; overflow: hidden; position: relative; }
+
+.jira-boards-summary-item-container-icon-container { float: left; width: 130px; height: 100%; border-radius:  40px 0 0 40px; background-color: #ddd; }
+
+.jira-boards-summary-item-container-icon-outer { width: 70px; height: 58px; padding: 6px 0; border: solid 10px #000; margin: 0 auto; border-radius: 70px; margin-top: 30px; background-color: #fff; font-size: 50px; text-align: center; }
+
+.jira-boards-summary-item-container-graph-container { width: 250px; height: 150px; margin-left: 130px; }
+
+.jira-boards-summary-item-container-graph-segment { float: left; height: 150px; width: 50px; }
+
+.jira-boards-summary-item-container-text-container { position: absolute; top: 15px; left: 140px; }
+
+.jira-boards-summary-item-container-text-percent { font-size: 4em; font-weight: bold; }
+
+.jira-boards-summary-item-container-text-progress { font-size: 2em; }

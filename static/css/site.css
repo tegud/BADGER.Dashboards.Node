@@ -1442,5 +1442,9 @@ h3 {margin: 0;padding: 0 }
 
 .jira-boards-blocked .jira-boards-overview-issue-list-item,
 .jira-boards-blocked .jira-boards-overview-issue-list-item-icon-container { border-color: red; }
+
+.jira-boards-blocked .jira-boards-overview-issue-list-item.awesome,
+.jira-boards-blocked .jira-boards-overview-issue-list-item.awesome .jira-boards-overview-issue-list-item-icon-container { border-color: #000 }
+
 .jira-boards-inprogress .jira-boards-overview-issue-list-item,
 .jira-boards-inprogress .jira-boards-overview-issue-list-item-icon-container { border-color: orange }

@@ -34,10 +34,8 @@
 					return allIssues;
 				}, []);
 
-				console.log(dataCache);
-
 				for(var x = 0; x < lists.length; x++) {
-					var text = _.chain(mergedData)
+					var items = _.chain(mergedData)
 						.reduce(function(filtered, issue) {
 							if(lists[x].filter && !lists[x].filter(issue)) {
 								return filtered;
@@ -54,7 +52,11 @@
 						})
 						.value();
 
-					lists[x].element.html(text.join(''));
+					if(!items.length && lists[x].noItems) {
+						items.push(lists[x].noItems);
+					}
+
+					lists[x].element.html(items.join(''));
 				}
 			}
 
@@ -76,11 +78,19 @@
 		var statusList = new StatusLists([
 			{
 				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(blocked),
-				filter: function(issue) { return issue.priority === 'Blocked'; }
+				filter: function(issue) { return issue.priority === 'Blocked'; },
+				noItems: '<li class="jira-boards-overview-issue-list-item awesome">'
+					+ '<div class="jira-boards-overview-issue-list-item-icon-container"><span class="fa fa-thumbs-up"></span></div>'
+					+ '<div class="jira-boards-overview-issue-list-item-text"><h5>Everything is awesome!</h5>Nothing is blocked, go team!</div>'
+				+ '</li>'
 			},
 			{
 				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(inProgress),
-				filter: function(issue) { return issue.priority !== 'Blocked' && issue.status === 'In Progress'; }
+				filter: function(issue) { return issue.priority !== 'Blocked' && issue.status === 'In Progress'; },
+				noItems: '<li class="jira-boards-overview-issue-list-item not-awesome">'
+					+ '<div class="jira-boards-overview-issue-list-item-icon-container"><span class="fa fa-bomb"></span></div>'
+					+ '<div class="jira-boards-overview-issue-list-item-text"><h5>Nothings happening</h5>Something should probably be happening, so...</div>'
+				+ '</li>'
 			}
 		]);
 

@@ -9,10 +9,12 @@
         var refreshServerBaseUrl = 'http://' + configuration.jiraDashboardApiHost + '/overview/';
         var inlineLoading = new TLRGRP.BADGER.Dashboard.ComponentModules.InlineLoading({ cssClass: 'loading-clear-bottom' });
 
-        var summary = $('<ul class="jira-boards-summary"></ul>');
+		var summary = $('<ul class="jira-boards-summary"></ul>');
+		var blocked = $('<div class="jira-boards-blocked"><h4>Blockers</h4></div>');
+        var inProgress = $('<div class="jira-boards-inprogress"><h4>In Progress</h4></div>');
 
 		var boards = [
-			// { "name": "Core Engineering", "key": "UMCE", "icon-class": "fa fa-cogs" },
+			{ "name": "Core Engineering", "key": "UMCE", "icon-class": "fa fa-cogs", "hideOverview": true },
 			{ "name": "Consumer Products", "key": "UMCPT", "icon-class": "fa fa-smile-o" },
 			{ "name": "Hotel Management", "key": "UMHMT", "icon-class": "fa fa-hospital-o" },
 			{ "name": "Reservations", "key": "UMRT", "icon-class": "fa fa-credit-card" }
@@ -21,6 +23,10 @@
 		var boardElements = {};
 
 		for(var x = 0; x < boards.length;x++) {
+			if(boards[x].hideOverview) {
+				continue;
+			}
+
 			boardElements[boards[x].key] = $('<li class="jira-boards-summary-item">'
 				+ '<h4>' + boards[x].name + '</h4>'
 				+ '<div class="jira-boards-summary-item-container">'
@@ -36,7 +42,10 @@
 
 		var modules = [inlineLoading, {
 			appendTo: function (container) {
-				container.append(summary);
+				container
+					.append(summary)
+					.append(blocked)
+					.append(inProgress);
 			}
 		}];
 
@@ -48,6 +57,59 @@
 			'done': { order: 3, complete: true, colour: 'green' }
 		};
 
+		function StatusLists(lists) {
+			var dataCache = {};
+
+			function update() {
+				var mergedData = _.reduce(dataCache, function(allIssues, issues) {
+					allIssues = allIssues.concat(issues);
+					return issues;
+				}, []);
+
+				console.log(mergedData);
+
+				for(var x = 0; x < lists.length; x++) {
+					var text = _.chain(mergedData)
+						.reduce(function(filtered, issue) {
+							if(lists[x].filter && !lists[x].filter(issue)) {
+								return filtered;
+							}
+
+							filtered.push(issue);
+							return filtered;
+						},[])
+						.map(function(issue) {
+							return '<li>' + issue.summary + '</li>';
+						})
+						.value();
+
+					lists[x].element.html(text.join(''));
+				}
+			}
+
+			return {
+				update: function(key, issues) {
+					dataCache[key] = issues;
+					update();
+				}
+			}
+		}
+
+		var statusList = new StatusLists([
+			{
+				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(blocked),
+				filter: function(issue) {
+					return issue.priority === 'Blocked';
+				}
+			},
+			{
+				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(inProgress),
+				filter: function(issue) {
+					return issue.priority !== 'Blocked' && issue.status === 'In Progress';
+				}
+			}
+		]);
+
 		for(var x = 0; x < boards.length;x++) {
 			(function(x) {
 				dataStores.push(new TLRGRP.BADGER.Dashboard.DataStores.SyncAjaxDataStore({
@@ -55,6 +117,22 @@
 					refresh: configuration.refresh || 5000,
 					callbacks: {
 						success: function (data) {
+							// TODO: Store the issue states (in progress, blocked) in a
+							// store that takes a key, and some data and refreshes the whole list
+							// from all included lists when any list is updated.
+							statusList.update(boards[x].key, _.reduce(data.query.states, function(issues, state) {
+								issues = issues.concat(_.map(state.issues, function(issue) {
+									issue.project = boards[x].key;
+									return issue;
+								}));
+
+								return issues;
+							}, []));
+
+							if(boards[x].hideOverview) {
+								return;
+							}
+
 							var totalIssues = data.query.totalIssues;
 							var states = _.sortBy(data.query.states, function(state) {
 								return stateMetaData[state.name].order;

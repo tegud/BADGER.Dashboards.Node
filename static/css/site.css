@@ -1418,3 +1418,10 @@ h3 {margin: 0;padding: 0 }
 .jira-boards-summary-item-container-text-percent { font-size: 4em; font-weight: bold; }
 
 .jira-boards-summary-item-container-text-progress { font-size: 2em; }
+
+
+.jira-boards-blocked h4,
+.jira-boards-inprogress h4 { font-size: 2em; }
+
+.jira-boards-blocked,
+.jira-boards-inprogress { display: inline-block; width: 50%; vertical-align: top; }

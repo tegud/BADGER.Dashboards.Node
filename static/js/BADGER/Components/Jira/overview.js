@@ -14,13 +14,75 @@
         var inProgress = $('<div class="jira-boards-inprogress"><h4>In Progress</h4></div>');
 
 		var boards = [
-			{ "name": "Core Engineering", "key": "UMCE", "icon-class": "fa fa-cogs", "hideOverview": true },
-			{ "name": "Consumer Products", "key": "UMCPT", "icon-class": "fa fa-smile-o" },
-			{ "name": "Hotel Management", "key": "UMHMT", "icon-class": "fa fa-hospital-o" },
-			{ "name": "Reservations", "key": "UMRT", "icon-class": "fa fa-credit-card" }
+			{ "name": "Core Engineering", "key": "UMCE", "boardId": "109", "icon-class": "fa fa-cogs", "hideOverview": true },
+			{ "name": "Consumer Products", "key": "UMCPT", "boardId": "124", "icon-class": "fa fa-smile-o" },
+			{ "name": "Hotel Management", "key": "UMHMT", "boardId": "123", "icon-class": "fa fa-hospital-o" },
+			{ "name": "Reservations", "key": "UMRT", "boardId": "122", "icon-class": "fa fa-credit-card" }
 		];
 
 		var boardElements = {};
+
+		function StatusLists(lists) {
+			var dataCache = {};
+			var boards = {};
+			var updateTimeout;
+
+			function update() {
+				var mergedData = _.reduce(Object.keys(dataCache), function(allIssues, board) {
+					var issues = dataCache[board];
+					allIssues = allIssues.concat(issues);
+					return allIssues;
+				}, []);
+
+				console.log(dataCache);
+
+				for(var x = 0; x < lists.length; x++) {
+					var text = _.chain(mergedData)
+						.reduce(function(filtered, issue) {
+							if(lists[x].filter && !lists[x].filter(issue)) {
+								return filtered;
+							}
+
+							filtered.push(issue);
+							return filtered;
+						},[])
+						.map(function(issue) {
+							return '<li class="jira-boards-overview-issue-list-item">'
+									+ '<div class="jira-boards-overview-issue-list-item-icon-container"><span class="' + (boards[issue.project]['icon-class']) + '"></span></div>'
+									+ '<div class="jira-boards-overview-issue-list-item-text"><h5><a href="' + configuration.jiraHost + '/secure/RapidBoard.jspa?rapidView=' + boards[issue.project].boardId + '&view=detail&selectedIssue=' + issue.key + '" target="_blank">' + issue.key + ' - ' + issue.summary + '</a></h5><h6>' + boards[issue.project].name + '</h6>' + (issue.assignee ? '<i>Assigned to: ' + issue.assignee.displayName + '</i>' : '') + '</div>'
+								+ '</li>';
+						})
+						.value();
+
+					lists[x].element.html(text.join(''));
+				}
+			}
+
+			return {
+				update: function(board, issues) {
+					dataCache[board.key] = issues;
+					boards[board.key] = board;
+
+					if(updateTimeout) {
+						clearTimeout(updateTimeout);
+						updateTimeout = undefined;
+					}
+
+					updateTimeout = setTimeout(update, 100);
+				}
+			}
+		}
+
+		var statusList = new StatusLists([
+			{
+				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(blocked),
+				filter: function(issue) { return issue.priority === 'Blocked'; }
+			},
+			{
+				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(inProgress),
+				filter: function(issue) { return issue.priority !== 'Blocked' && issue.status === 'In Progress'; }
+			}
+		]);
 
 		for(var x = 0; x < boards.length;x++) {
 			if(boards[x].hideOverview) {
@@ -28,7 +90,7 @@
 			}
 
 			boardElements[boards[x].key] = $('<li class="jira-boards-summary-item">'
-				+ '<h4>' + boards[x].name + '</h4>'
+				+ '<h4><a href="' + configuration.jiraHost + '/secure/RapidBoard.jspa?rapidView=' + boards[x].boardId + '" target="_blank">' + boards[x].name + '</a></h4>'
 				+ '<div class="jira-boards-summary-item-container">'
 					+ '<div class="jira-boards-summary-item-container-icon-container"><div class="jira-boards-summary-item-container-icon-outer"><span class="' + boards[x]['icon-class'] + '"></span></div></div>'
 					+ '<div class="jira-boards-summary-item-container-graph-container"></div>'
@@ -57,58 +119,6 @@
 			'done': { order: 3, complete: true, colour: 'green' }
 		};
 
-		function StatusLists(lists) {
-			var dataCache = {};
-
-			function update() {
-				var mergedData = _.reduce(dataCache, function(allIssues, issues) {
-					allIssues = allIssues.concat(issues);
-					return issues;
-				}, []);
-
-				console.log(mergedData);
-
-				for(var x = 0; x < lists.length; x++) {
-					var text = _.chain(mergedData)
-						.reduce(function(filtered, issue) {
-							if(lists[x].filter && !lists[x].filter(issue)) {
-								return filtered;
-							}
-
-							filtered.push(issue);
-							return filtered;
-						},[])
-						.map(function(issue) {
-							return '<li>' + issue.summary + '</li>';
-						})
-						.value();
-
-					lists[x].element.html(text.join(''));
-				}
-			}
-
-			return {
-				update: function(key, issues) {
-					dataCache[key] = issues;
-					update();
-				}
-			}
-		}
-
-		var statusList = new StatusLists([
-			{
-				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(blocked),
-				filter: function(issue) {
-					return issue.priority === 'Blocked';
-				}
-			},
-			{
-				element: $('<ul class="jira-boards-overview-issue-list"></ul>').appendTo(inProgress),
-				filter: function(issue) {
-					return issue.priority !== 'Blocked' && issue.status === 'In Progress';
-				}
-			}
-		]);
 
 		for(var x = 0; x < boards.length;x++) {
 			(function(x) {
@@ -117,10 +127,7 @@
 					refresh: configuration.refresh || 5000,
 					callbacks: {
 						success: function (data) {
-							// TODO: Store the issue states (in progress, blocked) in a
-							// store that takes a key, and some data and refreshes the whole list
-							// from all included lists when any list is updated.
-							statusList.update(boards[x].key, _.reduce(data.query.states, function(issues, state) {
+							statusList.update(boards[x], _.reduce(data.query.states, function(issues, state) {
 								issues = issues.concat(_.map(state.issues, function(issue) {
 									issue.project = boards[x].key;
 									return issue;

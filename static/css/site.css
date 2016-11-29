@@ -1401,27 +1401,46 @@ h3 {margin: 0;padding: 0 }
 
 .jira-boards-summary-item {display: inline-block; padding-right: 10px; }
 
-.jira-boards-summary-item h4 { padding-left: 30px; font-size: 2em; }
+.jira-boards-summary-item h4 { padding-left: 30px; font-size: 2em; text-decoration: underline; }
 
-.jira-boards-summary-item-container { width: 380px; height: 150px; border: 10px solid #000; margin-top: 10px; border-radius: 50px; overflow: hidden; position: relative; }
+.jira-boards-summary-item-container { width: 380px; height: 120px; border: 10px solid #000; margin-top: 10px; border-radius: 50px; overflow: hidden; position: relative; }
 
 .jira-boards-summary-item-container-icon-container { float: left; width: 130px; height: 100%; border-radius:  40px 0 0 40px; background-color: #ddd; }
 
-.jira-boards-summary-item-container-icon-outer { width: 70px; height: 58px; padding: 6px 0; border: solid 10px #000; margin: 0 auto; border-radius: 70px; margin-top: 30px; background-color: #fff; font-size: 50px; text-align: center; }
+.jira-boards-summary-item-container-icon-outer { width: 70px; height: 58px; padding: 6px 0; border: solid 10px #000; margin: 0 auto; border-radius: 70px; margin-top: 15px; background-color: #fff; font-size: 50px; text-align: center; }
 
-.jira-boards-summary-item-container-graph-container { width: 250px; height: 150px; margin-left: 130px; }
+.jira-boards-summary-item-container-graph-container { width: 250px; height: 120px; margin-left: 130px; }
 
-.jira-boards-summary-item-container-graph-segment { float: left; height: 150px; width: 50px; }
+.jira-boards-summary-item-container-graph-segment { float: left; height: 120px; width: 50px; }
 
-.jira-boards-summary-item-container-text-container { position: absolute; top: 15px; left: 140px; }
+.jira-boards-summary-item-container-text-container { position: absolute; top: 3px; left: 140px; }
 
 .jira-boards-summary-item-container-text-percent { font-size: 4em; font-weight: bold; }
 
 .jira-boards-summary-item-container-text-progress { font-size: 2em; }
 
-
 .jira-boards-blocked h4,
 .jira-boards-inprogress h4 { font-size: 2em; }
 
+.jira-boards-blocked h4     { border-left: solid 10px red; padding: 5px; }
+.jira-boards-inprogress h4  { border-left: solid 10px orange; padding: 5px; }
+
 .jira-boards-blocked,
 .jira-boards-inprogress { display: inline-block; width: 50%; vertical-align: top; }
+
+.jira-boards-overview-issue-list { list-style: none; padding: 0 }
+
+.jira-boards-overview-issue-list-item { padding: 10px; border: 5px solid #000; margin: 5px 5px 0 0; border-radius: 30px; min-height: 70px; }
+
+.jira-boards-overview-issue-list-item-icon-container { width: 60px; height: 53px; padding-top: 7px; border: solid #000 5px; border-radius: 60px; float: left; font-size: 41px; text-align: center; }
+
+.jira-boards-overview-issue-list-item-text { margin-left: 80px; }
+
+.jira-boards-overview-issue-list-item-text h5 { margin: 0; font-size: 1.3em; text-decoration: underline; }
+
+.jira-boards-overview-issue-list-item-text h6 { margin: 3px 0; font-size: 1.2em; }
+
+.jira-boards-blocked .jira-boards-overview-issue-list-item,
+.jira-boards-blocked .jira-boards-overview-issue-list-item-icon-container { border-color: red; }
+.jira-boards-inprogress .jira-boards-overview-issue-list-item,
+.jira-boards-inprogress .jira-boards-overview-issue-list-item-icon-container { border-color: orange }

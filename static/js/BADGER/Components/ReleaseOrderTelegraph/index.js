@@ -222,7 +222,7 @@
                                     + '<div class="planned-releases-list-item-subject"><a class="planned-releases-list-item-link" href="https://tlrg-servicehub.zendesk.com/agent/tickets/' + release.id + '" target="_blank">' + release.id + '</a> - ' + release.subject + '</div>'
                                     + '<div class="planned-releases-list-item-team">'
                                         + '<span class="planned-releases-list-item-team-icon mega-octicon octicon-organization"></span>&nbsp;' + productTeam
-                                        + '&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name
+                                        + (release.submitter ? ('&nbsp;<span class="planned-releases-list-item-team-icon mega-octicon octicon-person"></span>&nbsp;' + release.submitter.name) : '')
                                         + '&nbsp;<span style="color: ' + timeSinceRaisedTextColour + '"><span class="planned-releases-list-item-team-icon mega-octicon octicon-clock"></span>&nbsp;raised ' + moment.duration(raisedSince).humanize() + ' ago</span>'
                                         + '&nbsp;<span style="color: ' + riskStyles[(release.risk || 'unknown')].colour + '"><span class="planned-releases-list-item-team-icon ' + riskStyles[(release.risk || 'unknown')].icon + '"></span>&nbsp;' + (release.risk || 'unknown') + ' risk</span>'
                                     + '</div>'

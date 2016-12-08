@@ -252,20 +252,12 @@
             }
         }
     }, {
-        "id": "LateRoomsErrors",
-        "name": "LateRooms.com Errors",
+        "id": "UKFastMigration",
+        "name": "UKFast Migration",
         "views": {
-            "LRAllErrors": {
-                "id": "LRAllErrors",
-                "name": "All"
-            },
-            "LRSearchErrors": {
-                "id": "LRSearchErrors",
-                "name": "Search"
-            },
-            "LRBookingErrors": {
-                "id": "LRBookingErrors",
-                "name": "Booking"
+            "Overview": {
+                "id": "Overview",
+                "name": "Overview"
             }
         }
     }]

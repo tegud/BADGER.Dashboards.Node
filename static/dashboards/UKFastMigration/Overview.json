@@ -1,0 +1,12 @@
+{
+    "name": "UKFast Migration Overview",
+    "components": [
+        {
+            "title": "Overview",
+            "type": "JiraOverview",
+            "jiraDashboardApiHost": "jira-dashboard.river-styx.development01.laterooms.work.:3004",
+            "jiraHost": "https://laterooms.atlassian.net/",
+            "refresh": 30000
+        }
+    ]
+}

@@ -46,9 +46,15 @@
           "mappings": []
         },
         {
+            "title": "Pending PRs",
+            "type": "PullRequests",
+            "span": "4",
+            "sourceUrl": "http://162.243.65.207/pullRequests?matching=LateRoomsGroup/moonstick|LateRoomsGroup/tlrg-data"
+        },
+        {
             "title": "Building",
             "type": "InProgressReleases",
-            "span":"9",
+            "span":"5",
             "storeId": "MoonstickBuildData",
             "defaultSortOrder": "Descending"
         },

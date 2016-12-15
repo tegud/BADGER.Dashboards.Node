@@ -4,7 +4,7 @@
         {
             "type": "SharedDataStore",
             "storeId": "IcingaProviderStatus",
-            "url": "http://badger.laterooms.com/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name)"
+            "url": "http://localhost:1235/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name)"
         },
         {
             "type": "ProviderSummary",
@@ -13,8 +13,15 @@
         },
         {
             "type": "ProviderTierSummary",
+            "tier": "Diamond Providers",
+            "storeId": "IcingaProviderStatus",
+            "span": "4"
+        },
+        {
+            "type": "ProviderTierSummary",
             "tier": "Platinum Providers",
-            "storeId": "IcingaProviderStatus"
+            "storeId": "IcingaProviderStatus",
+            "span": "8"
         },
         {
             "type": "ProviderTierSummary",

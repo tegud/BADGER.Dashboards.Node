@@ -4,10 +4,11 @@
 	TLRGRP.namespace('TLRGRP.BADGER.Dashboard.Components');
 
 	var tierOrder = {
-		'Platinum Providers': 0, 
-		'Gold Providers': 1, 
-		'Silver Providers': 2, 
-		'Bronze Providers': 3
+		'Diamond Providers': 0,
+		'Platinum Providers': 1,
+		'Gold Providers': 2,
+		'Silver Providers': 3,
+		'Bronze Providers': 4
 	};
 
 	var checkStates = {
@@ -16,7 +17,7 @@
 		'2': { name: 'Critical', iconClass: 'mega-octicon octicon-flame', priority: 0, summaryClass: 'critical' },
 		'3': { name: 'Unknown', iconClass: 'fa fa-question', priority: 2, summaryClass: 'unknown' }
 	};
-	
+
 	function serviceAcronym(serviceName) {
 		if(serviceName.indexOf('Provider ') === 0) {
 			serviceName = serviceName.substring(8);
@@ -115,7 +116,7 @@
 				}
 				else if (x === (affectedTiers.length - 1)) {
 					suffix = ''
-				} 
+				}
 
 				return Mustache.render('{{providers}} {{tier}}{{suffix}} ', {
 					tier: tier.tier.split(' ')[0],
@@ -174,7 +175,7 @@
 					}
 
 					allCounts[provider.worstCheckState] += 1;
-					
+
 					return allCounts;
 				}, {});
 
@@ -182,7 +183,7 @@
 					if(!allCheckCounts[state]) {
 						allCheckCounts[state] = 0;
 					}
-					
+
 					allCheckCounts[state] += count;
 
 					return allCheckCounts;
@@ -212,7 +213,7 @@
 					var checkSummaries = _.map(checkStates, function(state, key) {
 						return _.defaults({}, state, {
 							itemClass: state.name.toLowerCase(),
-							count: _.filter(tier.providers, function(provider) { 
+							count: _.filter(tier.providers, function(provider) {
 								return provider.worstCheckState == key;
 							}).length
 						});

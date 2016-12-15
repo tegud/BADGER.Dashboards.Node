@@ -657,6 +657,7 @@ h3 {margin: 0;padding: 0 }
 
 .tier-indicator { width: 50px; height: 42px; background-color: #000; float: right; border-radius: 30px; padding-top: 8px; text-align: center; border: #000 5px solid; }
 
+.tier-indicator.diamond    { background-color: #27FFFB; border-color: #50B9FF;  }
 .tier-indicator.platinum    { background-color: #ddd; border-color: #999;  }
 .tier-indicator.gold        { background-color: gold; border-color: #BFA100; }
 .tier-indicator.silver      { background-color: #777; border-color: #333; }
@@ -680,18 +681,27 @@ h3 {margin: 0;padding: 0 }
 
 #value-sort-modifier { margin: 5px auto; width: 550px; }
 
+.provider-options.tier-diamond .tier-platinum,
+.provider-options.tier-diamond .tier-gold,
+.provider-options.tier-diamond .tier-silver,
+.provider-options.tier-diamond .tier-bronze { display: none; }
+
+.provider-options.tier-platinum .tier-diamond,
 .provider-options.tier-platinum .tier-gold,
 .provider-options.tier-platinum .tier-silver,
 .provider-options.tier-platinum .tier-bronze { display: none; }
 
+.provider-options.tier-gold .tier-diamond,
 .provider-options.tier-gold .tier-platinum,
 .provider-options.tier-gold .tier-silver,
 .provider-options.tier-gold .tier-bronze { display: none; }
 
+.provider-options.tier-silver .tier-diamond,
 .provider-options.tier-silver .tier-platinum,
 .provider-options.tier-silver .tier-gold,
 .provider-options.tier-silver .tier-bronze { display: none; }
 
+.provider-options.tier-bronze .tier-diamond,
 .provider-options.tier-bronze .tier-platinum,
 .provider-options.tier-bronze .tier-silver,
 .provider-options.tier-bronze .tier-gold { display: none; }
@@ -712,6 +722,8 @@ h3 {margin: 0;padding: 0 }
 
 .provider-option .filter-option-checkbox { width: 13px; padding-left: 2px; }
 
+.diamond.tier-option .filter-option-checkbox,
+.tier-diamond.provider-option .filter-option-checkbox { background-color: #27FFFB; border-color: #50B9FF; }
 .platinum.tier-option .filter-option-checkbox,
 .tier-platinum.provider-option .filter-option-checkbox { background-color: #ddd;border-color: #999 }
 .gold.tier-option .filter-option-checkbox,
@@ -722,6 +734,7 @@ h3 {margin: 0;padding: 0 }
 .tier-bronze.provider-option .filter-option-checkbox { background-color: #CD7F32; border-color: #B36F2C; }
 
 
+.diamond.tier-option .filter-option-checkbox { width: 11px; padding-left: 4px }
 .platinum.tier-option .filter-option-checkbox { width: 11px; padding-left: 4px }
 .gold.tier-option .filter-option-checkbox { width: 13px; padding-left: 2px; }
 .silver.tier-option .filter-option-checkbox { background-color: #777; border-color: #333; }
@@ -1096,6 +1109,7 @@ h3 {margin: 0;padding: 0 }
 
 .connectivity-service-summary-tier-emblem { position: absolute; width: 50px; height: 48px; padding-top: 2px; text-align: center; background-color: #fff;border: 5px solid #000; border-radius: 50px; top: -35px; left: 35px; font-size: 2.7em; font-weight: bold; color: #000; }
 
+.connectivity-service-summary-tier-emblem.diamond    { background-color: #27FFFB; border-color: #50B9FF; }
 .connectivity-service-summary-tier-emblem.platinum    { background-color: #ddd; border-color: #999;  }
 .connectivity-service-summary-tier-emblem.gold        { background-color: gold; border-color: #BFA100; }
 .connectivity-service-summary-tier-emblem.silver      { background-color: #777; border-color: #333; }
@@ -1193,6 +1207,7 @@ h3 {margin: 0;padding: 0 }
 
 .warning .provider-summary-selected-indicator { color: #FF8C00; }
 
+.provider-tier-provider-list-item.diamond { border-color: #27FFFB; }
 .provider-tier-provider-list-item.platinum { border-color: #999; }
 .provider-tier-provider-list-item.gold { border-color: #BFA100; }
 .provider-tier-provider-list-item.silver { border-color: #333; }

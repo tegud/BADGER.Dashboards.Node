@@ -162,7 +162,7 @@
 
 		return {
 			title: 'Issue in monitoring, or misconfiguration',
-			text: 'Some checks are in an unknown state, generally this indicates an issue with Icinga 2, <a href="http://badger.laterooms.com/Status/ELK">Elasticsearch</a> or the check configuration, suggest contacting IO or OOH team.'
+			text: 'Some checks are in an unknown state, generally this indicates an issue with Icinga 2, <a href="http://badger.laterooms.io/Status/ELK">Elasticsearch</a> or the check configuration, suggest contacting IO or OOH team.'
 		};
 	}
 

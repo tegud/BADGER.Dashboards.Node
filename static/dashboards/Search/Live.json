@@ -4,7 +4,7 @@
         "type": "LineGraphAndCounter",
         "title": "Requests",
         "dataSource": "elasticsearch",
-        "host": "http://logs.laterooms.com:9200",
+        "host": "http://logs.elasticsearch.laterooms.io:9200",
         "className": "tall-graph",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
@@ -111,7 +111,7 @@
         "type": "LineGraphAndCounter",
         "title": "Errors",
         "dataSource": "elasticsearch",
-        "host": "http://logs.laterooms.com:9200",
+        "host": "http://logs.elasticsearch.laterooms.io:9200",
         "className": "tall-graph",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",

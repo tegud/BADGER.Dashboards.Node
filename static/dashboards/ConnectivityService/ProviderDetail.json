@@ -4,7 +4,7 @@
         {
             "type": "SharedDataStore",
             "storeId": "IcingaProviderStatus",
-            "url": "http://badger.laterooms.com/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name) %26%26 host.name %3D%3D \"${qs:provider}\"",
+            "url": "http://badger.laterooms.io/icinga/byFilter?joins=host&filter=\"Provider\" in host.templates %26%26 !regex(\"ES\", service.name) %26%26 host.name %3D%3D \"${qs:provider}\"",
             "refresh": 60000
         },
         {
@@ -15,7 +15,7 @@
                 "index": "metrics-${YYYY}.${MM}.${DD}"
             },
             "logStore": {
-                "host": "http://logs.laterooms.com:9200",
+                "host": "http://logs.elasticsearch.laterooms.io:9200",
                 "index": "logstash-${YYYY}.${MM}.${DD}"
             }
         },

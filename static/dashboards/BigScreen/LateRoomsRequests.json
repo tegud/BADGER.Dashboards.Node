@@ -5,7 +5,7 @@
           "type": "SharedDataStore",
           "storeId": "RequestData",
           "dataSource": "elasticsearch",
-          "host": "http://logs.laterooms.com:9200",
+          "host": "http://logs.elasticsearch.laterooms.io:9200",
           "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
             "aggs.sessionsbytime.date_histogram.extended_bounds"

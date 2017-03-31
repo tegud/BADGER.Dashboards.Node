@@ -10,7 +10,7 @@
             render: function (container) {
                 iframe = $('<iframe />', {
                     'class': 'kibana-frame',
-                    src: 'http://kibana.laterooms.com/index.html#/dashboard/' + (configuration.path || ''),
+                    src: 'http://kibana.laterooms.io/index.html#/dashboard/' + (configuration.path || ''),
                     css: {
                         height: $(window).height() - container.position().top - 15
                     }

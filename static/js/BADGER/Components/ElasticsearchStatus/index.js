@@ -39,7 +39,7 @@
 	var unknownState = {
 		className: 'unknown',
 		text: 'Could not retrieve cluster state',
-		description: 'Cluster state is unknown, check Sentinel is <a href="badger.laterooms.com:3000/currentStatus?pretty" target="_blank">returning valid data</a>.'
+		description: 'Cluster state is unknown, check Sentinel is <a href="badger.laterooms.io:3000/currentStatus?pretty" target="_blank">returning valid data</a>.'
 	};
 
 	var nodeStatusMap = {

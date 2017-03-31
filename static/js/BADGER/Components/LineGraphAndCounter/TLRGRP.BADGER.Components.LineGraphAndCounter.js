@@ -46,7 +46,7 @@
         if(configuration.kibanaDashboard){
             componentModules.push({
                 appendTo: function(container) {
-                    container.append($('<a class="open-in-kibana" href="http://kibana.laterooms.com/index.html#/dashboard/' + configuration.kibanaDashboard + '" target="_blank">Open in kibana</a>'));
+                    container.append($('<a class="open-in-kibana" href="http://kibana.laterooms.io/index.html#/dashboard/' + configuration.kibanaDashboard + '" target="_blank">Open in kibana</a>'));
                 }
             });
         } 

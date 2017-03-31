@@ -5,14 +5,14 @@
         "alertName": "healthCheck.serviceHealth-live",
         "groups": ["Web", "SSL", "AU"],
         "title": "LateRooms Front End Server Status",
-        "host": "badger.laterooms.com",
+        "host": "badger.laterooms.io",
         "port": 80,
         "span": 10
     }, {
         "type": "LineGraphAndCounter",
         "title": "Errors",
         "dataSource": "elasticsearch",
-        "host": "http://logs.laterooms.com:9200",
+        "host": "http://logs.elasticsearch.laterooms.io:9200",
         "className": "tall-graph",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",
@@ -95,7 +95,7 @@
                     "critical": 10
                 },
                 "link": {
-                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/BookingWeb%20Errors",
+                    "link": "http://kibana.laterooms.io/index.html#/dashboard/elasticsearch/BookingWeb%20Errors",
                     "newTab": true
                 }
             }, {
@@ -104,7 +104,7 @@
                 "value": "query.moonstick",
                 "text": "Moonstick",
                 "link": {
-                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/Moonstick%20Server%20Errors",
+                    "link": "http://kibana.laterooms.io/index.html#/dashboard/elasticsearch/Moonstick%20Server%20Errors",
                     "newTab": true
                 }
             }, {
@@ -113,7 +113,7 @@
                 "value": "query.legacy",
                 "text": "Legacy",
                 "link": {
-                    "link": "http://kibana.laterooms.com/index.html#/dashboard/elasticsearch/LateRooms.com%20Errors",
+                    "link": "http://kibana.laterooms.io/index.html#/dashboard/elasticsearch/LateRooms.com%20Errors",
                     "newTab": true
                 }
             }]
@@ -139,7 +139,7 @@
         "title": "Commission",
         "summaryText": "Total commission generated per minute on LateRooms.com (WEB)",
         "dataSource": "elasticsearch",
-        "host": "http://logs.laterooms.com:9200",
+        "host": "http://logs.elasticsearch.laterooms.io:9200",
         "kibanaDashboard": "elasticsearch/LateRooms.com%20Bookings",
         "timeProperties": [
             "query.filtered.filter.bool.must.0.range.@timestamp",

@@ -6,7 +6,7 @@
             "title": "Exit Page",
             "summaryText": "Exit page by up until 30minutes ago",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://logs.elasticsearch.laterooms.io:9200",
             "aggregateProperty": "sessionsbytime",
             "valueProperty": [ 
               { "value": "home.doc_count", "property": "home", "type": "percentage", "totalField": "doc_count" }, 

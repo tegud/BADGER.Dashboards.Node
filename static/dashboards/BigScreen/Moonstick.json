@@ -39,7 +39,7 @@
             "type": "SharedDataStore",
             "storeId": "LRRequestsData",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://logs.elasticsearch.laterooms.io:9200",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
                 "aggs.requests.date_histogram.extended_bounds"
@@ -272,7 +272,7 @@
             "span": 6,
             "summaryText": "Server Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://logs.elasticsearch.laterooms.io:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",
@@ -405,7 +405,7 @@
             "span": 6,
             "summaryText": "Client Errors per one minute on Moonstick",
             "dataSource": "elasticsearch",
-            "host": "http://logs.laterooms.com:9200",
+            "host": "http://logs.elasticsearch.laterooms.io:9200",
             "aggregateProperty": "errorsbytime",
             "timeProperties": [
                 "query.filtered.filter.bool.must.0.range.@timestamp",

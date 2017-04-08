@@ -50,7 +50,7 @@
             "type": "ReleaseOrderTelegraph",
             "span":"3",
             "url": "http://releaseordertelegraph.laterooms.io/currentState",
-            "zendeskApiUrl": "http://badger.dashboards.logging.laterooms.work:1238"
+            "zendeskApiUrl": "http://releases.laterooms.io"
         },
         {
             "title": "Shipping",
